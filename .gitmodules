@@ -1,0 +1,6 @@
+[submodule "libraries/crow"]
+	path = libraries/crow
+	url = https://github.com/CrowCpp/Crow.git
+[submodule "libraries/tomlplusplus"]
+	path = libraries/tomlplusplus
+	url = https://github.com/marzer/tomlplusplus.git

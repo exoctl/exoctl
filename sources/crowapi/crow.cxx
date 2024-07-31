@@ -1,0 +1,17 @@
+#include "crow.hxx"
+
+namespace Crow
+{
+    CrowApi::CrowApi(std::uint16_t p_port) : m_port(p_port)
+    {
+    }
+    CrowApi::~CrowApi()
+    {
+    }
+
+    void CrowApi::run()
+    {
+        m_app.port(m_port).run();
+    }
+
+};
