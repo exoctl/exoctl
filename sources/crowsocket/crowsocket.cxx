@@ -1,3 +1,5 @@
+#define CROW_MAIN
+
 #include "crow.hxx"
 #include "routes.hxx"
 

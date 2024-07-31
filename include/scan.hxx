@@ -4,7 +4,7 @@
 #include <string>
 
 /*
-    typescan: 
+    typescan:
             * yara
             * hash
 */

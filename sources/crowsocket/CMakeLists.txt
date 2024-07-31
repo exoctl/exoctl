@@ -8,7 +8,7 @@ file(GLOB_RECURSE SOURCES
     ../scan/hash/*.cxx
 )
 
-add_executable(engine-api crowapi.cxx)
+add_executable(engine-api crowsocket.cxx)
 target_sources(engine-api PRIVATE ${SOURCES})
 target_link_libraries(engine-api PUBLIC Crow::Crow)
 

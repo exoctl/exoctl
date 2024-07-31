@@ -7,6 +7,6 @@ include_directories(
     ../interfaces
 )
 
-add_subdirectory(crowapi)
+add_subdirectory(crowsocket)
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)

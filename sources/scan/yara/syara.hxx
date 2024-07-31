@@ -2,7 +2,8 @@
 
 #include "iscan.hxx"
 #include "string"
-#include "yara.h"
+
+#include <yara.h>
 
 namespace Analysis
 {
@@ -16,5 +17,6 @@ namespace Analysis
         const void load_rule(const std::function<void(void *)> &) const override;
 
     private:
+        
     };
 }
