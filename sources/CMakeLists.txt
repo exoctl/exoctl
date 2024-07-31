@@ -4,6 +4,7 @@ include_directories(
     ../include
     ../libraries
     ../sources
+    ../interfaces
 )
 
 add_subdirectory(crowapi)
