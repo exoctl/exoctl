@@ -7,5 +7,7 @@ int main(void)
 
     Crow::Routes Routes(CrowApi);
 
+    Routes.create_routes();
+
     CrowApi.run();
 }

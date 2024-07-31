@@ -2,6 +2,8 @@
 
 #include "crow.hxx"
 
+#define GET_ROUTE(name) Routes::route_##name();
+
 namespace Crow
 {
     class Routes
@@ -12,8 +14,9 @@ namespace Crow
 
         void create_routes();
     private:
-        const CrowApi &m_crowapi;
-        const std::string m_prefix;
+        CrowApi &m_crow;
 
+        void route_search();
+        void route_scan();
     };
 }

@@ -11,7 +11,12 @@ namespace Crow
 
     void CrowApi::run()
     {
-        m_app.port(m_port).run();
+        m_app.port(m_port).multithreaded().run();
+    }
+
+    crow::SimpleApp &CrowApi::get_app()
+    {
+        return m_app;
     }
 
 };
