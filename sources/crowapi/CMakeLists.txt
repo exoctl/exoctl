@@ -4,6 +4,8 @@ set(FLAGS_DEBUG OFF)
 file(GLOB_RECURSE SOURCES
     *.cxx
     ../scan/yara/*.cxx
+    ../scan/*.cxx
+    ../scan/hash/*.cxx
 )
 
 add_executable(engine-api crowapi.cxx)

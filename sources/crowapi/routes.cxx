@@ -1,7 +1,7 @@
 #include "routes.hxx"
 #include "rnames.hxx"
-#include "syara.hxx"
 #include "iscan.hxx"
+#include "scan.hxx"
 
 namespace Crow
 {
@@ -28,7 +28,10 @@ namespace Crow
 
     void Routes::route_scan()
     {
-        Scan::IScan *Scan = new Scan::SYara();
+        Analysis::Scan *Scan = new Analysis::Scan();
+
+        SCAN(Scan, yara, "test");
+
         CROW_ROUTE(m_crow.get_app(), ROUTE_SCAN)
         ([Scan]()
          { 
