@@ -29,7 +29,7 @@ namespace Crow
                 })
             .onaccept([&](const crow::request &req, void **userdata)
                 { 
-                    /* TODO: Create validatior for sucessful connection */
+                    /* TODO: Create validator for check if sucessful connection */
                     return true; 
                 })
             .onopen([&](crow::websocket::connection &conn)
