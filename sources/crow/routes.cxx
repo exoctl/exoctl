@@ -22,7 +22,7 @@ namespace Crow
 
     void Routes::search_route()
     {
-        CROW_WEBSOCKET_ROUTE(m_crow.get_app(), ROUTE_SEARCH)
+        CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
             .onerror([&](crow::websocket::connection& conn, const std::string& error_message)
                 {
                     
@@ -35,13 +35,13 @@ namespace Crow
             .onopen([&](crow::websocket::connection &conn)
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
-                    m_context.add_conn(&conn);
-                    m_context.send_msg_conn(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened...");
+                    m_context.conn_add(&conn);
+                    m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened...");
                 })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t with_status_code)
                 { 
                     std::lock_guard<std::mutex> _(m_mtx);
-                    m_context.erase_conn(&conn, reason);
+                    m_context.conn_erase(&conn, reason);
                 })
             .onmessage([&](crow::websocket::connection &conn, const std::string &data, bool is_binary)
                 {
@@ -60,7 +60,7 @@ namespace Crow
 
         SCAN(Scan, yara, "test");
 
-        CROW_WEBSOCKET_ROUTE(m_crow.get_app(), ROUTE_SCAN)
+        CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
             .onopen([&](crow::websocket::connection &conn) {})
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t)
                      { ; })

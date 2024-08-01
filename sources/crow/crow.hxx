@@ -17,8 +17,8 @@ namespace Crow
         CrowApi(const std::string, std::uint16_t);
         ~CrowApi();
 
-        void set_ssl_file(const std::string &, const std::string & = "");
-        crow::SimpleApp &get_app();
-        void run();
+        void crow_set_ssl_file(const std::string &, const std::string & = "");
+        crow::SimpleApp &crow_get_app();
+        void crow_run();
     };
 };

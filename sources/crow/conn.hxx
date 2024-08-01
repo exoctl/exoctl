@@ -8,13 +8,13 @@ namespace Connection
     class Context
     {
     public:
-        Context(void);
+        Context();
         ~Context();
 
-        const void add_conn(crow::websocket::connection *);
-        const void erase_conn(crow::websocket::connection *, const std::string&);
-        const std::size_t size_conn() const;
-        const void send_msg_conn(crow::websocket::connection *, const std::string) const;
+        const void conn_add(crow::websocket::connection *);
+        const void conn_erase(crow::websocket::connection *, const std::string&);
+        const std::size_t conn_size() const;
+        const void conn_send_msg(crow::websocket::connection *, const std::string) const;
 
     private:
         std::unordered_set<crow::websocket::connection* > m_conn;

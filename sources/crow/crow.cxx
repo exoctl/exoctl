@@ -12,17 +12,17 @@ namespace Crow
     {
     }
 
-    void CrowApi::run()
+    void CrowApi::crow_run()
     {
         m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
     }
 
-    crow::SimpleApp &CrowApi::get_app()
+    crow::SimpleApp &CrowApi::crow_get_app()
     {
         return m_app;
     }
 
-    void CrowApi::set_ssl_file(const std::string &p_pem, const std::string &p_key)
+    void CrowApi::crow_set_ssl_file(const std::string &p_pem, const std::string &p_key)
     {
         // m_app.ssl_file(p_pem, p_key);
     }

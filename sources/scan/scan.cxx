@@ -28,7 +28,11 @@ namespace Analysis
         delete m_scan;
     }
 
-    const void Scan::load_rule(const std::function<void(void *)> &) const
+    const void Scan::load_rule(const std::string &p_rules, const std::function<void(void *)> &p_callback) const
+    {
+    }
+
+    const void Scan::scan_bytes() const
     {
     }
 }

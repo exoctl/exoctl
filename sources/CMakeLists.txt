@@ -14,6 +14,7 @@ file(GLOB_RECURSE SOURCES
     scan/yara/*.cxx
     scan/*.cxx
     scan/hash/*.cxx
+    toml/*.cxx
 )
 
 add_executable(engine-sock engine-sock.cxx)

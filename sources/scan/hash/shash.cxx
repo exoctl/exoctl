@@ -14,8 +14,10 @@ namespace Analysis
     {
     }
 
-    const void SHash::load_rule(const std::function<void(void *)> &) const
+    const void SHash::load_rule(const std::string &p_rules, const std::function<void(void *)> &p_callback) const
     {
     }
+
+    const void SHash::scan_bytes() const {}
 
 };
