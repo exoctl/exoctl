@@ -5,6 +5,7 @@ include_directories(
     ../libraries
     ../sources
     ../interfaces
+    ../libraries/tomlplusplus/include
 )
 
 add_subdirectory(crowsocket)
