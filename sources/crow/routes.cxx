@@ -1,5 +1,5 @@
 #include "routes.hxx"
-#include "rnames.hxx"
+#include "endpoints.hxx"
 #include "iscan.hxx"
 #include "scan.hxx"
 #include "conn.hxx"
@@ -14,13 +14,13 @@ namespace Crow
     {
     }
 
-    void Routes::create_routes()
+    void Routes::routes_create()
     {
         GET_ROUTE(search);
         GET_ROUTE(scan);
     }
 
-    void Routes::search_route()
+    void Routes::route_search()
     {
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
             .onerror([&](crow::websocket::connection& conn, const std::string& error_message)
@@ -54,7 +54,7 @@ namespace Crow
                 });
     }
 
-    void Routes::scan_route()
+    void Routes::route_scan()
     {
         Analysis::Scan *Scan = new Analysis::Scan();
 

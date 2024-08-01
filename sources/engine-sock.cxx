@@ -14,7 +14,7 @@ int main(void)
 
     Crow::Routes Routes(CrowApi);
 
-    Routes.create_routes();
+    Routes.routes_create();
 
     CrowApi.crow_run();
 }

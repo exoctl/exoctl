@@ -4,7 +4,7 @@
 #include "conn.hxx"
 #include <mutex>
 
-#define GET_ROUTE(name) Routes::name##_route();
+#define GET_ROUTE(name) Routes::route_##name();
 
 namespace Crow
 {
@@ -14,13 +14,13 @@ namespace Crow
         Routes(CrowApi &);
         ~Routes();
 
-        void create_routes();
+        void routes_create();
     private:
         CrowApi &m_crow;
         Connection::Context m_context;
         std::mutex m_mtx;
 
-        void search_route();
-        void scan_route();
+        void route_search();
+        void route_scan();
     };
 }
