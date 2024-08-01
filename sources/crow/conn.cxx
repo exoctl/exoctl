@@ -10,20 +10,28 @@ namespace Connection
     {
     }
 
-    const void Context::erase_conn(crow::websocket::connection *p_conn)
+    const void Context::erase_conn(crow::websocket::connection *p_conn,
+                                   const std::string &p_reason /*reason for log*/)
     {
         m_conn.erase(p_conn);
+        CROW_LOG_INFO << "Connection websocket closed '" << p_reason << "'";
     }
-    const void Context::send_msg(crow::websocket::connection *p_conn, const std::string p_msg)
+    
+    const void Context::send_msg_conn(crow::websocket::connection *p_conn, const std::string p_msg) const
     {
-        p_conn->send_text(p_msg);
+        if (m_conn.find(p_conn) != nullptr)
+            p_conn->send_text(p_msg);
     }
 
     const void Context::add_conn(crow::websocket::connection *p_conn)
     {
         m_conn.insert(p_conn);
+        CROW_LOG_INFO << "New websocket connection '" << p_conn->get_remote_ip() << "'";
     }
-    const void Context::remove_all_conn()
+
+    const std::size_t Context::size_conn() const
     {
+        return m_conn.size();
     }
+
 }

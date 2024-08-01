@@ -4,7 +4,7 @@
 #include "conn.hxx"
 #include <mutex>
 
-#define GET_ROUTE(name) Routes::route_##name();
+#define GET_ROUTE(name) Routes::name##_route();
 
 namespace Crow
 {
@@ -20,7 +20,7 @@ namespace Crow
         Connection::Context m_context;
         std::mutex m_mtx;
 
-        void route_search();
-        void route_scan();
+        void search_route();
+        void scan_route();
     };
 }
