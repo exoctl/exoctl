@@ -1,5 +1,3 @@
-#define CROW_ENFORCE_WS_SPEC
-
 #include "routes.hxx"
 #include "rnames.hxx"
 #include "iscan.hxx"
@@ -24,7 +22,6 @@ namespace Crow
 
     void Routes::route_search()
     {
-
         CROW_WEBSOCKET_ROUTE(m_crow.get_app(), ROUTE_SEARCH)
             .onerror([&](crow::websocket::connection& conn, const std::string& error_message)
                 {
@@ -36,15 +33,18 @@ namespace Crow
                 })
             .onopen([&](crow::websocket::connection &conn)
                 {
-                    m_context.add_conn(conn);
-                    m_context.send_msg(conn.get_remote_ip(), "Connection with your ip '" + conn.get_remote_ip() + "' Opened...\n"); 
+                    std::lock_guard<std::mutex> _(m_mtx);
+                    m_context.add_conn(&conn);
+                    m_context.send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened...");
                 })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t with_status_code)
                 { 
-                    m_context.remove_conn(conn);
+                    std::lock_guard<std::mutex> _(m_mtx);
+                    m_context.erase_conn(&conn);
                 })
             .onmessage([&](crow::websocket::connection &conn, const std::string &data, bool is_binary)
                 {
+                    std::lock_guard<std::mutex> _(m_mtx);
                     if (is_binary)
                     {
                         

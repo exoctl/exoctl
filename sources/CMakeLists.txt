@@ -1,5 +1,3 @@
-# add subdirectory libraries
-
 include_directories(
     ../include
     ../libraries
@@ -8,6 +6,43 @@ include_directories(
     ../libraries/tomlplusplus/include
 )
 
-add_subdirectory(crowsocket)
+set(FLAGS_OPTIMIZATIONS ON)
+set(FLAGS_DEBUG OFF)
+
+file(GLOB_RECURSE SOURCES
+    crow/*.cxx
+    scan/yara/*.cxx
+    scan/*.cxx
+    scan/hash/*.cxx
+)
+
+add_executable(engine-sock engine-sock.cxx)
+target_sources(engine-sock PUBLIC ${SOURCES})
+target_link_libraries(engine-sock PUBLIC Crow::Crow)
+
+if(FLAGS_OPTIMIZATIONS)
+    target_compile_options(engine-sock PUBLIC
+        -O2           
+        -ftree-vectorize
+        -mavx
+        -fno-stack-protector
+        -march=native
+        -fdelete-null-pointer-checks
+        -fdelete-dead-exceptions
+    )
+elseif(FLAGS_DEBUG)
+    target_compile_options(engine-sock PUBLIC
+        -ggdb3
+        -fms-extensions
+        --all-warnings
+        -DDEBUG
+        -g
+        -Warray-bounds
+        -Werror
+        --extra-warnings
+    )
+endif()
+
+# add subdirectory libraries
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)

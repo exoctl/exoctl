@@ -1,5 +1,7 @@
 #pragma once
 
+#define CROW_ENFORCE_WS_SPEC
+
 #include <crow.h>
 
 namespace Crow
@@ -8,12 +10,14 @@ namespace Crow
     {
     private:
         const std::uint16_t m_port;
+        const std::string m_bindaddr;
         crow::SimpleApp m_app;
 
     public:
-        CrowApi(std::uint16_t);
+        CrowApi(const std::string, std::uint16_t);
         ~CrowApi();
 
+        void set_ssl_file(const std::string &, const std::string & = "");
         crow::SimpleApp &get_app();
         void run();
     };
