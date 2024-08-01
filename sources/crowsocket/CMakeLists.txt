@@ -8,12 +8,12 @@ file(GLOB_RECURSE SOURCES
     ../scan/hash/*.cxx
 )
 
-add_executable(engine-api crowsocket.cxx)
-target_sources(engine-api PRIVATE ${SOURCES})
-target_link_libraries(engine-api PUBLIC Crow::Crow)
+add_executable(engine-websocket websocket.cxx)
+target_sources(engine-websocket PRIVATE ${SOURCES})
+target_link_libraries(engine-websocket PUBLIC Crow::Crow)
 
 if(FLAGS_OPTIMIZATIONS)
-    target_compile_options(engine-api PUBLIC
+    target_compile_options(engine-websocket PUBLIC
         -O2           
         -ftree-vectorize
         -mavx
@@ -23,7 +23,7 @@ if(FLAGS_OPTIMIZATIONS)
         -fdelete-dead-exceptions
     )
 elseif(FLAGS_DEBUG)
-    target_compile_options(engine-api PUBLIC
+    target_compile_options(engine-websocket PUBLIC
         -ggdb3
         -fms-extensions
         --all-warnings

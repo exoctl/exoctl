@@ -4,6 +4,7 @@ namespace Crow
 {
     CrowApi::CrowApi(std::uint16_t p_port) : m_port(p_port)
     {
+        m_app.loglevel(crow::LogLevel::Info);
     }
     CrowApi::~CrowApi()
     {
