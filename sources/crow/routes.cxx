@@ -22,42 +22,40 @@ namespace Crow
 
     void Routes::route_search()
     {
+        CROW_LOG_INFO << "Created route '" << ROUTE_SEARCH << "' websocket";
+        
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
-            .onerror([&](crow::websocket::connection& conn, const std::string& error_message)
-                {
-                    
-                })
+            .onerror([&](crow::websocket::connection &conn, const std::string &error_message) {
+
+            })
             .onaccept([&](const crow::request &req, void **userdata)
-                { 
+                      { 
                     /* TODO: Create validator for check if sucessful connection */
-                    return true; 
-                })
+                    return true; })
             .onopen([&](crow::websocket::connection &conn)
-                {
+                    {
                     std::lock_guard<std::mutex> _(m_mtx);
                     m_context.conn_add(&conn);
-                    m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened...");
-                })
+                    m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened..."); })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t with_status_code)
-                { 
+                     { 
                     std::lock_guard<std::mutex> _(m_mtx);
-                    m_context.conn_erase(&conn, reason);
-                })
+                    m_context.conn_erase(&conn, reason); })
             .onmessage([&](crow::websocket::connection &conn, const std::string &data, bool is_binary)
-                {
+                       {
                     std::lock_guard<std::mutex> _(m_mtx);
                     if (is_binary)
                     {
                     }else
                     {
-                    } 
-                });
+                    } });
     }
 
     void Routes::route_scan()
     {
-        Analysis::Scan *Scan = new Analysis::Scan();
+        CROW_LOG_INFO << "Created route '" << ROUTE_SCAN << "' websocket";
 
+        Analysis::Scan *Scan = new Analysis::Scan();
         SCAN(Scan, yara, "test");
 
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
