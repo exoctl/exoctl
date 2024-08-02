@@ -2,7 +2,10 @@
 
 #include <string>
 #include <functional>
+#include <cstdint>
+
 #include "uinterfaces.hxx"
+#include "stypes.hxx"
 
 namespace Analysis
 {
@@ -11,8 +14,7 @@ namespace Analysis
     public:
         IScan(){};
         virtual ~IScan(){};
-        virtual const void scan_file(const std::string) const = 0;
-        virtual const void load_rule(const std::string &, const std::function<void(void *)> &) const = 0;
-        virtual const void scan_bytes() const = 0;
+        virtual const stypes scan_bytes(const uint8_t*, size_t) const = 0;
+        virtual  const void load_rules( const std::function<void(void*)> &) const = 0;
     };
 };

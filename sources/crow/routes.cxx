@@ -23,40 +23,46 @@ namespace Crow
     void Routes::route_search()
     {
         CROW_LOG_INFO << "Created route '" << ROUTE_SEARCH << "' websocket";
-        
+
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
             .onerror([&](crow::websocket::connection &conn, const std::string &error_message) {
 
             })
             .onaccept([&](const crow::request &req, void **userdata)
                       { 
-                    /* TODO: Create validator for check if sucessful connection */
-                    return true; })
+                        /* TODO: Create validator for check if sucessful connection */
+                        return true; })
             .onopen([&](crow::websocket::connection &conn)
                     {
-                    std::lock_guard<std::mutex> _(m_mtx);
-                    m_context.conn_add(&conn);
-                    m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened..."); })
+                        std::lock_guard<std::mutex> _(m_mtx);
+                        m_context.conn_add(&conn);
+                        m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened..."); })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t with_status_code)
                      { 
-                    std::lock_guard<std::mutex> _(m_mtx);
-                    m_context.conn_erase(&conn, reason); })
+                        std::lock_guard<std::mutex> _(m_mtx);
+                        m_context.conn_erase(&conn, reason); })
             .onmessage([&](crow::websocket::connection &conn, const std::string &data, bool is_binary)
                        {
-                    std::lock_guard<std::mutex> _(m_mtx);
-                    if (is_binary)
-                    {
-                    }else
-                    {
-                    } });
+                        std::lock_guard<std::mutex> _(m_mtx);
+                        if (is_binary)
+                        {
+                        }else
+                        {
+                        } });
     }
 
     void Routes::route_scan()
     {
         CROW_LOG_INFO << "Created route '" << ROUTE_SCAN << "' websocket";
 
-        Analysis::Scan *Scan = new Analysis::Scan();
-        SCAN(Scan, yara, "test");
+        Analysis::SYara *scan = new Analysis::SYara;
+
+        scan->load_rules([&](void *)
+        {
+            std::string rule = "rule binaryObfuscation { strings: $re0 = /=[0-1,]{512}/ condition: all of them }";
+            scan->syara_set_signature_rule_mem(rule);
+            scan->syara_load_rules_folder("rules/yara"); 
+        });
 
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
             .onopen([&](crow::websocket::connection &conn) {})

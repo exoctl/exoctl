@@ -19,7 +19,7 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(engine-sock engine-sock.cxx)
 target_sources(engine-sock PUBLIC ${SOURCES})
-target_link_libraries(engine-sock PUBLIC Crow::Crow)
+target_link_libraries(engine-sock PUBLIC Crow::Crow yara)
 
 if(FLAGS_OPTIMIZATIONS)
     target_compile_options(engine-sock PUBLIC

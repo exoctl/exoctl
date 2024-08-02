@@ -10,14 +10,13 @@ namespace Analysis
     {
     }
 
-    const void SHash::scan_file(const std::string) const
+    const void SHash::load_rules(const std::function<void(void*)> &p_callback) const
     {
     }
 
-    const void SHash::load_rule(const std::string &p_rules, const std::function<void(void *)> &p_callback) const
+    const stypes SHash::scan_bytes(const uint8_t *p_bytes, size_t p_size) const 
     {
+        return benign;
     }
-
-    const void SHash::scan_bytes() const {}
 
 };

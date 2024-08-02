@@ -14,25 +14,16 @@ namespace Analysis
     {
     }
 
-    /*
-        All scan checking file is malicius
-    */
-    const void Scan::scan_file(const std::string p_filepath) const
+    const void Scan::load_rules(const std::function<void(void*)> &p_callback) const
+    {
+    }
+
+    const stypes Scan::scan_bytes(const uint8_t*, size_t) const
     {
         IScan *m_scan = new SYara();
-        m_scan->scan_file(p_filepath);
 
         m_scan = new SHash();
-        m_scan->scan_file(p_filepath);
 
         delete m_scan;
-    }
-
-    const void Scan::load_rule(const std::string &p_rules, const std::function<void(void *)> &p_callback) const
-    {
-    }
-
-    const void Scan::scan_bytes() const
-    {
     }
 }
