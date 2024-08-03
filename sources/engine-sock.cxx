@@ -5,12 +5,13 @@
 #include "toml.hxx"
 
 int main(void)
-{  
-    Parser::Toml Toml;
+{
+    Parser::Toml Configuration;
 
-    Toml.toml_parser_file("configuration.toml");
+    Configuration.toml_parser_file("configuration.toml");
 
-    Crow::CrowApi CrowApi("127.0.0.1", 40080);
+    Crow::CrowApi CrowApi(GET_TOML_TBL_VALUE(Configuration, string, "crow", "bindaddr"),
+                          GET_TOML_TBL_VALUE(Configuration, uint16_t, "crow", "port"));
 
     Crow::Routes Routes(CrowApi);
 
