@@ -33,14 +33,9 @@ namespace Crow
                         /* TODO: Create validator for check if sucessful connection */
                         return true; })
             .onopen([&](crow::websocket::connection &conn)
-                    {
-                        std::lock_guard<std::mutex> _(m_mtx);
-                        m_context.conn_add(&conn);
-                        m_context.conn_send_msg(&conn, "Connection with your ip '" + conn.get_remote_ip() + "' Opened..."); })
+                    { SOCKET_OPEN_CONNECTION_CONTEXT })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t with_status_code)
-                     { 
-                        std::lock_guard<std::mutex> _(m_mtx);
-                        m_context.conn_erase(&conn, reason); })
+                     { SOCKET_CLOSE_CONNECTION_CONTEXT })
             .onmessage([&](crow::websocket::connection &conn, const std::string &data, bool is_binary)
                        {
                         std::lock_guard<std::mutex> _(m_mtx);
@@ -58,16 +53,16 @@ namespace Crow
         Analysis::SYara *scan = new Analysis::SYara;
 
         scan->load_rules([&](void *)
-        {
+                         {
             std::string rule = "rule binaryObfuscation { strings: $re0 = /=[0-1,]{512}/ condition: all of them }";
             scan->syara_set_signature_rule_mem(rule);
-            scan->syara_load_rules_folder("rules/yara"); 
-        });
+            scan->syara_load_rules_folder("rules/yara"); });
 
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
-            .onopen([&](crow::websocket::connection &conn) {})
+            .onopen([&](crow::websocket::connection &conn)
+                    { SOCKET_OPEN_CONNECTION_CONTEXT })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t)
-                     { ; })
+                     { SOCKET_CLOSE_CONNECTION_CONTEXT })
             .onmessage([&](crow::websocket::connection & /*conn*/, const std::string &data, bool is_binary)
                        {
                 if (is_binary)

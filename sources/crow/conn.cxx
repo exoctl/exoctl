@@ -11,7 +11,7 @@ namespace Connection
     }
 
     const void Context::conn_erase(crow::websocket::connection *p_conn,
-                                   const std::string &p_reason /*reason for log*/)
+                                   const std::string &p_reason /*reason for log closed*/)
     {
         m_conn.erase(p_conn);
         CROW_LOG_INFO << "Connection websocket closed '" << p_reason << "'";

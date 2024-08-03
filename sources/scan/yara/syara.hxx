@@ -15,7 +15,7 @@ namespace Analysis
 
         const stypes scan_bytes(const uint8_t *, size_t) const override;
 
-         const void load_rules( const std::function<void(void*)> &) const override;
+        const void load_rules(const std::function<void(void *)> &) const override;
         const int syara_set_signature_rule_fd(const std::string &, const std::string &) const;
         const int syara_set_signature_rule_mem(const std::string &) const;
         const void syara_load_rules_folder(const std::string &) const;
