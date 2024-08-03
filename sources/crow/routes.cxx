@@ -17,13 +17,14 @@ namespace Crow
     void Routes::routes_create()
     {
         GET_ROUTE(search);
+        CROW_LOG_INFO << "Created route '" << ROUTE_SEARCH << "' websocket";
+
         GET_ROUTE(scan);
+        CROW_LOG_INFO << "Created route '" << ROUTE_SCAN << "' websocket";
     }
 
     void Routes::route_search()
     {
-        CROW_LOG_INFO << "Created route '" << ROUTE_SEARCH << "' websocket";
-
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
             .onerror([&](crow::websocket::connection &conn, const std::string &error_message) {
 
@@ -48,8 +49,6 @@ namespace Crow
 
     void Routes::route_scan()
     {
-        CROW_LOG_INFO << "Created route '" << ROUTE_SCAN << "' websocket";
-
         Analysis::SYara *scan = new Analysis::SYara;
 
         scan->load_rules([&](void *)
