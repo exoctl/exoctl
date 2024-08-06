@@ -67,7 +67,4 @@ The API uses WebSocket events to manage the connection lifecycle:
 - **SOCKET_CLOSE_CONNECTION_CONTEXT:** Manages the cleanup when the connection is terminated.
 
 
-> [!NOTE]
->  Future Enhancements **Connection Validation:** There is a placeholder for validating connections upon acceptance, which is yet to be implemented.
-
 This documentation provides a concise overview of how to interact with the API's WebSocket routes for search and scan functionalities. For more details on error handling and custom implementation, refer to the internal codebase or contact the support team.
