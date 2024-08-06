@@ -47,3 +47,4 @@ endif()
 # add subdirectory libraries
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)
+add_subdirectory(../libraries/spdlog libraries/spdlog)

@@ -71,7 +71,7 @@ namespace Crow
 
                     scan->scan_bytes(p_data, [&](void *p_callback_data)
                     {
-                        CROW_LOG_INFO << "Scan finished in " << p_data.size() << "b";
+                        CROW_LOG_INFO << "Scan '"  <<  p_conn.get_remote_ip()  << "' finished in " << p_data.size() << "b";
 
                         const bool is_yara = (Analysis::yr_user_data *)p_callback_data != nullptr;
                         const std::string is_malicius = (is_yara) ? (((Analysis::yr_user_data *)p_callback_data)->is_malicius == malicious) 

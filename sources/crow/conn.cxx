@@ -16,7 +16,7 @@ namespace Connection
         m_conn.erase(p_conn);
         CROW_LOG_INFO << "Connection websocket closed '" << p_reason << "'";
     }
-    
+
     const void Context::conn_send_msg(crow::websocket::connection *p_conn, const std::string p_msg) const
     {
         if (m_conn.find(p_conn) != nullptr)
@@ -33,5 +33,4 @@ namespace Connection
     {
         return m_conn.size();
     }
-
 }
