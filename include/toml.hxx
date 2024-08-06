@@ -14,6 +14,8 @@ namespace Parser
         ~Toml();
 
         void toml_parser_file(const std::string &);
+
+        // TODO: implement type return for demand   
         const std::string toml_get_tbl_string(const std::string &, const std::string &);
         const std::uint16_t toml_get_tbl_uint16_t(const std::string &, const std::string &);
 

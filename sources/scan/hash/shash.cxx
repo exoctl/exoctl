@@ -14,7 +14,7 @@ namespace Analysis
     {
     }
 
-    const stypes SHash::scan_bytes(const uint8_t *p_bytes, size_t p_size) const 
+    const stype  SHash::scan_bytes(const std::string p_buffer, const std::function<void(void *)> & /*p_callback*/ ) const 
     {
         return benign;
     }

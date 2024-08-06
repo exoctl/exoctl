@@ -1,7 +1,7 @@
 #pragma once
 
-enum stypes
+enum stype 
 {
-    malicious,
-    benign
+    benign,
+    malicious
 };

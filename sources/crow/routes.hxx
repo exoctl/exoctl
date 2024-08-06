@@ -10,7 +10,7 @@
 #define SOCKET_OPEN_CONNECTION_CONTEXT \
     std::lock_guard<std::mutex> _(m_mtx); \
     m_context.conn_add(&conn);            \
-    m_context.conn_send_msg(&conn, "{\"connection\": \"sucessfull\"}");
+    m_context.conn_send_msg(&conn, "{\"status\": \"ready\"}");
 
 #define SOCKET_CLOSE_CONNECTION_CONTEXT  \
     std::lock_guard<std::mutex> _(m_mtx); \
