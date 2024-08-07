@@ -43,7 +43,7 @@ namespace Analysis
 
     const int SYara::syara_set_signature_rule_fd(const std::string &p_path, const std::string &p_yrname) const
     {
-        YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
+        const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
         const int error_success = yr_compiler_add_fd(m_yara_compiler, rules_fd, nullptr, p_yrname.c_str());
 
@@ -92,7 +92,7 @@ namespace Analysis
 
     const void SYara::syara_compiler_rules() const
     {
-        int compiler_rules = yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
+        const int compiler_rules = yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
         if (compiler_rules != ERROR_SUCCESS ||
             compiler_rules == ERROR_INSUFFICIENT_MEMORY)
         {

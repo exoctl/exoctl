@@ -82,7 +82,7 @@ namespace Crow
                                     return ((Analysis::yr_user_data *)p_callback_data)->rule;
                                 
                                 return "None";
-                            }();  
+                            }();
                         
                         
                         m_context.conn_send_msg(&p_conn,  "{\"is_malicius\":"+is_malicius+","
