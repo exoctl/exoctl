@@ -120,7 +120,7 @@ namespace Analysis
     }
 
     YR_CALLBACK_FUNC SYara::syara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
-                                                        int p_message,
+                                                        const int p_message,
                                                         void *p_message_data,
                                                         void *p_user_data)
     {

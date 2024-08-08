@@ -31,7 +31,7 @@ namespace Analysis
         mutable YR_RULES *m_yara_rules;
         const void syara_compiler_rules() const;
         static YR_CALLBACK_FUNC syara_scan_callback_default(YR_SCAN_CONTEXT *,
-                                                      int,
+                                                      const int,
                                                       void *,
                                                       void *);
     };

@@ -21,5 +21,4 @@ rule IceFire
 
 	condition:
 		any of them
-
 }

@@ -4,6 +4,7 @@
 #include "scan.hxx"
 #include "conn.hxx"
 
+#include <optional>
 #include <alloca.h>
 
 namespace Crow
@@ -53,9 +54,10 @@ namespace Crow
     {
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
             .onaccept([&](const crow::request &req, void **userdata)
-                      { 
+                    { 
                         /* TODO: Create validator for check if sucessful connection */
-                        return true; })
+                        return true;
+                    })
             .onopen([&](crow::websocket::connection &conn)
                     { SOCKET_OPEN_CONNECTION_CONTEXT })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t)
@@ -71,13 +73,13 @@ namespace Crow
 
                     scan->scan_bytes(p_data, [&](void *p_callback_data)
                     {
-                        CROW_LOG_INFO << "Scan '"  <<  p_conn.get_remote_ip()  << "' finished in " << p_data.size() << "b";
+                        CROW_LOG_INFO << "Scan '"  <<  m_context.conn_get_remote_ip(&p_conn) << "' finished in " << p_data.size() << "b";
 
                         const bool is_yara = (Analysis::yr_user_data *)p_callback_data != nullptr;
                         const std::string is_malicius = (is_yara) ? (((Analysis::yr_user_data *)p_callback_data)->is_malicius == malicious) 
                             ? "1" : "0" : "None";
                             
-                        const auto rule = [&]() -> std::optional<std::string> {
+                        const auto rule = [&]() -> std::optional<const std::string> {
                                 if (((Analysis::yr_user_data *)p_callback_data)->rule != nullptr) 
                                     return ((Analysis::yr_user_data *)p_callback_data)->rule;
                                 
