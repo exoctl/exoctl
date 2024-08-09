@@ -3,13 +3,17 @@
 
 namespace Analysis
 {
-    Scan::Scan() {}
+    Scan::Scan() : m_yrules("rules/yara"), m_config(m_config) {}
     Scan::~Scan() {}
+    Scan::Scan(Parser::Toml &p_config) : m_config(p_config),
+                                         m_yrules(GET_TOML_TBL_VALUE(p_config, string, "yara", "rules"))
+    {
+    }
 
     const void Scan::load_rules(const std::function<void(void *)> &p_callback) const
     {
         m_yara.load_rules([&](void *)
-                          { m_yara.syara_load_rules_folder("rules/yara"); });
+                          { m_yara.syara_load_rules_folder(m_yrules); });
 
         m_hash.load_rules([&](void *) {
 

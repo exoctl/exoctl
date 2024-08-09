@@ -7,3 +7,9 @@
 [submodule "libraries/spdlog"]
 	path = libraries/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "libraries/libpqxx"]
+	path = libraries/libpqxx
+	url = https://github.com/jtv/libpqxx.git
+[submodule "libraries/benchmark"]
+	path = libraries/benchmark
+	url = https://github.com/google/benchmark.git

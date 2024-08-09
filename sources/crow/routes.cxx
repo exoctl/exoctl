@@ -9,7 +9,7 @@
 
 namespace Crow
 {
-    Routes::Routes(CrowApi &p_crow) : m_crow(p_crow)
+    Routes::Routes(Crow &p_crow) : m_crow(p_crow)
     {
     }
 
@@ -54,22 +54,18 @@ namespace Crow
     {
         CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
             .onaccept([&](const crow::request &req, void **userdata)
-                    { 
+                      { 
                         /* TODO: Create validator for check if sucessful connection */
-                        return true;
-                    })
+                        return true; })
             .onopen([&](crow::websocket::connection &conn)
                     { SOCKET_OPEN_CONNECTION_CONTEXT })
             .onclose([&](crow::websocket::connection &conn, const std::string &reason, uint16_t)
                      { SOCKET_CLOSE_CONNECTION_CONTEXT })
             .onmessage([&](crow::websocket::connection &p_conn, const std::string &p_data, bool is_binary)
-                {
-                    Analysis::IScan *scan = new Analysis::Scan();
+                       {
+                    Analysis::IScan *scan = new Analysis::Scan(m_crow.crow_get_config());
                     
-                    scan->load_rules([&](void *)
-                            { 
-                                CROW_LOG_INFO << "All rules loaded ...";
-                            });
+                    scan->load_rules([&](void *){ /**/ });
 
                     scan->scan_bytes(p_data, [&](void *p_callback_data)
                     {
@@ -91,7 +87,6 @@ namespace Crow
                                                         "\"rule\":\"" + rule.value() + "\"}");
                     });
 
-                    delete scan;
-                });
+                    delete scan; });
     }
 };

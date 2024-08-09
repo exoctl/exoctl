@@ -4,6 +4,7 @@ include_directories(
     ../sources
     ../interfaces
     ../libraries/tomlplusplus/include
+    ../libraries/libpqxx/include/
 )
 
 set(FLAGS_OPTIMIZATIONS ON)
@@ -15,11 +16,13 @@ file(GLOB_RECURSE SOURCES
     scan/*.cxx
     scan/hash/*.cxx
     toml/*.cxx
+    database/postgresql/*.cxx
+    database/*.cxx
 )
 
 add_executable(engine-sock engine-sock.cxx)
 target_sources(engine-sock PUBLIC ${SOURCES})
-target_link_libraries(engine-sock PUBLIC Crow::Crow yara)
+target_link_libraries(engine-sock PUBLIC Crow::Crow yara spdlog::spdlog pqxx)
 
 if(FLAGS_OPTIMIZATIONS)
     target_compile_options(engine-sock PUBLIC
@@ -48,3 +51,4 @@ endif()
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog libraries/spdlog)
+add_subdirectory(../libraries/libpqxx libraries/libpqxx)

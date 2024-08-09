@@ -6,7 +6,7 @@ bindaddr = "127.0.0.1"
 port = 8080
 
 [database]
-name = ""
+dbname = ""
 hostaddr = "127.0.0.1"
 port = 6123
 password = ""

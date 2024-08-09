@@ -4,21 +4,24 @@
 
 #include <crow.h>
 
+#include "toml.hxx"
+
 namespace Crow
 {
-    class CrowApi
+    class Crow
     {
     private:
         const std::uint16_t m_port;
         const std::string m_bindaddr;
         crow::SimpleApp m_app;
+        Parser::Toml &m_config;
 
     public:
-        CrowApi(const std::string, std::uint16_t);
-        ~CrowApi();
+        Crow(Parser::Toml &);
+        ~Crow();
 
-        void crow_set_ssl_file(const std::string &, const std::string & = "");
         crow::SimpleApp &crow_get_app();
+        Parser::Toml &crow_get_config();
         void crow_run();
     };
 };

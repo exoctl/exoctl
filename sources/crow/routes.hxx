@@ -21,12 +21,12 @@ namespace Crow
     class Routes
     {
     public:
-        Routes(CrowApi &);
+        Routes(Crow &);
         ~Routes();
 
         void routes_create();
     private:
-        CrowApi &m_crow;
+        Crow &m_crow;
         Connection::Context m_context;
         std::mutex m_mtx;
 

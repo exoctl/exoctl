@@ -2,28 +2,29 @@
 
 namespace Crow
 {
-    CrowApi::CrowApi(const std::string p_bindaddr , const std::uint16_t p_port) : m_port(p_port),
-                                                                                  m_bindaddr(p_bindaddr)
+    Crow::Crow(Parser::Toml &p_config) : m_config(p_config),
+                                               m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
+                                               m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
     {
         m_app.loglevel(crow::LogLevel::Info);
     }
 
-    CrowApi::~CrowApi()
+    Crow::~Crow()
     {
     }
 
-    void CrowApi::crow_run()
+    void Crow::crow_run()
     {
         m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
     }
 
-    crow::SimpleApp &CrowApi::crow_get_app()
+    Parser::Toml &Crow::crow_get_config()
     {
-        return m_app;
+        return m_config;
     }
 
-    void CrowApi::crow_set_ssl_file(const std::string &p_pem, const std::string &p_key)
+    crow::SimpleApp &Crow::crow_get_app()
     {
-        // m_app.ssl_file(p_pem, p_key);
+        return m_app;
     }
 };
