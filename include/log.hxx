@@ -1,0 +1,42 @@
+#pragma once
+
+#include <spdlog/spdlog.h>
+
+#include "toml.hxx"
+
+#define LOG(obj, type, msg, ...) obj.log_##type(msg, ##__VA_ARGS__)
+
+namespace Logging
+{
+    class Log
+    {
+    public:
+        Log(Parser::Toml &);
+        ~Log();
+        
+        template <typename... Args>
+        void log_warning(const std::string& p_msg, Args&&... p_args)
+        {
+            m_logger->warn(p_msg, std::forward<Args>(p_args)...);
+        }
+
+        template <typename... Args>
+        void log_info(const std::string& p_msg, Args&&... p_args)
+        {
+            m_logger->info(p_msg, std::forward<Args>(p_args)...);
+        }
+
+        template <typename... Args>
+        void log_error(const std::string& p_msg, Args&&... p_args)
+        {
+            m_logger->error(p_msg, std::forward<Args>(p_args)...);
+        }
+
+    private:
+        Parser::Toml &m_config;
+        std::shared_ptr<spdlog::logger> m_logger;
+
+        const void log_active_level(const uint16_t);
+        const void log_active_type(const std::string &);
+    };
+}

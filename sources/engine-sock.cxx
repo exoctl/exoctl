@@ -4,16 +4,21 @@
 #include "crow/routes.hxx"
 #include "toml.hxx"
 #include "database/postgresql/postgresql.hxx"
+#include "log.hxx"
 
 int main(void)
 {
     Parser::Toml Configuration;
     Configuration.toml_parser_file("configuration.toml");
-
-    try{
+    
+    Logging::Log Log(Configuration);
+    
+    try
+    {
         Database::Postgresql Database(Configuration);
-    }catch(pqxx::broken_connection&reason){
-        CROW_LOG_INFO << reason.what();
+    }catch(pqxx::broken_connection &reason)
+    {
+        LOG(Log, warning, reason.what());
     }
 
     Crow::Crow Crow(Configuration);

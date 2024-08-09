@@ -38,5 +38,4 @@ namespace Connection
     {
         return (m_conn.find(p_conn) != m_conn.end()) ? p_conn->get_remote_ip() : nullptr;
     }
-
 }

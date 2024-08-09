@@ -1,6 +1,17 @@
 [yara]
 rules = "rules/yara"
 
+[log]
+name = "engine.log"
+level = 1
+type = "basic" # rotating, basic(default)
+max_files = 3
+# if type = 'day'
+hours = 2
+minutes = 30
+# if type = 'rotating'
+max_size = 1048576
+
 [crow]
 bindaddr = "127.0.0.1"
 port = 8080

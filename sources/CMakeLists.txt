@@ -18,6 +18,7 @@ file(GLOB_RECURSE SOURCES
     toml/*.cxx
     database/postgresql/*.cxx
     database/*.cxx
+    log/*.cxx
 )
 
 add_executable(engine-sock engine-sock.cxx)

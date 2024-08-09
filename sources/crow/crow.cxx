@@ -6,7 +6,6 @@ namespace Crow
                                                m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
                                                m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
     {
-        m_app.loglevel(crow::LogLevel::Info);
     }
 
     Crow::~Crow()

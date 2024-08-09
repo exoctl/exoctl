@@ -20,7 +20,7 @@ namespace Analysis
         const void load_rules(const std::function<void(void *)> &) const override;
 
     private:
-        const std::string &m_yrules;
+        const std::string m_yrules;
         Parser::Toml &m_config;
 
     };
