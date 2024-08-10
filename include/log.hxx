@@ -15,19 +15,19 @@ namespace Logging
         ~Log();
 
         template <typename... Args>
-        void log_warn(fmt::format_string<Args...> p_msg, Args&&... p_args)
+        void log_warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
         {
             m_logger->warn(p_msg, std::forward<Args>(p_args)...);
         }
 
         template <typename... Args>
-        void log_info(fmt::format_string<Args...> p_msg, Args&&... p_args)
+        void log_info(fmt::format_string<Args...> p_msg, Args &&...p_args)
         {
             m_logger->info(p_msg, std::forward<Args>(p_args)...);
         }
 
         template <typename... Args>
-        void log_error(fmt::format_string<Args...> p_msg, Args&&... p_args)
+        void log_error(fmt::format_string<Args...> p_msg, Args &&...p_args)
         {
             m_logger->error(p_msg, std::forward<Args>(p_args)...);
         }
@@ -38,5 +38,6 @@ namespace Logging
 
         const void log_active_level(const uint16_t);
         const void log_active_type(const std::string &);
+        const void log_active_trace();
     };
 }
