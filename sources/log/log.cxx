@@ -28,7 +28,7 @@ namespace Logging
         {
             if (p_type == "day")
             {
-                return spdlog::daily_logger_mt<spdlog::async_factory>("daily_logger", GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
+                return spdlog::daily_logger_mt<spdlog::async_factory>("day", GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
                                                GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "hours"),
                                                GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "minutes"),
                                                false,
@@ -36,13 +36,13 @@ namespace Logging
             }
             else if (p_type == "rotation")
             {
-                return spdlog::rotating_logger_mt<spdlog::async_factory>("rotation_logger", GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
+                return spdlog::rotating_logger_mt<spdlog::async_factory>("rotation", GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
                                                   GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "max_size"),
                                                   GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "max_files"));
             }
 
-            // default logger
-            return spdlog::basic_logger_mt<spdlog::async_factory>("basic_logger", GET_TOML_TBL_VALUE(m_config, string, "log", "name"));
+            /* default logger */
+            return spdlog::basic_logger_mt<spdlog::async_factory>("basic", GET_TOML_TBL_VALUE(m_config, string, "log", "name"));
         }();
     }
 }

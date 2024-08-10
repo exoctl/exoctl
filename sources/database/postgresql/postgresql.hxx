@@ -2,6 +2,7 @@
 
 #include "idbconn.hxx"
 #include "toml.hxx"
+#include "log.hxx"
 
 #include <pqxx/pqxx>
 
@@ -11,17 +12,17 @@ namespace Database
     {
     public:
         Postgresql();
-        Postgresql(Parser::Toml &);
+        Postgresql(Parser::Toml &, Logging::Log &);
         ~Postgresql();
 
-        /* if not use Postgresql(const std::string &) open_db return false */ 
-        const bool open_db() const override; 
+        /* if not use Postgresql(const std::string &) open_db return false */
+        const bool open_db() const override;
         const bool is_open_db() const override;
         const void exec_query_commit(const std::string &) const override;
         const void close_db() const override;
 
-
-    private:;
+    private:
+        Logging::Log &m_log;
         mutable pqxx::connection m_conn;
         Parser::Toml &m_config;
     };

@@ -2,9 +2,9 @@
 rules = "rules/yara"
 
 [log]
-name = "engine.log"
+name = "logs/engine.log"
 level = 1
-type = "basic" # rotating, basic(default)
+type = "day" # rotating, basic (default)
 max_files = 3
 # if type = 'day'
 hours = 2

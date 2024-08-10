@@ -10,19 +10,20 @@ int main(void)
 {
     Parser::Toml Configuration;
     Configuration.toml_parser_file("configuration.toml");
-    
+
     Logging::Log Log(Configuration);
-    
+
     try
     {
-        Database::Postgresql Database(Configuration);
-    }catch(pqxx::broken_connection &reason)
+        Database::Postgresql Database(Configuration, Log);
+    }
+    catch (const pqxx::broken_connection &reason)
     {
-        LOG(Log, warning, reason.what());
+        LOG(Log, warn, "'pqxx::broken_connection' : {:s}", reason.what());
     }
 
     Crow::Crow Crow(Configuration);
-    
+
     Crow::Routes Routes(Crow);
 
     Routes.routes_create();
