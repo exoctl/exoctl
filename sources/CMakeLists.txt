@@ -3,6 +3,7 @@ include_directories(
     ../libraries
     ../sources
     ../interfaces
+    ../dtos
     ../libraries/tomlplusplus/include
     ../libraries/libpqxx/include/
 )
@@ -12,12 +13,10 @@ set(FLAGS_DEBUG OFF)
 
 file(GLOB_RECURSE SOURCES
     crow/*.cxx
-    scan/yara/*.cxx
+    scan/*/*.cxx
     scan/*.cxx
-    scan/hash/*.cxx
     toml/*.cxx
-    database/postgresql/*.cxx
-    database/*.cxx
+    database/*/*.cxx
     log/*.cxx
 )
 

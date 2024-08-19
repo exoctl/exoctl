@@ -16,6 +16,7 @@ max_size = 1048576
 [crow]
 bindaddr = "127.0.0.1"
 port = 8080
+whitelist = ["127.0.0.1"]
 
 [database]
 dbname = ""

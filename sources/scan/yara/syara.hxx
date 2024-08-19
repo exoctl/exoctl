@@ -1,8 +1,9 @@
 #pragma once
 
-#include "iscan.hxx"
 #include "string"
+#include "analysis.hxx"
 
+#include <functional>
 #include <yara.h>
 #include <stack>
 
@@ -10,18 +11,18 @@ namespace Analysis
 {
     typedef struct yr_user_data
     {
-        stype is_malicius = benign;
-        const char* rule;
+        scan_t is_malicius;
+        const char* yrule;
     } yr_user_data;
 
-    class SYara : public IScan
+    class SYara
     {
     public:
         SYara();
         ~SYara();
 
-        const stype scan_bytes(const std::string, const std::function<void(void *)> &) const override;
-        const void load_rules(const std::function<void(void *)> &) const override;
+        const void syara_scan_bytes(const std::string, const std::function<void(void *)> &) const;
+        const void syara_load_rules(const std::function<void(void *)> &) const;
         const void syara_load_rules_folder(const std::string &) const;
         const int syara_set_signature_rule_mem(const std::string &) const;
         const int syara_set_signature_rule_fd(const std::string &, const std::string &) const;

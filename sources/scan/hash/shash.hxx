@@ -1,21 +1,16 @@
 #pragma once
 
-#include "iscan.hxx"
-
+#include <functional>
 #include <string>
 #include <cstdint>
-#include "stypes.hxx"
 
 namespace Analysis
 {
-    class SHash : public IScan
+    class SHash
     {
     public:
         SHash();
         ~SHash();
-
-        const void load_rules(const std::function<void(void*)> &) const override;
-        const stype  scan_bytes(const std::string, const std::function<void(void *)> &) const override;
 
     private:
     };

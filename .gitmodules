@@ -1,9 +1,6 @@
 [submodule "libraries/crow"]
 	path = libraries/crow
 	url = https://github.com/CrowCpp/Crow.git
-[submodule "libraries/tomlplusplus"]
-	path = libraries/tomlplusplus
-	url = https://github.com/marzer/tomlplusplus.git
 [submodule "libraries/spdlog"]
 	path = libraries/spdlog
 	url = https://github.com/gabime/spdlog.git
@@ -13,3 +10,6 @@
 [submodule "libraries/benchmark"]
 	path = libraries/benchmark
 	url = https://github.com/google/benchmark.git
+[submodule "libraries/tomlplusplus"]
+	path = libraries/tomlplusplus
+	url = https://github.com/marzer/tomlplusplus.git

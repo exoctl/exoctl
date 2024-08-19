@@ -84,7 +84,7 @@ namespace Analysis
         closedir(dir);
     }
 
-    const void SYara::load_rules(const std::function<void(void *)> &p_callback) const
+    const void SYara::syara_load_rules(const std::function<void(void *)> &p_callback) const
     {
         p_callback(nullptr);
         SYara::syara_compiler_rules();
@@ -100,12 +100,12 @@ namespace Analysis
         }
     }
 
-    const stype SYara::scan_bytes(const std::string p_buffer, const std::function<void(void *)> &p_callback) const
+    const void SYara::syara_scan_bytes(const std::string p_buffer, const std::function<void(void *)> &p_callback) const
     {
         struct yr_user_data *data = static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));
 
-        data->is_malicius = benign;
-        data->rule = nullptr;
+        data->is_malicius = scan_t::benign;
+        data->yrule = nullptr;
 
         yr_rules_scan_mem(m_yara_rules, reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
                           p_buffer.size(), SCAN_FLAGS_FAST_MODE,
@@ -113,10 +113,6 @@ namespace Analysis
                           data, 0);
 
         p_callback(data);
-
-        const stype is_malicius = data->is_malicius;
-
-        return is_malicius;
     }
 
     YR_CALLBACK_FUNC SYara::syara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
@@ -131,8 +127,8 @@ namespace Analysis
             case CALLBACK_MSG_SCAN_FINISHED:
                 break;
             case CALLBACK_MSG_RULE_MATCHING:
-                ((yr_user_data *)p_user_data)->rule = rule->identifier;
-                ((yr_user_data *)p_user_data)->is_malicius = malicious;
+                ((yr_user_data *)p_user_data)->yrule = rule->identifier;
+                ((yr_user_data *)p_user_data)->is_malicius = scan_t::malicious;
                 return (YR_CALLBACK_FUNC)CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:

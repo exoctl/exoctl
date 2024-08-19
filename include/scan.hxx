@@ -1,21 +1,22 @@
 #include "scan/yara/syara.hxx"
 #include "scan/hash/shash.hxx"
 #include "toml.hxx"
+#include "analysis.hxx"
 
 #include <string>
 #include <cstdint>
 
 namespace Analysis
 {
-    class Scan : public IScan
+    class Scan
     {
     public:
         Scan();
         Scan(Parser::Toml &);
         ~Scan();
 
-        const stype scan_bytes(const std::string, const std::function<void(void *)> &) const override;
-        const void load_rules(const std::function<void(void *)> &) const override;
+        const void scan_bytes(const std::string, const std::function<void(void *)> &) const;
+        const void load_rules(const std::function<void(void *)> &) const;
 
     private:
         const std::string m_yrules;

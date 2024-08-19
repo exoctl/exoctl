@@ -1,8 +1,8 @@
 #include "routes.hxx"
 #include "endpoints.hxx"
-#include "iscan.hxx"
 #include "scan.hxx"
 #include "conn.hxx"
+#include "analysis.hxx"
 
 #include <optional>
 #include <alloca.h>
@@ -63,28 +63,16 @@ namespace Crow
                      { SOCKET_CLOSE_CONNECTION_CONTEXT })
             .onmessage([&](crow::websocket::connection &p_conn, const std::string &p_data, bool is_binary)
                        {
-                    Analysis::IScan *scan = new Analysis::Scan(m_crow.crow_get_config());
+                    Analysis::Scan *scan = new Analysis::Scan(m_crow.crow_get_config());
                     
                     scan->load_rules([&](void *){ /**/ });
 
-                    scan->scan_bytes(p_data, [&](void *p_callback_data)
+                    scan->scan_bytes(p_data, [&](void *p_dtoanalysis)
                     {
-                        CROW_LOG_INFO << "Scan '"  <<  m_context.conn_get_remote_ip(&p_conn) << "' finished in " << p_data.size() << "b";
+                        Analysis::DTOAnalysis* analysis = static_cast<Analysis::DTOAnalysis*>(p_dtoanalysis);
+                        
+                        m_context.conn_send_msg(&p_conn, std::to_string(analysis->is_malicious));
 
-                        const bool is_yara = (Analysis::yr_user_data *)p_callback_data != nullptr;
-                        const std::string is_malicius = (is_yara) ? (((Analysis::yr_user_data *)p_callback_data)->is_malicius == malicious) 
-                            ? "1" : "0" : "None";
-                            
-                        const auto rule = [&]() -> std::optional<const std::string> {
-                                if (((Analysis::yr_user_data *)p_callback_data)->rule != nullptr) 
-                                    return ((Analysis::yr_user_data *)p_callback_data)->rule;
-                                
-                                return "None";
-                            }();
-                        
-                        
-                        m_context.conn_send_msg(&p_conn,  "{\"is_malicius\":"+is_malicius+","
-                                                        "\"rule\":\"" + rule.value() + "\"}");
                     });
 
                     delete scan; });
