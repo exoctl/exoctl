@@ -21,12 +21,12 @@ file(GLOB_RECURSE SOURCES
     log/*.cxx
 )
 
-add_executable(engine-sock engine.cxx)
-target_sources(engine-sock PUBLIC ${SOURCES})
-target_link_libraries(engine-sock PUBLIC Crow::Crow yara spdlog::spdlog pqxx)
+add_executable(engine engine.cxx)
+target_sources(engine PUBLIC ${SOURCES})
+target_link_libraries(engine PUBLIC Crow::Crow yara spdlog::spdlog pqxx)
 
 if(FLAGS_OPTIMIZATIONS)
-    target_compile_options(engine-sock PUBLIC
+    target_compile_options(engine PUBLIC
         -O2           
         -ftree-vectorize
         -mavx
@@ -36,7 +36,7 @@ if(FLAGS_OPTIMIZATIONS)
         -fdelete-dead-exceptions
     )
 elseif(FLAGS_DEBUG)
-    target_compile_options(engine-sock PUBLIC
+    target_compile_options(engine PUBLIC
         -ggdb3
         -fms-extensions
         --all-warnings
@@ -52,4 +52,6 @@ endif()
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog libraries/spdlog)
+
+set(CXXFLAGS "-std=c++20 -O3")
 add_subdirectory(../libraries/libpqxx libraries/libpqxx)

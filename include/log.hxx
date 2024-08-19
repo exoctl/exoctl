@@ -38,6 +38,6 @@ namespace Logging
 
         const void log_active_level(const uint16_t);
         const void log_active_type(const std::string &);
-        const void log_active_trace();
+        const void log_active_trace(const uint16_t p_level);
     };
 }

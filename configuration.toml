@@ -4,8 +4,9 @@ rules = "rules/yara"
 [log]
 name = "logs/engine.log"
 level = 1
+trace = 0
 type = "day" # rotating, basic (default)
-max_files = 3
+max_files = 100
 # if type = 'day'
 hours = 2
 minutes = 30

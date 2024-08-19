@@ -19,6 +19,7 @@ namespace Database
         const bool open_db() const override;
         const bool is_open_db() const override;
         const void exec_query_commit(const std::string &) const override;
+        const void exec_query(const std::string &, const std::function<void(void *)> &) const override;
         const void close_db() const override;
 
     private:

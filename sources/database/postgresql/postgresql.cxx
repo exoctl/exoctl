@@ -28,6 +28,13 @@ namespace Database
         work.exec(p_sql);
         work.commit();
     }
+    const void Postgresql::exec_query(const std::string &p_sql, const std::function<void(void *)> &p_callback) const
+    {
+        LOG(m_log, info, "Query '{:s}' executed in database '{:s}'", p_sql, m_conn.dbname());
+        pqxx::nontransaction nontransaction(m_conn);
+        pqxx::result result(nontransaction.exec(p_sql));
+        p_callback((void*)&result);
+    }
 
     const bool Postgresql::open_db() const
     {

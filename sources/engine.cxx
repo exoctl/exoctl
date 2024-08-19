@@ -19,7 +19,7 @@ int main(void)
     }
     catch (const pqxx::broken_connection &reason)
     {
-        LOG(Log, warn, "'pqxx::broken_connection' : {:s}", reason.what());
+        LOG(Log, warn, "'{:s}' : {:s}", reason.location.function_name(), reason.what());
     }
 
     Crow::Crow Crow(Configuration);
