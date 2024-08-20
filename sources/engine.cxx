@@ -2,9 +2,9 @@
 
 #include "crow/crow.hxx"
 #include "crow/routes.hxx"
-#include "toml.hxx"
 #include "database/postgresql/postgresql.hxx"
 #include "log.hxx"
+#include "toml.hxx"
 
 int main(void)
 {
@@ -19,10 +19,14 @@ int main(void)
     }
     catch (const pqxx::broken_connection &reason)
     {
-        LOG(Log, warn, "'{:s}' : {:s}", reason.location.function_name(), reason.what());
+        LOG(Log,
+            warn,
+            "'{:s}' : {:s}",
+            reason.location.function_name(),
+            reason.what());
     }
 
-    Crow::Crow Crow(Configuration);
+    Crow::Crow Crow(Configuration, Log);
 
     Crow::Routes Routes(Crow);
 
@@ -30,5 +34,5 @@ int main(void)
 
     Crow.crow_run();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

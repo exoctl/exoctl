@@ -15,7 +15,8 @@ file(GLOB_RECURSE SOURCES
     crow/*.cxx
     scan/*/*.cxx
     scan/*.cxx
-    toml/*.cxx
+    parser/*/*.cxx
+    parser/*.cxx
     database/*/*.cxx
     log/*.cxx
 )

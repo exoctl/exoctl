@@ -1,17 +1,17 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 #include <string>
-#include <cstdint>
 
 namespace Analysis
 {
-    class SHash
-    {
-    public:
-        SHash();
-        ~SHash();
+class SHash
+{
+  public:
+    SHash();
+    ~SHash();
 
-    private:
-    };
-}
+  private:
+};
+} // namespace Analysis

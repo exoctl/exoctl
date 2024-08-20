@@ -1,0 +1,61 @@
+# Este é um arquivo de configuração .clang-format para C++
+
+# Define o estilo de codificação a ser usado
+BasedOnStyle: LLVM
+
+# Define o tamanho da indentação
+IndentWidth: 4
+
+# Define o número de espaços para cada nível de indentação
+TabWidth: 4
+
+# Usa espaços em vez de tabulação
+UseTab: Never
+
+# Define o comprimento máximo da linha
+ColumnLimit: 80
+
+# Define como as quebras de linha devem ser tratadas
+BreakBeforeBraces: Allman
+
+# Define o alinhamento das chaves para classes, structs e namespaces
+BraceWrapping:
+  AfterClass: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true
+
+# Define o estilo de formatação de operadores
+BinPackParameters: false
+BinPackArguments: false
+
+# Define a forma de formatação para operadores
+SpacesInParentheses: false
+SpacesInAngles: false
+SpaceAfterCStyleCast: true
+SpaceBeforeParens: ControlStatements
+
+# Define o estilo para comentário de uma linha
+CommentPragmas: '^//'
+
+# Controla o estilo de formatação para declarações de variáveis
+AlignAfterOpenBracket: Align
+AlignOperands: true
+
+# Estilo de formatação para enums
+AllowShortEnumsOnASingleLine: false
+
+# Estilo de formatação para os cabeçalhos
+IncludeCategories:
+  - Regex:           ''
+    Priority:        1
+  - Regex:           '.*'
+    Priority:        2
+IncludeIsMainRegex: '(\b|_)main(\b|_)'
+
+# Número máximo de linhas para quebras em função
+MaxEmptyLinesToKeep: 1
