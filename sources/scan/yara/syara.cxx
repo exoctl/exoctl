@@ -119,7 +119,7 @@ SYara::syara_scan_bytes(const std::string p_buffer,
         static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));
 
     data->is_malicius = scan_t::benign;
-    data->yrule = nullptr;
+    data->yara_rule = nullptr;
 
     yr_rules_scan_mem(m_yara_rules,
                       reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
@@ -145,7 +145,7 @@ YR_CALLBACK_FUNC SYara::syara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
     case CALLBACK_MSG_SCAN_FINISHED:
         break;
     case CALLBACK_MSG_RULE_MATCHING:
-        ((yr_user_data *) p_user_data)->yrule = rule->identifier;
+        ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
         ((yr_user_data *) p_user_data)->is_malicius = scan_t::malicious;
         return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 

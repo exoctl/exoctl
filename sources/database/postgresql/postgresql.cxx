@@ -33,6 +33,7 @@ const void Postgresql::exec_query_commit(const std::string &p_sql) const
     work.exec(p_sql);
     work.commit();
 }
+
 const void
 Postgresql::exec_query(const std::string &p_sql,
                        const std::function<void(void *)> &p_callback) const

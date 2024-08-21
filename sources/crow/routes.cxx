@@ -66,6 +66,16 @@ void Routes::route_search()
 void Routes::route_scan()
 {
     CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
+        .onerror(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_error_message)
+            {
+                LOG(m_crow.crow_get_log(),
+                    error,
+                    "WebSocket error on route '{}': {}",
+                    ROUTE_SCAN,
+                    p_error_message);
+            })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
                   { return Routes::route_def_onaccept_connection(&p_req); })
         .onopen([&](crow::websocket::connection &conn)

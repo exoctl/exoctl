@@ -12,7 +12,7 @@ namespace Analysis
 typedef struct yr_user_data
 {
     scan_t is_malicius;
-    const char *yrule;
+    const char *yara_rule;
 } yr_user_data;
 
 class SYara

@@ -20,7 +20,7 @@ class Scan
     const void load_rules(const std::function<void(void *)> &) const;
 
   private:
-    const std::string m_yrules;
+    const std::string m_yara_rules;
     Parser::Toml &m_config;
     SYara m_yara;
     SHash m_hash;
