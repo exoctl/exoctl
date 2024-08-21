@@ -2,8 +2,8 @@ include_directories(
     ../include
     ../libraries
     ../sources
+    ../
     ../interfaces
-    ../dtos
     ../libraries/tomlplusplus/include
     ../libraries/libpqxx/include/
 )
@@ -17,13 +17,16 @@ file(GLOB_RECURSE SOURCES
     scan/*.cxx
     parser/*/*.cxx
     parser/*.cxx
+    dto/*/*.cxx
     database/*/*.cxx
     log/*.cxx
 )
 
 add_executable(engine engine.cxx)
 target_sources(engine PUBLIC ${SOURCES})
-target_link_libraries(engine PUBLIC Crow::Crow yara spdlog::spdlog pqxx)
+target_link_libraries(engine PUBLIC Crow::Crow yara 
+                                    spdlog::spdlog pqxx sqlite3  
+                                    nlohmann_json::nlohmann_json)
 
 if(FLAGS_OPTIMIZATIONS)
     target_compile_options(engine PUBLIC
@@ -52,6 +55,5 @@ endif()
 add_subdirectory(../libraries/crow libraries/crow)
 add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog libraries/spdlog)
-
-set(CXXFLAGS "-std=c++20 -O3")
+add_subdirectory(../libraries/json libraries/json)
 add_subdirectory(../libraries/libpqxx libraries/libpqxx)

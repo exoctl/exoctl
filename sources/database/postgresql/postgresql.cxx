@@ -6,15 +6,15 @@ Postgresql::Postgresql(Parser::Toml &p_config, Logging::Log &p_log)
     : m_config(p_config), m_log(p_log),
       m_conn(
           "dbname=" +
-          GET_TOML_TBL_VALUE(p_config, string, "database", "dbname") +
-          "user=" + GET_TOML_TBL_VALUE(p_config, string, "database", "user") +
+          GET_TOML_TBL_VALUE(p_config, string, "postgresql", "dbname") +
+          "user=" + GET_TOML_TBL_VALUE(p_config, string, "postgresql", "user") +
           "password=" +
-          GET_TOML_TBL_VALUE(p_config, string, "database", "password") +
+          GET_TOML_TBL_VALUE(p_config, string, "postgresql", "password") +
           "hostaddr=" +
-          GET_TOML_TBL_VALUE(p_config, string, "database", "hostaddr") +
+          GET_TOML_TBL_VALUE(p_config, string, "postgresql", "hostaddr") +
           "port=" +
           std::to_string(
-              GET_TOML_TBL_VALUE(p_config, uint16_t, "database", "port")))
+              GET_TOML_TBL_VALUE(p_config, uint16_t, "postgresql", "port")))
 {
 }
 

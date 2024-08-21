@@ -2,7 +2,7 @@
 
 #include "crow/crow.hxx"
 #include "crow/routes.hxx"
-#include "database/postgresql/postgresql.hxx"
+#include "postgresql.hxx"
 #include "log.hxx"
 #include "toml.hxx"
 
@@ -21,8 +21,7 @@ int main(void)
     {
         LOG(Log,
             warn,
-            "'{:s}' : {:s}",
-            reason.location.function_name(),
+            "'{:s}'",
             reason.what());
     }
 

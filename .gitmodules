@@ -13,3 +13,6 @@
 [submodule "libraries/tomlplusplus"]
 	path = libraries/tomlplusplus
 	url = https://github.com/marzer/tomlplusplus.git
+[submodule "libraries/json"]
+	path = libraries/json
+	url = https://github.com/nlohmann/json.git

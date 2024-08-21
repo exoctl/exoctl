@@ -4,7 +4,7 @@ Documentation engine for detect malwares and better laboratory maldec labs
 
 ### Dependencies
 
-For compile engine necessary : asio, yara, pkg-config, libpq
+For compile engine necessary : asio, yara, pkg-config, libpq, libsqlite3
 
 ---
 

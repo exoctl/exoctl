@@ -26,6 +26,13 @@ class Context
     const std::size_t conn_size() const;
     const void conn_send_msg(crow::websocket::connection *,
                              const std::string) const;
+
+    /**
+     * @brief return what ip connect
+     * 
+     * @return const std::string
+     * @return nullptr
+     */
     const std::string conn_get_remote_ip(crow::websocket::connection *) const;
 
   private:

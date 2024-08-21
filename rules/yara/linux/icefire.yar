@@ -1,4 +1,4 @@
-rule IceFire 
+rule linux_icefire_ransomware
 {
 	meta:
 		author = "vitor mob"

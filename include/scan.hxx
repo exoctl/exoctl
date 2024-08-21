@@ -1,4 +1,4 @@
-#include "analysis.hxx"
+#include "dto/analysis.hxx"
 #include "scan/hash/shash.hxx"
 #include "scan/yara/syara.hxx"
 #include "toml.hxx"
@@ -24,5 +24,6 @@ class Scan
     Parser::Toml &m_config;
     SYara m_yara;
     SHash m_hash;
+    mutable DTOAnalysis m_analysis;
 };
 }; // namespace Analysis

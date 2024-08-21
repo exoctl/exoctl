@@ -1,5 +1,5 @@
-#include "analysis.hxx"
 #include "conn.hxx"
+#include "dto/analysis.hxx"
 #include "endpoints.hxx"
 #include "routes.hxx"
 #include "scan.hxx"
@@ -88,8 +88,7 @@ void Routes::route_scan()
                 Analysis::Scan *scan =
                     new Analysis::Scan(m_crow.crow_get_config());
 
-                scan->load_rules(
-                    [&](void *) { /**/ });
+                scan->load_rules([&](void *) { /**/ });
 
                 scan->scan_bytes(p_data,
                                  [&](void *p_dto_analysis)
@@ -98,10 +97,9 @@ void Routes::route_scan()
                                          static_cast<Analysis::DTOAnalysis *>(
                                              p_dto_analysis);
 
-                                     std::string result =
-                                         std::to_string(analysis->is_malicious);
-                                     m_context.conn_send_msg(&p_conn, result);
-
+                                     m_context.conn_send_msg(
+                                         &p_conn,
+                                         analysis->dto_to_string_json());
                                  });
 
                 delete scan;
