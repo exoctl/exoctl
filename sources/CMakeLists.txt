@@ -12,14 +12,13 @@ set(FLAGS_OPTIMIZATIONS ON)
 set(FLAGS_DEBUG OFF)
 
 file(GLOB_RECURSE SOURCES
-    crow/*.cxx
-    scan/*/*.cxx
-    scan/*.cxx
-    parser/*/*.cxx
-    parser/*.cxx
-    dto/*/*.cxx
-    database/*/*.cxx
-    log/*.cxx
+    engine/crow/*.cxx
+    engine/analysis/*/*.cxx
+    engine/parser/*/*.cxx
+    engine/parser/*.cxx
+    dto/*.cxx
+    engine/database/*.cxx
+    engine/*.cxx
 )
 
 add_executable(engine engine.cxx)
