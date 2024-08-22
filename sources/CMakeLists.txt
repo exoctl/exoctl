@@ -3,7 +3,6 @@ include_directories(
     ../libraries
     ../sources
     ../
-    ../interfaces
     ../libraries/tomlplusplus/include
     ../libraries/libpqxx/include/
 )

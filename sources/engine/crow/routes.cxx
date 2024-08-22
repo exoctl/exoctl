@@ -1,8 +1,8 @@
 #include <alloca.h>
-#include <dto/analysis.hxx>
 #include <engine/crow/conn.hxx>
 #include <engine/crow/endpoints.hxx>
 #include <engine/crow/routes.hxx>
+#include <engine/dto/analysis.hxx>
 #include <optional>
 
 namespace Crow
@@ -11,9 +11,8 @@ Routes::Routes(Crow &p_crow)
     : m_crow(p_crow), m_context(p_crow.crow_get_config()),
       m_scan(p_crow.crow_get_config())
 {
-    LOG(m_crow.crow_get_log(), info, "Routes initialized.");
-
     Routes::route_init_analysis();
+    LOG(m_crow.crow_get_log(), info, "Routes initialized.");
 }
 
 Routes::~Routes() {}
@@ -135,6 +134,7 @@ void Routes::route_def_open_connection(crow::websocket::connection *p_conn)
 
 bool Routes::route_def_onaccept_connection(const crow::request *p_req)
 {
+    std::lock_guard<std::mutex> _(m_mtx);
     if (m_context.conn_check_whitelist(p_req))
         return true;
 
@@ -154,7 +154,7 @@ void Routes::route_init_analysis()
             LOG(m_crow.crow_get_log(),
                 info,
                 "Successfully loaded rules. Total rules count: {:d}",
-                (uint64_t)p_total_rules);
+                (uint64_t) p_total_rules);
         });
 }
 

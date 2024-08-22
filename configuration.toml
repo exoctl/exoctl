@@ -28,6 +28,5 @@ user = ""
 [cache]
 type = "day"       # rotating
 name = "cache.db3"
-
 # if type = 'rotating'
 max_size = 1048576
