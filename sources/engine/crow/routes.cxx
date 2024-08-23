@@ -23,15 +23,18 @@ void Routes::routes_create()
     LOG(m_crow.crow_get_log(),
         info,
         "Route created for search: {}",
-        ROUTE_SEARCH);
+        Endpoints::ROUTE_SEARCH);
 
     GET_ROUTE(scan);
-    LOG(m_crow.crow_get_log(), info, "Route created for scan: {}", ROUTE_SCAN);
+    LOG(m_crow.crow_get_log(),
+        info,
+        "Route created for scan: {}",
+        Endpoints::ROUTE_SCAN);
 }
 
 void Routes::route_search()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SEARCH)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SEARCH)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
@@ -39,7 +42,7 @@ void Routes::route_search()
                 LOG(m_crow.crow_get_log(),
                     error,
                     "WebSocket error on route '{}': {}",
-                    ROUTE_SEARCH,
+                    Endpoints::ROUTE_SEARCH,
                     p_error_message);
             })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
@@ -58,14 +61,14 @@ void Routes::route_search()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    ROUTE_SEARCH,
+                    Endpoints::ROUTE_SEARCH,
                     p_data.size());
             });
 }
 
 void Routes::route_scan()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), ROUTE_SCAN)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
@@ -73,7 +76,7 @@ void Routes::route_scan()
                 LOG(m_crow.crow_get_log(),
                     error,
                     "WebSocket error on route '{}': {}",
-                    ROUTE_SCAN,
+                    Endpoints::ROUTE_SCAN,
                     p_error_message);
             })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
@@ -92,7 +95,7 @@ void Routes::route_scan()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    ROUTE_SCAN,
+                    Endpoints::ROUTE_SCAN,
                     p_data.size());
 
                 m_scan.scan_bytes(p_data,

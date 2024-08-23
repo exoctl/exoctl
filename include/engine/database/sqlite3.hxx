@@ -23,7 +23,6 @@ class Sqlite3 : public IDatabase
 
   private:
     Logging::Log &m_log;
-    
     Parser::Toml &m_config;
 };
 } // namespace Database

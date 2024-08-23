@@ -1,3 +1,7 @@
+version = "v1.0.0"
+description = "MalDec Labs engine for detect malwares and analysis deriveds formats files"
+project = "Engine"
+
 [yara]
 rules = "rules/yara"
 
