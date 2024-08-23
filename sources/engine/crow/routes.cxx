@@ -9,7 +9,8 @@ namespace Crow
 {
 Routes::Routes(Crow &p_crow)
     : m_crow(p_crow), m_context(p_crow.crow_get_config()),
-      m_scan(p_crow.crow_get_config())
+      m_scan(p_crow.crow_get_config()), 
+      m_dto_analysis()
 {
     Routes::route_init_analysis();
     LOG(m_crow.crow_get_log(), info, "Routes initialized.");
@@ -98,17 +99,16 @@ void Routes::route_scan()
                     Endpoints::ROUTE_SCAN,
                     p_data.size());
 
-                m_scan.scan_bytes(p_data,
-                                  [&](void *p_dto_analysis)
-                                  {
-                                      Analysis::DTOAnalysis *analysis =
-                                          static_cast<Analysis::DTOAnalysis *>(
-                                              p_dto_analysis);
+                m_scan.scan_bytes(
+                    p_data,
+                    [&](void *p_dto_analysis)
+                    {
+                        m_dto_analysis = *static_cast<Analysis::DTOAnalysis *>(
+                            p_dto_analysis);
 
-                                      m_context.conn_send_msg(
-                                          &p_conn,
-                                          analysis->dto_to_string_json());
-                                  });
+                        m_context.conn_send_msg(&p_conn,
+                                                m_dto_analysis.dto_to_string_json());
+                    });
             });
 }
 

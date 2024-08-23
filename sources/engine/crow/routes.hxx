@@ -23,6 +23,8 @@ class Routes
     Context m_context;
 
     Analysis::Scan m_scan;
+    Analysis::DTOAnalysis m_dto_analysis;
+
     std::mutex m_mtx;
 
     void route_search();
