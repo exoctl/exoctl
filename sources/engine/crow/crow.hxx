@@ -26,5 +26,6 @@ class Crow
     Logging::Log &crow_get_log();
 
     void crow_run();
+    void crow_stop();
 };
 }; // namespace Crow

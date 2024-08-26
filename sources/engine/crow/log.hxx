@@ -6,6 +6,6 @@ namespace Crow
 {
 class CrowLog : public crow::ILogHandler
 {
-
+    
 };
 } // namespace Crow

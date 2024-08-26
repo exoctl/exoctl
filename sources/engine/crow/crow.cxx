@@ -16,6 +16,11 @@ void Crow::crow_run()
     m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
 }
 
+void Crow::crow_stop() 
+{
+    m_app.stop(); 
+}
+
 Parser::Toml &Crow::crow_get_config() { return m_config; }
 
 crow::SimpleApp &Crow::crow_get_app() { return m_app; }

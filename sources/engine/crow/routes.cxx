@@ -16,7 +16,7 @@ Routes::Routes(Crow &p_crow)
 
 Routes::~Routes() {}
 
-void Routes::routes_create()
+void Routes::routes_run()
 {
     GET_ROUTE(search_yara);
     LOG(m_crow.crow_get_log(),
