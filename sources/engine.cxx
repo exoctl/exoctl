@@ -8,23 +8,23 @@
 
 int main(void)
 {
-    Parser::Toml Configuration;
-    Configuration.toml_parser_file("configuration.toml");
-    Logging::Log Log(Configuration);
+    Parser::Toml configuration;
+    configuration.toml_parser_file("configuration.toml");
+    Logging::Log log(configuration);
 
     try
     {
-        Database::Postgresql Database(Configuration, Log);
+        Database::Postgresql database(configuration, log);
     }
     catch (const pqxx::broken_connection &reason)
     {
-        LOG(Log, warn, "'{:s}'", reason.what());
+        LOG(log, warn, "'{:s}'", reason.what());
     }
 
-    Crow::Crow Crow(Configuration, Log);
-    Crow::Routes Routes(Crow);
-    Routes.routes_create();
-    Crow.crow_run();
+    Crow::Crow crow(configuration, log);
+    Crow::Routes routes(crow);
+    routes.routes_create();
+    crow.crow_run();
 
     return EXIT_SUCCESS;
 }

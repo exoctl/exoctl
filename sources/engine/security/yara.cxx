@@ -1,4 +1,4 @@
-#include <engine/analysis/syara.hxx>
+#include <engine/security/yara.hxx>
 
 #include <alloca.h>
 #include <dirent.h>
@@ -8,9 +8,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-namespace Analysis
+namespace Security
 {
-SYara::SYara() : m_rules_loaded_count(0)
+Yara::Yara() : m_rules_loaded_count(0)
 {
     if (yr_initialize() != ERROR_SUCCESS)
     {
@@ -27,7 +27,7 @@ SYara::SYara() : m_rules_loaded_count(0)
     }
 }
 
-SYara::~SYara()
+Yara::~Yara()
 {
     if (yr_finalize() != ERROR_SUCCESS)
     {
@@ -43,7 +43,7 @@ SYara::~SYara()
     }
 }
 
-const int SYara::syara_set_signature_rule_fd(const std::string &p_path,
+const int Yara::yara_set_signature_rule_fd(const std::string &p_path,
                                              const std::string &p_yrname) const
 {
     const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
@@ -57,13 +57,13 @@ const int SYara::syara_set_signature_rule_fd(const std::string &p_path,
     return error_success;
 }
 
-const int SYara::syara_set_signature_rule_mem(const std::string &p_rule) const
+const int Yara::yara_set_signature_rule_mem(const std::string &p_rule) const
 {
     m_rules_loaded_count += 1;
     return yr_compiler_add_string(m_yara_compiler, p_rule.c_str(), nullptr);
 }
 
-const void SYara::syara_load_rules_folder(const std::string &p_path) const
+const void Yara::yara_load_rules_folder(const std::string &p_path) const
 {
     DIR *dir = opendir(p_path.c_str());
     if (!dir)
@@ -81,27 +81,27 @@ const void SYara::syara_load_rules_folder(const std::string &p_path) const
 
         if (entry_name.extension() == ".yar")
         {
-            if (SYara::syara_set_signature_rule_fd(full_path, entry_name) !=
+            if (Yara::yara_set_signature_rule_fd(full_path, entry_name) !=
                 ERROR_SUCCESS)
                 throw std::runtime_error(
-                    "syara_set_signature_rule() failed to compile rule " +
+                    "yara_set_signature_rule() failed to compile rule " +
                     std::string(full_path));
         }
         else if (entry->d_type == DT_DIR)
-            syara_load_rules_folder(full_path);
+            yara_load_rules_folder(full_path);
     }
 
     closedir(dir);
 }
 
 const void
-SYara::syara_load_rules(const std::function<void(void *)> &p_callback) const
+Yara::yara_load_rules(const std::function<void(void *)> &p_callback) const
 {
     p_callback((void *) m_rules_loaded_count);
-    SYara::syara_compiler_rules();
+    Yara::yara_compiler_rules();
 }
 
-const void SYara::syara_compiler_rules() const
+const void Yara::yara_compiler_rules() const
 {
     const int compiler_rules =
         yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
@@ -114,13 +114,13 @@ const void SYara::syara_compiler_rules() const
 }
 
 const void
-SYara::syara_scan_bytes(const std::string p_buffer,
+Yara::yara_scan_bytes(const std::string p_buffer,
                         const std::function<void(void *)> &p_callback) const
 {
     struct yr_user_data *data =
         static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));
 
-    data->is_malicius = scan_t::benign;
+    data->is_malicius = YaraTypes::scan_t::none;
     data->yara_rule = nullptr;
 
     yr_rules_scan_mem(m_yara_rules,
@@ -128,14 +128,14 @@ SYara::syara_scan_bytes(const std::string p_buffer,
                       p_buffer.size(),
                       SCAN_FLAGS_FAST_MODE,
                       reinterpret_cast<YR_CALLBACK_FUNC>(
-                          Analysis::SYara::syara_scan_callback_default),
+                          Security::Yara::yara_scan_callback_default),
                       data,
                       0);
 
     p_callback(data);
 }
 
-YR_CALLBACK_FUNC SYara::syara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
+YR_CALLBACK_FUNC Yara::yara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
                                                     const int p_message,
                                                     void *p_message_data,
                                                     void *p_user_data)
@@ -148,18 +148,19 @@ YR_CALLBACK_FUNC SYara::syara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
         break;
     case CALLBACK_MSG_RULE_MATCHING:
         ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
-        ((yr_user_data *) p_user_data)->is_malicius = scan_t::malicious;
+        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::scan_t::malicious;
         return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
     case CALLBACK_MSG_RULE_NOT_MATCHING:
+        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::scan_t::malicious;
         break;
     }
 
     return CALLBACK_CONTINUE;
 }
 
-const uint64_t SYara::get_rules_loaded_count() const
+const uint64_t Yara::get_rules_loaded_count() const
 {
     return m_rules_loaded_count;
 }
-}; // namespace Analysis
+}; // namespace Security

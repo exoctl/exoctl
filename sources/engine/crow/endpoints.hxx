@@ -14,8 +14,10 @@ namespace Crow
 
 namespace Endpoints
 {
-DEFINE_ROUTE(SEARCH, "/search")
-DEFINE_ROUTE(SCAN, "/scan")
-DEFINE_ROUTE(METADATA, "/metadata")
+// analysis endpoint 
+DEFINE_ROUTE(SEARCH_YARA, "/analysis/search_yara")
+DEFINE_ROUTE(SCAN_YARA, "/analysis/scan_yara")
+// metadada endpoint
+DEFINE_ROUTE(METADATA, "/parser/metadata")
 } // namespace Endpoints
 } // namespace Crow

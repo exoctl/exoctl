@@ -2,15 +2,13 @@
 #include <engine/crow/conn.hxx>
 #include <engine/crow/endpoints.hxx>
 #include <engine/crow/routes.hxx>
-#include <engine/dto/analysis.hxx>
 #include <optional>
 
 namespace Crow
 {
 Routes::Routes(Crow &p_crow)
     : m_crow(p_crow), m_context(p_crow.crow_get_config()),
-      m_scan(p_crow.crow_get_config()), 
-      m_dto_analysis()
+      m_scan_yara(p_crow.crow_get_config())
 {
     Routes::route_init_analysis();
     LOG(m_crow.crow_get_log(), info, "Routes initialized.");
@@ -20,22 +18,22 @@ Routes::~Routes() {}
 
 void Routes::routes_create()
 {
-    GET_ROUTE(search);
+    GET_ROUTE(search_yara);
     LOG(m_crow.crow_get_log(),
         info,
         "Route created for search: {}",
-        Endpoints::ROUTE_SEARCH);
+        Endpoints::ROUTE_SEARCH_YARA);
 
-    GET_ROUTE(scan);
+    GET_ROUTE(scan_yara);
     LOG(m_crow.crow_get_log(),
         info,
         "Route created for scan: {}",
-        Endpoints::ROUTE_SCAN);
+        Endpoints::ROUTE_SCAN_YARA);
 }
 
-void Routes::route_search()
+void Routes::route_search_yara()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SEARCH)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SEARCH_YARA)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
@@ -43,7 +41,7 @@ void Routes::route_search()
                 LOG(m_crow.crow_get_log(),
                     error,
                     "WebSocket error on route '{}': {}",
-                    Endpoints::ROUTE_SEARCH,
+                    Endpoints::ROUTE_SEARCH_YARA,
                     p_error_message);
             })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
@@ -62,14 +60,14 @@ void Routes::route_search()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_SEARCH,
+                    Endpoints::ROUTE_SEARCH_YARA,
                     p_data.size());
             });
 }
 
-void Routes::route_scan()
+void Routes::route_scan_yara()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN_YARA)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
@@ -77,7 +75,7 @@ void Routes::route_scan()
                 LOG(m_crow.crow_get_log(),
                     error,
                     "WebSocket error on route '{}': {}",
-                    Endpoints::ROUTE_SCAN,
+                    Endpoints::ROUTE_SCAN_YARA,
                     p_error_message);
             })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
@@ -96,19 +94,11 @@ void Routes::route_scan()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_SCAN,
+                    Endpoints::ROUTE_SCAN_YARA,
                     p_data.size());
 
-                m_scan.scan_bytes(
-                    p_data,
-                    [&](void *p_dto_analysis)
-                    {
-                        m_dto_analysis = *static_cast<Analysis::DTOAnalysis *>(
-                            p_dto_analysis);
-
-                        m_context.conn_send_msg(&p_conn,
-                                                m_dto_analysis.dto_to_string_json());
-                    });
+                m_scan_yara.scan_yara_bytes(p_data);
+                m_context.conn_send_msg(&p_conn, m_scan_yara.dto_to_json().json_to_string());
             });
 }
 
@@ -151,7 +141,7 @@ bool Routes::route_def_onaccept_connection(const crow::request *p_req)
 
 void Routes::route_init_analysis()
 {
-    m_scan.load_rules(
+    m_scan_yara.load_yara_rules(
         [&](void *p_total_rules)
         {
             LOG(m_crow.crow_get_log(),

@@ -4,17 +4,15 @@
 
 namespace Parser
 {
-class Json
+class Json : public nlohmann::json
 {
   public:
-    Json(const nlohmann::json &);
     Json();
-    ~Json();
+    Json(const nlohmann::json &);
 
-    const std::string json_to_string();
-    void json_craft(const nlohmann::json &p_json);
+    std::string json_to_string() const;
+    void json_craft(const nlohmann::json &);
 
-  private:
-    nlohmann::json m_json;
+    ~Json() = default;
 };
-}; // namespace Parser
+} // namespace Parser

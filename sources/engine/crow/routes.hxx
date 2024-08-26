@@ -3,7 +3,7 @@
 #include <engine/crow/conn.hxx>
 #include <engine/crow/crow.hxx>
 #include <mutex>
-#include <engine/analysis/analysis.hxx>
+#include <engine/analysis/scan_yara.hxx>
 
 
 #define GET_ROUTE(name) Routes::route_##name();
@@ -22,13 +22,11 @@ class Routes
     Crow &m_crow;
     Context m_context;
 
-    Analysis::Scan m_scan;
-    Analysis::DTOAnalysis m_dto_analysis;
-
+    Analysis::ScanYara m_scan_yara;
     std::mutex m_mtx;
 
-    void route_search();
-    void route_scan();
+    void route_search_yara();
+    void route_scan_yara();
     void route_def_close_connection(crow::websocket::connection *,
                                     const std::string&);
     void route_def_open_connection(crow::websocket::connection *);
