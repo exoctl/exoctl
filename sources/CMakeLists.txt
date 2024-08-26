@@ -21,7 +21,7 @@ file(GLOB_RECURSE SOURCES
     engine/*.cxx
 )
 
-add_executable(engine engine.cxx)
+add_executable(engine main.cxx)
 target_sources(engine PUBLIC ${SOURCES})
 target_link_libraries(engine PUBLIC 
     Crow::Crow 

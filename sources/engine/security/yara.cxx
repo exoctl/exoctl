@@ -120,7 +120,7 @@ Yara::yara_scan_bytes(const std::string p_buffer,
     struct yr_user_data *data =
         static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));
 
-    data->is_malicius = YaraTypes::scan_t::none;
+    data->is_malicius = YaraTypes::Scan_t::none;
     data->yara_rule = nullptr;
 
     yr_rules_scan_mem(m_yara_rules,
@@ -148,11 +148,11 @@ YR_CALLBACK_FUNC Yara::yara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
         break;
     case CALLBACK_MSG_RULE_MATCHING:
         ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
-        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::scan_t::malicious;
+        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::Scan_t::malicious;
         return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
     case CALLBACK_MSG_RULE_NOT_MATCHING:
-        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::scan_t::malicious;
+        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::Scan_t::benign;
         break;
     }
 

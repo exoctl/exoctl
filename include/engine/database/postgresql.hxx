@@ -3,7 +3,6 @@
 #include <engine/interfaces/idatabase.hxx>
 #include <engine/log.hxx>
 #include <engine/parser/toml.hxx>
-
 #include <pqxx/pqxx>
 
 namespace Database

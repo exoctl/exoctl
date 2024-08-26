@@ -10,7 +10,7 @@ namespace Security
 {
 typedef struct yr_user_data
 {
-    YaraTypes::scan_t is_malicius;
+    YaraTypes::Scan_t is_malicius;
     const char *yara_rule;
 } yr_user_data;
 
