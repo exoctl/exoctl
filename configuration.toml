@@ -1,6 +1,8 @@
+[project]
+name = "Engine"
 version = "v1.0.0"
 description = "MalDec Labs engine for detect malwares and analysis deriveds formats files"
-project = "Engine"
+copyright = "@maldeclabs"
 
 [yara]
 rules = "rules/yara"

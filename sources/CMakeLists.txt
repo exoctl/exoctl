@@ -1,19 +1,19 @@
+set(FLAGS_OPTIMIZATIONS ON)
+set(FLAGS_DEBUG OFF)
+
+
 include_directories(
     ../include
     ../libraries
     ../sources
     ../
     ../libraries/tomlplusplus/include
-    ../libraries/libpqxx/include/
 )
-
-set(FLAGS_OPTIMIZATIONS ON)
-set(FLAGS_DEBUG OFF)
 
 file(GLOB_RECURSE SOURCES
     engine/crow/*.cxx
     engine/analysis/*/*.cxx
-    engine/parser/*/*.cxx
+    engine/parser/*/*.cxx   
     engine/parser/*.cxx
     dto/*.cxx
     engine/database/*.cxx
@@ -22,9 +22,14 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(engine engine.cxx)
 target_sources(engine PUBLIC ${SOURCES})
-target_link_libraries(engine PUBLIC Crow::Crow yara 
-                                    spdlog::spdlog pqxx sqlite3  
-                                    nlohmann_json::nlohmann_json)
+target_link_libraries(engine PUBLIC 
+    Crow::Crow 
+    yara 
+    spdlog::spdlog 
+    pqxx 
+    sqlite3  
+    nlohmann_json::nlohmann_json
+)
 
 if(FLAGS_OPTIMIZATIONS)
     target_compile_options(engine PUBLIC
@@ -49,9 +54,7 @@ elseif(FLAGS_DEBUG)
     )
 endif()
 
-# add subdirectory libraries
-add_subdirectory(../libraries/crow libraries/crow)
-add_subdirectory(../libraries/tomlplusplus libraries/tomlplusplus)
-add_subdirectory(../libraries/spdlog libraries/spdlog)
-add_subdirectory(../libraries/json libraries/json)
-add_subdirectory(../libraries/libpqxx libraries/libpqxx)
+add_subdirectory(../libraries/crow ${CMAKE_BINARY_DIR}/libraries/crow)
+add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
+add_subdirectory(../libraries/spdlog ${CMAKE_BINARY_DIR}/libraries/spdlog)
+add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
