@@ -1,5 +1,4 @@
 #include <engine/security/yara.hxx>
-
 #include <alloca.h>
 #include <dirent.h>
 #include <fcntl.h>
