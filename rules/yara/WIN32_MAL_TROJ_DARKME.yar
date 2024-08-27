@@ -9,7 +9,7 @@ rule WIN32_MAL_TROJ_DARKME : TROJAN DARKME
         // For higher accuracy, Dynamic analysis is needed.
         techniques = "Scripting:Data Obfuscation:Template Injection:Reflective Loading"
         mitre_att = "T1064:T1001:T1221:T1218"
-        scan_type = "file"
+        YaraScan_type = "file"
         dname = "Trojan.Win32.DARKME.A"
         ml_probability_score = "98.97"
         score = 98

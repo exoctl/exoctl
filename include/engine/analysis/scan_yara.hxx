@@ -1,6 +1,6 @@
 #include <engine/dto.hxx>
 #include <engine/parser/toml.hxx>
-#include <engine/security/yara.hxx>
+#include <engine/security/yara/yara.hxx>
 
 #include <cstdint>
 #include <string>

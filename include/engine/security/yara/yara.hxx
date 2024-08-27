@@ -4,13 +4,13 @@
 #include <stack>
 #include <string>
 #include <yara.h>
-#include <engine/security/yara_types.hxx>
+#include <engine/security/yara/yara_types.hxx>
 
 namespace Security
 {
 typedef struct yr_user_data
 {
-    YaraTypes::Scan_t is_malicius;
+    Types::YaraScan_t is_malicius;
     const char *yara_rule;
 } yr_user_data;
 

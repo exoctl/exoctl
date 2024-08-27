@@ -57,7 +57,11 @@ const void Postgresql::close_db() const
     if (m_conn.is_open())
     {
         LOG(m_log, info, "Database '{:s}' closed", m_conn.dbname());
-        m_conn.close();
+#if (PQXX_VERSION_MAJOR < 8)
+        m_conn.close(); 
+#else
+        m_conn.disconnect();
+#endif
     }
 }
 

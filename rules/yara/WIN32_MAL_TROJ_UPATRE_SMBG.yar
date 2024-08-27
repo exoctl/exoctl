@@ -9,7 +9,7 @@ rule WIN32_MAL_TROJ_UPATRE_SMBG : TROJAN UPATRE
         // For higher accuracy, Dynamic analysis is needed.
         techniques = "Scripting:Data Obfuscation:Indicator Removal on Host:User Execution:Execution through Module Load:Reflective Loading"
         mitre_att = "T1064:T1001:T1070:T1204:T1129:T1218"
-        scan_type = "file"
+        YaraScan_type = "file"
         dname = "TROJ_UPATRE.SMBG"
         ml_probability_score = "99.03"
         score = 99

@@ -4,7 +4,6 @@
 
 int main(void)
 {
-
     Parser::Toml configuration;
     configuration.toml_parser_file("configuration.toml");
 

@@ -1,6 +1,7 @@
-#include <engine/security/yara.hxx>
 #include <alloca.h>
 #include <dirent.h>
+#include <engine/security/yara/yara.hxx>
+#include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
 #include <filesystem>
 #include <stdexcept>
@@ -13,7 +14,8 @@ Yara::Yara() : m_rules_loaded_count(0)
 {
     if (yr_initialize() != ERROR_SUCCESS)
     {
-        throw std::runtime_error("yr_initialize() error initialize yara");
+        throw YaraException::InitializeRules(
+            "yr_initialize() error initialize yara");
     }
 
     const int yr_compiler = yr_compiler_create(&m_yara_compiler);
@@ -21,7 +23,7 @@ Yara::Yara() : m_rules_loaded_count(0)
     if (yr_compiler != ERROR_SUCCESS &&
         yr_compiler == ERROR_INSUFFICIENT_MEMORY)
     {
-        throw std::runtime_error(
+        throw YaraException::InitializeRules(
             "yr_compiler_create() error create compiler yara");
     }
 }
@@ -30,7 +32,7 @@ Yara::~Yara()
 {
     if (yr_finalize() != ERROR_SUCCESS)
     {
-        std::runtime_error("yr_finalize() error finalize yara");
+        YaraException::FinalizeRules("yr_finalize() error finalize yara");
     }
 
     if (m_yara_compiler != nullptr)
@@ -38,12 +40,12 @@ Yara::~Yara()
 
     if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS)
     {
-        std::runtime_error("yr_rules_destroy() failed destroy rules");
+        YaraException::FinalizeRules("yr_rules_destroy() failed destroy rules");
     }
 }
 
 const int Yara::yara_set_signature_rule_fd(const std::string &p_path,
-                                             const std::string &p_yrname) const
+                                           const std::string &p_yrname) const
 {
     const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
@@ -52,13 +54,13 @@ const int Yara::yara_set_signature_rule_fd(const std::string &p_path,
 
     close(rules_fd);
 
-    m_rules_loaded_count += 1;
+    m_rules_loaded_count++;
     return error_success;
 }
 
 const int Yara::yara_set_signature_rule_mem(const std::string &p_rule) const
 {
-    m_rules_loaded_count += 1;
+    m_rules_loaded_count++;
     return yr_compiler_add_string(m_yara_compiler, p_rule.c_str(), nullptr);
 }
 
@@ -66,7 +68,7 @@ const void Yara::yara_load_rules_folder(const std::string &p_path) const
 {
     DIR *dir = opendir(p_path.c_str());
     if (!dir)
-        throw std::runtime_error(strerror(errno));
+        throw YaraException::LoadRules(strerror(errno));
 
     struct dirent *entry;
     while ((entry = readdir(dir)) != nullptr)
@@ -82,7 +84,7 @@ const void Yara::yara_load_rules_folder(const std::string &p_path) const
         {
             if (Yara::yara_set_signature_rule_fd(full_path, entry_name) !=
                 ERROR_SUCCESS)
-                throw std::runtime_error(
+                throw YaraException::LoadRules(
                     "yara_set_signature_rule() failed to compile rule " +
                     std::string(full_path));
         }
@@ -107,19 +109,19 @@ const void Yara::yara_compiler_rules() const
     if (compiler_rules != ERROR_SUCCESS ||
         compiler_rules == ERROR_INSUFFICIENT_MEMORY)
     {
-        throw std::runtime_error(
+        throw YaraException::CompilerRules(
             "yr_compiler_get_rules() falied compiler rules " + compiler_rules);
     }
 }
 
 const void
 Yara::yara_scan_bytes(const std::string p_buffer,
-                        const std::function<void(void *)> &p_callback) const
+                      const std::function<void(void *)> &p_callback) const
 {
     struct yr_user_data *data =
         static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));
 
-    data->is_malicius = YaraTypes::Scan_t::none;
+    data->is_malicius = Types::YaraScan_t::none;
     data->yara_rule = nullptr;
 
     yr_rules_scan_mem(m_yara_rules,
@@ -135,9 +137,9 @@ Yara::yara_scan_bytes(const std::string p_buffer,
 }
 
 YR_CALLBACK_FUNC Yara::yara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
-                                                    const int p_message,
-                                                    void *p_message_data,
-                                                    void *p_user_data)
+                                                  const int p_message,
+                                                  void *p_message_data,
+                                                  void *p_user_data)
 {
     YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
 
@@ -147,11 +149,12 @@ YR_CALLBACK_FUNC Yara::yara_scan_callback_default(YR_SCAN_CONTEXT *p_context,
         break;
     case CALLBACK_MSG_RULE_MATCHING:
         ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
-        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::Scan_t::malicious;
+        ((yr_user_data *) p_user_data)->is_malicius =
+            Types::YaraScan_t::malicious;
         return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
     case CALLBACK_MSG_RULE_NOT_MATCHING:
-        ((yr_user_data *) p_user_data)->is_malicius = YaraTypes::Scan_t::benign;
+        ((yr_user_data *) p_user_data)->is_malicius = Types::YaraScan_t::benign;
         break;
     }
 

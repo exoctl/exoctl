@@ -2,9 +2,9 @@
 
 namespace Security
 {
-   namespace YaraTypes 
+   namespace Types 
    {
-        enum Scan_t
+        enum YaraScan_t
         {
             benign,
             malicious,

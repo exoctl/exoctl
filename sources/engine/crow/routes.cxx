@@ -98,7 +98,8 @@ void Routes::route_scan_yara()
                     p_data.size());
 
                 m_scan_yara.scan_yara_bytes(p_data);
-                m_context.conn_send_msg(&p_conn, m_scan_yara.dto_to_json().json_to_string());
+                m_context.conn_send_msg(
+                    &p_conn, m_scan_yara.dto_to_json().json_to_string());
             });
 }
 
