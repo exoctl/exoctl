@@ -1,7 +1,6 @@
 /*
   Yara created from Agent Tesla diff results
 */
-a
 rule AgentTesla_DIFF_Common_Strings_01
 {
 	meta:
