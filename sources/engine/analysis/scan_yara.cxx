@@ -17,15 +17,8 @@ ScanYara::ScanYara(Parser::Toml &p_config)
 const void
 ScanYara::load_yara_rules(const std::function<void(void *)> &p_callback) const
 {
-    try
-    {
-        m_yara.yara_load_rules(
-            [&](void *p_rules_count)
-            { m_yara.yara_load_rules_folder(m_yara_rules); });
-    }
-    catch (const Security::YaraException::LoadRules &e)
-    {
-    }
+    m_yara.yara_load_rules([&](void *p_rules_count)
+                           { m_yara.yara_load_rules_folder(m_yara_rules); });
 
     p_callback((void *) m_yara.get_rules_loaded_count());
 }

@@ -4,31 +4,20 @@ namespace Security
 {
 namespace YaraException
 {
-
-BaseException::BaseException(const std::string &message)
-    : m_error_message(message)
+CompilerRules::CompilerRules(const std::string &p_message)
+    : BaseException(p_message)
 {
 }
 
-const char *BaseException::what() const noexcept
-{
-    return m_error_message.c_str();
-}
+LoadRules::LoadRules(const std::string &p_message) : BaseException(p_message) {}
 
-CompilerRules::CompilerRules(const std::string &message)
-    : BaseException(message)
+Initialize::Initialize(const std::string &p_message)
+    : BaseException(p_message)
 {
 }
 
-LoadRules::LoadRules(const std::string &message) : BaseException(message) {}
-
-InitializeRules::InitializeRules(const std::string &message)
-    : BaseException(message)
-{
-}
-
-FinalizeRules::FinalizeRules(const std::string &message)
-    : BaseException(message)
+Finalize::Finalize(const std::string &p_message)
+    : BaseException(p_message)
 {
 }
 

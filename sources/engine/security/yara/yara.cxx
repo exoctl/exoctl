@@ -4,6 +4,7 @@
 #include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
 #include <filesystem>
+#include <iostream>
 #include <stdexcept>
 #include <sys/types.h>
 #include <unistd.h>
@@ -14,7 +15,7 @@ Yara::Yara() : m_rules_loaded_count(0)
 {
     if (yr_initialize() != ERROR_SUCCESS)
     {
-        throw YaraException::InitializeRules(
+        throw YaraException::Initialize(
             "yr_initialize() error initialize yara");
     }
 
@@ -23,8 +24,8 @@ Yara::Yara() : m_rules_loaded_count(0)
     if (yr_compiler != ERROR_SUCCESS &&
         yr_compiler == ERROR_INSUFFICIENT_MEMORY)
     {
-        throw YaraException::InitializeRules(
-            "yr_compiler_create() error create compiler yara");
+        throw YaraException::Initialize(
+            "yr_compiler_create() error initialize compiler yara");
     }
 }
 
@@ -32,7 +33,7 @@ Yara::~Yara()
 {
     if (yr_finalize() != ERROR_SUCCESS)
     {
-        YaraException::FinalizeRules("yr_finalize() error finalize yara");
+        YaraException::Finalize("yr_finalize() error finalize yara");
     }
 
     if (m_yara_compiler != nullptr)
@@ -40,7 +41,7 @@ Yara::~Yara()
 
     if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS)
     {
-        YaraException::FinalizeRules("yr_rules_destroy() failed destroy rules");
+        YaraException::Finalize("yr_rules_destroy() failed destroy rules");
     }
 }
 
@@ -84,13 +85,16 @@ const void Yara::yara_load_rules_folder(const std::string &p_path) const
         {
             if (Yara::yara_set_signature_rule_fd(full_path, entry_name) !=
                 ERROR_SUCCESS)
+            {
                 throw YaraException::LoadRules(
                     "yara_set_signature_rule() failed to compile rule " +
                     std::string(full_path));
+            }
         }
         else if (entry->d_type == DT_DIR)
             yara_load_rules_folder(full_path);
     }
+
 
     closedir(dir);
 }

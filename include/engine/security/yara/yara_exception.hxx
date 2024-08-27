@@ -1,47 +1,34 @@
 #pragma once
 
-#include <exception>
+#include <engine/exception.hxx>
 #include <string>
 
 namespace Security
 {
 namespace YaraException
 {
-
-class BaseException : public std::exception
+class CompilerRules : public Exception::BaseException
 {
-  private:
-    const std::string m_error_message;
-
-  protected:
-    explicit BaseException(const std::string &message);
-
   public:
-    virtual const char *what() const noexcept override;
+    explicit CompilerRules(const std::string &);
 };
 
-class CompilerRules : public BaseException
+class LoadRules : public Exception::BaseException
 {
   public:
-    explicit CompilerRules(const std::string &message);
+    explicit LoadRules(const std::string &);
 };
 
-class LoadRules : public BaseException
+class Initialize : public Exception::BaseException
 {
   public:
-    explicit LoadRules(const std::string &message);
+    explicit Initialize(const std::string &);
 };
 
-class InitializeRules : public BaseException
+class Finalize : public Exception::BaseException
 {
   public:
-    explicit InitializeRules(const std::string &message);
-};
-
-class FinalizeRules : public BaseException
-{
-  public:
-    explicit FinalizeRules(const std::string &message);
+    explicit Finalize(const std::string &);
 };
 
 } // namespace YaraException

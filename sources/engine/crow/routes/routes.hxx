@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/crow/conn.hxx>
+#include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
 #include <mutex>
 #include <engine/analysis/scan_yara.hxx>

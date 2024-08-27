@@ -1,7 +1,8 @@
 #include <alloca.h>
-#include <engine/crow/conn.hxx>
-#include <engine/crow/endpoints.hxx>
-#include <engine/crow/routes.hxx>
+#include <engine/crow/conn/conn.hxx>
+#include <engine/crow/routes/endpoints.hxx>
+#include <engine/crow/routes/routes.hxx>
+#include <engine/security/yara/yara_exception.hxx>
 #include <optional>
 
 namespace Crow
@@ -10,14 +11,14 @@ Routes::Routes(Crow &p_crow)
     : m_crow(p_crow), m_context(p_crow.crow_get_config()),
       m_scan_yara(p_crow.crow_get_config())
 {
-    Routes::route_init_analysis();
-    LOG(m_crow.crow_get_log(), info, "Routes initialized.");
 }
 
 Routes::~Routes() {}
 
 void Routes::routes_run()
 {
+    Routes::route_init_analysis();
+
     GET_ROUTE(search_yara);
     LOG(m_crow.crow_get_log(),
         info,
@@ -142,14 +143,22 @@ bool Routes::route_def_onaccept_connection(const crow::request *p_req)
 
 void Routes::route_init_analysis()
 {
-    m_scan_yara.load_yara_rules(
-        [&](void *p_total_rules)
-        {
-            LOG(m_crow.crow_get_log(),
-                info,
-                "Successfully loaded rules. Total rules count: {:d}",
-                (uint64_t) p_total_rules);
-        });
+    try
+    {
+        m_scan_yara.load_yara_rules(
+            [&](void *p_total_rules)
+            {
+                LOG(m_crow.crow_get_log(),
+                    info,
+                    "Successfully loaded rules. Total Yara rules count: {:d}",
+                    (uint64_t) p_total_rules);
+            });
+    }
+    catch (const Security::YaraException::LoadRules &e)
+    {
+        LOG(m_crow.crow_get_log(), error, "{}", e.what());
+        m_crow.crow_abort(e.what());
+    }
 }
 
 }; // namespace Crow
