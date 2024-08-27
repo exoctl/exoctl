@@ -1,6 +1,8 @@
 #define CROW_MAIN
 
 #include <engine/engine.hxx>
+#include <engine/engine_exception.hxx>
+#include <iostream>
 
 int main(void)
 {
@@ -9,7 +11,14 @@ int main(void)
 
     Engine::Engine engine(configuration);
 
-    engine.engine_run();
-    
+    try
+    {
+        engine.engine_run();
+    }
+    catch (const Engine::EngineException::Run &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
     return EXIT_SUCCESS;
 }

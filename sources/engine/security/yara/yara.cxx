@@ -11,7 +11,8 @@
 
 namespace Security
 {
-Yara::Yara() : m_rules_loaded_count(0)
+Yara::Yara()
+    : m_rules_loaded_count(0), m_yara_rules(nullptr), m_yara_compiler(nullptr)
 {
     if (yr_initialize() != ERROR_SUCCESS)
     {
@@ -39,9 +40,12 @@ Yara::~Yara()
     if (m_yara_compiler != nullptr)
         yr_compiler_destroy(m_yara_compiler);
 
-    if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS)
+    if (m_yara_rules != nullptr)
     {
-        YaraException::Finalize("yr_rules_destroy() failed destroy rules");
+        if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS)
+        {
+            YaraException::Finalize("yr_rules_destroy() failed destroy rules");
+        }
     }
 }
 
@@ -94,7 +98,6 @@ const void Yara::yara_load_rules_folder(const std::string &p_path) const
         else if (entry->d_type == DT_DIR)
             yara_load_rules_folder(full_path);
     }
-
 
     closedir(dir);
 }
