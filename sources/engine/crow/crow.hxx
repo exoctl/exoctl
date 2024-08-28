@@ -3,6 +3,7 @@
 #define CROW_ENFORCE_WS_SPEC
 
 #include <crow.h>
+#include <engine/crow/log.hxx>
 #include <engine/log.hxx>
 #include <engine/parser/toml.hxx>
 
@@ -16,6 +17,7 @@ class Crow
     crow::SimpleApp m_app;
     Parser::Toml &m_config;
     Logging::Log &m_log;
+    CrowLog m_logger;
 
   public:
     Crow(Parser::Toml &, Logging::Log &);

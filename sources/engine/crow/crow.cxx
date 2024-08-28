@@ -6,8 +6,10 @@ namespace Crow
 Crow::Crow(Parser::Toml &p_config, Logging::Log &p_log)
     : m_config(p_config), m_log(p_log),
       m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
-      m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
+      m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr")),
+      m_logger(p_log)
 {
+    crow::logger::setHandler(&m_logger);
 }
 
 Crow::~Crow() {}

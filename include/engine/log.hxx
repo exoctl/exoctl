@@ -1,7 +1,7 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
 #include <engine/parser/toml.hxx>
+#include <spdlog/spdlog.h>
 
 #define LOG(obj, type, msg, ...) obj.log_##type(msg, ##__VA_ARGS__)
 
@@ -35,6 +35,12 @@ class Log
     void log_debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
     {
         m_logger->debug(p_msg, std::forward<Args>(p_args)...);
+    }
+
+    template <typename... Args>
+    void log_critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
+    {
+        m_logger->critical(p_msg, std::forward<Args>(p_args)...);
     }
 
   private:
