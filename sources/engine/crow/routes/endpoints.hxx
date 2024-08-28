@@ -16,6 +16,7 @@ namespace Endpoints
 {
 // analysis endpoints
 DEFINE_ROUTE(SEARCH_YARA, "/analysis/search_yara")
+DEFINE_ROUTE(SCAN_PACKED, "/analysis/scan_packed")
 DEFINE_ROUTE(SCAN_YARA, "/analysis/scan_yara")
 // data endpoints
 DEFINE_ROUTE(METADATA, "/data/metadata")

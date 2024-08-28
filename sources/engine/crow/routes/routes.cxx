@@ -25,14 +25,54 @@ void Routes::routes_init()
     GET_ROUTE(search_yara);
     LOG(m_crow.crow_get_log(),
         info,
-        "Route created for search: {}",
+        "Route created for search_yara : {}",
         Endpoints::ROUTE_SEARCH_YARA);
+
+    GET_ROUTE(scan_packed);
+    LOG(m_crow.crow_get_log(),
+        info,
+        "Route created for scan_packed : {}",
+        Endpoints::ROUTE_SCAN_PACKED);
 
     GET_ROUTE(scan_yara);
     LOG(m_crow.crow_get_log(),
         info,
-        "Route created for scan: {}",
+        "Route created for scan_yara : {}",
         Endpoints::ROUTE_SCAN_YARA);
+}
+
+void Routes::route_scan_packed()
+{
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN_PACKED)
+        .onerror(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_error_message)
+            {
+                LOG(m_crow.crow_get_log(),
+                    error,
+                    "WebSocket error on route '{}': {}",
+                    Endpoints::ROUTE_SCAN_PACKED,
+                    p_error_message);
+            })
+        .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
+                  { return Routes::route_def_onaccept_connection(&p_req); })
+        .onopen([&](crow::websocket::connection &conn)
+                { Routes::route_def_open_connection(&conn); })
+        .onclose([&](crow::websocket::connection &p_conn,
+                     const std::string &p_reason,
+                     uint16_t /*status_code*/)
+                 { Routes::route_def_close_connection(&p_conn, p_reason); })
+        .onmessage(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_data,
+                bool p_is_binary)
+            {
+                LOG(m_crow.crow_get_log(),
+                    debug,
+                    "Message received on route '{}': data size = {}",
+                    Endpoints::ROUTE_SCAN_PACKED,
+                    p_data.size());
+            });
 }
 
 void Routes::route_search_yara()
@@ -54,7 +94,7 @@ void Routes::route_search_yara()
                 { Routes::route_def_open_connection(&conn); })
         .onclose([&](crow::websocket::connection &p_conn,
                      const std::string &p_reason,
-                     uint16_t /*status_code*/)
+                     uint16_t /*p_status_code*/)
                  { Routes::route_def_close_connection(&p_conn, p_reason); })
         .onmessage(
             [&](crow::websocket::connection &p_conn,

@@ -1,10 +1,9 @@
 #pragma once
 
+#include <engine/analysis/scan_yara.hxx>
 #include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
 #include <mutex>
-#include <engine/analysis/scan_yara.hxx>
-
 
 #define GET_ROUTE(name) Routes::route_##name();
 
@@ -26,9 +25,10 @@ class Routes
     std::mutex m_mtx;
 
     void route_search_yara();
+    void route_scan_packed();
     void route_scan_yara();
     void route_def_close_connection(crow::websocket::connection *,
-                                    const std::string&);
+                                    const std::string &);
     void route_def_open_connection(crow::websocket::connection *);
     bool route_def_onaccept_connection(const crow::request *);
     void route_init_analysis();
