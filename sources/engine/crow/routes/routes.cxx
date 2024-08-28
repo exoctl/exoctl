@@ -1,5 +1,6 @@
 #include <alloca.h>
 #include <engine/crow/conn/conn.hxx>
+#include <engine/crow/crow_exception.hxx>
 #include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
 #include <engine/security/yara/yara_exception.hxx>
@@ -15,9 +16,11 @@ Routes::Routes(Crow &p_crow)
 
 Routes::~Routes() {}
 
-void Routes::routes_run()
+void Routes::routes_init()
 {
     Routes::route_init_analysis();
+
+    LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
 
     GET_ROUTE(search_yara);
     LOG(m_crow.crow_get_log(),
@@ -157,7 +160,7 @@ void Routes::route_init_analysis()
     catch (const Security::YaraException::LoadRules &e)
     {
         LOG(m_crow.crow_get_log(), error, "{}", e.what());
-        m_crow.crow_abort(e.what());
+        throw CrowException::Abort(std::string(e.what()));
     }
 }
 

@@ -8,11 +8,11 @@ namespace Logging
 {
 Log::Log(Parser::Toml &p_config) : m_config(p_config)
 {
-    Log::log_active_level(
-        GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "level"));
     Log::log_active_type(GET_TOML_TBL_VALUE(p_config, string, "log", "type"));
     Log::log_active_trace(
         GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "trace"));
+    Log::log_active_level(
+        GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "level"));
 }
 
 Log::~Log() {}
@@ -24,7 +24,7 @@ const void Log::log_active_trace(const uint16_t p_level)
 
 const void Log::log_active_level(const uint16_t p_level)
 {
-    spdlog::set_level(static_cast<spdlog::level::level_enum>(p_level));
+    m_logger->set_level(static_cast<spdlog::level::level_enum>(p_level));
 }
 
 const void Log::log_active_type(const std::string &p_type)

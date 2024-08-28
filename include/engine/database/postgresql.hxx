@@ -7,7 +7,7 @@
 
 namespace Database
 {
-class Postgresql : public IDatabase
+class Postgresql : public Interfaces::IDatabase
 {
   public:
     Postgresql();

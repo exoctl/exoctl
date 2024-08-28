@@ -19,12 +19,6 @@ void Crow::crow_run()
 
 void Crow::crow_stop() { m_app.multithreaded().stop(); }
 
-void Crow::crow_abort(const std::string &p_reason)
-{
-    LOG(m_log, error, "Crow aborted due to: {}", p_reason);
-    throw CrowException::Abort(p_reason);
-}
-
 Parser::Toml &Crow::crow_get_config() { return m_config; }
 
 crow::SimpleApp &Crow::crow_get_app() { return m_app; }

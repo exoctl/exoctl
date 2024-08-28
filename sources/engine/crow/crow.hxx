@@ -25,7 +25,6 @@ class Crow
     Parser::Toml &crow_get_config();
     Logging::Log &crow_get_log();
 
-    void crow_abort(const std::string &);
     void crow_run();
     void crow_stop();
 };

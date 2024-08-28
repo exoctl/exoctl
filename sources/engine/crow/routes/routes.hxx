@@ -16,7 +16,7 @@ class Routes
     Routes(Crow &);
     ~Routes();
 
-    void routes_run();
+    void routes_init();
 
   private:
     Crow &m_crow;

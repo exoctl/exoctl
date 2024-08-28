@@ -33,7 +33,8 @@ const void ScanYara::scan_yara_bytes(const std::string p_buffer)
                 "is_malicius",
                 ((Security::yr_user_data *) yr_user_data)->is_malicius);
 
-            if (((Security::yr_user_data *) yr_user_data)->yara_rule)
+            if (((Security::yr_user_data *) yr_user_data)->is_malicius ==
+                Security::Types::malicious)
             {
                 dto_set_field(
                     "yara_rule",

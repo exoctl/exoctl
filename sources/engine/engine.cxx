@@ -19,7 +19,7 @@ void Engine::engine_run()
 {
     try
     {
-        m_routes.routes_run();
+        m_routes.routes_init();
         m_crow.crow_run();
     }
     catch (const Crow::CrowException::Abort &e)

@@ -6,7 +6,7 @@
 
 namespace Database
 {
-class Sqlite3 : public IDatabase
+class Sqlite3 : public Interfaces::IDatabase
 {
   public:
     Sqlite3();
