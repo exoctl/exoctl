@@ -10,8 +10,7 @@ Context::Context(Parser::Toml &p_config)
 
 Context::~Context() {}
 
-const void Context::conn_erase(
-    crow::websocket::connection *p_conn)
+const void Context::conn_erase(crow::websocket::connection *p_conn)
 {
     m_conn.erase(p_conn);
 }

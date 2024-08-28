@@ -3,13 +3,12 @@
 #define CROW_ENFORCE_WS_SPEC
 
 #include <crow.h>
-#include <engine/crow/log.hxx>
 #include <engine/log.hxx>
 #include <engine/parser/toml.hxx>
 
 namespace Crow
 {
-class Crow
+class CrowApp
 {
   private:
     const std::uint16_t m_port;
@@ -17,11 +16,10 @@ class Crow
     crow::SimpleApp m_app;
     Parser::Toml &m_config;
     Logging::Log &m_log;
-    CrowLog m_logger;
 
   public:
-    Crow(Parser::Toml &, Logging::Log &);
-    ~Crow();
+    CrowApp(Parser::Toml &, Logging::Log &);
+    ~CrowApp();
 
     crow::SimpleApp &crow_get_app();
     Parser::Toml &crow_get_config();

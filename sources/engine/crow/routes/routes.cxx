@@ -8,7 +8,7 @@
 
 namespace Crow
 {
-Routes::Routes(Crow &p_crow)
+Routes::Routes(CrowApp &p_crow)
     : m_crow(p_crow), m_context(p_crow.crow_get_config()),
       m_scan_yara(p_crow.crow_get_config())
 {

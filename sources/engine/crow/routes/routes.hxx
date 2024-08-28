@@ -12,13 +12,13 @@ namespace Crow
 class Routes
 {
   public:
-    Routes(Crow &);
+    Routes(CrowApp &);
     ~Routes();
 
     void routes_init();
 
   private:
-    Crow &m_crow;
+    CrowApp &m_crow;
     Context m_context;
 
     Analysis::ScanYara m_scan_yara;

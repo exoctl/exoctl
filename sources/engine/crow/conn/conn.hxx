@@ -1,9 +1,9 @@
 #pragma once
 
-#include <engine/parser/toml.hxx>
 #include <crow.h>
-#include <unordered_set>
+#include <engine/parser/toml.hxx>
 #include <list>
+#include <unordered_set>
 
 namespace Crow
 {
@@ -12,12 +12,12 @@ class Context
   public:
     Context(Parser::Toml &);
     ~Context();
-    
+
     /**
-     * @brief used in onaccept to check if ip is whitelisted     
+     * @brief used in onaccept to check if ip is whitelisted
      * @details  if ip listed, return true else false
-     * @return true 
-     * @return false 
+     * @return true
+     * @return false
      */
     const bool conn_check_whitelist(const crow::request *);
     const void conn_add(crow::websocket::connection *);
@@ -28,7 +28,7 @@ class Context
 
     /**
      * @brief return what ip connect
-     * 
+     *
      * @return const std::string
      * @return nullptr
      */

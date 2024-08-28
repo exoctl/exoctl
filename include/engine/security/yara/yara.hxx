@@ -1,10 +1,10 @@
 #pragma once
 
+#include <engine/security/yara/yara_types.hxx>
 #include <functional>
 #include <stack>
 #include <string>
 #include <yara.h>
-#include <engine/security/yara/yara_types.hxx>
 
 namespace Security
 {
@@ -21,14 +21,15 @@ class Yara
     ~Yara();
 
     const void yara_scan_bytes(const std::string,
-                                const std::function<void(void *)> &) const;
+                               const std::function<void(void *)> &) const;
     const void yara_load_rules(const std::function<void(void *)> &) const;
     const void yara_load_rules_folder(const std::string &) const;
     const int yara_set_signature_rule_mem(const std::string &) const;
     const int yara_set_signature_rule_fd(const std::string &,
-                                          const std::string &) const;
+                                         const std::string &) const;
 
     const uint64_t get_rules_loaded_count() const;
+
   private:
     mutable uint64_t m_rules_loaded_count;
     YR_COMPILER *m_yara_compiler;

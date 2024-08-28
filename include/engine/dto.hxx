@@ -1,29 +1,27 @@
 #pragma once
 
-#include <variant>
-#include <unordered_map>
-#include <string>
-#include <stdexcept>
 #include <engine/parser/json.hxx>
+#include <stdexcept>
+#include <string>
+#include <unordered_map>
+#include <variant>
 
 class DTOBase
 {
-private:
+  private:
     /* TODO: Insert types for demand */
-    std::unordered_map<std::string, std::variant<int, 
-                                    double, 
-                                    std::string, 
-                                    const char*>> m_fields;
+    std::unordered_map<std::string,
+                       std::variant<int, double, std::string, const char *>>
+        m_fields;
 
-public:
+  public:
     template <typename T>
     void dto_set_field(const std::string &p_field_name, const T &p_value)
     {
         m_fields[p_field_name] = p_value;
     }
 
-    template <typename T>
-    T dto_get_field(const std::string &p_field_name) const
+    template <typename T> T dto_get_field(const std::string &p_field_name) const
     {
         auto it = m_fields.find(p_field_name);
         if (it != m_fields.end())
@@ -38,9 +36,8 @@ public:
 
         for (const auto &[key, value] : m_fields)
         {
-            std::visit([&json, &key](const auto& arg) {
-                json[key] = arg;
-            }, value);
+            std::visit([&json, &key](const auto &arg) { json[key] = arg; },
+                       value);
         }
 
         return json;

@@ -30,6 +30,7 @@ target_link_libraries(engine PUBLIC
     pqxx 
     sqlite3  
     nlohmann_json::nlohmann_json
+    fmt
 )
 
 if(FLAGS_OPTIMIZATIONS)
@@ -59,3 +60,4 @@ add_subdirectory(../libraries/crow ${CMAKE_BINARY_DIR}/libraries/crow)
 add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog ${CMAKE_BINARY_DIR}/libraries/spdlog)
 add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
+add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)

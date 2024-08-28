@@ -1,13 +1,16 @@
-#include <engine/crow/log.hxx>
+#include <engine/crow/log/log.hxx>
 
 namespace Crow
 {
 
-CrowLog::CrowLog(Logging::Log &p_log) : m_log(p_log) {}
+Log::Log(CrowApp &p_crow) : m_log(p_crow.crow_get_log()), m_crow(p_crow)
+{
+    crow::logger::setHandler(this); // define global logger for CrowApp
+}
 
-CrowLog::~CrowLog() {}
+Log::~Log() {}
 
-void CrowLog::log(std::string p_message, crow::LogLevel p_level)
+void Log::log(std::string p_message, crow::LogLevel p_level)
 {
     switch (p_level)
     {
@@ -28,4 +31,10 @@ void CrowLog::log(std::string p_message, crow::LogLevel p_level)
         break;
     }
 }
+
+void Log::log_active_level(crow::LogLevel p_level)
+{
+    m_crow.crow_get_app().loglevel(p_level);
+}
+
 } // namespace Crow

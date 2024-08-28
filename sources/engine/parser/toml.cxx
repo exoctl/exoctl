@@ -26,10 +26,9 @@ const std::uint16_t Toml::toml_get_tbl_uint16_t(const std::string &p_tbl,
 }
 
 const toml::array Toml::toml_get_tbl_array(const std::string &p_tbl,
-                                                     const std::string &p_key)
+                                           const std::string &p_key)
 {
-    return (p_tbl.empty())
-               ? *m_tbl[p_key].as_array()
-               : *m_tbl[p_tbl][p_key].as_array();
+    return (p_tbl.empty()) ? *m_tbl[p_key].as_array()
+                           : *m_tbl[p_tbl][p_key].as_array();
 }
 } // namespace Parser

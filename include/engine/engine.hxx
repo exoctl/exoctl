@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/crow/crow.hxx>
+#include <engine/crow/log/log.hxx>
 #include <engine/crow/routes/routes.hxx>
 #include <engine/database/postgresql.hxx>
 #include <engine/log.hxx>
@@ -13,9 +14,10 @@ class Engine
 {
   private:
     Logging::Log m_log;
-    //Database::Postgresql m_database;
-    Crow::Crow m_crow;
-    Crow::Routes m_routes;
+    // Database::Postgresql m_database;
+    Crow::CrowApp m_crow;
+    Crow::Routes m_crow_routes;
+    Crow::Log m_crow_log;
     Parser::Toml &m_configuration;
 
   public:

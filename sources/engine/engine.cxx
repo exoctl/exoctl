@@ -8,7 +8,7 @@ namespace Engine
 Engine::Engine(Parser::Toml &p_configuration)
     : m_configuration(p_configuration), m_log(p_configuration),
       m_crow(p_configuration, m_log), /* m_database(p_configuration, m_log),*/
-      m_routes(m_crow)
+      m_crow_routes(m_crow), m_crow_log(m_crow)
 {
 }
 
@@ -19,13 +19,15 @@ void Engine::engine_run()
 {
     try
     {
-        m_routes.routes_init();
+        m_crow_routes.routes_init();
         m_crow.crow_run();
     }
     catch (const Crow::CrowException::Abort &e)
     {
         LOG(m_log, error, "Engine not runned {}", e.what());
-        throw EngineException::Run("Error: Operation failed, Crow was aborted : " +  std::string(e.what()));
+        throw EngineException::Run(
+            "Error: Operation failed, Crow was aborted : " +
+            std::string(e.what()));
     }
 }
 

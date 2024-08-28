@@ -5,5 +5,5 @@ namespace Engine
 namespace EngineException
 {
 Run::Run(const std::string &p_message) : BaseException(p_message) {}
-} // namespace CrowException
-} // namespace Crow
+} // namespace EngineException
+} // namespace Engine
