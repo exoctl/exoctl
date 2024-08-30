@@ -1,4 +1,4 @@
-use(elf)
+import(elf)
 
 sig:upx_packed
 {

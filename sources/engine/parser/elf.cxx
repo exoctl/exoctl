@@ -8,7 +8,7 @@ Elf::~Elf() {}
 const std::unique_ptr<const LIEF::ELF::Binary>
 Elf::elf_parser_buffer(const std::string &p_buffer)
 {
-
+    
     return nullptr;
 }
 

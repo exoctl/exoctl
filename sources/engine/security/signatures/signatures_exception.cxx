@@ -1,5 +1,3 @@
-#pragma once
-
 #include <engine/security/signatures/signatures_exception.hxx>
 
 namespace Security
