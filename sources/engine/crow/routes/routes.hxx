@@ -25,7 +25,7 @@ class Routes
     std::mutex m_mtx;
 
     void route_search_yara();
-    void route_scan_packed();
+    void route_scan_sig_packed();
     void route_scan_yara();
     void route_def_close_connection(crow::websocket::connection *,
                                     const std::string &);

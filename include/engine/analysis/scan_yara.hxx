@@ -7,15 +7,15 @@
 
 namespace Analysis
 {
-class ScanYara : public DTOBase
+class ScanYara : public DTO::DTOBase
 {
   public:
     ScanYara();
     ScanYara(Parser::Toml &);
     ~ScanYara();
 
-    const void scan_yara_bytes(const std::string);
-    const void load_yara_rules(const std::function<void(void *)> &) const;
+    const void yara_scan_bytes(const std::string);
+    const void yara_load_rules(const std::function<void(void *)> &) const;
 
   private:
     const std::string m_yara_rules;

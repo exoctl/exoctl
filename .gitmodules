@@ -16,3 +16,6 @@
 [submodule "libraries/fmt"]
 	path = libraries/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "libraries/lief"]
+	path = libraries/lief
+	url = https://github.com/lief-project/LIEF.git

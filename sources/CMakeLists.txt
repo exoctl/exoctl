@@ -8,6 +8,7 @@ include_directories(
     ../sources
     ../
     ../libraries/tomlplusplus/include
+    ../libraries/lief/include
 )
 
 file(GLOB_RECURSE SOURCES
@@ -31,6 +32,7 @@ target_link_libraries(engine PUBLIC
     sqlite3  
     nlohmann_json::nlohmann_json
     fmt
+    LIEF::LIEF
 )
 
 if(FLAGS_OPTIMIZATIONS)
@@ -61,3 +63,4 @@ add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplu
 add_subdirectory(../libraries/spdlog ${CMAKE_BINARY_DIR}/libraries/spdlog)
 add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
+add_subdirectory(../libraries/lief ${CMAKE_BINARY_DIR}/libraries/lief)

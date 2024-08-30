@@ -26,7 +26,7 @@ void Engine::engine_run()
     {
         LOG(m_log, error, "Engine not runned {}", e.what());
         throw EngineException::Run(
-            "Error: Operation failed, Crow was aborted : " +
+            "Operation failed, Crow was aborted : " +
             std::string(e.what()));
     }
 }

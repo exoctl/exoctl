@@ -6,13 +6,16 @@
 #include <unordered_map>
 #include <variant>
 
+namespace DTO
+{
 class DTOBase
 {
   private:
-    /* TODO: Insert types for demand */
     std::unordered_map<std::string,
                        std::variant<int, double, std::string, const char *>>
         m_fields;
+
+    mutable Parser::Json m_json;
 
   public:
     template <typename T>
@@ -32,16 +35,15 @@ class DTOBase
 
     Parser::Json dto_to_json() const
     {
-        Parser::Json json;
-
         for (const auto &[key, value] : m_fields)
         {
-            std::visit([&json, &key](const auto &arg) { json[key] = arg; },
+            std::visit([this, &key](const auto &arg) { m_json[key] = arg; },
                        value);
         }
 
-        return json;
+        return m_json;
     }
 
     virtual ~DTOBase() = default;
 };
+} // namespace DTO

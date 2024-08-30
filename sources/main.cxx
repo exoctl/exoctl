@@ -8,7 +8,7 @@ int main()
 {
     Parser::Toml configuration;
     try
-    {
+    {   
         configuration.toml_parser_file("configuration.toml");
     }
     catch (const std::exception &e)
@@ -36,13 +36,14 @@ int main()
 
     try
     {
-        LOG_INFO("Started engine...");
+        LOG_INFO("Started engine.");
         engine.engine_run();
         LOG_INFO("Engine stopped successfully.");
     }
     catch (const Engine::EngineException::Run &e)
     {
         LOG_ERROR("Engine encountered an error: {}", e.what());
+        return EXIT_FAILURE;
     }
 
     LOG_INFO("Exiting program.");

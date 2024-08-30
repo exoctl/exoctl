@@ -7,18 +7,28 @@ namespace Crow
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
+
+// Version and base API prefixes
 #define VERSION_PREFIX "/v" TOSTRING(ENGINE_VERSION_MAJOR)
 #define API_PREFIX VERSION_PREFIX "/engine"
-#define DEFINE_ROUTE(name, path)                                               \
-    static constexpr char ROUTE_##name[] = API_PREFIX path;
+
+// Specific module prefixes
+#define ANALYSIS_PREFIX API_PREFIX "/analysis"
+#define DATA_PREFIX API_PREFIX "/data"
+
+// Macro to define routes with module-specific prefixes
+#define DEFINE_ROUTE(name, prefix, path)                                       \
+    static constexpr char ROUTE_##name[] = prefix path;
 
 namespace Endpoints
 {
-// analysis endpoints
-DEFINE_ROUTE(SEARCH_YARA, "/analysis/search_yara")
-DEFINE_ROUTE(SCAN_PACKED, "/analysis/scan_packed")
-DEFINE_ROUTE(SCAN_YARA, "/analysis/scan_yara")
-// data endpoints
-DEFINE_ROUTE(METADATA, "/data/metadata")
+// Analysis endpoints
+DEFINE_ROUTE(SEARCH_YARA, ANALYSIS_PREFIX, "/search_yara")
+DEFINE_ROUTE(SCAN_SIG_PACKED, ANALYSIS_PREFIX, "/scan_sig_packed")
+DEFINE_ROUTE(SCAN_YARA, ANALYSIS_PREFIX, "/scan_yara")
+
+// Data endpoints
+DEFINE_ROUTE(METADATA, DATA_PREFIX, "/metadata")
+
 } // namespace Endpoints
 } // namespace Crow

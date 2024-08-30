@@ -28,11 +28,11 @@ void Routes::routes_init()
         "Route created for search_yara : {}",
         Endpoints::ROUTE_SEARCH_YARA);
 
-    GET_ROUTE(scan_packed);
+    GET_ROUTE(scan_sig_packed);
     LOG(m_crow.crow_get_log(),
         info,
         "Route created for scan_packed : {}",
-        Endpoints::ROUTE_SCAN_PACKED);
+        Endpoints::ROUTE_SCAN_SIG_PACKED);
 
     GET_ROUTE(scan_yara);
     LOG(m_crow.crow_get_log(),
@@ -41,9 +41,9 @@ void Routes::routes_init()
         Endpoints::ROUTE_SCAN_YARA);
 }
 
-void Routes::route_scan_packed()
+void Routes::route_scan_sig_packed()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN_PACKED)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN_SIG_PACKED)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
@@ -51,7 +51,7 @@ void Routes::route_scan_packed()
                 LOG(m_crow.crow_get_log(),
                     error,
                     "WebSocket error on route '{}': {}",
-                    Endpoints::ROUTE_SCAN_PACKED,
+                    Endpoints::ROUTE_SCAN_SIG_PACKED,
                     p_error_message);
             })
         .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
@@ -70,7 +70,7 @@ void Routes::route_scan_packed()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_SCAN_PACKED,
+                    Endpoints::ROUTE_SCAN_SIG_PACKED,
                     p_data.size());
             });
 }
@@ -141,7 +141,7 @@ void Routes::route_scan_yara()
                     Endpoints::ROUTE_SCAN_YARA,
                     p_data.size());
 
-                m_scan_yara.scan_yara_bytes(p_data);
+                m_scan_yara.yara_scan_bytes(p_data);
                 m_context.conn_send_msg(
                     &p_conn, m_scan_yara.dto_to_json().json_to_string());
             });
@@ -188,7 +188,7 @@ void Routes::route_init_analysis()
 {
     try
     {
-        m_scan_yara.load_yara_rules(
+        m_scan_yara.yara_load_rules(
             [&](void *p_total_rules)
             {
                 LOG(m_crow.crow_get_log(),

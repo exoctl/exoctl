@@ -5,7 +5,10 @@ description = "MalDec Labs engine for detect malwares and analysis deriveds form
 copyright = "@maldeclabs"
 
 [yara]
-rules = "rules/yara"
+malware_rules = "rules/yara/malwares"
+
+[sig]
+packeds_rules = "rules/signatures/packeds"
 
 [log]
 name = "logs/engine.log"
