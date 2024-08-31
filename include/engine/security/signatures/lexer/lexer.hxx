@@ -29,6 +29,8 @@ class Lexer
     const std::size_t m_input_size;
     std::size_t m_pos;
 
-    bool match_keyword(const std::string &);
+    bool lexer_match_keyword(const std::string &);
+    const LexerToken lexer_identifier_token();
+    const LexerToken lexer_string_token();
 };
 } // namespace Security

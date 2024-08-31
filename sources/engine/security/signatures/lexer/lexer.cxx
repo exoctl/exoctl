@@ -19,10 +19,11 @@ LexerToken Lexer::lexer_next_token()
     if (m_pos >= m_input_size)
         return (LexerToken){Types::LexerToken::END, ""};
 
-    if (Lexer::match_keyword(Keywords::import))
-    {
+    if (Lexer::lexer_match_keyword(Keywords::import))
         return (LexerToken){Types::LexerToken::IMPORT, Keywords::import};
-    }
+
+    if (std::isalpha(m_input[m_pos]) || m_input[m_pos] == '_')
+        return Lexer::lexer_identifier_token();
 
     switch (m_input[m_pos])
     {
@@ -45,23 +46,37 @@ LexerToken Lexer::lexer_next_token()
         m_pos++;
         return (LexerToken){Types::LexerToken::DOT, "."};
     case '"':
-    {
         m_pos++;
-        std::string str;
-        while (m_pos < m_input_size && m_input[m_pos] != '"')
-        {
-            str += m_input[m_pos++];
-        }
-        m_pos++; /* skip closing " */
-        return (LexerToken){Types::LexerToken::STRING, str};
-    }
+        return Lexer::lexer_string_token();
     default:
         throw SignaturesException::LexerToken("Unexpected character: " +
                                               std::string(1, m_input[m_pos]));
     }
 }
 
-bool Lexer::match_keyword(const std::string &p_keyword)
+const LexerToken Lexer::lexer_identifier_token()
+{
+    std::string identifier;
+    while (m_pos < m_input_size &&
+           (std::isalnum(m_input[m_pos]) || m_input[m_pos] == '_'))
+    {
+        identifier += m_input[m_pos++];
+    }
+    return (LexerToken){Types::LexerToken::IDENTIFIER, identifier};
+}
+
+const LexerToken Lexer::lexer_string_token()
+{
+    std::string str;
+    while (m_pos < m_input_size && m_input[m_pos] != '"')
+    {
+        str += m_input[m_pos++];
+    }
+    m_pos++; /* skip closing " */
+    return (LexerToken){Types::LexerToken::STRING, str};
+}
+
+bool Lexer::lexer_match_keyword(const std::string &p_keyword)
 {
     size_t start_pos = m_pos;
     for (char ch : p_keyword)
