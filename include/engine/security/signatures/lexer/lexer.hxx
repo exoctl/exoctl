@@ -1,3 +1,7 @@
+/*
+    Generate tokens for small lang SIG
+*/
+
 #pragma once
 
 #include <engine/security/signatures/lexer/lexer_types.hxx>
@@ -18,10 +22,13 @@ class Lexer
     Lexer(const std::string &);
     ~Lexer();
 
-    LexerToken lexer_next_token(); 
+    LexerToken lexer_next_token();
 
   private:
     const std::string m_input;
+    const std::size_t m_input_size;
     std::size_t m_pos;
+
+    bool match_keyword(const std::string &);
 };
 } // namespace Security

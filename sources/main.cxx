@@ -2,13 +2,22 @@
 
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
+#include <include/engine/security/signatures/lexer/lexer.hxx>
+#include <iostream>
 #include <log.hxx> // this log not save in file
 
 int main()
 {
+    Security::Lexer lexer(
+        "@include(\"elf\") \"upx\" { elf.text.str_find(\"Upx 2023\") }");
+
+    Security::LexerToken token = lexer.lexer_next_token();
+
+    std::cout << token.value << std::endl;
+ 
     Parser::Toml configuration;
     try
-    {   
+    {
         configuration.toml_parser_file("configuration.toml");
     }
     catch (const std::exception &e)

@@ -8,5 +8,9 @@ CompilerSig::CompilerSig(const std::string &p_message)
     : BaseException(p_message)
 {
 }
+
+LexerToken::LexerToken(const std::string &p_message) : BaseException(p_message)
+{
+}
 } // namespace SignaturesException
 } // namespace Security

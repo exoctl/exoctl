@@ -1,6 +1,6 @@
-import(elf)
+@include("elf")
 
-sig:upx_packed
+"upx_packed"
 {
     elf.text.str_find("Upx 2023")
 }

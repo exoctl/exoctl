@@ -1,18 +1,86 @@
 #include <engine/security/signatures/lexer/lexer.hxx>
+#include <engine/security/signatures/lexer/lexer_keywords.hxx>
+#include <engine/security/signatures/signatures_exception.hxx>
 
 namespace Security
 {
 
-Lexer::Lexer(const std::string &p_input) : m_input(p_input) {}
+Lexer::Lexer(const std::string &p_input)
+    : m_input(p_input), m_input_size(p_input.size()), m_pos(0)
+{
+}
 Lexer::~Lexer() {}
 
 LexerToken Lexer::lexer_next_token()
 {
-    while (m_pos < m_input.size() && std::isspace(m_input[m_pos]))
+    while (m_pos < m_input_size && std::isspace(m_input[m_pos]))
         m_pos++;
 
-    if (m_pos >= m_input.size())
+    if (m_pos >= m_input_size)
         return (LexerToken){Types::LexerToken::END, ""};
+
+    if (Lexer::match_keyword(Keywords::import))
+    {
+        return (LexerToken){Types::LexerToken::IMPORT, Keywords::import};
+    }
+
+    switch (m_input[m_pos])
+    {
+    case '{':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::LBRACE, "{"};
+    case '}':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::RBRACE, "}"};
+    case '(':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::LPAREN, "("};
+    case ')':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::RPAREN, ")"};
+    case '=':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::EQUALS, "="};
+    case '.':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::DOT, "."};
+    case '"':
+    {
+        m_pos++;
+        std::string str;
+        while (m_pos < m_input_size && m_input[m_pos] != '"')
+        {
+            str += m_input[m_pos++];
+        }
+        m_pos++; /* skip closing " */
+        return (LexerToken){Types::LexerToken::STRING, str};
+    }
+    default:
+        throw SignaturesException::LexerToken("Unexpected character: " +
+                                              std::string(1, m_input[m_pos]));
+    }
 }
 
+bool Lexer::match_keyword(const std::string &p_keyword)
+{
+    size_t start_pos = m_pos;
+    for (char ch : p_keyword)
+    {
+        if (m_pos >= m_input_size || m_input[m_pos] != ch)
+        {
+            m_pos = start_pos;
+            return false;
+        }
+        m_pos++;
+    }
+
+    if (m_pos < m_input_size &&
+        (std::isalnum(m_input[m_pos]) || m_input[m_pos] == '_'))
+    {
+        m_pos = start_pos;
+        return false;
+    }
+
+    return true;
+}
 } // namespace Security

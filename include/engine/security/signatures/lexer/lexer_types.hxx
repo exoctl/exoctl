@@ -6,10 +6,12 @@ namespace Types
 {
 enum LexerToken
 {
-    IMPORT,
+    IMPORT, // Keywords::import
     IDENTIFIER,
     LBRACE, // {
     RBRACE, // }
+    LPAREN, // (
+    RPAREN, // ) 
     STRING,
     EQUALS, // =
     DOT,    // .
