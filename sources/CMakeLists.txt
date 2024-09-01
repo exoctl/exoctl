@@ -36,7 +36,7 @@ target_link_libraries(engine PUBLIC
     fmt
     LIEF::LIEF
     magic
-    libcrypto.a
+    crypto
 )
 
 if(FLAGS_OPTIMIZATIONS)
