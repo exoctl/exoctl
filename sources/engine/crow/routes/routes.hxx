@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/analysis/scan_yara.hxx>
+#include <engine/data/metadata.hxx>
 #include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
 #include <mutex>
@@ -20,13 +21,15 @@ class Routes
   private:
     CrowApp &m_crow;
     Context m_context;
-
+    
+    Data::Metadata m_metadata;
     Analysis::ScanYara m_scan_yara;
     std::mutex m_mtx;
 
     void route_search_yara();
     void route_scan_sig_packed();
     void route_scan_yara();
+    void route_metadata();
     void route_def_close_connection(crow::websocket::connection *,
                                     const std::string &);
     void route_def_open_connection(crow::websocket::connection *);

@@ -39,6 +39,12 @@ void Routes::routes_init()
         info,
         "Route created for scan_yara : {}",
         Endpoints::ROUTE_SCAN_YARA);
+
+    GET_ROUTE(metadata);
+    LOG(m_crow.crow_get_log(),
+        info,
+        "Route created for metadata : {}",
+        Endpoints::ROUTE_METADATA); 
 }
 
 void Routes::route_scan_sig_packed()
@@ -144,6 +150,44 @@ void Routes::route_scan_yara()
                 m_scan_yara.yara_scan_bytes(p_data);
                 m_context.conn_send_msg(
                     &p_conn, m_scan_yara.dto_to_json().json_to_string());
+            });
+}
+
+void Routes::route_metadata()
+{
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_METADATA)
+        .onerror(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_error_message)
+            {
+                LOG(m_crow.crow_get_log(),
+                    error,
+                    "WebSocket error on route '{}': {}",
+                    Endpoints::ROUTE_METADATA,
+                    p_error_message);
+            })
+        .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
+                  { return Routes::route_def_onaccept_connection(&p_req); })
+        .onopen([&](crow::websocket::connection &conn)
+                { Routes::route_def_open_connection(&conn); })
+        .onclose([&](crow::websocket::connection &p_conn,
+                     const std::string &p_reason,
+                     uint16_t /*p_status_code*/)
+                 { Routes::route_def_close_connection(&p_conn, p_reason); })
+        .onmessage(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_data,
+                bool p_is_binary)
+            {
+                LOG(m_crow.crow_get_log(),
+                    debug,
+                    "Message received on route '{}': data size = {}",
+                    Endpoints::ROUTE_METADATA,
+                    p_data.size());
+
+                m_metadata.metadata_parse(p_data);
+                m_context.conn_send_msg(
+                    &p_conn, m_metadata.dto_to_json().json_to_string());
             });
 }
 

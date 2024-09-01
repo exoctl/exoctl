@@ -14,6 +14,8 @@ include_directories(
 file(GLOB_RECURSE SOURCES
     engine/crow/*.cxx
     engine/analysis/*/*.cxx
+    engine/data/*.cxx
+    engine/crypto/*.cxx
     engine/security/*/*.cxx
     engine/parser/*/*.cxx   
     engine/parser/*.cxx
@@ -33,6 +35,8 @@ target_link_libraries(engine PUBLIC
     nlohmann_json::nlohmann_json
     fmt
     LIEF::LIEF
+    magic
+    libcrypto.a
 )
 
 if(FLAGS_OPTIMIZATIONS)
