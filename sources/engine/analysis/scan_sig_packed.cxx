@@ -2,7 +2,11 @@
 
 namespace Analysis
 {
-ScanPacked::ScanPacked() {}
+ScanPacked::ScanPacked()
+{
+    dto_set_field("is_packed", 0);
+    dto_set_field("packed", "none");
+}
 ScanPacked::~ScanPacked() {}
 
 const void ScanPacked::packed_scan_bytes(const std::string) {}

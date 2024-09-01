@@ -8,8 +8,10 @@
 
 int main()
 {
-    Security::Lexer lexer(
-        "@include(\"elf\") \"upx\" { elf.text.str_find(\"Upx 2023\") }");
+    Security::Lexer lexer;
+    
+    lexer.lexer_parser(
+        "@include(\"elf\")  \"upx\" {  { elf.text.str_find(\"Upx 2023\") }");
 
     Security::LexerToken token = lexer.lexer_next_token();
 

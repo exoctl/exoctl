@@ -13,20 +13,21 @@ namespace Security
 struct LexerToken
 {
     Types::LexerToken type;
-    const std::string value;
+    std::string value;
 };
 
 class Lexer
 {
   public:
-    Lexer(const std::string &);
     ~Lexer();
+    Lexer();
 
+    void lexer_parser(const std::string &);
     LexerToken lexer_next_token();
 
   private:
-    const std::string m_input;
-    const std::size_t m_input_size;
+    std::string m_input;
+    std::size_t m_input_size;
     std::size_t m_pos;
 
     bool lexer_match_keyword(const std::string &);

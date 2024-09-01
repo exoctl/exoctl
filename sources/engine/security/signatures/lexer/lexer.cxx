@@ -5,12 +5,14 @@
 namespace Security
 {
 
-Lexer::Lexer(const std::string &p_input)
-    : m_input(p_input), m_input_size(p_input.size()), m_pos(0)
-{
-}
 Lexer::~Lexer() {}
+Lexer::Lexer() : m_input(""), m_input_size(0), m_pos(0) {}
 
+void Lexer::lexer_parser(const std::string &p_input)
+{
+    m_input.assign(p_input);
+    m_input_size = p_input.size();
+}
 LexerToken Lexer::lexer_next_token()
 {
     while (m_pos < m_input_size && std::isspace(m_input[m_pos]))

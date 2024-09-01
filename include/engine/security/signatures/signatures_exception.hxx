@@ -17,5 +17,11 @@ class LexerToken : public Exception::BaseException
   public:
     explicit LexerToken(const std::string &);
 };
+
+class ImportSig : public Exception::BaseException
+{
+  public:
+    explicit ImportSig(const std::string &);
+};
 } // namespace SignaturesException
 } // namespace Security

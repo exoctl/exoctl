@@ -44,12 +44,13 @@ void Routes::routes_init()
     LOG(m_crow.crow_get_log(),
         info,
         "Route created for metadata : {}",
-        Endpoints::ROUTE_METADATA); 
+        Endpoints::ROUTE_METADATA);
 }
 
 void Routes::route_scan_sig_packed()
 {
-    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(), Endpoints::ROUTE_SCAN_SIG_PACKED)
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(),
+                         Endpoints::ROUTE_SCAN_SIG_PACKED)
         .onerror(
             [&](crow::websocket::connection &p_conn,
                 const std::string &p_error_message)
