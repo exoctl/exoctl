@@ -15,6 +15,6 @@ COPY . .
 EXPOSE 8181
 
 RUN git submodule update --init --recursive
-RUN mkdir -p build && cd build && cmake .. && make
+RUN mkdir build && cd build && cmake .. && make
 
 CMD ["./build/sources/engine"]

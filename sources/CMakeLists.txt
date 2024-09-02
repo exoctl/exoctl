@@ -1,6 +1,7 @@
 set(FLAGS_OPTIMIZATIONS ON)
 set(FLAGS_DEBUG OFF)
 
+option(LIEF_TESTS "Build LIEF tests" OFF)
 
 include_directories(
     ../include

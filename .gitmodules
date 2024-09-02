@@ -19,3 +19,6 @@
 [submodule "libraries/lief"]
 	path = libraries/lief
 	url = https://github.com/lief-project/LIEF.git
+[submodule "libraries/googletest"]
+	path = libraries/googletest
+	url = https://github.com/google/googletest.git
