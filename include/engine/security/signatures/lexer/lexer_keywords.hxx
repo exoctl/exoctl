@@ -4,6 +4,6 @@ namespace Security
 {
 namespace Keywords
 {
-inline constexpr const char *import = "@include";
+inline constexpr const char *include = "@include";
 } // namespace Keywords
 } // namespace Security

@@ -13,7 +13,7 @@ LexerToken::LexerToken(const std::string &p_message) : BaseException(p_message)
 {
 }
 
-ImportSig::ImportSig(const std::string &p_message)
+IncludeSig::IncludeSig(const std::string &p_message)
     : BaseException(p_message)
 {
 }

@@ -6,7 +6,7 @@ namespace Types
 {
 enum LexerToken
 {
-    IMPORT, // Keywords::import
+    INCLUDE, // Keywords::import
     IDENTIFIER,
     LBRACE, // {
     RBRACE, // }

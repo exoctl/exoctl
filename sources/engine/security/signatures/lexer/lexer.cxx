@@ -21,8 +21,8 @@ LexerToken Lexer::lexer_next_token()
     if (m_pos >= m_input_size)
         return (LexerToken){Types::LexerToken::END, ""};
 
-    if (Lexer::lexer_match_keyword(Keywords::import))
-        return (LexerToken){Types::LexerToken::IMPORT, Keywords::import};
+    if (Lexer::lexer_match_keyword(Keywords::include))
+        return (LexerToken){Types::LexerToken::INCLUDE, Keywords::include};
 
     if (std::isalpha(m_input[m_pos]) || m_input[m_pos] == '_')
         return Lexer::lexer_identifier_token();

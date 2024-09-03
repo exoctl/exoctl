@@ -10,7 +10,7 @@ int main()
     Security::Sig signatures;
 
     signatures.sig_set_rule_mem(
-        "@include(\"elf\") \"upx\" {  { elf.text.str_find(\"Upx 2023\") }",
+        "@include(\"elf\") \"upx\" {  { elf.text.str_find(\"Upx 2023\")}",
         "upx");
 
     Parser::Toml configuration;

@@ -15,12 +15,13 @@ extern "C"
         const char *sig_name;
         const char *sig_namespace;
     };
-}
 
-struct Objs
-{
-    Parser::Elf o_elf;
-};
+    struct Include
+    {
+        const char *i_name;
+        void *i_obj;
+    };
+}
 
 class Sig
 {
@@ -38,13 +39,18 @@ class Sig
   private:
     LexerToken m_current_token;
     Lexer m_lexer;
+    Parser::Elf m_elf;
 
+    static std::unordered_map<std::string, void *> m_objs;
     std::unordered_map<const std::string, SigRule> m_rules();
+    std::unordered_map<SigRule, Include> m_includes();
 
     void sig_parser_syntax(const std::string &);
-    void sig_parser_imports(); 
+    void sig_parser_includes();
     void sig_parser_sigrule();
+    bool sig_includes_check(const std::string &);
     void sig_advance_token();
     bool sig_expect_token(Types::LexerToken);
+    void sig_init_objs_includes();
 };
 } // namespace Security
