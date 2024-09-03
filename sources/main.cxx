@@ -2,20 +2,16 @@
 
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
-#include <include/engine/security/signatures/lexer/lexer.hxx>
-#include <iostream>
+#include <include/engine/security/signatures/signatures.hxx>
 #include <log.hxx> // this log not save in file
 
 int main()
 {
-    Security::Lexer lexer;
+    //Security::Sig signatures;
     
-    lexer.lexer_parser(
-        "@include(\"elf\")  \"upx\" {  { elf.text.str_find(\"Upx 2023\") }");
+    //signatures.sig_set_rule_mem(
+    //    "@include(\"elf\") \"upx\" {  { elf.text.str_find(\"Upx 2023\") }", "upx");
 
-    Security::LexerToken token = lexer.lexer_next_token();
-
-    std::cout << token.value << std::endl;
  
     Parser::Toml configuration;
     try

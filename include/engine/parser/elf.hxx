@@ -1,4 +1,6 @@
-#include <LIEF/LIEF.hpp>
+#pragma once
+
+#include <LIEF/ELF.hpp>
 
 namespace Parser
 {

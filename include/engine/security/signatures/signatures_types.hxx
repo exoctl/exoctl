@@ -4,10 +4,10 @@ namespace Security
 {
 namespace Types
 {
-enum SigError
+enum SigError_t
 {
-    ERROR_SUCCESS,
-    ERROR_FAILURE
+    sig_success,
+    sig_failure
 };
 } // namespace Types
 } // namespace Security

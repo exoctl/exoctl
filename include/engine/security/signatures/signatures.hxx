@@ -1,9 +1,9 @@
 #pragma once
 
-#include <engine/parser/elf.hxx>
+#include <engine/security/signatures/lexer/lexer.hxx>
 #include <engine/security/signatures/signatures_types.hxx>
 #include <unordered_map>
-#include <engine/security/signatures/lexer/lexer.hxx>
+#include <engine/parser/elf.hxx>
 
 namespace Security
 {
@@ -23,8 +23,8 @@ class Sig
     Sig();
     ~Sig();
 
-    Types::SigError sig_set_rule_mem(const std::string &, const std::string &);
-    Types::SigError sig_set_rule_file(const std::string &, const std::string &);
+    Types::SigError_t sig_set_rule_mem(const std::string &, const std::string &);
+    Types::SigError_t sig_set_rule_file(const std::string &, const std::string &);
     void sig_scan_file(const std::string &);
     void sig_scan_mem(const std::string &);
 

@@ -1,7 +1,3 @@
-/*
-    Generate tokens for small lang SIG
-*/
-
 #pragma once
 
 #include <engine/security/signatures/lexer/lexer_types.hxx>

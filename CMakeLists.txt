@@ -1,5 +1,5 @@
 # Information cmake
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5.2)
 
 # Information project
 project(Engine 
@@ -8,6 +8,8 @@ project(Engine
         CXX)
 
 set(CMAKE_BUILD_TYPE "realese")
+set(BUILD_TESTS OFF )
+set(BUILD_BENCHMARK OFF )
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -17,4 +19,5 @@ set(CMAKE_HAVE_THREADS_LIBRARY 1)
 set(CMAKE_USE_PTHREADS_INIT 1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
+# add subdirectory
 add_subdirectory( sources/ )

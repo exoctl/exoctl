@@ -6,19 +6,24 @@ namespace Security
 Sig::Sig() {}
 Sig::~Sig() {}
 
-Types::SigError Sig::sig_set_rule_mem(const std::string &p_rule,
+Types::SigError_t Sig::sig_set_rule_mem(const std::string &p_rule,
                                       const std::string &p_namespace)
 {
+    Sig::sig_parser_syntax(p_rule);
 
-    return Types::SigError::ERROR_SUCCESS;
+    return Types::SigError_t::sig_success;
 }
-Types::SigError Sig::sig_set_rule_file(const std::string &p_rule,
+Types::SigError_t Sig::sig_set_rule_file(const std::string &p_rule,
                                        const std::string &p_namespace)
 {
-    return Types::SigError::ERROR_SUCCESS;
+    return Types::SigError_t::sig_success;
 }
 
-void Sig::sig_parser_syntax(const std::string &p_rule) {}
+void Sig::sig_parser_syntax(const std::string &p_rule)
+{
+    m_lexer.lexer_parser(p_rule);
+    Sig::sig_parser_imports();
+}
 void Sig::sig_parser_imports()
 {
     Sig::sig_advance_token(); // Skip '@include'
