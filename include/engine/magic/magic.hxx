@@ -3,7 +3,7 @@
 #include <magic.h>
 #include <string>
 
-namespace Data
+namespace Magic
 {
 class Magic
 {

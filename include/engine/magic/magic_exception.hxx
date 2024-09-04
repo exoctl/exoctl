@@ -3,9 +3,9 @@
 #include <engine/exception.hxx>
 #include <string>              
   
-namespace Data
+namespace Magic
 {     
-namespace DataException        
+namespace MagicException        
 { 
 
 class Initialize : public Exception::BaseException 

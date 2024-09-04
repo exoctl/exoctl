@@ -2,7 +2,7 @@
 
 #include <ctime>
 #include <engine/crypto/sha.hxx>
-#include <engine/data/magic.hxx>
+#include <engine/magic/magic.hxx>
 #include <engine/dto.hxx>
 
 namespace Data
@@ -20,7 +20,7 @@ class Metadata : public DTO::DTOBase
     
     double m_entropy;
     time_t m_current_time;
-    Magic m_magic;
+    Magic::Magic m_magic;
     Crypto::Sha m_sha;
 };
 } // namespace Data

@@ -1,10 +1,10 @@
-#include <engine/data/data_exception.hxx>
+#include <engine/magic/magic_exception.hxx>
 #include <engine/exception.hxx>
 #include <string>
 
-namespace Data
+namespace Magic
 {
-namespace DataException
+namespace MagicException
 {
 
 Initialize::Initialize(const std::string &p_message) : BaseException(p_message)

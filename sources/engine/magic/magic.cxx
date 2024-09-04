@@ -1,16 +1,16 @@
-#include <engine/data/data_exception.hxx>
-#include <engine/data/magic.hxx>
+#include <engine/magic/magic_exception.hxx>
+#include <engine/magic/magic.hxx>
 
-namespace Data
+namespace Magic
 {
 Magic::Magic() : m_cookie(magic_open(MAGIC_MIME))
 {
     if (m_cookie == nullptr)
-        throw DataException::Initialize(
+        throw MagicException::Initialize(
             "magic_open() failed to return a cookie");
 
     if (magic_load(m_cookie, nullptr) != 0)
-        throw DataException::Initialize(
+        throw MagicException::Initialize(
             "magic_load failed to load magic database");
 }
 Magic::~Magic() { magic_close(m_cookie); }
