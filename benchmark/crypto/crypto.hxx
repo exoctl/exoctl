@@ -1,3 +1,5 @@
+#pragma once
+
 #include <benchmark/benchmark.h>
 #include <engine/crypto/sha.hxx>
 #include <string>

@@ -1,6 +1,5 @@
 #include <crypto/crypto.hxx>
 
-// Defina o benchmark
 BENCHMARK_DEFINE_F(CryptoBenchmark, SHA256)(benchmark::State &state)
 {
     std::string test_string = "the best engine";
