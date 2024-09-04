@@ -66,7 +66,8 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   {
    "creation_date":"2024-09-04",
    "entropy":3.9959065984842446,
-   "mime_type":"text/x-shellscript; charset=us-ascii","sha256":"0ca6e039ddb80b48f1b4a79dd47b90d5ec41337597f6d584603d63314a5a982c",
+   "mime_type":"text/x-shellscript; charset=us-ascii",
+   "sha256":"0ca6e039ddb80b48f1b4a79dd47b90d5ec41337597f6d584603d63314a5a982c",
    "size":36
   }
   ```
