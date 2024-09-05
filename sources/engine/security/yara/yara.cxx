@@ -4,7 +4,6 @@
 #include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
 #include <filesystem>
-#include <iostream>
 #include <stdexcept>
 #include <sys/types.h>
 #include <unistd.h>

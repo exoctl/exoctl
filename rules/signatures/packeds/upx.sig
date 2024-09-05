@@ -1,6 +1,5 @@
-@include("elf")
+@include("elf") 
 
-"upx_packed"
-{
-    elf.text.str_find("Upx 2023")
+@sig : "upx" {
+    elf.section.text.str_find("Upx 2023")
 }

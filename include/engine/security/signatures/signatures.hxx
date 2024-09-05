@@ -3,6 +3,7 @@
 #include <engine/parser/elf.hxx>
 #include <engine/security/signatures/lexer/lexer.hxx>
 #include <engine/security/signatures/signatures_types.hxx>
+#include <functional>
 #include <unordered_map>
 
 namespace Security
@@ -41,12 +42,12 @@ class Sig
     Lexer m_lexer;
     Parser::Elf m_elf;
 
-    static std::unordered_map<std::string, void *> m_objs;
-    std::unordered_map<const std::string, SigRule> m_rules();
-    std::unordered_map<SigRule, Include> m_includes();
+    static std::unordered_map<std::string_view, void *> m_objs;
+    static std::unordered_map<std::string_view, SigRule> m_rules;
+    //static std::unordered_map<SigRule, Include> m_includes;
 
     void sig_parser_syntax(const std::string &);
-    void sig_parser_includes();
+    void sig_parser_includes(const std::function<void(const char *)> &);
     void sig_parser_sigrule();
     bool sig_includes_check(const std::string &);
     void sig_advance_token();

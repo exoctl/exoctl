@@ -24,11 +24,17 @@ LexerToken Lexer::lexer_next_token()
     if (Lexer::lexer_match_keyword(Keywords::include))
         return (LexerToken){Types::LexerToken::INCLUDE, Keywords::include};
 
+    if (Lexer::lexer_match_keyword(Keywords::sig))
+        return (LexerToken){Types::LexerToken::SIG, Keywords::sig};
+
     if (std::isalpha(m_input[m_pos]) || m_input[m_pos] == '_')
         return Lexer::lexer_identifier_token();
 
     switch (m_input[m_pos])
     {
+    case ':':
+        m_pos++;
+        return (LexerToken){Types::LexerToken::COLON, ":"};
     case '{':
         m_pos++;
         return (LexerToken){Types::LexerToken::LBRACE, "{"};

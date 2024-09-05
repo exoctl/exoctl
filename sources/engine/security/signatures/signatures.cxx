@@ -1,11 +1,13 @@
 #include <engine/security/signatures/signatures.hxx>
 #include <engine/security/signatures/signatures_exception.hxx>
-#include <iostream>
+#include <fmt/core.h>
 
 namespace Security
 {
 
-std::unordered_map<std::string, void *> Sig::m_objs;
+std::unordered_map<std::string_view, void *> Sig::m_objs;
+std::unordered_map<std::string_view, SigRule> Sig::m_rules;
+// std::unordered_map<SigRule, Include> Sig::m_includes;
 
 Sig::Sig() { Sig::sig_init_objs_includes(); }
 Sig::~Sig() {}
@@ -30,7 +32,14 @@ void Sig::sig_parser_syntax(const std::string &p_rule)
     {
         Sig::sig_advance_token();
         if (Sig::sig_expect_token(Types::LexerToken::INCLUDE))
-            Sig::sig_parser_includes();
+        {
+            Sig::sig_parser_includes([](const char *p_include)
+                                     { fmt::print("{}", p_include); });
+        }
+        else if (Sig::sig_expect_token(Types::LexerToken::SIG))
+        {
+            
+        }
     }
 }
 
@@ -42,7 +51,8 @@ void Sig::sig_parser_syntax(const std::string &p_rule)
     Advances:       1       2       3         4    ...          END
                     calls sig_parser_includes
   */
-void Sig::sig_parser_includes()
+void Sig::sig_parser_includes(
+    const std::function<void(const char *p_include)> &p_callback)
 {
     if (!Sig::sig_expect_token(Types::LexerToken::INCLUDE))
     {
@@ -79,10 +89,13 @@ void Sig::sig_parser_includes()
     {
         throw SignaturesException::IncludeSig(
             "error: expected module name inside @include(\"module\")\n"
-            "       @include(\""+ m_current_token.value +"\")\n"
+            "       @include(\"" +
+            m_current_token.value +
+            "\")\n"
             "                 ^~~~\n"
             "note: the module name is missing or incorrect");
     }
+    const std::string include = std::move(m_current_token.value);
 
     Sig::sig_advance_token();
 
@@ -90,11 +103,14 @@ void Sig::sig_parser_includes()
     {
         throw SignaturesException::IncludeSig(
             "error: expected ')'\n"
-            "       @include(\""+ m_current_token.value +"\")\n"
+            "       @include(\"" +
+            m_current_token.value +
+            "\")\n"
             "                     ^\n"
             "note: the closing parenthesis ')' is missing or incorrect");
     }
 
+    p_callback(include.c_str());
     Sig::sig_advance_token();
 }
 void Sig::sig_parser_sigrule() {}
@@ -106,7 +122,11 @@ bool Sig::sig_expect_token(Types::LexerToken p_token)
     return true;
 }
 
-void Sig::sig_init_objs_includes() { m_objs.emplace("elf", &m_elf); }
+void Sig::sig_init_objs_includes()
+{
+    m_rules.emplace("test", nullptr);
+    m_objs.emplace("elf", &m_elf);
+}
 
 bool Sig::sig_includes_check(const std::string &p_include)
 {
