@@ -1,5 +1,13 @@
 @include("elf") 
 
 @sig : "upx" {
-    elf.section.text.str_find("Upx 2023")
+
+    meta {
+        description="simple sig for detect upx packed in elf"
+        author="remob"
+    }
+
+    main {
+        elf.section.text.str_find("Upx 2023")
+    }
 }

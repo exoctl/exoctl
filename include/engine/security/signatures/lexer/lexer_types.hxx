@@ -16,8 +16,8 @@ enum LexerToken
     STRING,
     EQUALS, // =
     DOT,    // .
-    COLON,
-    END // End of input
+    COLON,  // :
+    END     // End of input
 };
 } // namespace Types
 } // namespace Security

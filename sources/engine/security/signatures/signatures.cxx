@@ -36,9 +36,9 @@ void Sig::sig_parser_syntax(const std::string &p_rule)
             Sig::sig_parser_includes([](const char *p_include)
                                      { fmt::print("{}", p_include); });
         }
-        else if (Sig::sig_expect_token(Types::LexerToken::SIG))
+        if (Sig::sig_expect_token(Types::LexerToken::SIG))
         {
-            
+            Sig::sig_parser_sigrule();
         }
     }
 }
@@ -113,7 +113,45 @@ void Sig::sig_parser_includes(
     p_callback(include.c_str());
     Sig::sig_advance_token();
 }
-void Sig::sig_parser_sigrule() {}
+void Sig::sig_parser_sigrule()
+{
+    if (!Sig::sig_expect_token(Types::LexerToken::SIG))
+    {
+        throw SignaturesException::SigRule(
+            "error: expected '@sig' directive\n"
+            "note: the @sig directive is missing or incorrect");
+    }
+
+    Sig::sig_advance_token();
+
+    if (!Sig::sig_expect_token(Types::LexerToken::COLON))
+    {
+        throw SignaturesException::SigRule("error: expected ':' directive\n");
+    }
+
+    Sig::sig_advance_token();
+
+    if (!Sig::sig_expect_token(Types::LexerToken::STRING))
+    {
+        throw SignaturesException::IncludeSig(
+            "error: expected sig name inside '@sig : \"sig_name\"'\n"
+            "        @sig :\"sig_name\"\n"
+            "               ^~~~~~~\n");
+    }
+    
+    const std::string sig_name = std::move(m_current_token.value);
+
+    Sig::sig_advance_token();
+
+    if (!Sig::sig_expect_token(Types::LexerToken::LBRACE))
+    {
+        throw SignaturesException::IncludeSig(
+            "error: expected '{' name inside '@sig : \"" + sig_name +
+            "\" {'\n"
+            "               {\n"
+            "               ^\n");
+    }
+}
 bool Sig::sig_expect_token(Types::LexerToken p_token)
 {
     if (p_token != m_current_token.type)
@@ -122,6 +160,7 @@ bool Sig::sig_expect_token(Types::LexerToken p_token)
     return true;
 }
 
+/* default objs */
 void Sig::sig_init_objs_includes()
 {
     m_rules.emplace("test", nullptr);

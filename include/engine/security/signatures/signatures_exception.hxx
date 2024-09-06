@@ -23,5 +23,11 @@ class IncludeSig : public Exception::BaseException
   public:
     explicit IncludeSig(const std::string &);
 };
+
+class SigRule : public Exception::BaseException
+{
+  public:
+    explicit SigRule(const std::string &);
+};
 } // namespace SignaturesException
 } // namespace Security

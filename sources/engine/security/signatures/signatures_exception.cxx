@@ -13,8 +13,11 @@ LexerToken::LexerToken(const std::string &p_message) : BaseException(p_message)
 {
 }
 
-IncludeSig::IncludeSig(const std::string &p_message)
-    : BaseException(p_message)
+IncludeSig::IncludeSig(const std::string &p_message) : BaseException(p_message)
+{
+}
+
+SigRule::SigRule(const std::string &p_message) : BaseException(p_message)
 {
 }
 } // namespace SignaturesException
