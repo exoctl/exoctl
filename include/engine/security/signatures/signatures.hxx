@@ -36,6 +36,7 @@ class Sig
                                         const std::string &);
     void sig_scan_file(const std::string &);
     void sig_scan_mem(const std::string &);
+    void sig_create_handler_obj(const std::string &, void *);
 
   private:
     LexerToken m_current_token;
@@ -44,7 +45,7 @@ class Sig
 
     static std::unordered_map<std::string_view, void *> m_objs;
     static std::unordered_map<std::string_view, SigRule> m_rules;
-    //static std::unordered_map<SigRule, Include> m_includes;
+    // static std::unordered_map<SigRule, Include> m_includes;
 
     void sig_parser_syntax(const std::string &);
     void sig_parser_includes(const std::function<void(const char *)> &);

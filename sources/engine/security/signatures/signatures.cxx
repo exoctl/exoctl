@@ -138,7 +138,7 @@ void Sig::sig_parser_sigrule()
             "        @sig :\"sig_name\"\n"
             "               ^~~~~~~\n");
     }
-    
+
     const std::string sig_name = std::move(m_current_token.value);
 
     Sig::sig_advance_token();
@@ -164,12 +164,17 @@ bool Sig::sig_expect_token(Types::LexerToken p_token)
 void Sig::sig_init_objs_includes()
 {
     m_rules.emplace("test", nullptr);
-    m_objs.emplace("elf", &m_elf);
+    Sig::sig_create_handler_obj("elf", &m_elf);
 }
 
 bool Sig::sig_includes_check(const std::string &p_include)
 {
     return m_objs.contains(p_include);
 }
+void Sig::sig_create_handler_obj(const std::string &p_name, void *p_obj) 
+{
+    m_objs.emplace(p_name, p_obj);
+}
+
 void Sig::sig_advance_token() { m_current_token = m_lexer.lexer_next_token(); }
 } // namespace Security
