@@ -1,5 +1,5 @@
 #include <cmath>
-#include <engine/data/metadata.hxx>
+#include <engine/external/data/metadata.hxx>
 
 namespace Data
 {
@@ -30,11 +30,11 @@ const void Metadata::metadata_parse(const std::string &p_buffer)
 
     dto_set_field("creation_date", std::string(cstr));
 
-    compute_entropy(p_buffer);
+    Metadata::metadata_compute_entropy(p_buffer);
     dto_set_field("entropy", m_entropy);
 }
 
-const void Metadata::compute_entropy(const std::string &p_buffer)
+const void Metadata::metadata_compute_entropy(const std::string &p_buffer)
 {
     size_t map[256] = {0};
 

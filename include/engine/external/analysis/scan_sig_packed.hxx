@@ -8,11 +8,11 @@
 
 namespace Analysis
 {
-class ScanPacked : public DTO::DTOBase
+class ScanSigPacked : public DTO::DTOBase
 {
   public:
-    ScanPacked();
-    ~ScanPacked();
+    ScanSigPacked();
+    ~ScanSigPacked();
 
     const void packed_scan_bytes(const std::string);
     const void packed_load_rules(const std::function<void(void *)> &) const;

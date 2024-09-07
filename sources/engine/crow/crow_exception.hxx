@@ -6,7 +6,7 @@ namespace Crow
 {
 namespace CrowException
 {
-class Abort : public Exception::BaseException
+class Abort : public Exception::ExceptionBase
 {
   public:
     explicit Abort(const std::string &);

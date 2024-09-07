@@ -6,25 +6,25 @@ namespace Security
 {
 namespace SignaturesException
 {
-class CompilerSig : public Exception::BaseException
+class CompilerSig : public Exception::ExceptionBase
 {
   public:
     explicit CompilerSig(const std::string &);
 };
 
-class LexerToken : public Exception::BaseException
+class LexerToken : public Exception::ExceptionBase
 {
   public:
     explicit LexerToken(const std::string &);
 };
 
-class IncludeSig : public Exception::BaseException
+class IncludeSig : public Exception::ExceptionBase
 {
   public:
     explicit IncludeSig(const std::string &);
 };
 
-class SigRule : public Exception::BaseException
+class SigRule : public Exception::ExceptionBase
 {
   public:
     explicit SigRule(const std::string &);

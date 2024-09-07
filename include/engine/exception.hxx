@@ -5,13 +5,13 @@
 
 namespace Exception
 {
-class BaseException : public std::exception
+class ExceptionBase : public std::exception
 {
   private:
     const std::string m_error_message;
 
   protected:
-    explicit BaseException(const std::string &message);
+    explicit ExceptionBase(const std::string &message);
 
   public:
     virtual const char *what() const noexcept override;

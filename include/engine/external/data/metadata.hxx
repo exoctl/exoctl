@@ -16,7 +16,7 @@ class Metadata : public DTO::DTOBase
     const void metadata_parse(const std::string &);
 
   private:
-    const void compute_entropy(const std::string &);
+    const void metadata_compute_entropy(const std::string &);
     
     double m_entropy;
     time_t m_current_time;

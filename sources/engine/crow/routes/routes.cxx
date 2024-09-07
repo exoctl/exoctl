@@ -3,6 +3,7 @@
 #include <engine/crow/crow_exception.hxx>
 #include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
+#include <engine/disassembly/capstone/capstone_exception.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 #include <optional>
 
@@ -45,6 +46,12 @@ void Routes::routes_init()
         info,
         "Route created for metadata : {}",
         Endpoints::ROUTE_METADATA);
+
+    GET_ROUTE(capstone_disassembly_x86_64);
+    LOG(m_crow.crow_get_log(),
+        info,
+        "Route created for metadata : {}",
+        Endpoints::ROUTE_CAPSTONE_DISASS_X86_64);
 }
 
 void Routes::route_scan_sig_packed()
@@ -189,6 +196,65 @@ void Routes::route_metadata()
                 m_metadata.metadata_parse(p_data);
                 m_context.conn_send_msg(
                     &p_conn, m_metadata.dto_to_json().json_to_string());
+            });
+}
+
+void Routes::route_capstone_disassembly_x86_64()
+{
+    CROW_WEBSOCKET_ROUTE(m_crow.crow_get_app(),
+                         Endpoints::ROUTE_CAPSTONE_DISASS_X86_64)
+        .onerror(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_error_message)
+            {
+                LOG(m_crow.crow_get_log(),
+                    error,
+                    "WebSocket error on route '{}': {}",
+                    Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                    p_error_message);
+            })
+        .onaccept([&](const crow::request &p_req, void ** /*p_userdata*/)
+                  { return Routes::route_def_onaccept_connection(&p_req); })
+        .onopen([&](crow::websocket::connection &conn)
+                { Routes::route_def_open_connection(&conn); })
+        .onclose([&](crow::websocket::connection &p_conn,
+                     const std::string &p_reason,
+                     uint16_t /*p_status_code*/)
+                 { Routes::route_def_close_connection(&p_conn, p_reason); })
+        .onmessage(
+            [&](crow::websocket::connection &p_conn,
+                const std::string &p_data,
+                bool p_is_binary)
+            {
+                LOG(m_crow.crow_get_log(),
+                    debug,
+                    "Message received on route '{}': data size = {}",
+                    Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                    p_data.size());
+
+                if (p_is_binary)
+                {
+                    try
+                    {
+                        m_capstonex86.capstonex86_disassembly(p_data);
+                    }
+                    catch (
+                        const Disassembly::CapstoneException::FailedDisassembly
+                            &e)
+                    {
+                        LOG(m_crow.crow_get_log(),
+                            error,
+                            "Disassembly failed on route '{}': data size = {}, "
+                            "error: {}",
+                            Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                            p_data.size(),
+                            e.what());
+                    }
+                }
+                else
+                {
+                    m_context.conn_send_msg(&p_conn, "{\"status\": \"error\"}");
+                }
             });
 }
 

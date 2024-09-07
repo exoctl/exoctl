@@ -4,6 +4,6 @@ namespace Engine
 {
 namespace EngineException
 {
-Run::Run(const std::string &p_message) : BaseException(p_message) {}
+Run::Run(const std::string &p_message) : ExceptionBase(p_message) {}
 } // namespace EngineException
 } // namespace Engine

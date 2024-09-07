@@ -15,6 +15,7 @@ namespace Crow
 // Specific module prefixes
 #define ANALYSIS_PREFIX API_PREFIX "/analysis"
 #define DATA_PREFIX API_PREFIX "/data"
+#define REV_PREFIX API_PREFIX "/rev"
 
 // Macro to define routes with module-specific prefixes
 #define DEFINE_ROUTE(name, prefix, path)                                       \
@@ -29,6 +30,9 @@ DEFINE_ROUTE(SCAN_YARA, ANALYSIS_PREFIX, "/scan_yara")
 
 // Data endpoints
 DEFINE_ROUTE(METADATA, DATA_PREFIX, "/metadata")
+
+// Rev endpoints
+DEFINE_ROUTE(CAPSTONE_DISASS_X86_64, REV_PREFIX, "/capstone/disassembly/x86_64")
 
 } // namespace Endpoints
 } // namespace Crow

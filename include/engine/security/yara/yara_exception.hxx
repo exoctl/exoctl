@@ -7,25 +7,25 @@ namespace Security
 {
 namespace YaraException
 {
-class CompilerRules : public Exception::BaseException
+class CompilerRules : public Exception::ExceptionBase
 {
   public:
     explicit CompilerRules(const std::string &);
 };
 
-class LoadRules : public Exception::BaseException
+class LoadRules : public Exception::ExceptionBase
 {
   public:
     explicit LoadRules(const std::string &);
 };
 
-class Initialize : public Exception::BaseException
+class Initialize : public Exception::ExceptionBase
 {
   public:
     explicit Initialize(const std::string &);
 };
 
-class Finalize : public Exception::BaseException
+class Finalize : public Exception::ExceptionBase
 {
   public:
     explicit Finalize(const std::string &);

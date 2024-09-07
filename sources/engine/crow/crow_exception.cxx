@@ -4,6 +4,6 @@ namespace Crow
 {
 namespace CrowException
 {
-Abort::Abort(const std::string &p_message) : BaseException(p_message) {}
+Abort::Abort(const std::string &p_message) : ExceptionBase(p_message) {}
 } // namespace CrowException
 } // namespace Crow

@@ -7,11 +7,11 @@ namespace Magic
 namespace MagicException
 {
 
-Initialize::Initialize(const std::string &p_message) : BaseException(p_message)
+Initialize::Initialize(const std::string &p_message) : ExceptionBase(p_message)
 {
 }
 
-Finalize::Finalize(const std::string &p_message) : BaseException(p_message) {}
+Finalize::Finalize(const std::string &p_message) : ExceptionBase(p_message) {}
 
 } // namespace DataException
 } // namespace Data

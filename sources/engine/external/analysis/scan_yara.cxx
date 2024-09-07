@@ -1,4 +1,4 @@
-#include <engine/analysis/scan_yara.hxx>
+#include <engine/external/analysis/scan_yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 #include <iostream>
 #include <string>

@@ -1,9 +1,11 @@
 #pragma once
 
-#include <engine/analysis/scan_yara.hxx>
-#include <engine/data/metadata.hxx>
 #include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
+#include <engine/external/analysis/scan_yara.hxx>
+#include <engine/external/data/metadata.hxx>
+#include <engine/external/rev/disassembly_capstone_x86_64.hxx>
+
 #include <mutex>
 
 #define GET_ROUTE(name) Routes::route_##name();
@@ -21,15 +23,19 @@ class Routes
   private:
     CrowApp &m_crow;
     Context m_context;
-    
+
     Data::Metadata m_metadata;
     Analysis::ScanYara m_scan_yara;
+    Rev::CapstoneX86 m_capstonex86;
+
     std::mutex m_mtx;
 
     void route_search_yara();
     void route_scan_sig_packed();
     void route_scan_yara();
     void route_metadata();
+    void route_capstone_disassembly_x86_64();
+
     void route_def_close_connection(crow::websocket::connection *,
                                     const std::string &);
     void route_def_open_connection(crow::websocket::connection *);

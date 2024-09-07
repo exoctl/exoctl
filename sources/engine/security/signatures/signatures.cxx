@@ -164,14 +164,14 @@ bool Sig::sig_expect_token(Types::LexerToken p_token)
 void Sig::sig_init_objs_includes()
 {
     m_rules.emplace("test", nullptr);
-    Sig::sig_create_handler_obj("elf", &m_elf);
+    m_objs.emplace("elf", &m_elf);
 }
 
 bool Sig::sig_includes_check(const std::string &p_include)
 {
     return m_objs.contains(p_include);
 }
-void Sig::sig_create_handler_obj(const std::string &p_name, void *p_obj) 
+void Sig::sig_create_handler_obj(const std::string &p_name, void *p_obj)
 {
     m_objs.emplace(p_name, p_obj);
 }

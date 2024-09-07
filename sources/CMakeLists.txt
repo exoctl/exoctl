@@ -10,6 +10,7 @@ include_directories(
     ../
     ../libraries/tomlplusplus/include
     ../libraries/lief/include
+    ../libraries/capstone-engine/include/
 )
 
 file(GLOB_RECURSE SOURCES
@@ -36,6 +37,7 @@ target_link_libraries(engine PUBLIC
     nlohmann_json::nlohmann_json
     fmt
     LIEF::LIEF
+    capstone
     magic
     crypto
 )
@@ -63,6 +65,7 @@ elseif(FLAGS_DEBUG)
     )
 endif()
 
+add_subdirectory(../libraries/capstone-engine ${CMAKE_BINARY_DIR}/libraries/capstone-engine)
 add_subdirectory(../libraries/crow ${CMAKE_BINARY_DIR}/libraries/crow)
 add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog ${CMAKE_BINARY_DIR}/libraries/spdlog)

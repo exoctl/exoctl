@@ -2,12 +2,12 @@
 
 namespace Exception
 {
-BaseException::BaseException(const std::string &message)
+ExceptionBase::ExceptionBase(const std::string &message)
     : m_error_message(message)
 {
 }
 
-const char *BaseException::what() const noexcept
+const char *ExceptionBase::what() const noexcept
 {
     return m_error_message.c_str();
 }
