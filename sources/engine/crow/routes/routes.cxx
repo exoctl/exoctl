@@ -20,7 +20,6 @@ Routes::~Routes() {}
 void Routes::routes_init()
 {
     Routes::route_init_analysis();
-
     LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
 
     GET_ROUTE(search_yara);

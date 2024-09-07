@@ -1,5 +1,5 @@
 file(GLOB_RECURSE SOURCES
-    ../../sources/engine/data/*.cxx
+    ../../sources/engine/external/data/*.cxx
     ../../sources/engine/magic/*.cxx
     ../../sources/engine/crypto/*.cxx
     ../../sources/engine/parser/json.cxx

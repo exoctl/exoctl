@@ -41,5 +41,6 @@ class Routes
     void route_def_open_connection(crow::websocket::connection *);
     bool route_def_onaccept_connection(const crow::request *);
     void route_init_analysis();
+    void add_route(const std::string &);
 };
 } // namespace Crow
