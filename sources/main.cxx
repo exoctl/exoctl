@@ -14,20 +14,6 @@ int main()
                                 "elf.section.text.str_find(\"Upx 2023\") }",
                                 "upx");
 
-    Disassembly::Capstone capstone(CS_ARCH_X86, CS_MODE_64);
-
-    uint8_t code[] = {0x48, 0x89, 0xd8, 0x48, 0x83, 0xc0, 0x01, 0xc3};
-    size_t code_size = sizeof(code);
-    capstone.capstone_disassembly(code,
-                         code_size,
-                         [&](struct Disassembly::cs_user_data *p_user_data, size_t p_count)
-                         {
-                             fmt::print("{:x} {} {}\n",
-                                        p_user_data->insn[p_count].address,
-                                        p_user_data->insn[p_count].mnemonic,
-                                        p_user_data->insn[p_count].op_str);
-                         });
-
     Parser::Toml configuration;
     try
     {

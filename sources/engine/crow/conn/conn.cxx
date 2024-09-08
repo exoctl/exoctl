@@ -1,4 +1,5 @@
 #include <engine/crow/conn/conn.hxx>
+#include <iostream>
 
 namespace Crow
 {

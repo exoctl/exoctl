@@ -2,6 +2,7 @@
 
 #include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
+#include <engine/crow/routes/websocket.hxx>
 #include <engine/external/analysis/scan_yara.hxx>
 #include <engine/external/data/metadata.hxx>
 #include <engine/external/rev/disassembly_capstone_x86_64.hxx>
@@ -30,17 +31,6 @@ class Routes
 
     std::mutex m_mtx;
 
-    void route_search_yara();
-    void route_scan_sig_packed();
-    void route_scan_yara();
-    void route_metadata();
-    void route_capstone_disassembly_x86_64();
-
-    void route_def_close_connection(crow::websocket::connection *,
-                                    const std::string &);
-    void route_def_open_connection(crow::websocket::connection *);
-    bool route_def_onaccept_connection(const crow::request *);
     void route_init_analysis();
-    void add_route(const std::string &);
 };
 } // namespace Crow
