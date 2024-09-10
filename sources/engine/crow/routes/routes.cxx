@@ -39,7 +39,7 @@ void Routes::routes_init()
                 p_data.size());
 
             m_scan_yara.yara_scan_bytes(p_data);
-            p_context.conn_send_msg(&p_conn,
+            p_context.conn_broadcast(&p_conn,
                                     m_scan_yara.dto_to_json().json_to_string());
         });
 
@@ -58,7 +58,7 @@ void Routes::routes_init()
                 p_data.size());
 
             m_metadata.metadata_parse(p_data);
-            p_context.conn_send_msg(&p_conn,
+            p_context.conn_broadcast(&p_conn,
                                     m_metadata.dto_to_json().json_to_string());
         });
 
@@ -77,11 +77,13 @@ void Routes::routes_init()
                 p_data.size());
 
             if (!p_is_binary)
-                p_context.conn_send_msg(&p_conn, "{\"status\": \"error\"}");
+                p_context.conn_broadcast(&p_conn, "{\"status\": \"error\"}");
 
             try
             {
                 m_capstonex86.capstonex86_disassembly(p_data);
+                p_context.conn_broadcast(
+                    &p_conn, m_capstonex86.dto_to_json().json_to_string());
             }
             catch (const Disassembly::CapstoneException::FailedDisassembly &e)
             {

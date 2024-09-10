@@ -1,6 +1,8 @@
 #pragma once
 
 #include <engine/parser/json.hxx>
+#include <iostream>
+#include <map>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -11,8 +13,9 @@ namespace DTO
 class DTOBase
 {
   private:
-    std::unordered_map<std::string,
-                       std::variant<int, double, std::string, const char *>>
+    std::unordered_map<
+        std::string,
+        std::variant<int, double, std::string, const char *, Parser::Json>>
         m_fields;
 
     mutable Parser::Json m_json;
@@ -35,10 +38,23 @@ class DTOBase
 
     Parser::Json dto_to_json() const
     {
+        m_json.clear();
         for (const auto &[key, value] : m_fields)
         {
-            std::visit([this, &key](const auto &arg) { m_json[key] = arg; },
-                       value);
+            std::visit(
+                [this, &key](const auto &arg)
+                {
+                    if constexpr (std::is_same_v<std::decay_t<decltype(arg)>,
+                                                 Parser::Json>)
+                    {
+                        m_json[key].push_back(arg);
+                    }
+                    else
+                    {
+                        m_json[key] = arg;
+                    }
+                },
+                value);
         }
 
         return m_json;

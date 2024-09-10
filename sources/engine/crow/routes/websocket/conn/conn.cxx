@@ -15,7 +15,7 @@ const void Context::conn_erase(crow::websocket::connection *p_conn)
     m_conn.erase(p_conn);
 }
 
-const void Context::conn_send_msg(crow::websocket::connection *p_conn,
+const void Context::conn_broadcast(crow::websocket::connection *p_conn,
                                   const std::string p_msg) const
 {
     if (m_conn.find(p_conn) != m_conn.end())

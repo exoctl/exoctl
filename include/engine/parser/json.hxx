@@ -10,9 +10,9 @@ class Json : public nlohmann::json
     Json();
     Json(const nlohmann::json &);
 
-    std::string json_to_string() const;
+    std::string json_to_string(unsigned int = 4) const;
     void json_craft(const nlohmann::json &);
 
-    ~Json() = default;
+    ~Json();
 };
 } // namespace Parser

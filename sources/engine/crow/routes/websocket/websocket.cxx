@@ -78,7 +78,7 @@ void WebSocket::websocket_def_open_connection(
 {
     std::lock_guard<std::mutex> _(m_mtx);
     m_context.conn_add(p_conn);
-    m_context.conn_send_msg(p_conn, "{\"status\": \"ready\"}");
+    m_context.conn_broadcast(p_conn, "{\"status\": \"ready\"}");
 
     LOG(m_crow.crow_get_log(),
         info,

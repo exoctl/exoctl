@@ -23,7 +23,7 @@ class Context
     const void conn_add(crow::websocket::connection *);
     const void conn_erase(crow::websocket::connection *);
     const std::size_t conn_size() const;
-    const void conn_send_msg(crow::websocket::connection *,
+    const void conn_broadcast(crow::websocket::connection *,
                              const std::string) const;
 
     /**
