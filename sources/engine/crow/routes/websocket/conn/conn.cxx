@@ -1,11 +1,10 @@
-#include <engine/crow/conn/conn.hxx>
-#include <iostream>
+#include <engine/crow/routes/websocket/conn/conn.hxx>
 
 namespace Crow
 {
 Context::Context(Parser::Toml &p_config)
     : m_conn(0), m_config(p_config),
-      m_whitelist(GET_TOML_TBL_VALUE(p_config, array, "crow", "whitelist"))
+      m_whitelist(GET_TOML_TBL_VALUE(p_config, array, "crow", "websocket_conn_whitelist"))
 {
 }
 

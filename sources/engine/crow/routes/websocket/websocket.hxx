@@ -1,8 +1,8 @@
 #pragma once
 
 #include <crow.h>
-#include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow.hxx>
+#include <engine/crow/routes/websocket/conn/conn.hxx>
 #include <functional>
 #include <string>
 

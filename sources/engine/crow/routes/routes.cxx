@@ -1,21 +1,22 @@
-#include <alloca.h>
-#include <engine/crow/conn/conn.hxx>
 #include <engine/crow/crow_exception.hxx>
 #include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
 #include <engine/disassembly/capstone/capstone_exception.hxx>
 #include <engine/security/yara/yara_exception.hxx>
-#include <optional>
 
 namespace Crow
 {
 Routes::Routes(CrowApp &p_crow)
-    : m_crow(p_crow), m_context(p_crow.crow_get_config()),
-      m_scan_yara(p_crow.crow_get_config())
+    : m_crow(p_crow), m_scan_yara(p_crow.crow_get_config())
 {
 }
 
-Routes::~Routes() {}
+Routes::~Routes()
+{
+    delete socket_scan_yara;
+    delete socket_metadata;
+    delete socket_capstone_disass;
+}
 
 void Routes::routes_init()
 {
@@ -23,7 +24,7 @@ void Routes::routes_init()
 
     LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
 
-    WebSocket *socket_scan_yara = new WebSocket(
+    socket_scan_yara = new WebSocket(
         m_crow,
         Endpoints::ROUTE_SCAN_YARA,
         [&](Context &p_context,
@@ -42,7 +43,7 @@ void Routes::routes_init()
                                     m_scan_yara.dto_to_json().json_to_string());
         });
 
-    WebSocket *socket_metadata = new WebSocket(
+    socket_metadata = new WebSocket(
         m_crow,
         Endpoints::ROUTE_METADATA,
         [&](Context &p_context,
@@ -61,7 +62,7 @@ void Routes::routes_init()
                                     m_metadata.dto_to_json().json_to_string());
         });
 
-    WebSocket *socket_capstone_disass = new WebSocket(
+    socket_capstone_disass = new WebSocket(
         m_crow,
         Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
         [&](Context &p_context,
