@@ -15,7 +15,7 @@ CapstoneX86::~CapstoneX86() {}
 
 void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
 {
-    Parser::Json disassembly = Parser::Json::array(); // Create a JSON array
+    Parser::Json disassembly = Parser::Json::array();
 
     m_capstone.capstone_disassembly(
         reinterpret_cast<const uint8_t *>(p_code.data()),
@@ -27,6 +27,12 @@ void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
                 fmt::format("{:x}", p_user_data->insn[p_count].address);
             instruction["mnemonic"] = p_user_data->insn[p_count].mnemonic;
             instruction["operands"] = p_user_data->insn[p_count].op_str;
+            instruction["size"] = p_user_data->insn[p_count].size;
+            for (size_t i = 0; i < p_user_data->insn[p_count].size; ++i)
+            {
+                instruction["bytes"] +=
+                    fmt::format(" {:x}", p_user_data->insn[p_count].bytes[i]);
+            }
 
             disassembly.push_back(instruction);
         });
