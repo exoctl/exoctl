@@ -86,7 +86,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   ```
   - **onmessage:**
   ```json
- {
+  {
     "arch": "x86_64",
     "mode": "x64",
     "disassembly": [
@@ -109,7 +109,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
             }
         ]
     ]
-}
+  }
   ```
   - **onclose:** 
   - **onerror:** 
