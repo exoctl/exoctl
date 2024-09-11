@@ -27,7 +27,7 @@ This API provides WebSocket-based endpoints for scanning data and searching with
 
 In the file [configuration.toml](../configuration.toml), you can modify the `crow=whitelist` setting to control whether a connection is accepted based on the IP address. If an IP address is not included in the whitelist, the connection will be rejected.
 
-#### 1. Scan Yara
+#### 1. scan_yara
 - **Route:** `<version>/engine/analysis/scan_yara`
 - **Type:** WebSocket
 - **Description:** Endpoint for scanning Yara rules.
@@ -70,6 +70,46 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
    "sha256":"0ca6e039ddb80b48f1b4a79dd47b90d5ec41337597f6d584603d63314a5a982c",
    "size":36
   }
+  ```
+  - **onclose:** 
+  - **onerror:** 
+
+#### 2. x86_64
+- **Route:** `<version>/engine/rev/capstone/disassembly/x86_64`
+- **Type:** WebSocket
+- **Description:** Endpoint for generate disassembly x86_64
+- **Handlers:**
+  - **onaccept:**
+  - **onopen:** 
+  ```json
+  { "status": "ready" }
+  ```
+  - **onmessage:**
+  ```json
+ {
+    "arch": "x86_64",
+    "mode": "x64",
+    "disassembly": [
+        [
+            {
+                "address": "782f796c626d6573",
+                "bytes": "ff 15 f a0 0 0",
+                "id": 62,
+                "mnemonic": "call",
+                "operands": "qword ptr [rip + 0xa00f]",
+                "size": 6
+            },
+            {
+                "address": "782f796c626d6579",
+                "bytes": "c3",
+                "id": 633,
+                "mnemonic": "ret",
+                "operands": "",
+                "size": 1
+            }
+        ]
+    ]
+}
   ```
   - **onclose:** 
   - **onerror:** 
