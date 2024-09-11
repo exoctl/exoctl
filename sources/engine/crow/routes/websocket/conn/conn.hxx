@@ -27,7 +27,7 @@ class Context
                              const std::string) const;
 
     /**
-     * @brief return what ip connect
+     * @brief return what ip connected
      *
      * @return const std::string
      * @return nullptr

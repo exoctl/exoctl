@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <engine/dto.hxx>
+#include <engine/dto/dto.hxx>
 #include <engine/parser/toml.hxx>
 #include <engine/security/signatures/signatures.hxx>
 #include <string>

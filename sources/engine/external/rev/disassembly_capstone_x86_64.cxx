@@ -9,7 +9,7 @@ namespace Rev
 CapstoneX86::CapstoneX86() : m_capstone(CS_ARCH_X86, CS_MODE_64)
 {
     dto_set_field("arch", "x86_64");
-    dto_set_field("mode", "64");
+    dto_set_field("mode", "x64");
 }
 
 CapstoneX86::~CapstoneX86() {}

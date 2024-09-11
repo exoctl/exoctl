@@ -54,13 +54,18 @@ WebSocket::WebSocket(CrowApp &p_crow,
                     WebSocket::websocket_def_onaccept_connection(&p_req);
 
                 if (m_on_accept && accept)
-                    return m_on_accept(m_context, p_req, p_userdata);
+                    m_on_accept(m_context, p_req, p_userdata);
 
                 return accept;
             });
 }
 
 WebSocket::~WebSocket() {}
+
+const std::size_t WebSocket::websocket_size_connections() const
+{
+    return m_context.conn_size();
+}
 
 void WebSocket::websocket_def_close_connection(
     crow::websocket::connection *p_conn, const std::string &p_reason)

@@ -3,7 +3,7 @@
 #include <ctime>
 #include <engine/crypto/sha.hxx>
 #include <engine/magic/magic.hxx>
-#include <engine/dto.hxx>
+#include <engine/dto/dto.hxx>
 
 namespace Data
 {

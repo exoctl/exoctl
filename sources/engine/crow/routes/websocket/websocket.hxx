@@ -14,7 +14,7 @@ class WebSocket
     using on_error_callback = std::function<void(
         Context &, crow::websocket::connection &, const std::string &)>;
     using on_accept_callback =
-        std::function<bool(Context &, const crow::request &, void **)>;
+        std::function<void(Context &, const crow::request &, void **)>;
     using on_open_callback =
         std::function<void(Context &, crow::websocket::connection &)>;
     using on_close_callback = std::function<void(Context &,
@@ -33,6 +33,8 @@ class WebSocket
               on_close_callback = nullptr);
 
     ~WebSocket();
+
+    const std::size_t websocket_size_connections() const;
 
   private:
     CrowApp &m_crow;

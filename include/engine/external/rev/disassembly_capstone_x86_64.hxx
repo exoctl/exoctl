@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/dto.hxx>
+#include <engine/dto/dto.hxx>
 #include <include/engine/disassembly/capstone/capstone.hxx>
 
 namespace Rev

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/dto.hxx>
+#include <engine/dto/dto.hxx>
 #include <engine/parser/toml.hxx>
 #include <engine/security/yara/yara.hxx>
 
