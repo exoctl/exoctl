@@ -1,6 +1,7 @@
 #include <engine/external/rev/disassembly_capstone_x86_64.hxx>
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <vector>
 
 namespace Rev
@@ -23,16 +24,15 @@ void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
         [&](struct Disassembly::cs_user_data *p_user_data, size_t p_count)
         {
             Parser::Json instruction;
-            instruction["address"] =
-                fmt::format("{:x}", p_user_data->insn[p_count].address);
-            instruction["mnemonic"] = p_user_data->insn[p_count].mnemonic;
-            instruction["operands"] = p_user_data->insn[p_count].op_str;
-            instruction["size"] = p_user_data->insn[p_count].size;
-            for (size_t i = 0; i < p_user_data->insn[p_count].size; ++i)
-            {
-                instruction["bytes"] +=
-                    fmt::format(" {:x}", p_user_data->insn[p_count].bytes[i]);
-            }
+            auto &insn = p_user_data->insn[p_count];
+            
+            instruction["address"] = fmt::format("{:x}", insn.address);
+            instruction["mnemonic"] = insn.mnemonic;
+            instruction["operands"] = insn.op_str;
+            instruction["size"] = insn.size;
+            instruction["id"] = insn.id;
+            instruction["bytes"] = fmt::format(
+                "{:x}", fmt::join(insn.bytes, insn.bytes + insn.size, " "));
 
             disassembly.push_back(instruction);
         });

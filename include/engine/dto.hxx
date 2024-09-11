@@ -21,6 +21,9 @@ class DTOBase
     mutable Parser::Json m_json;
 
   public:
+    ~DTOBase();
+    DTOBase();
+
     template <typename T>
     void dto_set_field(const std::string &p_field_name, const T &p_value)
     {
@@ -36,30 +39,6 @@ class DTOBase
         throw std::invalid_argument("Field not found: " + p_field_name);
     }
 
-    Parser::Json dto_to_json() const
-    {
-        m_json.clear();
-        for (const auto &[key, value] : m_fields)
-        {
-            std::visit(
-                [this, &key](const auto &arg)
-                {
-                    if constexpr (std::is_same_v<std::decay_t<decltype(arg)>,
-                                                 Parser::Json>)
-                    {
-                        m_json[key].push_back(arg);
-                    }
-                    else
-                    {
-                        m_json[key] = arg;
-                    }
-                },
-                value);
-        }
-
-        return m_json;
-    }
-
-    virtual ~DTOBase() = default;
+    const Parser::Json dto_to_json() const;
 };
 } // namespace DTO
