@@ -26,7 +26,7 @@ void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
             Parser::Json instruction;
             auto &insn = p_user_data->insn[p_count];
             
-            instruction["address"] = fmt::format("{:x}", insn.address);
+            instruction["address"] = fmt::format("0x{:x}", insn.address);
             instruction["mnemonic"] = insn.mnemonic;
             instruction["operands"] = insn.op_str;
             instruction["size"] = insn.size;

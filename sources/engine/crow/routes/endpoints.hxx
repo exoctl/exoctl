@@ -33,6 +33,7 @@ DEFINE_ROUTE(METADATA, DATA_PREFIX, "/metadata")
 
 // Rev endpoints
 DEFINE_ROUTE(CAPSTONE_DISASS_X86_64, REV_PREFIX, "/capstone/disassembly/x86_64")
+DEFINE_ROUTE(CAPSTONE_DISASS_ARM, REV_PREFIX, "/capstone/disassembly/arm")
 
 } // namespace Endpoints
 } // namespace Crow
