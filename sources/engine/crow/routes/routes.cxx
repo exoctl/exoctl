@@ -13,9 +13,9 @@ Routes::Routes(CrowApp &p_crow)
 
 Routes::~Routes()
 {
-    delete socket_scan_yara;
-    delete socket_metadata;
-    delete socket_capstone_disass;
+    delete m_socket_scan_yara;
+    delete m_socket_metadata;
+    delete m_socket_capstone_disass_x86_64;
 }
 
 void Routes::routes_init()
@@ -24,7 +24,7 @@ void Routes::routes_init()
 
     LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
 
-    socket_scan_yara = new WebSocket(
+    m_socket_scan_yara = new WebSocket(
         m_crow,
         Endpoints::ROUTE_SCAN_YARA,
         [&](Context &p_context,
@@ -39,11 +39,11 @@ void Routes::routes_init()
                 p_data.size());
 
             m_scan_yara.yara_scan_bytes(p_data);
-            p_context.conn_broadcast(&p_conn,
-                                    m_scan_yara.dto_to_json().json_to_string());
+            p_context.conn_broadcast(
+                &p_conn, m_scan_yara.dto_to_json().json_to_string());
         });
 
-    socket_metadata = new WebSocket(
+    m_socket_metadata = new WebSocket(
         m_crow,
         Endpoints::ROUTE_METADATA,
         [&](Context &p_context,
@@ -59,10 +59,10 @@ void Routes::routes_init()
 
             m_metadata.metadata_parse(p_data);
             p_context.conn_broadcast(&p_conn,
-                                    m_metadata.dto_to_json().json_to_string());
+                                     m_metadata.dto_to_json().json_to_string());
         });
 
-    socket_capstone_disass = new WebSocket(
+    m_socket_capstone_disass_x86_64 = new WebSocket(
         m_crow,
         Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
         [&](Context &p_context,
@@ -70,30 +70,36 @@ void Routes::routes_init()
             const std::string &p_data,
             bool p_is_binary)
         {
-            LOG(m_crow.crow_get_log(),
-                debug,
-                "Message received on route '{}': data size = {}",
-                Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
-                p_data.size());
-
-            if (!p_is_binary)
-                p_context.conn_broadcast(&p_conn, "{\"status\": \"error\"}");
-
-            try
+            if (p_is_binary)
             {
-                m_capstonex86.capstonex86_disassembly(p_data);
-                p_context.conn_broadcast(
-                    &p_conn, m_capstonex86.dto_to_json().json_to_string());
-            }
-            catch (const Disassembly::CapstoneException::FailedDisassembly &e)
-            {
+
                 LOG(m_crow.crow_get_log(),
-                    error,
-                    "Disassembly failed on route '{}': data size = {}, "
-                    "error: {}",
+                    debug,
+                    "Message received on route '{}': data size = {}",
                     Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
-                    p_data.size(),
-                    e.what());
+                    p_data.size());
+
+                try
+                {
+                    m_capstonex86.capstonex86_disassembly(p_data);
+                    p_context.conn_broadcast(
+                        &p_conn, m_capstonex86.dto_to_json().json_to_string());
+                }
+                catch (
+                    const Disassembly::CapstoneException::FailedDisassembly &e)
+                {
+                    LOG(m_crow.crow_get_log(),
+                        error,
+                        "Disassembly failed on route '{}': data size = {}, "
+                        "error: {}",
+                        Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                        p_data.size(),
+                        e.what());
+                }
+            }
+            else
+            {
+                p_context.conn_broadcast(&p_conn, "{\"status\": \"error\"}");
             }
         });
 }
@@ -107,7 +113,8 @@ void Routes::route_init_analysis()
             {
                 LOG(m_crow.crow_get_log(),
                     info,
-                    "Successfully loaded rules. Total Yara rules count: {:d}",
+                    "Successfully loaded rules. Total Yara rules count: "
+                    "{:d}",
                     (uint64_t) p_total_rules);
             });
     }

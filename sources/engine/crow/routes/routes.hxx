@@ -6,8 +6,6 @@
 #include <engine/external/data/metadata.hxx>
 #include <engine/external/rev/disassembly_capstone_x86_64.hxx>
 
-#include <mutex>
-
 namespace Crow
 {
 class Routes
@@ -24,9 +22,9 @@ class Routes
     Analysis::ScanYara m_scan_yara;
     Rev::CapstoneX86 m_capstonex86;
 
-    WebSocket *socket_scan_yara;
-    WebSocket *socket_metadata;
-    WebSocket *socket_capstone_disass;
+    WebSocket *m_socket_scan_yara;
+    WebSocket *m_socket_metadata;
+    WebSocket *m_socket_capstone_disass_x86_64;
 
     void route_init_analysis();
 };
