@@ -1,7 +1,7 @@
 #include <data/metadata.hxx>
 
 
-BENCHMARK_DEFINE_F(MetadataBenchmark, PARSER)(benchmark::State &state)
+BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
 {
     std::string test_string = "the best engine";
     for (auto _ : state)
@@ -10,4 +10,4 @@ BENCHMARK_DEFINE_F(MetadataBenchmark, PARSER)(benchmark::State &state)
     }
 }
 
-BENCHMARK_REGISTER_F(MetadataBenchmark, PARSER);
+BENCHMARK_REGISTER_F(MetadataBenchmark, MetadataParse);
