@@ -31,8 +31,10 @@ void Capstone::capstone_disassembly(
     if (count > 0)
     {
         if (p_callback)
+        {
             for (size_t i = 0; i < count; i++)
                 p_callback(user_data, i);
+        }
 
         cs_free(user_data->insn, count);
     }
@@ -41,14 +43,11 @@ void Capstone::capstone_disassembly(
         const cs_err err = cs_errno(m_handle);
         if (err != CS_ERR_OK)
         {
-            std::string code_hex = fmt::format(
-                "{:02x}", fmt::join(p_code, p_code + p_code_size, " "));
-
             throw CapstoneException::FailedDisassembly(
                 fmt::format("Disassembly failed: {}, address: {:#x}, code: {}",
                             cs_strerror(err),
                             user_data->address,
-                            code_hex));
+                            fmt::join(p_code, p_code + p_code_size, " ")));
         }
     }
 }
