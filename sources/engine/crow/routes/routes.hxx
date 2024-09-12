@@ -4,6 +4,7 @@
 #include <engine/crow/routes/websocket/websocket.hxx>
 #include <engine/external/analysis/scan_yara.hxx>
 #include <engine/external/data/metadata.hxx>
+#include <engine/external/rev/disassembly_capstone_arm.hxx>
 #include <engine/external/rev/disassembly_capstone_x86_64.hxx>
 
 namespace Crow
@@ -18,13 +19,16 @@ class Routes
 
   private:
     CrowApp &m_crow;
+
     Data::Metadata m_metadata;
     Analysis::ScanYara m_scan_yara;
     Rev::CapstoneX86 m_capstonex86;
+    Rev::CapstoneARM m_capstonearm;
 
     WebSocket *m_socket_scan_yara;
     WebSocket *m_socket_metadata;
     WebSocket *m_socket_capstone_disass_x86_64;
+    WebSocket *m_socket_capstone_disass_arm;
 
     void route_init_analysis();
 };

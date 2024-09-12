@@ -14,6 +14,11 @@ WebSocket::WebSocket(CrowApp &p_crow,
       m_on_error(on_error), m_on_accept(on_accept), m_on_open(on_open),
       m_on_close(on_close), m_context(p_crow.crow_get_config())
 {
+    LOG(m_crow.crow_get_log(),
+        info,
+        "Creating WebSocket route for URL: '{}'",
+        m_url);
+        
     m_crow.crow_get_app()
         .route_dynamic(m_url)
         .websocket(&m_crow.crow_get_app())
