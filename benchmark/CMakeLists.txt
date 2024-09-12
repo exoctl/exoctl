@@ -21,10 +21,18 @@ include_directories(
 
 add_subdirectory(crypto/)
 add_subdirectory(data/)
+add_subdirectory(parser/)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
 add_subdirectory(../libraries/benchmark/ ${CMAKE_BINARY_DIR}/libraries/benchmark)
 add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
 
 
 add_executable(benchmark_engine benchmark_engine.cxx)
-target_link_libraries(benchmark_engine benchmark::benchmark fmt benchmark_crypto benchmark_metadata)
+target_link_libraries(
+    benchmark_engine
+    benchmark::benchmark
+    fmt
+    benchmark_crypto
+    benchmark_metadata
+    benchmark_json
+    benchmark_toml)
