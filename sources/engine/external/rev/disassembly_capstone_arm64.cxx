@@ -1,4 +1,6 @@
-#include <engine/external/rev/disassembly_capstone_arm.hxx>
+#define CAPSTONE_AARCH64_COMPAT_HEADER
+
+#include <engine/external/rev/disassembly_capstone_arm64.hxx>
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -6,15 +8,15 @@
 
 namespace Rev
 {
-CapstoneARM::CapstoneARM() : m_capstone(CS_ARCH_ARM, CS_MODE_ARM)
+CapstoneARM64::CapstoneARM64() : m_capstone(CS_ARCH_ARM64, CS_MODE_ARM)
 {
-    dto_set_field("arch", "ARM");
+    dto_set_field("arch", "ARM64");
     dto_set_field("mode", "ARM");
 }
 
-CapstoneARM::~CapstoneARM() {}
+CapstoneARM64::~CapstoneARM64() {}
 
-void CapstoneARM::capstonearm_disassembly(const std::string &p_code)
+void CapstoneARM64::capstonearm64_disassembly(const std::string &p_code)
 {
     Parser::Json disassembly = Parser::Json::array();
 

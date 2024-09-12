@@ -5,13 +5,13 @@
 
 namespace Rev
 {
-class CapstoneARM : public DTO::DTOBase
+class CapstoneARM64 : public DTO::DTOBase
 {
   public:
-    CapstoneARM();
-    ~CapstoneARM();
+    CapstoneARM64();
+    ~CapstoneARM64();
 
-    void capstonearm_disassembly(const std::string &);
+    void capstonearm64_disassembly(const std::string &);
 
   private:
     Disassembly::Capstone m_capstone;

@@ -16,7 +16,7 @@ Routes::~Routes()
     delete m_socket_scan_yara;
     delete m_socket_metadata;
     delete m_socket_capstone_disass_x86_64;
-    delete m_socket_capstone_disass_arm;
+    delete m_socket_capstone_disass_arm64;
 }
 
 void Routes::routes_init()
@@ -63,9 +63,9 @@ void Routes::routes_init()
                                      m_metadata.dto_to_json().json_to_string());
         });
 
-    m_socket_capstone_disass_arm = new WebSocket(
+    m_socket_capstone_disass_arm64 = new WebSocket(
         m_crow,
-        Endpoints::ROUTE_CAPSTONE_DISASS_ARM,
+        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
         [&](Context &p_context,
             crow::websocket::connection &p_conn,
             const std::string &p_data,
@@ -77,14 +77,14 @@ void Routes::routes_init()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_CAPSTONE_DISASS_ARM,
+                    Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
                     p_data.size());
 
                 try
                 {
-                    m_capstonearm.capstonearm_disassembly(p_data);
+                    m_capstonearm64.capstonearm64_disassembly(p_data);
                     p_context.conn_broadcast(
-                        &p_conn, m_capstonearm.dto_to_json().json_to_string());
+                        &p_conn, m_capstonearm64.dto_to_json().json_to_string());
                 }
                 catch (
                     const Disassembly::CapstoneException::FailedDisassembly &e)
@@ -93,7 +93,7 @@ void Routes::routes_init()
                         error,
                         "Disassembly failed on route '{}': data size = {}, "
                         "error: {}",
-                        Endpoints::ROUTE_CAPSTONE_DISASS_ARM,
+                        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
                         p_data.size(),
                         e.what());
                 }
