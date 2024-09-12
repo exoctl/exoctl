@@ -3,7 +3,7 @@
 BENCHMARK_DEFINE_F(TomlBenchmark, TomlParserFile)(benchmark::State &state)
 {
     for(auto _ : state)        
-        toml->toml_parser_file("../configuration.toml"); 
+        toml->toml_parser_file("./configuration.toml"); 
 }
 
 BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblString)(benchmark::State &state)

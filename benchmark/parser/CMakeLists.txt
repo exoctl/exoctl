@@ -8,6 +8,12 @@ file(GLOB_RECURSE SOURCES_TOML
     toml.cxx
 )
 
+set(SOURCE_FILE_PATH "${CMAKE_SOURCE_DIR}/../configuration.toml")
+set(DESTINATION_DIRECTORY "${CMAKE_BINARY_DIR}")
+
+# Comando para copiar o arquivo diretamente
+file(COPY "${SOURCE_FILE_PATH}" DESTINATION "${DESTINATION_DIRECTORY}")
+
 add_library(benchmark_json json.cxx)
 add_library(benchmark_toml toml.cxx)
 

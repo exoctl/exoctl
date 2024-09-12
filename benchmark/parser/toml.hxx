@@ -9,7 +9,7 @@ class TomlBenchmark : public benchmark::Fixture
         void SetUp(const ::benchmark::State &state) override
         {
             toml = new Parser::Toml();
-            toml->toml_parser_file("../configuration.toml"); 
+            toml->toml_parser_file("./configuration.toml"); 
         }
                                
         void TearDown(const ::benchmark::State &state) override { delete toml; }
