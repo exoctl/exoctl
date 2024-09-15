@@ -87,12 +87,12 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {
-    "arch": "x86_64",
-    "mode": "x64",
+    "arch": "AMD64",
+    "mode": "X64",
     "disassembly": [
         [
             {
-                "address": "782f796c626d6573",
+                "address": "0x782f796c626d6573",
                 "bytes": "ff 15 f a0 0 0",
                 "id": 62,
                 "mnemonic": "call",
@@ -100,7 +100,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
                 "size": 6
             },
             {
-                "address": "782f796c626d6579",
+                "address": "0x782f796c626d6579",
                 "bytes": "c3",
                 "id": 633,
                 "mnemonic": "ret",

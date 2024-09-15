@@ -1,20 +1,22 @@
-#include <engine/external/rev/disassembly_capstone_x86_64.hxx>
+#include <engine/crow/controllers/rev/disassembly_capstone.hxx>
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-#include <vector>
 
+namespace Controllers
+{
 namespace Rev
 {
-CapstoneX86::CapstoneX86() : m_capstone(CS_ARCH_X86, CS_MODE_64)
+Capstone::Capstone(const cs_arch p_arch, const cs_mode p_mode)
+    : m_capstone(p_arch, p_mode)
 {
-    dto_set_field("arch", "x86_64");
-    dto_set_field("mode", "x64");
+    dto_set_field("arch", m_capstone.capstone_arch_to_string(p_arch));
+    dto_set_field("mode", m_capstone.capstone_mode_to_string(p_mode));
 }
 
-CapstoneX86::~CapstoneX86() {}
+Capstone::~Capstone() {}
 
-void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
+void Capstone::capstone_disassembly(const std::string &p_code)
 {
     Parser::Json disassembly = Parser::Json::array();
 
@@ -25,7 +27,7 @@ void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
         {
             Parser::Json instruction;
             auto &insn = p_user_data->insn[p_count];
-            
+
             instruction["address"] = fmt::format("0x{:x}", insn.address);
             instruction["mnemonic"] = insn.mnemonic;
             instruction["operands"] = insn.op_str;
@@ -40,3 +42,4 @@ void CapstoneX86::capstonex86_disassembly(const std::string &p_code)
     dto_set_field("disassembly", disassembly);
 }
 } // namespace Rev
+} // namespace Controllers

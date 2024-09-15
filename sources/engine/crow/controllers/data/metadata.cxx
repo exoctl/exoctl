@@ -1,6 +1,8 @@
 #include <cmath>
-#include <engine/external/data/metadata.hxx>
+#include <engine/crow/controllers/data/metadata.hxx>
 
+namespace Controllers
+{
 namespace Data
 {
 Metadata::Metadata() : m_current_time(time(0)), m_entropy(0.0)
@@ -57,3 +59,4 @@ const void Metadata::metadata_compute_entropy(const std::string &p_buffer)
 }
 
 } // namespace Data
+} // namespace Controllers

@@ -6,6 +6,8 @@
 #include <engine/security/signatures/signatures.hxx>
 #include <string>
 
+namespace Controllers
+{
 namespace Analysis
 {
 class ScanSigPacked : public DTO::DTOBase
@@ -19,4 +21,5 @@ class ScanSigPacked : public DTO::DTOBase
 
   private:
 };
-}; // namespace Analysis
+} // namespace Analysis
+} // namespace Controllers

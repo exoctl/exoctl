@@ -1,14 +1,16 @@
-#include <engine/external/analysis/scan_yara.hxx>
+#include <engine/crow/controllers/analysis/scan_yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 #include <iostream>
 #include <string>
 
+namespace Controllers
+{
 namespace Analysis
 {
 ScanYara::~ScanYara() {}
 ScanYara::ScanYara(Parser::Toml &p_config)
-    : m_config(p_config),
-      m_yara_rules(GET_TOML_TBL_VALUE(p_config, string, "yara", "malware_rules"))
+    : m_config(p_config), m_yara_rules(GET_TOML_TBL_VALUE(
+                              p_config, string, "yara", "malware_rules"))
 {
     dto_set_field("yara_rule", "none");
     dto_set_field("is_malicius", Security::Types::none);
@@ -42,5 +44,5 @@ const void ScanYara::yara_scan_bytes(const std::string p_buffer)
             }
         });
 }
-
 } // namespace Analysis
+} // namespace Controllers

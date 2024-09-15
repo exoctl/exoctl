@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <string>
 
+namespace Controllers
+{
 namespace Analysis
 {
 class ScanYara : public DTO::DTOBase
@@ -24,4 +26,5 @@ class ScanYara : public DTO::DTOBase
     Parser::Toml &m_config;
     Security::Yara m_yara;
 };
-}; // namespace Analysis
+} // namespace Analysis
+} // namespace Controllers

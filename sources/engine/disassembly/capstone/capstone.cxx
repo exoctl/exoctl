@@ -55,4 +55,73 @@ void Capstone::capstone_disassembly(
 const cs_arch Capstone::capstone_get_arch() { return m_arch; }
 const cs_mode Capstone::capstone_get_mode() { return m_mode; }
 
+const std::string Capstone::capstone_arch_to_string(const cs_arch p_arch)
+{
+    switch (p_arch)
+    {
+    case CS_ARCH_X86:
+        return "x86";
+    case CS_ARCH_ARM:
+        return "ARM";
+    case CS_ARCH_ARM64:
+        return "ARM64";
+    case CS_ARCH_MIPS:
+        return "MIPS";
+    case CS_ARCH_PPC:
+        return "PPC";
+    case CS_ARCH_SPARC:
+        return "SPARC";
+    case CS_ARCH_SYSZ:
+        return "SYSZ";
+    case CS_ARCH_XCORE:
+        return "XCORE";
+    default:
+        return "none";
+    }
+
+    return "none";
+}
+
+const std::string Capstone::capstone_mode_to_string(const cs_mode p_mode)
+{
+    std::string result;
+
+    switch (p_mode)
+    {
+    case CS_MODE_16:
+        result += "16-bit";
+        break;
+    case CS_MODE_32:
+        result += "32-bit";
+        break;
+    case CS_MODE_64:
+        result += "64-bit";
+        break;
+    case CS_MODE_ARM:
+        result += "ARM";
+        break;
+    case CS_MODE_THUMB:
+        result += "Thumb";
+        break;
+    case CS_MODE_MIPS32R6:
+        result += "MIPS32R6";
+        break;
+    default:
+        if ((p_mode & CS_MODE_16) == CS_MODE_16)
+            result += "16-bit";
+        if ((p_mode & CS_MODE_32) == CS_MODE_32)
+            result += "32-bit";
+        if ((p_mode & CS_MODE_64) == CS_MODE_64)
+            result += "64-bit";
+        if ((p_mode & CS_MODE_ARM) == CS_MODE_ARM)
+            result += "ARM";
+        if ((p_mode & CS_MODE_THUMB) == CS_MODE_THUMB)
+            result += "Thumb";
+        if ((p_mode & CS_MODE_MIPS32R6) == CS_MODE_MIPS32R6)
+            result += "MIPS32R6";
+        break;
+    }
+
+    return result.empty() ? "none" : result;
+}
 } // namespace Disassembly

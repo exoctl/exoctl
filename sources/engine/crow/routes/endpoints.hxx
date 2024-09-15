@@ -31,10 +31,13 @@ namespace Crow
 {
 namespace Endpoints
 {
-// Define specific routes with multiple prefixes
+DEFINE_ROUTE(ENDPOINTS, "/endpoints")
+
+// Analysis endpoints
 DEFINE_ROUTE(SEARCH_YARA, "/analysis", "/search_yara")
 DEFINE_ROUTE(SCAN_SIG_PACKED, "/analysis", "/scan_sig_packed")
 DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan_yara")
+DEFINE_ROUTE(SCAN_YARA_REPORTS, "/analysis", "/scan_yara", "/reports")
 
 // Data endpoints
 DEFINE_ROUTE(METADATA, "/data", "/metadata")

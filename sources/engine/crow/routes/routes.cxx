@@ -6,103 +6,33 @@
 
 namespace Crow
 {
-Routes::Routes(CrowApp &p_crow)
-    : m_crow(p_crow), m_scan_yara(p_crow.crow_get_config())
-{
-}
+Routes::Routes(CrowApp &p_crow) : m_crow(p_crow) {}
 
 Routes::~Routes()
 {
+    delete m_scan_yara;
+    delete m_metadata;
+    delete m_capstone_x86_64;
+    delete m_capstone_arm_64;
     delete m_socket_scan_yara;
     delete m_socket_metadata;
     delete m_socket_capstone_disass_x86_64;
-    delete m_socket_capstone_disass_arm64;
+    delete m_socket_capstone_disass_arm_64;
 }
 
 void Routes::routes_init()
 {
-    Routes::route_init_analysis();
-
     LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
 
-    m_socket_scan_yara = new WebSocket(
-        m_crow,
-        Endpoints::ROUTE_SCAN_YARA,
-        [&](Context &p_context,
-            crow::websocket::connection &p_conn,
-            const std::string &p_data,
-            bool p_is_binary)
-        {
-            LOG(m_crow.crow_get_log(),
-                debug,
-                "Message received on route '{}': data size = {}",
-                Endpoints::ROUTE_SCAN_YARA,
-                p_data.size());
+    GET_ROUTE(metadata);
+    GET_ROUTE(capstone_disass_x86_64);
+    GET_ROUTE(capstone_disass_arm_64);
+    GET_ROUTE(scan_yara);
+}
 
-            m_scan_yara.yara_scan_bytes(p_data);
-            p_context.conn_broadcast(
-                &p_conn, m_scan_yara.dto_to_json().json_to_string());
-        });
-
-    m_socket_metadata = new WebSocket(
-        m_crow,
-        Endpoints::ROUTE_METADATA,
-        [&](Context &p_context,
-            crow::websocket::connection &p_conn,
-            const std::string &p_data,
-            bool p_is_binary)
-        {
-            LOG(m_crow.crow_get_log(),
-                debug,
-                "Message received on route '{}': data size = {}",
-                Endpoints::ROUTE_METADATA,
-                p_data.size());
-
-            m_metadata.metadata_parse(p_data);
-            p_context.conn_broadcast(&p_conn,
-                                     m_metadata.dto_to_json().json_to_string());
-        });
-
-    m_socket_capstone_disass_arm64 = new WebSocket(
-        m_crow,
-        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
-        [&](Context &p_context,
-            crow::websocket::connection &p_conn,
-            const std::string &p_data,
-            bool p_is_binary)
-        {
-            if (p_is_binary)
-            {
-
-                LOG(m_crow.crow_get_log(),
-                    debug,
-                    "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
-                    p_data.size());
-
-                try
-                {
-                    m_capstonearm64.capstonearm64_disassembly(p_data);
-                    p_context.conn_broadcast(
-                        &p_conn, m_capstonearm64.dto_to_json().json_to_string());
-                }
-                catch (
-                    const Disassembly::CapstoneException::FailedDisassembly &e)
-                {
-                    LOG(m_crow.crow_get_log(),
-                        error,
-                        "Disassembly failed on route '{}': data size = {}, "
-                        "error: {}",
-                        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
-                        p_data.size(),
-                        e.what());
-                }
-            }
-            else
-            {
-                p_context.conn_broadcast(&p_conn, "{\"status\": \"error\"}");
-            }
-        });
+void Routes::route_capstone_disass_x86_64()
+{
+    m_capstone_x86_64 = new Controllers::Rev::Capstone(CS_ARCH_X86, CS_MODE_64);
 
     m_socket_capstone_disass_x86_64 = new WebSocket(
         m_crow,
@@ -114,7 +44,6 @@ void Routes::routes_init()
         {
             if (p_is_binary)
             {
-
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
@@ -123,9 +52,10 @@ void Routes::routes_init()
 
                 try
                 {
-                    m_capstonex86.capstonex86_disassembly(p_data);
+                    m_capstone_x86_64->capstone_disassembly(p_data);
                     p_context.conn_broadcast(
-                        &p_conn, m_capstonex86.dto_to_json().json_to_string());
+                        &p_conn,
+                        m_capstone_x86_64->dto_to_json().json_to_string());
                 }
                 catch (
                     const Disassembly::CapstoneException::FailedDisassembly &e)
@@ -146,16 +76,66 @@ void Routes::routes_init()
         });
 }
 
-void Routes::route_init_analysis()
+void Routes::route_capstone_disass_arm_64()
 {
+    m_capstone_arm_64 =
+        new Controllers::Rev::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
+
+    m_socket_capstone_disass_arm_64 = new WebSocket(
+        m_crow,
+        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
+        [&](Context &p_context,
+            crow::websocket::connection &p_conn,
+            const std::string &p_data,
+            bool p_is_binary)
+        {
+            if (p_is_binary)
+            {
+                LOG(m_crow.crow_get_log(),
+                    debug,
+                    "Message received on route '{}': data size = {}",
+                    Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
+                    p_data.size());
+
+                try
+                {
+                    m_capstone_arm_64->capstone_disassembly(p_data);
+                    p_context.conn_broadcast(
+                        &p_conn,
+                        m_capstone_arm_64->dto_to_json().json_to_string());
+                }
+                catch (
+                    const Disassembly::CapstoneException::FailedDisassembly &e)
+                {
+                    LOG(m_crow.crow_get_log(),
+                        error,
+                        "Disassembly failed on route '{}': data size = {}, "
+                        "error: {}",
+                        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
+                        p_data.size(),
+                        e.what());
+                }
+            }
+            else
+            {
+                p_context.conn_broadcast(&p_conn, "{\"status\": \"error\"}");
+            }
+        });
+}
+
+void Routes::route_scan_yara()
+{
+    m_scan_yara = new Controllers::Analysis::ScanYara(m_crow.crow_get_config());
+
     try
     {
-        m_scan_yara.yara_load_rules(
+        m_scan_yara->yara_load_rules(
             [&](void *p_total_rules)
             {
                 LOG(m_crow.crow_get_log(),
                     info,
-                    "Successfully loaded rules. Total Yara rules count: "
+                    "Successfully loaded rules. Total Yara rules "
+                    "count: "
                     "{:d}",
                     (uint64_t) p_total_rules);
             });
@@ -165,5 +145,48 @@ void Routes::route_init_analysis()
         LOG(m_crow.crow_get_log(), error, "{}", e.what());
         throw CrowException::Abort(std::string(e.what()));
     }
+
+    m_socket_scan_yara = new WebSocket(
+        m_crow,
+        Endpoints::ROUTE_SCAN_YARA,
+        [&](Context &p_context,
+            crow::websocket::connection &p_conn,
+            const std::string &p_data,
+            bool p_is_binary)
+        {
+            LOG(m_crow.crow_get_log(),
+                debug,
+                "Message received on route '{}': data size = {}",
+                Endpoints::ROUTE_SCAN_YARA,
+                p_data.size());
+
+            m_scan_yara->yara_scan_bytes(p_data);
+            p_context.conn_broadcast(
+                &p_conn, m_scan_yara->dto_to_json().json_to_string());
+        });
+}
+
+void Routes::route_metadata()
+{
+    m_metadata = new Controllers::Data::Metadata();
+
+    m_socket_metadata = new WebSocket(
+        m_crow,
+        Endpoints::ROUTE_METADATA,
+        [&](Context &p_context,
+            crow::websocket::connection &p_conn,
+            const std::string &p_data,
+            bool p_is_binary)
+        {
+            LOG(m_crow.crow_get_log(),
+                debug,
+                "Message received on route '{}': data size = {}",
+                Endpoints::ROUTE_METADATA,
+                p_data.size());
+
+            m_metadata->metadata_parse(p_data);
+            p_context.conn_broadcast(
+                &p_conn, m_metadata->dto_to_json().json_to_string());
+        });
 }
 }; // namespace Crow

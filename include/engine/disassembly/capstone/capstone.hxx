@@ -1,7 +1,10 @@
 #pragma once
 
+#define CAPSTONE_AARCH64_COMPAT_HEADER
+
 #include <capstone/capstone.h>
 #include <functional>
+#include <string>
 
 namespace Disassembly
 {
@@ -17,12 +20,15 @@ class Capstone
     Capstone(cs_arch, cs_mode);
     ~Capstone();
 
-    void capstone_disassembly(const uint8_t *,
-                     size_t,
-                     const std::function<void(cs_user_data *, size_t)> &);
+    void
+    capstone_disassembly(const uint8_t *,
+                         size_t,
+                         const std::function<void(cs_user_data *, size_t)> &);
 
     const cs_arch capstone_get_arch();
     const cs_mode capstone_get_mode();
+    const std::string capstone_arch_to_string(const cs_arch);
+    const std::string capstone_mode_to_string(const cs_mode);
 
   private:
     csh m_handle;
