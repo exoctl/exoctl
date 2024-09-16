@@ -1,5 +1,5 @@
-set(FLAGS_OPTIMIZATIONS ON)
-set(FLAGS_DEBUG OFF)
+set(FLAGS_OPTIMIZATIONS OFF)
+set(FLAGS_DEBUG ON)
 
 option(LIEF_TESTS "Build LIEF tests" OFF)
 
@@ -61,7 +61,6 @@ elseif(FLAGS_DEBUG)
         -g
         -Warray-bounds
         -Werror
-        --extra-warnings
     )
 endif()
 

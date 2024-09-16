@@ -11,11 +11,11 @@ namespace Crow
 class CrowApp
 {
   private:
-    const std::uint16_t m_port;
-    const std::string m_bindaddr;
     crow::SimpleApp m_app;
     Parser::Toml &m_config;
     Logging::Log &m_log;
+    const std::uint16_t m_port;
+    const std::string m_bindaddr;
 
   public:
     CrowApp(Parser::Toml &, Logging::Log &);

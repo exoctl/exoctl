@@ -19,6 +19,9 @@ Routes::~Routes()
     delete m_socket_metadata;
     delete m_socket_capstone_disass_x86_64;
     delete m_socket_capstone_disass_arm_64;
+#if DEBUG
+    delete m_web_endpoins;
+#endif
 }
 
 DEFINE_ROUTE(
@@ -191,17 +194,19 @@ void Routes::route_metadata()
         });
 }
 
-DEFINE_ROUTE(ROUTES, "/routes")
-void Routes::route_routes()
+#ifdef DEBUG
+
+DEFINE_ROUTE(ROUTES, "/debug","/endpoints")
+void Routes::route_endpoint()
 {
-    m_web_routes =
+    m_web_endpoins =
         new Web<>(m_crow,
                   ROUTE_ROUTES,
                   [&](const crow::request &p_req)
                   {
                       Parser::Json routes_array = Parser::Json::array();
 
-                      for (const auto &route : Routes::routes_get_routes())
+                      for (const auto &route : Routes::routes_get_endpoints())
                       {
                           Parser::Json route_obj;
                           route_obj["path"] = route.r_path;
@@ -215,25 +220,29 @@ void Routes::route_routes()
                   });
 }
 
-void Routes::routes_update_route()
-{
-    m_routes.clear();
+#endif
 
-    m_routes.push_back({ROUTE_SCAN_YARA,
-                        Types::Routes_t::websocket,
-                        m_socket_scan_yara->websocket_size_connections()});
-    m_routes.push_back({ROUTE_METADATA,
-                        Types::Routes_t::websocket,
-                        m_socket_metadata->websocket_size_connections()});
-    m_routes.push_back(
+void Routes::routes_update_endpoints()
+{
+    m_endpoints.clear();
+
+    m_endpoints.push_back({ROUTE_SCAN_YARA,
+                           Types::Routes_t::websocket,
+                           m_socket_scan_yara->websocket_size_connections()});
+    m_endpoints.push_back({ROUTE_METADATA,
+                           Types::Routes_t::websocket,
+                           m_socket_metadata->websocket_size_connections()});
+    m_endpoints.push_back(
         {ROUTE_CAPSTONE_DISASS_X86_64,
          Types::Routes_t::websocket,
          m_socket_capstone_disass_x86_64->websocket_size_connections()});
-    m_routes.push_back(
+    m_endpoints.push_back(
         {ROUTE_CAPSTONE_DISASS_ARM64,
          Types::Routes_t::websocket,
          m_socket_capstone_disass_arm_64->websocket_size_connections()});
-    m_routes.push_back({ROUTE_ROUTES, Types::Routes_t::web, 0});
+#if DEBUG
+    m_endpoints.push_back({ROUTE_ROUTES, Types::Routes_t::web, 0});
+#endif
 }
 
 void Routes::routes_init()
@@ -244,13 +253,16 @@ void Routes::routes_init()
     GET_ROUTE(capstone_disass_x86_64);
     GET_ROUTE(capstone_disass_arm_64);
     GET_ROUTE(scan_yara);
-    GET_ROUTE(routes);
+
+#if DEBUG
+    GET_ROUTE(endpoint);
+#endif
 }
 
-std::list<route> &Routes::routes_get_routes()
+std::list<route> &Routes::routes_get_endpoints()
 {
-    Routes::routes_update_route();
-    return m_routes;
+    Routes::routes_update_endpoints();
+    return m_endpoints;
 }
 
 }; // namespace Crow

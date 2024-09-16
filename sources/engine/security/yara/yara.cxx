@@ -11,7 +11,7 @@
 namespace Security
 {
 Yara::Yara()
-    : m_rules_loaded_count(0), m_yara_rules(nullptr), m_yara_compiler(nullptr)
+    : m_yara_compiler(nullptr), m_yara_rules(nullptr), m_rules_loaded_count(0)
 {
     if (yr_initialize() != ERROR_SUCCESS)
     {
@@ -68,7 +68,7 @@ const int Yara::yara_set_signature_rule_mem(const std::string &p_rule) const
     return yr_compiler_add_string(m_yara_compiler, p_rule.c_str(), nullptr);
 }
 
-const void Yara::yara_load_rules_folder(const std::string &p_path) const
+void Yara::yara_load_rules_folder(const std::string &p_path) const
 {
     DIR *dir = opendir(p_path.c_str());
     if (!dir)
@@ -101,14 +101,13 @@ const void Yara::yara_load_rules_folder(const std::string &p_path) const
     closedir(dir);
 }
 
-const void
-Yara::yara_load_rules(const std::function<void(void *)> &p_callback) const
+void Yara::yara_load_rules(const std::function<void(void *)> &p_callback) const
 {
     p_callback((void *) m_rules_loaded_count);
     Yara::yara_compiler_rules();
 }
 
-const void Yara::yara_compiler_rules() const
+void Yara::yara_compiler_rules() const
 {
     const int compiler_rules =
         yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
@@ -120,9 +119,8 @@ const void Yara::yara_compiler_rules() const
     }
 }
 
-const void
-Yara::yara_scan_bytes(const std::string p_buffer,
-                      const std::function<void(void *)> &p_callback) const
+void Yara::yara_scan_bytes(const std::string p_buffer,
+                           const std::function<void(void *)> &p_callback) const
 {
     struct yr_user_data *data =
         static_cast<struct yr_user_data *>(alloca(sizeof(struct yr_user_data)));

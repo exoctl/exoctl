@@ -1,11 +1,11 @@
 #include <cmath>
 #include <engine/crow/controllers/data/metadata.hxx>
 
- namespace Controllers
+namespace Controllers
 {
 namespace Data
 {
-Metadata::Metadata() : m_current_time(time(0)), m_entropy(0.0)
+Metadata::Metadata() : m_entropy(0.0), m_current_time(time(0))
 {
     dto_set_field("mime_type", "none");
     dto_set_field("sha256", "none");

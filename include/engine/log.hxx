@@ -47,8 +47,8 @@ class Log
     Parser::Toml &m_config;
     std::shared_ptr<spdlog::logger> m_logger;
 
-    const void log_active_level(const uint16_t);
-    const void log_active_type(const std::string &);
-    const void log_active_trace(const uint16_t p_level);
+    void log_active_level(const uint16_t);
+    void log_active_type(const std::string &);
+    void log_active_trace(const uint16_t p_level);
 };
 } // namespace Logging

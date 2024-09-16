@@ -3,16 +3,16 @@
 namespace Crow
 {
 WebSocket::WebSocket(CrowApp &p_crow,
-                  const std::string &p_url,
-                  uint64_t p_max_payload,
-                  on_message_callback on_message,
-                  on_error_callback on_error,
-                  on_accept_callback on_accept,
-                  on_open_callback on_open,
-                  on_close_callback on_close)
-    : m_crow(p_crow), m_url(p_url), m_on_message(on_message),
-      m_on_error(on_error), m_on_accept(on_accept), m_on_open(on_open),
-      m_on_close(on_close), m_context(p_crow.crow_get_config())
+                     const std::string &p_url,
+                     uint64_t p_max_payload,
+                     on_message_callback on_message,
+                     on_error_callback on_error,
+                     on_accept_callback on_accept,
+                     on_open_callback on_open,
+                     on_close_callback on_close)
+    : m_crow(p_crow), m_url(p_url), m_context(p_crow.crow_get_config()),
+      m_on_message(on_message), m_on_error(on_error), m_on_accept(on_accept),
+      m_on_open(on_open), m_on_close(on_close)
 {
     LOG(m_crow.crow_get_log(),
         info,

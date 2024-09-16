@@ -38,6 +38,12 @@ int main()
     LOG_INFO("Version     : {}", project_version);
     LOG_INFO("Description : {}", project_description);
     LOG_INFO("Copyright   : {}", project_copyright);
+#if DEBUG
+    LOG_INFO("Mode        : Debug");
+#else 
+    LOG_INFO("Mode        : Realese");
+#endif
+
     LOG_INFO("Running engine with configuration from 'configuration.toml'...");
 
     Engine::Engine engine(configuration);

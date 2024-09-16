@@ -27,28 +27,32 @@ class Routes
     ~Routes();
 
     void routes_init();
-    void routes_update_route();
-    std::list<route>& routes_get_routes();
+    std::list<route> &routes_get_endpoints();
 
   private:
     CrowApp &m_crow;
-    std::list<route> m_routes;
+    std::list<route> m_endpoints;
 
     WebSocket *m_socket_scan_yara;
     WebSocket *m_socket_metadata;
     WebSocket *m_socket_capstone_disass_x86_64;
     WebSocket *m_socket_capstone_disass_arm_64;
-    Web<> *m_web_routes;
+    Web<> *m_web_endpoins;
 
     Controllers::Analysis::ScanYara *m_scan_yara;
     Controllers::Rev::Capstone *m_capstone_x86_64;
     Controllers::Rev::Capstone *m_capstone_arm_64;
     Controllers::Data::Metadata *m_metadata;
 
+    void routes_update_endpoints();
     void route_metadata();
     void route_scan_yara();
     void route_capstone_disass_x86_64();
     void route_capstone_disass_arm_64();
-    void route_routes();
+
+    /* Routes generate for debug */
+#ifdef DEBUG
+    void route_endpoint();
+#endif
 };
 } // namespace Crow

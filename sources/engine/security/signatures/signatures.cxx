@@ -33,8 +33,9 @@ void Sig::sig_parser_syntax(const std::string &p_rule)
         Sig::sig_advance_token();
         if (Sig::sig_expect_token(Types::LexerToken::INCLUDE))
         {
-            Sig::sig_parser_includes([](const char *p_include)
-                                     { fmt::print("{}", p_include); });
+            Sig::sig_parser_includes(
+                [](const char
+                       *p_include) { /*fmt::print("{}", p_include); */ });
         }
         if (Sig::sig_expect_token(Types::LexerToken::SIG))
         {

@@ -18,11 +18,9 @@ Postgresql::Postgresql(Parser::Toml &p_config, Logging::Log &p_log)
 {
 }
 
-Postgresql::Postgresql() : m_config(m_config), m_log(m_log), m_conn() {}
-
 Postgresql::~Postgresql() { Postgresql::close_db(); }
 
-const void Postgresql::exec_query_commit(const std::string &p_sql) const
+void Postgresql::exec_query_commit(const std::string &p_sql) const
 {
     LOG(m_log,
         info,
@@ -34,9 +32,8 @@ const void Postgresql::exec_query_commit(const std::string &p_sql) const
     work.commit();
 }
 
-const void
-Postgresql::exec_query(const std::string &p_sql,
-                       const std::function<void(void *)> &p_callback) const
+void Postgresql::exec_query(const std::string &p_sql,
+                            const std::function<void(void *)> &p_callback) const
 {
     LOG(m_log,
         info,
@@ -52,7 +49,7 @@ const bool Postgresql::open_db() const { return m_conn.is_open(); }
 
 const bool Postgresql::is_open_db() const { return m_conn.is_open(); }
 
-const void Postgresql::close_db() const
+void Postgresql::close_db() const
 {
     if (m_conn.is_open())
     {

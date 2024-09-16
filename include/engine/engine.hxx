@@ -13,12 +13,12 @@ namespace Engine
 class Engine
 {
   private:
+    Parser::Toml &m_configuration;
     Logging::Log m_log;
     // Database::Postgresql m_database;
     Crow::CrowApp m_crow;
     Crow::Routes m_crow_routes;
     Crow::Log m_crow_log;
-    Parser::Toml &m_configuration;
 
   public:
     Engine(Parser::Toml &);

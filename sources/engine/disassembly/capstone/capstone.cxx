@@ -24,7 +24,8 @@ void Capstone::capstone_disassembly(
 {
     struct cs_user_data *user_data =
         static_cast<struct cs_user_data *>(alloca(sizeof(struct cs_user_data)));
-
+    user_data->address = 0;
+    
     const size_t count = cs_disasm(
         m_handle, p_code, p_code_size, user_data->address, 0, &user_data->insn);
 

@@ -17,17 +17,17 @@ Log::Log(Parser::Toml &p_config) : m_config(p_config)
 
 Log::~Log() {}
 
-const void Log::log_active_trace(const uint16_t p_level)
+void Log::log_active_trace(const uint16_t p_level)
 {
     m_logger->flush_on(static_cast<spdlog::level::level_enum>(p_level));
 }
 
-const void Log::log_active_level(const uint16_t p_level)
+void Log::log_active_level(const uint16_t p_level)
 {
     m_logger->set_level(static_cast<spdlog::level::level_enum>(p_level));
 }
 
-const void Log::log_active_type(const std::string &p_type)
+void Log::log_active_type(const std::string &p_type)
 {
     m_logger = [&]() -> std::shared_ptr<spdlog::logger>
     {
