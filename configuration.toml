@@ -26,6 +26,7 @@ max_size = 1048576
 bindaddr = "127.0.0.1"
 port = 8181
 websocket_conn_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
+web_ssl_pem = ""
 
 [postgresql]
 dbname = ""

@@ -5,7 +5,7 @@
 #include <engine/dto/dto.hxx>
 #include <engine/magic/magic.hxx>
 
- namespace Controllers
+namespace Controllers
 {
 namespace Data
 {
