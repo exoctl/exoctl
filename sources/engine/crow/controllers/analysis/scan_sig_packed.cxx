@@ -1,6 +1,6 @@
 #include <engine/crow/controllers/analysis/scan_sig_packed.hxx>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Analysis
 {
@@ -17,4 +17,4 @@ ScanSigPacked::packed_load_rules(const std::function<void(void *)> &) const
 {
 }
 } // namespace Analysis
-} // namespace Controllers
+} //  namespace Controllers

@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <engine/crow/crow_exception.hxx>
 #include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
@@ -30,14 +31,17 @@ void Routes::routes_init()
     GET_ROUTE(scan_yara);
 }
 
+DEFINE_ROUTE(
+    CAPSTONE_DISASS_X86_64, "/rev", "/capstone", "/disassembly", "/x86_64")
 void Routes::route_capstone_disass_x86_64()
 {
     m_capstone_x86_64 = new Controllers::Rev::Capstone(CS_ARCH_X86, CS_MODE_64);
 
     m_socket_capstone_disass_x86_64 = new WebSocket(
         m_crow,
-        Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
-        [&](Context &p_context,
+        ROUTE_CAPSTONE_DISASS_X86_64,
+        UINT64_MAX,
+        [&](Socket::Context &p_context,
             crow::websocket::connection &p_conn,
             const std::string &p_data,
             bool p_is_binary)
@@ -47,7 +51,7 @@ void Routes::route_capstone_disass_x86_64()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                    ROUTE_CAPSTONE_DISASS_X86_64,
                     p_data.size());
 
                 try
@@ -64,7 +68,7 @@ void Routes::route_capstone_disass_x86_64()
                         error,
                         "Disassembly failed on route '{}': data size = {}, "
                         "error: {}",
-                        Endpoints::ROUTE_CAPSTONE_DISASS_X86_64,
+                        ROUTE_CAPSTONE_DISASS_X86_64,
                         p_data.size(),
                         e.what());
                 }
@@ -76,6 +80,8 @@ void Routes::route_capstone_disass_x86_64()
         });
 }
 
+DEFINE_ROUTE(
+    CAPSTONE_DISASS_ARM64, "/rev", "/capstone", "/disassembly", "/arm_64")
 void Routes::route_capstone_disass_arm_64()
 {
     m_capstone_arm_64 =
@@ -83,8 +89,9 @@ void Routes::route_capstone_disass_arm_64()
 
     m_socket_capstone_disass_arm_64 = new WebSocket(
         m_crow,
-        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
-        [&](Context &p_context,
+        ROUTE_CAPSTONE_DISASS_ARM64,
+        UINT64_MAX,
+        [&](Socket::Context &p_context,
             crow::websocket::connection &p_conn,
             const std::string &p_data,
             bool p_is_binary)
@@ -94,7 +101,7 @@ void Routes::route_capstone_disass_arm_64()
                 LOG(m_crow.crow_get_log(),
                     debug,
                     "Message received on route '{}': data size = {}",
-                    Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
+                    ROUTE_CAPSTONE_DISASS_ARM64,
                     p_data.size());
 
                 try
@@ -111,7 +118,7 @@ void Routes::route_capstone_disass_arm_64()
                         error,
                         "Disassembly failed on route '{}': data size = {}, "
                         "error: {}",
-                        Endpoints::ROUTE_CAPSTONE_DISASS_ARM64,
+                        ROUTE_CAPSTONE_DISASS_ARM64,
                         p_data.size(),
                         e.what());
                 }
@@ -123,6 +130,7 @@ void Routes::route_capstone_disass_arm_64()
         });
 }
 
+DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan_yara")
 void Routes::route_scan_yara()
 {
     m_scan_yara = new Controllers::Analysis::ScanYara(m_crow.crow_get_config());
@@ -148,8 +156,9 @@ void Routes::route_scan_yara()
 
     m_socket_scan_yara = new WebSocket(
         m_crow,
-        Endpoints::ROUTE_SCAN_YARA,
-        [&](Context &p_context,
+        ROUTE_SCAN_YARA,
+        UINT64_MAX,
+        [&](Socket::Context &p_context,
             crow::websocket::connection &p_conn,
             const std::string &p_data,
             bool p_is_binary)
@@ -157,7 +166,7 @@ void Routes::route_scan_yara()
             LOG(m_crow.crow_get_log(),
                 debug,
                 "Message received on route '{}': data size = {}",
-                Endpoints::ROUTE_SCAN_YARA,
+                ROUTE_SCAN_YARA,
                 p_data.size());
 
             m_scan_yara->yara_scan_bytes(p_data);
@@ -166,14 +175,16 @@ void Routes::route_scan_yara()
         });
 }
 
+DEFINE_ROUTE(METADATA, "/data", "/metadata")
 void Routes::route_metadata()
 {
     m_metadata = new Controllers::Data::Metadata();
 
     m_socket_metadata = new WebSocket(
         m_crow,
-        Endpoints::ROUTE_METADATA,
-        [&](Context &p_context,
+        ROUTE_METADATA,
+        UINT64_MAX,
+        [&](Socket::Context &p_context,
             crow::websocket::connection &p_conn,
             const std::string &p_data,
             bool p_is_binary)
@@ -181,7 +192,7 @@ void Routes::route_metadata()
             LOG(m_crow.crow_get_log(),
                 debug,
                 "Message received on route '{}': data size = {}",
-                Endpoints::ROUTE_METADATA,
+                ROUTE_METADATA,
                 p_data.size());
 
             m_metadata->metadata_parse(p_data);

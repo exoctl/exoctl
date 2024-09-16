@@ -3,7 +3,7 @@
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Rev
 {
@@ -42,4 +42,4 @@ void Capstone::capstone_disassembly(const std::string &p_code)
     dto_set_field("disassembly", disassembly);
 }
 } // namespace Rev
-} // namespace Controllers
+} //  namespace Controllers

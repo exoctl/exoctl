@@ -1,7 +1,7 @@
 #include <cmath>
 #include <engine/crow/controllers/data/metadata.hxx>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Data
 {
@@ -59,4 +59,4 @@ const void Metadata::metadata_compute_entropy(const std::string &p_buffer)
 }
 
 } // namespace Data
-} // namespace Controllers
+} //  namespace Controllers

@@ -7,6 +7,8 @@
 
 namespace Crow
 {
+namespace Socket
+{
 class Context
 {
   public:
@@ -24,7 +26,7 @@ class Context
     const void conn_erase(crow::websocket::connection *);
     const std::size_t conn_size() const;
     const void conn_broadcast(crow::websocket::connection *,
-                             const std::string) const;
+                              const std::string) const;
 
     /**
      * @brief return what ip connected
@@ -39,4 +41,5 @@ class Context
     Parser::Toml &m_config;
     toml::array m_whitelist;
 };
+} // namespace WebSocket
 } // namespace Crow

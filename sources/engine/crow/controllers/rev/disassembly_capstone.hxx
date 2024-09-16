@@ -3,7 +3,7 @@
 #include <engine/dto/dto.hxx>
 #include <include/engine/disassembly/capstone/capstone.hxx>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Rev
 {
@@ -19,4 +19,4 @@ class Capstone : public DTO::DTOBase
     Disassembly::Capstone m_capstone;
 };
 } // namespace Rev
-} // namespace Controllers
+} //  namespace Controllers

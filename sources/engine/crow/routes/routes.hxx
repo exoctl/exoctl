@@ -8,7 +8,9 @@
 
 namespace Crow
 {
+
 #define GET_ROUTE(route) Routes::route_##route();
+
 class Routes
 {
   public:

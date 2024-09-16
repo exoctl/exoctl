@@ -11,21 +11,26 @@ namespace Crow
 class WebSocket
 {
   public:
-    using on_error_callback = std::function<void(
-        Context &, crow::websocket::connection &, const std::string &)>;
-    using on_accept_callback =
-        std::function<void(Context &, const crow::request &, void **)>;
-    using on_open_callback =
-        std::function<void(Context &, crow::websocket::connection &)>;
-    using on_close_callback = std::function<void(Context &,
+    using on_error_callback = std::function<void(Socket::Context &,
+                                                 crow::websocket::connection &,
+                                                 const std::string &)>;
+    using on_accept_callback = std::function<void(
+        Socket::Context &, const crow::request &, void **)>;
+    using on_open_callback = std::function<void(Socket::Context &,
+                                                crow::websocket::connection &)>;
+    using on_close_callback = std::function<void(Socket::Context &,
                                                  crow::websocket::connection &,
                                                  const std::string &,
                                                  uint16_t)>;
-    using on_message_callback = std::function<void(
-        Context &, crow::websocket::connection &, const std::string &, bool)>;
+    using on_message_callback =
+        std::function<void(Socket::Context &,
+                           crow::websocket::connection &,
+                           const std::string &,
+                           bool)>;
 
     WebSocket(CrowApp &,
               const std::string &,
+              uint64_t,
               on_message_callback = nullptr,
               on_error_callback = nullptr,
               on_accept_callback = nullptr,
@@ -39,7 +44,7 @@ class WebSocket
   private:
     CrowApp &m_crow;
     std::string m_url;
-    Context m_context;
+    Socket::Context m_context;
     std::mutex m_mtx;
     on_message_callback m_on_message;
     on_error_callback m_on_error;

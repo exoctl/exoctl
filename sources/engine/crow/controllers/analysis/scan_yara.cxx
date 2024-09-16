@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Analysis
 {
@@ -45,4 +45,4 @@ const void ScanYara::yara_scan_bytes(const std::string p_buffer)
         });
 }
 } // namespace Analysis
-} // namespace Controllers
+} //  namespace Controllers

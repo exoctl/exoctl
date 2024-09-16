@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <string>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Analysis
 {
@@ -27,4 +27,4 @@ class ScanYara : public DTO::DTOBase
     Security::Yara m_yara;
 };
 } // namespace Analysis
-} // namespace Controllers
+} //  namespace Controllers

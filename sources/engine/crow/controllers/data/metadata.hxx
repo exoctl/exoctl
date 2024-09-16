@@ -5,7 +5,7 @@
 #include <engine/dto/dto.hxx>
 #include <engine/magic/magic.hxx>
 
-namespace Controllers
+ namespace Controllers
 {
 namespace Data
 {
@@ -26,4 +26,4 @@ class Metadata : public DTO::DTOBase
     Crypto::Sha m_sha;
 };
 } // namespace Data
-} // namespace Controllers
+} //  namespace Controllers
