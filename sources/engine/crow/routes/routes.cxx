@@ -196,7 +196,7 @@ void Routes::route_metadata()
 
 #ifdef DEBUG
 
-DEFINE_ROUTE(ROUTES, "/debug","/endpoints")
+DEFINE_ROUTE(ROUTES, "/debug", "/endpoints")
 void Routes::route_endpoint()
 {
     m_web_endpoins =
