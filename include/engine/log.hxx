@@ -7,48 +7,48 @@
 
 namespace Logging
 {
-class Log
-{
-  public:
-    Log(Parser::Toml &);
-    ~Log();
-
-    template <typename... Args>
-    void log_warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
+    class Log
     {
-        m_logger->warn(p_msg, std::forward<Args>(p_args)...);
-    }
+      public:
+        Log(Parser::Toml &);
+        ~Log();
 
-    template <typename... Args>
-    void log_info(fmt::format_string<Args...> p_msg, Args &&...p_args)
-    {
-        m_logger->info(p_msg, std::forward<Args>(p_args)...);
-    }
+        template <typename... Args>
+        void log_warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        {
+            m_logger->warn(p_msg, std::forward<Args>(p_args)...);
+        }
 
-    template <typename... Args>
-    void log_error(fmt::format_string<Args...> p_msg, Args &&...p_args)
-    {
-        m_logger->error(p_msg, std::forward<Args>(p_args)...);
-    }
+        template <typename... Args>
+        void log_info(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        {
+            m_logger->info(p_msg, std::forward<Args>(p_args)...);
+        }
 
-    template <typename... Args>
-    void log_debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
-    {
-        m_logger->debug(p_msg, std::forward<Args>(p_args)...);
-    }
+        template <typename... Args>
+        void log_error(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        {
+            m_logger->error(p_msg, std::forward<Args>(p_args)...);
+        }
 
-    template <typename... Args>
-    void log_critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
-    {
-        m_logger->critical(p_msg, std::forward<Args>(p_args)...);
-    }
+        template <typename... Args>
+        void log_debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        {
+            m_logger->debug(p_msg, std::forward<Args>(p_args)...);
+        }
 
-  private:
-    Parser::Toml &m_config;
-    std::shared_ptr<spdlog::logger> m_logger;
+        template <typename... Args>
+        void log_critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        {
+            m_logger->critical(p_msg, std::forward<Args>(p_args)...);
+        }
 
-    void log_active_level(const uint16_t);
-    void log_active_type(const std::string &);
-    void log_active_trace(const uint16_t p_level);
-};
+      private:
+        Parser::Toml &m_config;
+        std::shared_ptr<spdlog::logger> m_logger;
+
+        void log_active_level(const uint16_t);
+        void log_active_type(const std::string &);
+        void log_active_trace(const uint16_t p_level);
+    };
 } // namespace Logging

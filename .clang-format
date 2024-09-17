@@ -1,7 +1,7 @@
-# Este é um arquivo de configuração .clang-format para C++
+# Este é um arquivo de configuração .clang-format para um estilo semelhante ao C#
 
 # Define o estilo de codificação a ser usado
-BasedOnStyle: LLVM
+BasedOnStyle: Microsoft
 
 # Define o tamanho da indentação
 IndentWidth: 4
@@ -16,9 +16,9 @@ UseTab: Never
 ColumnLimit: 80
 
 # Define como as quebras de linha devem ser tratadas
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Linux
 
-# Define o alinhamento das chaves para classes, structs e namespaces
+# Define o alinhamento das chaves para classes, structs, namespaces e blocos de código
 BraceWrapping:
   AfterClass: true
   AfterEnum: true
@@ -59,3 +59,9 @@ IncludeIsMainRegex: '(\b|_)main(\b|_)'
 
 # Número máximo de linhas para quebras em função
 MaxEmptyLinesToKeep: 1
+
+# Define o alinhamento dentro de namespaces e classes
+NamespaceIndentation: All
+
+# Ajusta a indentação para blocos de código
+IndentCaseLabels: true

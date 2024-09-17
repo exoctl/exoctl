@@ -3,39 +3,53 @@
 
 namespace Crow
 {
-CrowApp::CrowApp(Parser::Toml &p_config, Logging::Log &p_log)
-    : m_config(p_config), m_log(p_log),
-      m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
-      m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
-{
-}
+    CrowApp::CrowApp(Parser::Toml &p_config, Logging::Log &p_log)
+        : m_config(p_config), m_log(p_log),
+          m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
+          m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
+    {
+    }
 
-CrowApp::~CrowApp() {}
+    CrowApp::~CrowApp()
+    {
+    }
 
-void CrowApp::crow_run()
-{
-    TRY_BEGIN()
-    m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
-    TRY_END()
-    CATCH(std::runtime_error, {
-        LOG(m_log, error, "An exception runtime occurred: {}", e.what());
+    void CrowApp::crow_run()
+    {
+        TRY_BEGIN()
+        m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
+        TRY_END()
+        CATCH(std::runtime_error, {
+            LOG(m_log, error, "An exception runtime occurred: {}", e.what());
 
-        throw Crow::CrowException::Abort("Initialization failed: " +
-                                         std::string(e.what()));
-    })
-    CATCH(std::exception, {
-        LOG(m_log, error, "An exception occurred: {}", e.what());
+            throw Crow::CrowException::Abort("Initialization failed: " +
+                                             std::string(e.what()));
+        })
+        CATCH(std::exception, {
+            LOG(m_log, error, "An exception occurred: {}", e.what());
 
-        throw Crow::CrowException::ParcialAbort("Failed: " +
-                                                std::string(e.what()));
-    })
-}
+            throw Crow::CrowException::ParcialAbort("Failed: " +
+                                                    std::string(e.what()));
+        })
+    }
 
-void CrowApp::crow_stop() { m_app.multithreaded().stop(); }
+    void CrowApp::crow_stop()
+    {
+        m_app.multithreaded().stop();
+    }
 
-Parser::Toml &CrowApp::crow_get_config() { return m_config; }
+    Parser::Toml &CrowApp::crow_get_config()
+    {
+        return m_config;
+    }
 
-crow::SimpleApp &CrowApp::crow_get_app() { return m_app; }
+    crow::SimpleApp &CrowApp::crow_get_app()
+    {
+        return m_app;
+    }
 
-Logging::Log &CrowApp::crow_get_log() { return m_log; }
+    Logging::Log &CrowApp::crow_get_log()
+    {
+        return m_log;
+    }
 }; // namespace Crow

@@ -5,45 +5,44 @@
 
 namespace Controllers
 {
-namespace Analysis
-{
-ScanYara::~ScanYara() {}
-ScanYara::ScanYara(Parser::Toml &p_config)
-    : m_yara_rules(
-          GET_TOML_TBL_VALUE(p_config, string, "yara", "malware_rules")),
-      m_config(p_config)
-{
-    dto_set_field("yara_rule", "none");
-    dto_set_field("is_malicius", Security::Types::none);
-}
-
-const void
-ScanYara::yara_load_rules(const std::function<void(void *)> &p_callback) const
-{
-    m_yara.yara_load_rules([&](void *p_rules_count)
-                           { m_yara.yara_load_rules_folder(m_yara_rules); });
-
-    p_callback((void *) m_yara.get_rules_loaded_count());
-}
-
-const void ScanYara::yara_scan_bytes(const std::string p_buffer)
-{
-    m_yara.yara_scan_bytes(
-        p_buffer,
-        [&](void *yr_user_data)
+    namespace Analysis
+    {
+        ScanYara::~ScanYara()
         {
-            dto_set_field(
-                "is_malicius",
-                ((Security::yr_user_data *) yr_user_data)->is_malicius);
+        }
+        ScanYara::ScanYara(Parser::Toml &p_config)
+            : m_yara_rules(GET_TOML_TBL_VALUE(
+                  p_config, string, "yara", "malware_rules")),
+              m_config(p_config)
+        {
+            dto_set_field("yara_rule", "none");
+            dto_set_field("is_malicius", Security::Types::none);
+        }
 
-            if (((Security::yr_user_data *) yr_user_data)->is_malicius ==
-                Security::Types::malicious)
-            {
+        const void ScanYara::yara_load_rules(
+            const std::function<void(void *)> &p_callback) const
+        {
+            m_yara.yara_load_rules([&](void *p_rules_count) {
+                m_yara.yara_load_rules_folder(m_yara_rules);
+            });
+
+            p_callback((void *) m_yara.get_rules_loaded_count());
+        }
+
+        const void ScanYara::yara_scan_bytes(const std::string p_buffer)
+        {
+            m_yara.yara_scan_bytes(p_buffer, [&](void *yr_user_data) {
                 dto_set_field(
-                    "yara_rule",
-                    ((Security::yr_user_data *) yr_user_data)->yara_rule);
-            }
-        });
-}
-} // namespace Analysis
+                    "is_malicius",
+                    ((Security::yr_user_data *) yr_user_data)->is_malicius);
+
+                if (((Security::yr_user_data *) yr_user_data)->is_malicius ==
+                    Security::Types::malicious) {
+                    dto_set_field(
+                        "yara_rule",
+                        ((Security::yr_user_data *) yr_user_data)->yara_rule);
+                }
+            });
+        }
+    } // namespace Analysis
 } //  namespace Controllers

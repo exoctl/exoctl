@@ -1,18 +1,21 @@
-#include <engine/magic/magic_exception.hxx>
 #include <engine/exception.hxx>
+#include <engine/magic/magic_exception.hxx>
 #include <string>
 
 namespace Magic
 {
-namespace MagicException
-{
+    namespace MagicException
+    {
 
-Initialize::Initialize(const std::string &p_message) : ExceptionBase(p_message)
-{
-}
+        Initialize::Initialize(const std::string &p_message)
+            : ExceptionBase(p_message)
+        {
+        }
 
-Finalize::Finalize(const std::string &p_message) : ExceptionBase(p_message) {}
+        Finalize::Finalize(const std::string &p_message)
+            : ExceptionBase(p_message)
+        {
+        }
 
-} // namespace DataException
-} // namespace Data
-
+    } // namespace MagicException
+} // namespace Magic

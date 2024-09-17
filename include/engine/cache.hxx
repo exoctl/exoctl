@@ -2,9 +2,9 @@
 
 namespace Cache
 {
-class Cache
-{
-    Cache();
-    ~Cache();
-};
+    class Cache
+    {
+        Cache();
+        ~Cache();
+    };
 }; // namespace Cache

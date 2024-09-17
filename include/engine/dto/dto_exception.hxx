@@ -4,14 +4,14 @@
 
 namespace DTO
 {
-namespace DTOException
-{
+    namespace DTOException
+    {
 
-class Field : public Exception::ExceptionBase
-{
-  public:
-    explicit Field(const std::string &);
-};
+        class Field : public Exception::ExceptionBase
+        {
+          public:
+            explicit Field(const std::string &);
+        };
 
-} // namespace DTOException
+    } // namespace DTOException
 } // namespace DTO

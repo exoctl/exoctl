@@ -10,22 +10,22 @@
 namespace Engine
 {
 
-class Engine
-{
-  private:
-    Parser::Toml &m_configuration;
-    Logging::Log m_log;
-    // Database::Postgresql m_database;
-    Crow::CrowApp m_crow;
-    Crow::Routes m_crow_routes;
-    Crow::Log m_crow_log;
+    class Engine
+    {
+      private:
+        Parser::Toml &m_configuration;
+        Logging::Log m_log;
+        // Database::Postgresql m_database;
+        Crow::CrowApp m_crow;
+        Crow::Routes m_crow_routes;
+        Crow::Log m_crow_log;
 
-  public:
-    Engine(Parser::Toml &);
-    ~Engine();
+      public:
+        Engine(Parser::Toml &);
+        ~Engine();
 
-    void engine_stop();
-    void engine_run();
-};
+        void engine_stop();
+        void engine_run();
+    };
 
 } // namespace Engine

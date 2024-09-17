@@ -6,20 +6,21 @@
 #include <engine/security/signatures/signatures.hxx>
 #include <string>
 
- namespace Controllers
+namespace Controllers
 {
-namespace Analysis
-{
-class ScanSigPacked : public DTO::DTOBase
-{
-  public:
-    ScanSigPacked();
-    ~ScanSigPacked();
+    namespace Analysis
+    {
+        class ScanSigPacked : public DTO::DTOBase
+        {
+          public:
+            ScanSigPacked();
+            ~ScanSigPacked();
 
-    const void packed_scan_bytes(const std::string);
-    const void packed_load_rules(const std::function<void(void *)> &) const;
+            const void packed_scan_bytes(const std::string);
+            const void packed_load_rules(
+                const std::function<void(void *)> &) const;
 
-  private:
-};
-} // namespace Analysis
+          private:
+        };
+    } // namespace Analysis
 } //  namespace Controllers

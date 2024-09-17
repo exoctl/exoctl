@@ -16,47 +16,46 @@ namespace Crow
     Routes::route_##route();                                                   \
     m_num_endpoints++;
 
-struct route
-{
-    const std::string path;
-    const Types::Routes_t type;
-    const uint64_t connections; /* only websocket connections */
-};
+    struct route {
+        const std::string path;
+        const Types::Routes_t type;
+        const uint64_t connections; /* only websocket connections */
+    };
 
-class Routes
-{
-  public:
-    Routes(CrowApp &);
-    ~Routes();
+    class Routes
+    {
+      public:
+        Routes(CrowApp &);
+        ~Routes();
 
-    void routes_init();
-    std::vector<route> &routes_get_endpoints();
+        void routes_init();
+        std::vector<route> &routes_get_endpoints();
 
-  private:
-    CrowApp &m_crow;
-    std::vector<route> m_endpoints;
-    std::size_t m_num_endpoints;
+      private:
+        CrowApp &m_crow;
+        std::vector<route> m_endpoints;
+        std::size_t m_num_endpoints;
 
-    WebSocket *m_socket_scan_yara;
-    WebSocket *m_socket_metadata;
-    WebSocket *m_socket_capstone_disass_x86_64;
-    WebSocket *m_socket_capstone_disass_arm_64;
-    Web<> *m_web_endpoins;
+        WebSocket *m_socket_scan_yara;
+        WebSocket *m_socket_metadata;
+        WebSocket *m_socket_capstone_disass_x86_64;
+        WebSocket *m_socket_capstone_disass_arm_64;
+        Web<> *m_web_endpoins;
 
-    Controllers::Analysis::ScanYara *m_scan_yara;
-    Controllers::Rev::Capstone *m_capstone_x86_64;
-    Controllers::Rev::Capstone *m_capstone_arm_64;
-    Controllers::Data::Metadata *m_metadata;
+        Controllers::Analysis::ScanYara *m_scan_yara;
+        Controllers::Rev::Capstone *m_capstone_x86_64;
+        Controllers::Rev::Capstone *m_capstone_arm_64;
+        Controllers::Data::Metadata *m_metadata;
 
-    void routes_update_endpoints();
-    void route_metadata();
-    void route_scan_yara();
-    void route_capstone_disass_x86_64();
-    void route_capstone_disass_arm_64();
+        void routes_update_endpoints();
+        void route_metadata();
+        void route_scan_yara();
+        void route_capstone_disass_x86_64();
+        void route_capstone_disass_arm_64();
 
-    /* Routes generate for debug */
+        /* Routes generate for debug */
 #ifdef DEBUG
-    void route_endpoint();
+        void route_endpoint();
 #endif
-};
+    };
 } // namespace Crow

@@ -4,17 +4,17 @@
 
 namespace Crow
 {
-namespace CrowException
-{
-class Abort : public Exception::ExceptionBase
-{
-  public:
-    explicit Abort(const std::string &);
-};
-class ParcialAbort : public Exception::ExceptionBase
-{
-  public:
-    explicit ParcialAbort(const std::string &);
-};
-} // namespace CrowException
+    namespace CrowException
+    {
+        class Abort : public Exception::ExceptionBase
+        {
+          public:
+            explicit Abort(const std::string &);
+        };
+        class ParcialAbort : public Exception::ExceptionBase
+        {
+          public:
+            explicit ParcialAbort(const std::string &);
+        };
+    } // namespace CrowException
 } // namespace Crow

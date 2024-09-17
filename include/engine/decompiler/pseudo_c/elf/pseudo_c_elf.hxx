@@ -4,13 +4,13 @@
 
 namespace Decompiler
 {
-class PseudoCElf
-{
-  public:
-    ~PseudoCElf();
-    PseudoCElf();
+    class PseudoCElf
+    {
+      public:
+        ~PseudoCElf();
+        PseudoCElf();
 
-  private:
-    Disassembly::Capstone *m_capstone;
-};
+      private:
+        Disassembly::Capstone *m_capstone;
+    };
 } // namespace Decompiler

@@ -15,12 +15,9 @@ int main()
                                 "upx");
 
     Parser::Toml configuration;
-    try
-    {
+    try {
         configuration.toml_parser_file("configuration.toml");
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
         LOG_ERROR("Failed to load configuration: {}", e.what());
         return EXIT_FAILURE;
     }
@@ -49,11 +46,11 @@ int main()
     Engine::Engine engine(configuration);
 
     TRY_BEGIN()
-    
+
     LOG_INFO("Started engine.");
     engine.engine_run();
     LOG_INFO("Engine stopped successfully.");
-    
+
     TRY_END()
     CATCH(Engine::EngineException::Run, {
         LOG_ERROR("Engine encountered an error: {}", e.what());

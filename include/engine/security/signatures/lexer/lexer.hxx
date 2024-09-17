@@ -6,28 +6,27 @@
 namespace Security
 {
 
-struct LexerToken
-{
-    Types::LexerToken type;
-    std::string value;
-};
+    struct LexerToken {
+        Types::LexerToken type;
+        std::string value;
+    };
 
-class Lexer
-{
-  public:
-    ~Lexer();
-    Lexer();
+    class Lexer
+    {
+      public:
+        ~Lexer();
+        Lexer();
 
-    void lexer_parser(const std::string &);
-    LexerToken lexer_next_token();
+        void lexer_parser(const std::string &);
+        LexerToken lexer_next_token();
 
-  private:
-    std::string m_input;
-    std::size_t m_input_size;
-    std::size_t m_pos;
+      private:
+        std::string m_input;
+        std::size_t m_input_size;
+        std::size_t m_pos;
 
-    bool lexer_match_keyword(const std::string &);
-    const LexerToken lexer_identifier_token();
-    const LexerToken lexer_string_token();
-};
+        bool lexer_match_keyword(const std::string &);
+        const LexerToken lexer_identifier_token();
+        const LexerToken lexer_string_token();
+    };
 } // namespace Security

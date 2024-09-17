@@ -2,6 +2,10 @@
 
 namespace Decompiler
 {
-PseudoCElf::~PseudoCElf() {}
-PseudoCElf::PseudoCElf() {}
+    PseudoCElf::~PseudoCElf()
+    {
+    }
+    PseudoCElf::PseudoCElf()
+    {
+    }
 } // namespace Decompiler

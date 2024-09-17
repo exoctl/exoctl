@@ -3,26 +3,27 @@
 #include <exception>
 #include <string>
 
-#define TRY_BEGIN()                                                            \
-    try                                                                        \
-    {
+#define TRY_BEGIN() try {
 
 #define CATCH(exception_type, action)                                          \
-    catch (const exception_type &e) { action; }
+    catch (const exception_type &e)                                            \
+    {                                                                          \
+        action;                                                                \
+    }
 
 #define TRY_END() }
 
 namespace Exception
 {
-class ExceptionBase : public std::exception
-{
-  private:
-    const std::string m_error_message;
+    class ExceptionBase : public std::exception
+    {
+      private:
+        const std::string m_error_message;
 
-  protected:
-    explicit ExceptionBase(const std::string &message);
+      protected:
+        explicit ExceptionBase(const std::string &message);
 
-  public:
-    virtual const char *what() const noexcept override;
-};
+      public:
+        virtual const char *what() const noexcept override;
+    };
 } // namespace Exception
