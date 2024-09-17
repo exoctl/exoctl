@@ -47,16 +47,12 @@ void Routes::route_capstone_disass_x86_64()
                     ROUTE_CAPSTONE_DISASS_X86_64,
                     p_data.size());
 
-                try
-                {
-                    m_capstone_x86_64->capstone_disassembly(p_data);
-                    p_context.conn_broadcast(
-                        &p_conn,
-                        m_capstone_x86_64->dto_to_json().json_to_string());
-                }
-                catch (
-                    const Disassembly::CapstoneException::FailedDisassembly &e)
-                {
+                TRY_BEGIN()
+                m_capstone_x86_64->capstone_disassembly(p_data);
+                p_context.conn_broadcast(
+                    &p_conn, m_capstone_x86_64->dto_to_json().json_to_string());
+                TRY_END()
+                CATCH(Disassembly::CapstoneException::FailedDisassembly, {
                     LOG(m_crow.crow_get_log(),
                         error,
                         "Disassembly failed on route '{}': data size = {}, "
@@ -64,7 +60,7 @@ void Routes::route_capstone_disass_x86_64()
                         ROUTE_CAPSTONE_DISASS_X86_64,
                         p_data.size(),
                         e.what());
-                }
+                })
             }
             else
             {
@@ -97,16 +93,12 @@ void Routes::route_capstone_disass_arm_64()
                     ROUTE_CAPSTONE_DISASS_ARM64,
                     p_data.size());
 
-                try
-                {
-                    m_capstone_arm_64->capstone_disassembly(p_data);
-                    p_context.conn_broadcast(
-                        &p_conn,
-                        m_capstone_arm_64->dto_to_json().json_to_string());
-                }
-                catch (
-                    const Disassembly::CapstoneException::FailedDisassembly &e)
-                {
+                TRY_BEGIN()
+                m_capstone_arm_64->capstone_disassembly(p_data);
+                p_context.conn_broadcast(
+                    &p_conn, m_capstone_arm_64->dto_to_json().json_to_string());
+                TRY_END()
+                CATCH(Disassembly::CapstoneException::FailedDisassembly, {
                     LOG(m_crow.crow_get_log(),
                         error,
                         "Disassembly failed on route '{}': data size = {}, "
@@ -114,7 +106,7 @@ void Routes::route_capstone_disass_arm_64()
                         ROUTE_CAPSTONE_DISASS_ARM64,
                         p_data.size(),
                         e.what());
-                }
+                })
             }
             else
             {
@@ -128,24 +120,22 @@ void Routes::route_scan_yara()
 {
     m_scan_yara = new Controllers::Analysis::ScanYara(m_crow.crow_get_config());
 
-    try
-    {
-        m_scan_yara->yara_load_rules(
-            [&](void *p_total_rules)
-            {
-                LOG(m_crow.crow_get_log(),
-                    info,
-                    "Successfully loaded rules. Total Yara rules "
-                    "count: "
-                    "{:d}",
-                    (uint64_t) p_total_rules);
-            });
-    }
-    catch (const Security::YaraException::LoadRules &e)
-    {
+    TRY_BEGIN()
+    m_scan_yara->yara_load_rules(
+        [&](void *p_total_rules)
+        {
+            LOG(m_crow.crow_get_log(),
+                info,
+                "Successfully loaded rules. Total Yara rules "
+                "count: "
+                "{:d}",
+                (uint64_t) p_total_rules);
+        });
+    TRY_END()
+    CATCH(Security::YaraException::LoadRules, {
         LOG(m_crow.crow_get_log(), error, "{}", e.what());
         throw CrowException::Abort(e.what());
-    }
+    })
 
     m_socket_scan_yara = new WebSocket(
         m_crow,
@@ -257,7 +247,6 @@ void Routes::routes_init()
     GET_ROUTE(metadata);
     GET_ROUTE(capstone_disass_x86_64);
     GET_ROUTE(capstone_disass_arm_64);
-    GET_ROUTE(scan_yara);
     GET_ROUTE(scan_yara);
 
 #if DEBUG

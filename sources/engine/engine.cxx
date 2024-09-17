@@ -18,13 +18,11 @@ void Engine::engine_stop() { m_crow.crow_stop(); }
 
 void Engine::engine_run()
 {
-    try
-    {
-        m_crow_routes.routes_init();
-        m_crow.crow_run();
-    }
-    catch (const Crow::CrowException::Abort &e)
-    {
+    TRY_BEGIN()
+    m_crow_routes.routes_init();
+    m_crow.crow_run();
+    TRY_END()
+    CATCH(Crow::CrowException::Abort, {
         LOG(m_log,
             error,
             "Critical Crow aborted. Engine stopping. Reason: {}",
@@ -32,11 +30,9 @@ void Engine::engine_run()
         engine_stop();
         throw EngineException::Run("Operation failed, Crow was aborted: " +
                                    std::string(e.what()));
-    }
-    catch (const Crow::CrowException::ParcialAbort &e)
-    {
-        LOG(m_log, error, "Non-critical occurred: {}", e.what());
-    }
+    })
+    CATCH(Crow::CrowException::ParcialAbort,
+          { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
 }
 
 } // namespace Engine

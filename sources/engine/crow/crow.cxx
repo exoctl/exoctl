@@ -14,24 +14,21 @@ CrowApp::~CrowApp() {}
 
 void CrowApp::crow_run()
 {
-    try
-    {
-        m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
-    }
-    catch (const std::runtime_error &e)
-    {
+    TRY_BEGIN()
+    m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
+    TRY_END()
+    CATCH(std::runtime_error, {
         LOG(m_log, error, "An exception runtime occurred: {}", e.what());
 
         throw Crow::CrowException::Abort("Initialization failed: " +
                                          std::string(e.what()));
-    }
-    catch (const std::exception &e)
-    {
+    })
+    CATCH(std::exception, {
         LOG(m_log, error, "An exception occurred: {}", e.what());
 
         throw Crow::CrowException::ParcialAbort("Failed: " +
                                                 std::string(e.what()));
-    }
+    })
 }
 
 void CrowApp::crow_stop() { m_app.multithreaded().stop(); }

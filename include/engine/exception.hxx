@@ -3,6 +3,15 @@
 #include <exception>
 #include <string>
 
+#define TRY_BEGIN()                                                            \
+    try                                                                        \
+    {
+
+#define CATCH(exception_type, action)                                          \
+    catch (const exception_type &e) { action; }
+
+#define TRY_END() }
+
 namespace Exception
 {
 class ExceptionBase : public std::exception

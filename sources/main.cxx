@@ -40,7 +40,7 @@ int main()
     LOG_INFO("Copyright   : {}", project_copyright);
 #if DEBUG
     LOG_INFO("Mode        : Debug");
-#else 
+#else
     LOG_INFO("Mode        : Realese");
 #endif
 
@@ -48,17 +48,17 @@ int main()
 
     Engine::Engine engine(configuration);
 
-    try
-    {
-        LOG_INFO("Started engine.");
-        engine.engine_run();
-        LOG_INFO("Engine stopped successfully.");
-    }
-    catch (const Engine::EngineException::Run &e)
-    {
+    TRY_BEGIN()
+    
+    LOG_INFO("Started engine.");
+    engine.engine_run();
+    LOG_INFO("Engine stopped successfully.");
+    
+    TRY_END()
+    CATCH(Engine::EngineException::Run, {
         LOG_ERROR("Engine encountered an error: {}", e.what());
         return EXIT_FAILURE;
-    }
+    })
 
     LOG_INFO("Exiting program.");
     return EXIT_SUCCESS;
