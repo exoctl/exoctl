@@ -114,7 +114,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onclose:** 
   - **onerror:** 
 
-#### 4. 
+#### 4. endpoints
 - **Route:** `<version>/engine/debug/endpoints`
 - **Type:** Web
 - **Description:** Endpoint for generate endpoints loaded
