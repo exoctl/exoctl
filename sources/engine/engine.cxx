@@ -15,6 +15,7 @@ Engine::Engine(Parser::Toml &p_configuration)
 Engine::~Engine() {}
 
 void Engine::engine_stop() { m_crow.crow_stop(); }
+
 void Engine::engine_run()
 {
     try
@@ -24,10 +25,17 @@ void Engine::engine_run()
     }
     catch (const Crow::CrowException::Abort &e)
     {
-        LOG(m_log, error, "Engine not runned {}", e.what());
-        throw EngineException::Run(
-            "Operation failed, Crow was aborted : " +
-            std::string(e.what()));
+        LOG(m_log,
+            error,
+            "Critical Crow aborted. Engine stopping. Reason: {}",
+            e.what());
+        engine_stop();
+        throw EngineException::Run("Operation failed, Crow was aborted: " +
+                                   std::string(e.what()));
+    }
+    catch (const Crow::CrowException::ParcialAbort &e)
+    {
+        LOG(m_log, error, "Non-critical occurred: {}", e.what());
     }
 }
 

@@ -4,7 +4,7 @@
 #include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
 #include <filesystem>
-#include <stdexcept>
+#include <fmt/core.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -78,8 +78,7 @@ void Yara::yara_load_rules_folder(const std::string &p_path) const
     while ((entry = readdir(dir)) != nullptr)
     {
         const std::filesystem::path entry_name = entry->d_name;
-        const std::string full_path =
-            std::string(p_path) + "/" + entry_name.c_str();
+        const std::string full_path = fmt::format("{}/{}", p_path, entry_name.c_str());
 
         if (entry_name == "." || entry_name == "..")
             continue;

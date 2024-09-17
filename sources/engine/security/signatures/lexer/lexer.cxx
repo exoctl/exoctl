@@ -80,7 +80,7 @@ const LexerToken Lexer::lexer_string_token()
     {
         str += m_input[m_pos++];
     }
-    m_pos++; /* skip closing " */
+    m_pos++;
     return (LexerToken){Types::LexerToken::STRING, str};
 }
 

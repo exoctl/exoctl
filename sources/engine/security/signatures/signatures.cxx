@@ -6,7 +6,7 @@ namespace Security
 {
 
 std::unordered_map<std::string_view, void *> Sig::m_objs;
-std::unordered_map<std::string_view, SigRule> Sig::m_rules;
+std::unordered_map<std::string_view, rule> Sig::m_rules;
 // std::unordered_map<SigRule, Include> Sig::m_includes;
 
 Sig::Sig() { Sig::sig_init_objs_includes(); }

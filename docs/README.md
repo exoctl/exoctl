@@ -74,8 +74,8 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onclose:** 
   - **onerror:** 
 
-#### 2. x86_64
-- **Route:** `<version>/engine/rev/capstone/disassembly/x86_64`
+#### 3. x86_64 or arm_64
+- **Route:** `<version>/engine/rev/capstone/disassembly/<x86_64><arm_64>`
 - **Type:** WebSocket
 - **Description:** Endpoint for generate disassembly x86_64
 - **Handlers:**
@@ -87,8 +87,8 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {
-    "arch": "AMD64",
-    "mode": "X64",
+    "arch": "arch",
+    "mode": "mode",
     "disassembly": [
         [
             {
@@ -113,3 +113,5 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   ```
   - **onclose:** 
   - **onerror:** 
+
+#### 4. 

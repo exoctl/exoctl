@@ -30,7 +30,7 @@ const void Metadata::metadata_parse(const std::string &p_buffer)
     char cstr[11];
     strftime(cstr, sizeof(cstr), "%Y-%m-%d", ltm);
 
-    dto_set_field("creation_date", cstr);
+    dto_set_field("creation_date", std::string(cstr));
 
     Metadata::metadata_compute_entropy(p_buffer);
     dto_set_field("entropy", m_entropy);

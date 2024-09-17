@@ -7,7 +7,7 @@
 
 namespace Crow
 {
-Routes::Routes(CrowApp &p_crow) : m_crow(p_crow) {}
+Routes::Routes(CrowApp &p_crow) : m_crow(p_crow), m_num_endpoints(0) {}
 
 Routes::~Routes()
 {
@@ -144,7 +144,7 @@ void Routes::route_scan_yara()
     catch (const Security::YaraException::LoadRules &e)
     {
         LOG(m_crow.crow_get_log(), error, "{}", e.what());
-        throw CrowException::Abort(std::string(e.what()));
+        throw CrowException::Abort(e.what());
     }
 
     m_socket_scan_yara = new WebSocket(
@@ -206,13 +206,14 @@ void Routes::route_endpoint()
                   {
                       Parser::Json routes_array = Parser::Json::array();
 
-                      for (const auto &route : Routes::routes_get_endpoints())
+                      const auto &routes = Routes::routes_get_endpoints();
+                      for (const auto &route : routes)
                       {
                           Parser::Json route_obj;
-                          route_obj["path"] = route.r_path;
-                          route_obj["type"] = static_cast<int>(route.r_type);
-                          if (route.r_type == Types::Routes_t::websocket)
-                              route_obj["connections"] = route.r_connections;
+                          route_obj["path"] = route.path;
+                          route_obj["type"] = static_cast<int>(route.type);
+                          if (route.type == Types::Routes_t::websocket)
+                              route_obj["connections"] = route.connections;
                           routes_array.push_back(route_obj);
                       }
 
@@ -224,34 +225,39 @@ void Routes::route_endpoint()
 
 void Routes::routes_update_endpoints()
 {
+    m_endpoints.reserve(m_num_endpoints);
     m_endpoints.clear();
 
-    m_endpoints.push_back({ROUTE_SCAN_YARA,
-                           Types::Routes_t::websocket,
-                           m_socket_scan_yara->websocket_size_connections()});
-    m_endpoints.push_back({ROUTE_METADATA,
-                           Types::Routes_t::websocket,
-                           m_socket_metadata->websocket_size_connections()});
-    m_endpoints.push_back(
-        {ROUTE_CAPSTONE_DISASS_X86_64,
-         Types::Routes_t::websocket,
-         m_socket_capstone_disass_x86_64->websocket_size_connections()});
-    m_endpoints.push_back(
-        {ROUTE_CAPSTONE_DISASS_ARM64,
-         Types::Routes_t::websocket,
-         m_socket_capstone_disass_arm_64->websocket_size_connections()});
+    m_endpoints.emplace_back(ROUTE_SCAN_YARA,
+                             Types::Routes_t::websocket,
+                             m_socket_scan_yara->websocket_size_connections());
+
+    m_endpoints.emplace_back(ROUTE_METADATA,
+                             Types::Routes_t::websocket,
+                             m_socket_metadata->websocket_size_connections());
+
+    m_endpoints.emplace_back(
+        ROUTE_CAPSTONE_DISASS_X86_64,
+        Types::Routes_t::websocket,
+        m_socket_capstone_disass_x86_64->websocket_size_connections());
+
+    m_endpoints.emplace_back(
+        ROUTE_CAPSTONE_DISASS_ARM64,
+        Types::Routes_t::websocket,
+        m_socket_capstone_disass_arm_64->websocket_size_connections());
+
 #if DEBUG
-    m_endpoints.push_back({ROUTE_ROUTES, Types::Routes_t::web, 0});
+    m_endpoints.emplace_back(ROUTE_ROUTES, Types::Routes_t::web, 0);
 #endif
 }
 
 void Routes::routes_init()
 {
     LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
-
     GET_ROUTE(metadata);
     GET_ROUTE(capstone_disass_x86_64);
     GET_ROUTE(capstone_disass_arm_64);
+    GET_ROUTE(scan_yara);
     GET_ROUTE(scan_yara);
 
 #if DEBUG
@@ -259,10 +265,9 @@ void Routes::routes_init()
 #endif
 }
 
-std::list<route> &Routes::routes_get_endpoints()
+std::vector<route> &Routes::routes_get_endpoints()
 {
     Routes::routes_update_endpoints();
     return m_endpoints;
 }
-
 }; // namespace Crow

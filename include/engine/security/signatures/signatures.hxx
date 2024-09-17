@@ -11,16 +11,16 @@ namespace Security
 
 extern "C"
 {
-    struct SigRule
+    struct rule
     {
-        const char *sig_name;
-        const char *sig_namespace;
+        const char *name;
+        const char *name_space;
     };
 
-    struct Include
+    struct include
     {
-        const char *i_name;
-        void *i_obj;
+        const char *name;
+        void *obj;
     };
 }
 
@@ -44,7 +44,7 @@ class Sig
     Parser::Elf m_elf;
 
     static std::unordered_map<std::string_view, void *> m_objs;
-    static std::unordered_map<std::string_view, SigRule> m_rules;
+    static std::unordered_map<std::string_view, rule> m_rules;
     // static std::unordered_map<SigRule, Include> m_includes;
 
     void sig_parser_syntax(const std::string &);

@@ -7,17 +7,20 @@
 #include <engine/crow/routes/routes_types.hxx>
 #include <engine/crow/routes/web/web.hxx>
 #include <engine/crow/routes/websocket/websocket.hxx>
-#include <list>
+#include <functional>
+#include <vector>
 
 namespace Crow
 {
-#define GET_ROUTE(route) Routes::route_##route();
+#define GET_ROUTE(route)                                                       \
+    Routes::route_##route();                                                   \
+    m_num_endpoints++;
 
 struct route
 {
-    const std::string r_path;
-    const Types::Routes_t r_type;
-    const uint64_t r_connections;
+    const std::string path;
+    const Types::Routes_t type;
+    const uint64_t connections; /* only websocket connections */
 };
 
 class Routes
@@ -27,11 +30,12 @@ class Routes
     ~Routes();
 
     void routes_init();
-    std::list<route> &routes_get_endpoints();
+    std::vector<route> &routes_get_endpoints();
 
   private:
     CrowApp &m_crow;
-    std::list<route> m_endpoints;
+    std::vector<route> m_endpoints;
+    std::size_t m_num_endpoints;
 
     WebSocket *m_socket_scan_yara;
     WebSocket *m_socket_metadata;
