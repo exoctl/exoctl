@@ -77,7 +77,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
 #### 3. x86_64 or arm_64
 - **Route:** `<version>/engine/rev/capstone/disassembly/<x86_64><arm_64>`
 - **Type:** WebSocket
-- **Description:** Endpoint for generate disassembly x86_64
+- **Description:** Endpoint for generate disassembly x86_64 or arm_64
 - **Handlers:**
   - **onaccept:**
   - **onopen:** 
@@ -115,3 +115,31 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onerror:** 
 
 #### 4. 
+- **Route:** `<version>/engine/debug/endpoints`
+- **Type:** Web
+- **Description:** Endpoint for generate endpoints loaded
+- **Response:**
+```json
+[
+  {
+    "connections": 0,
+    "path": "/v1/engine/analysis/scan_yara",
+    "type": 0
+  },
+  {
+    "connections": 0,
+    "path": "/v1/engine/data/metadata",
+    "type": 0
+  },
+  {
+    "path": "/v1/engine/debug/endpoints",
+    "type": 1
+  }
+
+  <...>
+]
+```
+- **Details:**
+  - **`type` Values:**
+    - `0`: Websocket
+    - `1`: Web
