@@ -1,24 +1,24 @@
-# Este é um arquivo de configuração .clang-format para um estilo semelhante ao C#
+# This is a .clang-format configuration file for a style similar to C#
 
-# Define o estilo de codificação a ser usado
+# Define the base style to use
 BasedOnStyle: Microsoft
 
-# Define o tamanho da indentação
+# Define the size of the indentation
 IndentWidth: 4
 
-# Define o número de espaços para cada nível de indentação
+# Define the number of spaces per indentation level
 TabWidth: 4
 
-# Usa espaços em vez de tabulação
+# Use spaces instead of tabs
 UseTab: Never
 
-# Define o comprimento máximo da linha
+# Define the maximum line length
 ColumnLimit: 80
 
-# Define como as quebras de linha devem ser tratadas
+# Define how line breaks should be handled
 BreakBeforeBraces: Linux
 
-# Define o alinhamento das chaves para classes, structs, namespaces e blocos de código
+# Define the alignment of braces for classes, structs, namespaces, and code blocks
 BraceWrapping:
   AfterClass: true
   AfterEnum: true
@@ -29,27 +29,27 @@ BraceWrapping:
   BeforeCatch: true
   BeforeElse: true
 
-# Define o estilo de formatação de operadores
+# Define the packing of parameters and arguments
 BinPackParameters: false
 BinPackArguments: false
 
-# Define a forma de formatação para operadores
+# Define spacing for operators and parentheses
 SpacesInParentheses: false
 SpacesInAngles: false
 SpaceAfterCStyleCast: true
 SpaceBeforeParens: ControlStatements
 
-# Define o estilo para comentário de uma linha
+# Define the style for single-line comments
 CommentPragmas: '^//'
 
-# Controla o estilo de formatação para declarações de variáveis
+# Control the formatting style for variable declarations
 AlignAfterOpenBracket: Align
 AlignOperands: true
 
-# Estilo de formatação para enums
+# Style for enums
 AllowShortEnumsOnASingleLine: false
 
-# Estilo de formatação para os cabeçalhos
+# Style for header files
 IncludeCategories:
   - Regex:           ''
     Priority:        1
@@ -57,11 +57,11 @@ IncludeCategories:
     Priority:        2
 IncludeIsMainRegex: '(\b|_)main(\b|_)'
 
-# Número máximo de linhas para quebras em função
+# Maximum number of empty lines to keep
 MaxEmptyLinesToKeep: 1
 
-# Define o alinhamento dentro de namespaces e classes
+# Define alignment within namespaces and classes
 NamespaceIndentation: All
 
-# Ajusta a indentação para blocos de código
+# Adjust indentation for code blocks
 IndentCaseLabels: true
