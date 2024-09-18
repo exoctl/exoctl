@@ -6,6 +6,7 @@ copyright = "@maldeclabs"
 
 [yara]
 malware_rules = "rules/yara/malwares"
+packeds_rules = "rules/yara/packeds"
 
 [sig]
 packeds_rules = "rules/signatures/packeds"

@@ -14,6 +14,5 @@ rule ELF_Packed_With_UPX {
     condition:
         elf.type == elf.ET_EXEC and         
         elf.number_of_segments > 2 and      
-        elf.sections[".text"].size < 10000 and 
         ($upx_marker_1 or $upx_marker_2 or $upx_marker_3) 
 }

@@ -24,6 +24,7 @@ namespace Controllers
 
           private:
             const std::string m_yara_malware_rules;
+            const std::string m_yara_packeds_rules;
             Parser::Toml &m_config;
             Security::Yara m_yara;
         };

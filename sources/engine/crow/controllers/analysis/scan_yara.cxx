@@ -1,6 +1,5 @@
 #include <engine/crow/controllers/analysis/scan_yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
-#include <iostream>
 #include <string>
 
 namespace Controllers
@@ -13,6 +12,8 @@ namespace Controllers
         ScanYara::ScanYara(Parser::Toml &p_config)
             : m_yara_malware_rules(GET_TOML_TBL_VALUE(
                   p_config, string, "yara", "malware_rules")),
+              m_yara_packeds_rules(GET_TOML_TBL_VALUE(
+                  p_config, string, "yara", "packeds_rules")),
               m_config(p_config)
         {
             dto_set_field("yara_rule", "none");
@@ -24,6 +25,8 @@ namespace Controllers
             const std::function<void(void *)> &p_callback) const
         {
             m_yara.yara_load_rules([&](void *p_rules_count) {
+                m_yara.yara_load_rules_folder(
+                    m_yara_packeds_rules); // rules for packeds
                 m_yara.yara_load_rules_folder(
                     m_yara_malware_rules); // rules for malwares
                 /* implement based demand */
