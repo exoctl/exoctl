@@ -25,3 +25,6 @@
 [submodule "libraries/capstone-engine"]
 	path = libraries/capstone-engine
 	url = https://github.com/capstone-engine/capstone.git
+[submodule "libraries/signatures"]
+	path = libraries/signatures
+	url = git@github.com:maldeclabs/signatures.git
