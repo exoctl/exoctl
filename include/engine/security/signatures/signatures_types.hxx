@@ -4,9 +4,10 @@ namespace Security
 {
     namespace Types
     {
-        enum SigPacked_t {
-            packed,
-            nopacked
+        enum Sig {
+            sig_match,
+            sig_nomatch,
+            sig_none
         };
     } // namespace Types
 } // namespace Security

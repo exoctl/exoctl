@@ -23,7 +23,7 @@ namespace Controllers
                 const std::function<void(void *)> &) const;
 
           private:
-            const std::string m_yara_rules;
+            const std::string m_yara_malware_rules;
             Parser::Toml &m_config;
             Security::Yara m_yara;
         };

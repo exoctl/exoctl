@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/security/yara/yara_types.hxx>
+#include <filesystem>
 #include <functional>
 #include <stack>
 #include <string>
@@ -9,8 +10,9 @@
 namespace Security
 {
     typedef struct yr_user_data {
-        Types::YaraScan_t is_malicius;
+        Types::Yara yara_is_match;
         const char *yara_rule;
+        const char *yara_namespace;
     } yr_user_data;
 
     class Yara
@@ -22,9 +24,14 @@ namespace Security
         void yara_scan_bytes(const std::string,
                              const std::function<void(void *)> &) const;
         void yara_load_rules(const std::function<void(void *)> &) const;
-        void yara_load_rules_folder(const std::string &) const;
+
+        /* load rules if extension file '.yar'*/
+        void yara_load_rules_folder(
+            const std::filesystem::path & /* path */) const;
+
         const int yara_set_signature_rule_mem(const std::string &) const;
         const int yara_set_signature_rule_fd(const std::string &,
+                                             const std::string &,
                                              const std::string &) const;
 
         const uint64_t get_rules_loaded_count() const;

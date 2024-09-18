@@ -10,11 +10,11 @@ namespace Controllers
 {
     namespace Analysis
     {
-        class ScanSigPacked : public DTO::DTOBase
+        class ScanSig : public DTO::DTOBase
         {
           public:
-            ScanSigPacked();
-            ~ScanSigPacked();
+            ScanSig();
+            ~ScanSig();
 
             const void packed_scan_bytes(const std::string);
             const void packed_load_rules(

@@ -3,7 +3,6 @@
 #include <engine/security/yara/yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
-#include <filesystem>
 #include <fmt/core.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -45,13 +44,14 @@ namespace Security
         }
     }
 
-    const int Yara::yara_set_signature_rule_fd(
-        const std::string &p_path, const std::string &p_yrname) const
+    const int Yara::yara_set_signature_rule_fd(const std::string &p_path,
+                                               const std::string &p_yrname,
+                                               const std::string &p_yrns) const
     {
         const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
         const int error_success = yr_compiler_add_fd(
-            m_yara_compiler, rules_fd, nullptr, p_yrname.c_str());
+            m_yara_compiler, rules_fd, p_yrns.c_str(), p_yrname.c_str());
 
         close(rules_fd);
 
@@ -65,30 +65,33 @@ namespace Security
         return yr_compiler_add_string(m_yara_compiler, p_rule.c_str(), nullptr);
     }
 
-    void Yara::yara_load_rules_folder(const std::string &p_path) const
+    void Yara::yara_load_rules_folder(const std::filesystem::path &p_path) const
     {
+        const std::string folder = p_path.filename();
+
         DIR *dir = opendir(p_path.c_str());
         if (!dir)
             throw YaraException::LoadRules(strerror(errno));
 
-        struct dirent *entry;
+        const struct dirent *entry;
         while ((entry = readdir(dir)) != nullptr) {
             const std::filesystem::path entry_name = entry->d_name;
             const std::string full_path =
-                fmt::format("{}/{}", p_path, entry_name.c_str());
+                fmt::format("{}/{}", p_path.c_str(), entry_name.c_str());
 
-            if (entry_name == "." || entry_name == "..")
+            if (entry_name == "." || entry_name == "..") {
                 continue;
-
+            }
             if (entry_name.extension() == ".yar") {
-                if (Yara::yara_set_signature_rule_fd(full_path, entry_name) !=
-                    ERROR_SUCCESS) {
+                if (Yara::yara_set_signature_rule_fd(
+                        full_path, entry_name, folder) != ERROR_SUCCESS) {
                     throw YaraException::LoadRules(
                         "yara_set_signature_rule() failed to compile rule " +
                         std::string(full_path));
                 }
-            } else if (entry->d_type == DT_DIR)
+            } else if (entry->d_type == DT_DIR) {
                 yara_load_rules_folder(full_path);
+            }
         }
 
         closedir(dir);
@@ -120,8 +123,9 @@ namespace Security
         struct yr_user_data *data = static_cast<struct yr_user_data *>(
             alloca(sizeof(struct yr_user_data)));
 
-        data->is_malicius = Types::YaraScan_t::none;
+        data->yara_is_match = Types::Yara::yara_none;
         data->yara_rule = nullptr;
+        data->yara_namespace = nullptr;
 
         yr_rules_scan_mem(m_yara_rules,
                           reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
@@ -147,14 +151,15 @@ namespace Security
             case CALLBACK_MSG_SCAN_FINISHED:
                 break;
             case CALLBACK_MSG_RULE_MATCHING:
+                ((yr_user_data *) p_user_data)->yara_namespace = rule->ns->name;
                 ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
-                ((yr_user_data *) p_user_data)->is_malicius =
-                    Types::YaraScan_t::malicious;
+                ((yr_user_data *) p_user_data)->yara_is_match =
+                    Types::Yara::yara_match;
                 return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:
-                ((yr_user_data *) p_user_data)->is_malicius =
-                    Types::YaraScan_t::benign;
+                ((yr_user_data *) p_user_data)->yara_is_match =
+                    Types::Yara::yara_nomatch;
                 break;
         }
 

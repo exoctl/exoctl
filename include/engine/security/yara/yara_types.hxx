@@ -4,10 +4,10 @@ namespace Security
 {
     namespace Types
     {
-        enum YaraScan_t {
-            benign,
-            malicious,
-            none
+        enum Yara {
+            yara_match,
+            yara_nomatch,
+            yara_none
         };
     } // namespace Types
 } // namespace Security

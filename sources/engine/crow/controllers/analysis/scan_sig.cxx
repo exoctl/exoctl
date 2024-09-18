@@ -1,22 +1,22 @@
-#include <engine/crow/controllers/analysis/scan_sig_packed.hxx>
+#include <engine/crow/controllers/analysis/scan_sig.hxx>
 
 namespace Controllers
 {
     namespace Analysis
     {
-        ScanSigPacked::ScanSigPacked()
+        ScanSig::ScanSig()
         {
             dto_set_field("is_packed", 0);
             dto_set_field("packed", "none");
         }
-        ScanSigPacked::~ScanSigPacked()
+        ScanSig::~ScanSig()
         {
         }
 
-        const void ScanSigPacked::packed_scan_bytes(const std::string)
+        const void ScanSig::packed_scan_bytes(const std::string)
         {
         }
-        const void ScanSigPacked::packed_load_rules(
+        const void ScanSig::packed_load_rules(
             const std::function<void(void *)> &) const
         {
         }

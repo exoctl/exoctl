@@ -11,6 +11,7 @@ include_directories(
     ../libraries/tomlplusplus/include
     ../libraries/lief/include
     ../libraries/capstone-engine/include/
+    ../libraries/signatures/include
 )
 
 file(GLOB_RECURSE SOURCES
@@ -38,6 +39,7 @@ target_link_libraries(engine PUBLIC
     fmt
     LIEF::LIEF
     capstone
+    signatures
     magic
     crypto
 )

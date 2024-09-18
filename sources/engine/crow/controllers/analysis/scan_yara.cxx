@@ -11,19 +11,22 @@ namespace Controllers
         {
         }
         ScanYara::ScanYara(Parser::Toml &p_config)
-            : m_yara_rules(GET_TOML_TBL_VALUE(
+            : m_yara_malware_rules(GET_TOML_TBL_VALUE(
                   p_config, string, "yara", "malware_rules")),
               m_config(p_config)
         {
             dto_set_field("yara_rule", "none");
-            dto_set_field("is_malicius", Security::Types::none);
+            dto_set_field("yara_namespace", "none");
+            dto_set_field("yara_is_match", Security::Types::Yara::yara_none);
         }
 
         const void ScanYara::yara_load_rules(
             const std::function<void(void *)> &p_callback) const
         {
             m_yara.yara_load_rules([&](void *p_rules_count) {
-                m_yara.yara_load_rules_folder(m_yara_rules);
+                m_yara.yara_load_rules_folder(
+                    m_yara_malware_rules); // rules for malwares
+                /* implement based demand */
             });
 
             p_callback((void *) m_yara.get_rules_loaded_count());
@@ -33,14 +36,17 @@ namespace Controllers
         {
             m_yara.yara_scan_bytes(p_buffer, [&](void *yr_user_data) {
                 dto_set_field(
-                    "is_malicius",
-                    ((Security::yr_user_data *) yr_user_data)->is_malicius);
+                    "yara_is_match",
+                    ((Security::yr_user_data *) yr_user_data)->yara_is_match);
 
-                if (((Security::yr_user_data *) yr_user_data)->is_malicius ==
-                    Security::Types::malicious) {
+                if (((Security::yr_user_data *) yr_user_data)->yara_is_match ==
+                    Security::Types::Yara::yara_match) {
                     dto_set_field(
                         "yara_rule",
                         ((Security::yr_user_data *) yr_user_data)->yara_rule);
+                    dto_set_field("yara_namespace",
+                                  ((Security::yr_user_data *) yr_user_data)
+                                      ->yara_namespace);
                 }
             });
         }
