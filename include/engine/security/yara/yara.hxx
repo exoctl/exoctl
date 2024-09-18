@@ -10,7 +10,7 @@
 namespace Security
 {
     typedef struct yr_user_data {
-        Types::Yara yara_is_match;
+        Types::Yara yara_match_status;
         const char *yara_rule;
         const char *yara_namespace;
     } yr_user_data;

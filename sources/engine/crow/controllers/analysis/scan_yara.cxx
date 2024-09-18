@@ -1,5 +1,6 @@
 #include <engine/crow/controllers/analysis/scan_yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
+#include <iostream>
 #include <string>
 
 namespace Controllers
@@ -18,7 +19,7 @@ namespace Controllers
         {
             dto_set_field("yara_rule", "none");
             dto_set_field("yara_namespace", "none");
-            dto_set_field("yara_is_match", Security::Types::Yara::yara_none);
+            dto_set_field("yara_match_status", Security::Types::Yara::yara_none);
         }
 
         const void ScanYara::yara_load_rules(
@@ -39,18 +40,15 @@ namespace Controllers
         {
             m_yara.yara_scan_bytes(p_buffer, [&](void *yr_user_data) {
                 dto_set_field(
-                    "yara_is_match",
-                    ((Security::yr_user_data *) yr_user_data)->yara_is_match);
+                    "yara_match_status",
+                    ((Security::yr_user_data *) yr_user_data)->yara_match_status);
 
-                if (((Security::yr_user_data *) yr_user_data)->yara_is_match ==
-                    Security::Types::Yara::yara_match) {
-                    dto_set_field(
-                        "yara_rule",
-                        ((Security::yr_user_data *) yr_user_data)->yara_rule);
-                    dto_set_field("yara_namespace",
-                                  ((Security::yr_user_data *) yr_user_data)
-                                      ->yara_namespace);
-                }
+                dto_set_field(
+                    "yara_rule",
+                    ((Security::yr_user_data *) yr_user_data)->yara_rule);
+                dto_set_field(
+                    "yara_namespace",
+                    ((Security::yr_user_data *) yr_user_data)->yara_namespace);
             });
         }
     } // namespace Analysis

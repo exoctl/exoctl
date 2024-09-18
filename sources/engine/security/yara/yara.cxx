@@ -123,9 +123,7 @@ namespace Security
         struct yr_user_data *data = static_cast<struct yr_user_data *>(
             alloca(sizeof(struct yr_user_data)));
 
-        data->yara_is_match = Types::Yara::yara_none;
-        data->yara_rule = nullptr;
-        data->yara_namespace = nullptr;
+        data->yara_match_status = Types::Yara::yara_none;
 
         yr_rules_scan_mem(m_yara_rules,
                           reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
@@ -145,21 +143,25 @@ namespace Security
                                      void *p_message_data,
                                      void *p_user_data)
     {
-        YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
+        const YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
+        yr_user_data *user_data = static_cast<yr_user_data *>(p_user_data);
 
         switch (p_message) {
             case CALLBACK_MSG_SCAN_FINISHED:
+                if (user_data->yara_match_status == Types::Yara::yara_none) {
+                    user_data->yara_match_status = Types::Yara::yara_nomatch;
+                    user_data->yara_rule = "";
+                    user_data->yara_namespace = "";
+                }
                 break;
+
             case CALLBACK_MSG_RULE_MATCHING:
-                ((yr_user_data *) p_user_data)->yara_namespace = rule->ns->name;
-                ((yr_user_data *) p_user_data)->yara_rule = rule->identifier;
-                ((yr_user_data *) p_user_data)->yara_is_match =
-                    Types::Yara::yara_match;
+                user_data->yara_namespace = rule->ns->name;
+                user_data->yara_rule = rule->identifier;
+                user_data->yara_match_status = Types::Yara::yara_match;
                 return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:
-                ((yr_user_data *) p_user_data)->yara_is_match =
-                    Types::Yara::yara_nomatch;
                 break;
         }
 

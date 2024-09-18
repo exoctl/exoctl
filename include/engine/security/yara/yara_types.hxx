@@ -5,9 +5,9 @@ namespace Security
     namespace Types
     {
         enum Yara {
-            yara_match,
             yara_nomatch,
-            yara_none
+            yara_match,
+            yara_none /* default value */
         };
     } // namespace Types
 } // namespace Security
