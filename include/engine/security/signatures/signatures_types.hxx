@@ -4,9 +4,9 @@ namespace Security
 {
     namespace Types
     {
-        enum SigError_t {
-            sig_success,
-            sig_failure
+        enum SigPacked_t {
+            packed,
+            nopacked
         };
     } // namespace Types
 } // namespace Security

@@ -17,7 +17,14 @@ For compile engine necessary :
 ---
 
 ### Overview
+
 This API provides WebSocket-based endpoints for scanning data and searching within the system. The service is designed to handle real-time communication, ensuring efficient data transfer and processing. Below are the details for each available route, along with their respective functionalities.
+
+### SDKs
+
+#### Signatures
+
+
 
 ---
 

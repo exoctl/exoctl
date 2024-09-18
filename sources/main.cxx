@@ -8,12 +8,6 @@
 
 int main()
 {
-    Security::Sig signatures;
-
-    signatures.sig_set_rule_mem("@include(\"elf\") @sig : \"elf_upx_packed\" { "
-                                "elf.section.text.str_find(\"Upx 2023\") }",
-                                "upx");
-
     Parser::Toml configuration;
     try {
         configuration.toml_parser_file("configuration.toml");
