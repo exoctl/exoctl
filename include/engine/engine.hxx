@@ -6,6 +6,7 @@
 #include <engine/database/postgresql.hxx>
 #include <engine/log.hxx>
 #include <engine/parser/toml.hxx>
+#include <functional>
 
 namespace Engine
 {
@@ -24,8 +25,12 @@ namespace Engine
         Engine(Parser::Toml &);
         ~Engine();
 
+        const std::string &engine_bindaddr();
+        const uint16_t &engine_port();
+
+        const std::vector<Crow::Structs::Endpoints> &engine_routes();
         void engine_stop();
-        void engine_run();
+        void engine_run(const std::function<void()> & = nullptr);
     };
 
 } // namespace Engine

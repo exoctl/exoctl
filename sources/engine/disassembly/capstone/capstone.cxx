@@ -67,69 +67,73 @@ namespace Disassembly
 
     const std::string Capstone::capstone_arch_to_string(const cs_arch p_arch)
     {
-        switch (p_arch) {
-            case CS_ARCH_X86:
-                return "x86";
-            case CS_ARCH_ARM:
-                return "ARM";
-            case CS_ARCH_ARM64:
-                return "ARM64";
-            case CS_ARCH_MIPS:
-                return "MIPS";
-            case CS_ARCH_PPC:
-                return "PPC";
-            case CS_ARCH_SPARC:
-                return "SPARC";
-            case CS_ARCH_SYSZ:
-                return "SYSZ";
-            case CS_ARCH_XCORE:
-                return "XCORE";
-            default:
-                return "none";
-        }
+        const auto arch = [](const cs_arch p_arch) -> std::string {
+            switch (p_arch) {
+                case CS_ARCH_X86:
+                    return "x86";
+                case CS_ARCH_ARM:
+                    return "ARM";
+                case CS_ARCH_ARM64:
+                    return "ARM64";
+                case CS_ARCH_MIPS:
+                    return "MIPS";
+                case CS_ARCH_PPC:
+                    return "PPC";
+                case CS_ARCH_SPARC:
+                    return "SPARC";
+                case CS_ARCH_SYSZ:
+                    return "SYSZ";
+                case CS_ARCH_XCORE:
+                    return "XCORE";
+                default:
+                    return "";
+            }
+        };
 
-        return "none";
+        return arch(p_arch);
     }
 
     const std::string Capstone::capstone_mode_to_string(const cs_mode p_mode)
     {
-        std::string result;
+        const auto mode = [](const cs_mode p_mode) -> std::string {
+            switch (p_mode) {
+                case CS_MODE_16:
+                    return "16-bit";
+                    break;
+                case CS_MODE_32:
+                    return "32-bit";
+                    break;
+                case CS_MODE_64:
+                    return "64-bit";
+                    break;
+                case CS_MODE_ARM:
+                    return "ARM";
+                    break;
+                case CS_MODE_THUMB:
+                    return "Thumb";
+                    break;
+                case CS_MODE_MIPS32R6:
+                    return "MIPS32R6";
+                    break;
+                default:
+                    if ((p_mode & CS_MODE_16) == CS_MODE_16)
+                        return "16-bit";
+                    if ((p_mode & CS_MODE_32) == CS_MODE_32)
+                        return "32-bit";
+                    if ((p_mode & CS_MODE_64) == CS_MODE_64)
+                        return "64-bit";
+                    if ((p_mode & CS_MODE_ARM) == CS_MODE_ARM)
+                        return "ARM";
+                    if ((p_mode & CS_MODE_THUMB) == CS_MODE_THUMB)
+                        return "Thumb";
+                    if ((p_mode & CS_MODE_MIPS32R6) == CS_MODE_MIPS32R6)
+                        return "MIPS32R6";
+                    break;
+            }
 
-        switch (p_mode) {
-            case CS_MODE_16:
-                result += "16-bit";
-                break;
-            case CS_MODE_32:
-                result += "32-bit";
-                break;
-            case CS_MODE_64:
-                result += "64-bit";
-                break;
-            case CS_MODE_ARM:
-                result += "ARM";
-                break;
-            case CS_MODE_THUMB:
-                result += "Thumb";
-                break;
-            case CS_MODE_MIPS32R6:
-                result += "MIPS32R6";
-                break;
-            default:
-                if ((p_mode & CS_MODE_16) == CS_MODE_16)
-                    result += "16-bit";
-                if ((p_mode & CS_MODE_32) == CS_MODE_32)
-                    result += "32-bit";
-                if ((p_mode & CS_MODE_64) == CS_MODE_64)
-                    result += "64-bit";
-                if ((p_mode & CS_MODE_ARM) == CS_MODE_ARM)
-                    result += "ARM";
-                if ((p_mode & CS_MODE_THUMB) == CS_MODE_THUMB)
-                    result += "Thumb";
-                if ((p_mode & CS_MODE_MIPS32R6) == CS_MODE_MIPS32R6)
-                    result += "MIPS32R6";
-                break;
-        }
+            return "";
+        };
 
-        return result.empty() ? "none" : result;
+        return mode(p_mode);
     }
 } // namespace Disassembly

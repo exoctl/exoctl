@@ -24,16 +24,18 @@ int main()
         GET_TOML_TBL_VALUE(configuration, string, "project", "description");
     const std::string project_copyright =
         GET_TOML_TBL_VALUE(configuration, string, "project", "copyright");
+    const std::string project_mode =
+#if DEBUG
+        "Debug";
+#else
+        "Realese";
+#endif
 
     LOG_INFO("Name        : {}", project_name);
     LOG_INFO("Version     : {}", project_version);
     LOG_INFO("Description : {}", project_description);
     LOG_INFO("Copyright   : {}", project_copyright);
-#if DEBUG
-    LOG_INFO("Mode        : Debug");
-#else
-    LOG_INFO("Mode        : Realese");
-#endif
+    LOG_INFO("Mode        : {}", project_mode);
 
     LOG_INFO("Running engine with configuration from 'configuration.toml'...");
 
@@ -41,8 +43,19 @@ int main()
 
     TRY_BEGIN()
 
-    LOG_INFO("Started engine.");
-    engine.engine_run();
+    LOG_INFO("Starting engine...");
+    engine.engine_run([&]() {
+        for (const auto &route : engine.engine_routes()) {
+            LOG_INFO("Created route {} '{}' ",
+                     (route.type == Crow::Types::Route::websocket) ? "websocket"
+                                                                   : "web",
+                     route.path);
+        }
+        LOG_INFO("Engine/{} Server is running at http://{}:{}",
+                 project_mode,
+                 engine.engine_bindaddr(),
+                 engine.engine_port());
+    });
     LOG_INFO("Engine stopped successfully.");
 
     TRY_END()

@@ -22,10 +22,21 @@ namespace Engine
         m_crow.crow_stop();
     }
 
-    void Engine::engine_run()
+    const std::string &Engine::engine_bindaddr()
+    {
+        return m_crow.crow_bindaddr();
+    }
+
+    const uint16_t &Engine::engine_port()
+    {
+        return m_crow.crow_port();
+    }
+
+    void Engine::engine_run(const std::function<void()> &p_callback)
     {
         TRY_BEGIN()
         m_crow_routes.routes_init();
+        (p_callback) ? p_callback() : (void) 0;
         m_crow.crow_run();
         TRY_END()
         CATCH(Crow::CrowException::Abort, {
@@ -41,4 +52,8 @@ namespace Engine
               { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
     }
 
+    const std::vector<Crow::Structs::Endpoints> &Engine::engine_routes()
+    {
+        return m_crow_routes.routes_get_endpoints();
+    }
 } // namespace Engine

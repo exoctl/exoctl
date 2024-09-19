@@ -194,7 +194,7 @@ namespace Crow
                     Parser::Json route_obj;
                     route_obj["path"] = route.path;
                     route_obj["type"] = static_cast<int>(route.type);
-                    if (route.type == Types::Routes_t::websocket)
+                    if (route.type == Types::Route::websocket)
                         route_obj["connections"] = route.connections;
                     routes_array.push_back(route_obj);
                 }
@@ -212,26 +212,26 @@ namespace Crow
 
         m_endpoints.emplace_back(
             ROUTE_SCAN_YARA,
-            Types::Routes_t::websocket,
+            Types::Route::websocket,
             m_socket_scan_yara->websocket_size_connections());
 
         m_endpoints.emplace_back(
             ROUTE_METADATA,
-            Types::Routes_t::websocket,
+            Types::Route::websocket,
             m_socket_metadata->websocket_size_connections());
 
         m_endpoints.emplace_back(
             ROUTE_CAPSTONE_DISASS_X86_64,
-            Types::Routes_t::websocket,
+            Types::Route::websocket,
             m_socket_capstone_disass_x86_64->websocket_size_connections());
 
         m_endpoints.emplace_back(
             ROUTE_CAPSTONE_DISASS_ARM64,
-            Types::Routes_t::websocket,
+            Types::Route::websocket,
             m_socket_capstone_disass_arm_64->websocket_size_connections());
 
 #if DEBUG
-        m_endpoints.emplace_back(ROUTE_ROUTES, Types::Routes_t::web, 0);
+        m_endpoints.emplace_back(ROUTE_ROUTES, Types::Route::web, 0);
 #endif
     }
 
@@ -248,7 +248,7 @@ namespace Crow
 #endif
     }
 
-    std::vector<route> &Routes::routes_get_endpoints()
+    const std::vector<Structs::Endpoints> &Routes::routes_get_endpoints()
     {
         Routes::routes_update_endpoints();
         return m_endpoints;

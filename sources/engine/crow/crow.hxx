@@ -24,6 +24,8 @@ namespace Crow
         crow::SimpleApp &crow_get_app();
         Parser::Toml &crow_get_config();
         Logging::Log &crow_get_log();
+        const std::string &crow_bindaddr();
+        const uint16_t &crow_port();
 
         void crow_run();
         void crow_stop();

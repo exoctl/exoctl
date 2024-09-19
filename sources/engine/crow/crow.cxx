@@ -52,4 +52,14 @@ namespace Crow
     {
         return m_log;
     }
+
+    const std::string &CrowApp::crow_bindaddr()
+    {
+        return m_bindaddr;
+    }
+
+    const uint16_t &CrowApp::crow_port()
+    {
+        return m_port;
+    }
 }; // namespace Crow

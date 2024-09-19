@@ -10,18 +10,12 @@
 #include <functional>
 #include <vector>
 
-namespace Crow
-{
 #define GET_ROUTE(route)                                                       \
     Routes::route_##route();                                                   \
     m_num_endpoints++;
 
-    struct route {
-        const std::string path;
-        const Types::Routes_t type;
-        const uint64_t connections; /* only websocket connections */
-    };
-
+namespace Crow
+{
     class Routes
     {
       public:
@@ -29,11 +23,11 @@ namespace Crow
         ~Routes();
 
         void routes_init();
-        std::vector<route> &routes_get_endpoints();
+        const std::vector<Crow::Structs::Endpoints> &routes_get_endpoints();
 
       private:
         CrowApp &m_crow;
-        std::vector<route> m_endpoints;
+        std::vector<Structs::Endpoints> m_endpoints;
         std::size_t m_num_endpoints;
 
         WebSocket *m_socket_scan_yara;
