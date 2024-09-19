@@ -174,7 +174,10 @@ namespace Crow
                     ROUTE_METADATA,
                     p_data.size());
 
-                m_metadata->metadata_parse(p_data);
+                std::string data = std::move(p_data);
+                data.erase(std::remove(data.begin(), data.end(), '\n'),
+                           data.cend());
+                m_metadata->metadata_parse(data);
                 p_context.conn_broadcast(
                     &p_conn, m_metadata->dto_to_json().json_to_string());
             });

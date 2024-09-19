@@ -35,16 +35,16 @@ namespace Crow
                 if (m_on_close)
                     m_on_close(m_context, p_conn, p_reason, p_code);
             })
-            .onmessage([this](crow::websocket::connection &conn,
-                              const std::string &data,
-                              bool is_binary) {
+            .onmessage([this](crow::websocket::connection &p_conn,
+                              const std::string &p_data,
+                              bool p_is_binary) {
                 if (m_on_message)
-                    m_on_message(m_context, conn, data, is_binary);
+                    m_on_message(m_context, p_conn, p_data, p_is_binary);
             })
-            .onerror([this](crow::websocket::connection &conn,
-                            const std::string &error) {
+            .onerror([this](crow::websocket::connection &p_conn,
+                            const std::string &p_error) {
                 if (m_on_error)
-                    m_on_error(m_context, conn, error);
+                    m_on_error(m_context, p_conn, p_error);
             })
             .onaccept([this](const crow::request &p_req, void **p_userdata) {
                 const bool accept =

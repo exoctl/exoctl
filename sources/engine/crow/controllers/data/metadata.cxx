@@ -1,5 +1,6 @@
 #include <cmath>
 #include <engine/crow/controllers/data/metadata.hxx>
+#include <fmt/core.h>
 
 namespace Controllers
 {
@@ -24,7 +25,7 @@ namespace Controllers
             dto_set_field("mime_type", m_magic.magic_get_mime());
 
             m_sha.sha_gen_sha256_hash(p_buffer);
-            dto_set_field("sha256", m_sha.sha_get_sha256_hash());
+            dto_set_field("sha256", m_sha.sha_gen_sha256_hash(p_buffer));
 
             dto_set_field("size", (int) p_buffer.size());
 

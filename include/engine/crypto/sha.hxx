@@ -9,11 +9,9 @@ namespace Crypto
       public:
         Sha();
         ~Sha();
-        const void sha_gen_sha256_hash(const std::string &buffer);
-        const std::string sha_get_sha256_hash();
+        const std::string sha_gen_sha256_hash(const std::string &);
 
       private:
         EVP_MD_CTX *m_ctx;
-        std::string m_sha256_hash;
     };
 } // namespace Crypto
