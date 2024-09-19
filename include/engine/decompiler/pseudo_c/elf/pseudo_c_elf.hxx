@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/disassembly/capstone/capstone.hxx>
+#include <engine/parser/elf.hxx>
 
 namespace Decompiler
 {
@@ -12,5 +13,6 @@ namespace Decompiler
 
       private:
         Disassembly::Capstone *m_capstone;
+        Parser::Elf *m_elf;
     };
 } // namespace Decompiler

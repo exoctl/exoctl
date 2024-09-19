@@ -25,7 +25,7 @@ namespace Controllers
             m_capstone.capstone_disassembly(
                 reinterpret_cast<const uint8_t *>(p_code.data()),
                 p_code.size(),
-                [&](struct Disassembly::cs_user_data *p_user_data,
+                [&](struct Disassembly::Struct::Data *p_user_data,
                     size_t p_count) {
                     Parser::Json instruction;
                     auto &insn = p_user_data->insn[p_count];

@@ -23,34 +23,30 @@ namespace Disassembly
     void Capstone::capstone_disassembly(
         const uint8_t *p_code,
         size_t p_code_size,
-        const std::function<void(struct cs_user_data *p_user_data, size_t)>
-            &p_callback)
+        const std::function<void(Struct::Data *p_data, size_t)> &p_callback)
     {
-        struct cs_user_data *user_data = static_cast<struct cs_user_data *>(
-            alloca(sizeof(struct cs_user_data)));
-        user_data->address = 0;
+        Struct::Data *data =
+            static_cast<Struct::Data *>(alloca(sizeof(Struct::Data *)));
+        data->address = 0;
 
-        const size_t count = cs_disasm(m_handle,
-                                       p_code,
-                                       p_code_size,
-                                       user_data->address,
-                                       0,
-                                       &user_data->insn);
+        const size_t count = cs_disasm(
+            m_handle, p_code, p_code_size, data->address, 0, &data->insn);
 
         if (count > 0) {
             if (p_callback) {
-                for (size_t i = 0; i < count; i++)
-                    p_callback(user_data, i);
+                for (size_t i = 0; i < count; i++) {
+                    p_callback(data, i);
+                }
             }
 
-            cs_free(user_data->insn, count);
+            cs_free(data->insn, count);
         } else {
             const cs_err err = cs_errno(m_handle);
             if (err != CS_ERR_OK) {
                 throw CapstoneException::FailedDisassembly(fmt::format(
                     "Disassembly failed: {}, address: {:#x}, code: {}",
                     cs_strerror(err),
-                    user_data->address,
+                    data->address,
                     fmt::join(p_code, p_code + p_code_size, " ")));
             }
         }

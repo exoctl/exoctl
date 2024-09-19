@@ -3,16 +3,12 @@
 #define CAPSTONE_AARCH64_COMPAT_HEADER
 
 #include <capstone/capstone.h>
+#include <engine/disassembly/capstone/capstone_type.hxx>
 #include <functional>
 #include <string>
 
 namespace Disassembly
 {
-    struct cs_user_data {
-        uint64_t address;
-        cs_insn *insn;
-    };
-
     class Capstone
     {
       public:
@@ -22,7 +18,7 @@ namespace Disassembly
         void capstone_disassembly(
             const uint8_t *,
             size_t,
-            const std::function<void(cs_user_data *, size_t)> &);
+            const std::function<void(Struct::Data*, size_t)> &);
 
         const cs_arch capstone_get_arch();
         const cs_mode capstone_get_mode();
