@@ -31,5 +31,11 @@ namespace Security
             explicit Finalize(const std::string &);
         };
 
+        class Scan : public Exception::ExceptionBase
+        {
+          public:
+            explicit Scan(const std::string &);
+        };
+
     } // namespace YaraException
 } // namespace Security

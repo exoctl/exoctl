@@ -19,7 +19,8 @@ namespace Controllers
         {
             dto_set_field("yara_rule", "none");
             dto_set_field("yara_namespace", "none");
-            dto_set_field("yara_match_status", Security::Types::Yara::yara_none);
+            dto_set_field("yara_match_status",
+                          Security::Types::Scan::yara_none);
         }
 
         const void ScanYara::yara_load_rules(
@@ -36,20 +37,15 @@ namespace Controllers
             p_callback((void *) m_yara.get_rules_loaded_count());
         }
 
-        const void ScanYara::yara_scan_bytes(const std::string p_buffer)
+        const void ScanYara::yara_scan_fast_bytes(const std::string p_buffer)
         {
-            m_yara.yara_scan_bytes(p_buffer, [&](void *yr_user_data) {
-                dto_set_field(
-                    "yara_match_status",
-                    ((Security::yr_user_data *) yr_user_data)->yara_match_status);
-
-                dto_set_field(
-                    "yara_rule",
-                    ((Security::yr_user_data *) yr_user_data)->yara_rule);
-                dto_set_field(
-                    "yara_namespace",
-                    ((Security::yr_user_data *) yr_user_data)->yara_namespace);
-            });
+            m_yara.yara_scan_fast_bytes(
+                p_buffer, [&](Security::Structs::Data *p_data) {
+                    dto_set_field("yara_match_status",
+                                  p_data->yara_match_status);
+                    dto_set_field("yara_rule", p_data->yara_rule);
+                    dto_set_field("yara_namespace", p_data->yara_namespace);
+                });
         }
     } // namespace Analysis
 } //  namespace Controllers

@@ -24,5 +24,10 @@ namespace Security
         {
         }
 
+        Scan::Scan(const std::string &p_message)
+            : ExceptionBase(p_message)
+        {
+        }
+
     } // namespace YaraException
 } // namespace Security

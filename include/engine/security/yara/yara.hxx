@@ -9,27 +9,43 @@
 
 namespace Security
 {
-    typedef struct yr_user_data {
-        Types::Yara yara_match_status;
-        const char *yara_rule;
-        const char *yara_namespace;
-    } yr_user_data;
-
     class Yara
     {
       public:
         Yara();
         ~Yara();
 
+        /**
+         * @brief this function realize fast scan using flag
+         * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback
+         * yara_scan_fast_callback
+         * @param string buffer for scan
+         * @param callback receiver callback for pass parameter Structs::Data
+         * scanned yara_scan_fast_callback
+         */
+        void yara_scan_fast_bytes(
+            const std::string,
+            const std::function<void(Structs::Data *)> &) const;
+
+        /**
+         * @brief function for scan, but, you pass flag and callback for scan
+         * yara YR_CALLBACK_FUNC
+         * @param YR_CALLBACK_FUNC callback for scan yara
+         * @param void* user_data, pass for example Structs::Data*
+         * @param int flags used for scan
+         */
         void yara_scan_bytes(const std::string,
-                             const std::function<void(void *)> &) const;
+                             YR_CALLBACK_FUNC,
+                             void *,
+                             int) const;
         void yara_load_rules(const std::function<void(void *)> &) const;
 
         /* load rules if extension file '.yar'*/
         void yara_load_rules_folder(
             const std::filesystem::path & /* path */) const;
 
-        const int yara_set_signature_rule_mem(const std::string &) const;
+        const int yara_set_signature_rule_mem(const std::string &,
+                                              const std::string &) const;
         const int yara_set_signature_rule_fd(const std::string &,
                                              const std::string &,
                                              const std::string &) const;
@@ -41,9 +57,9 @@ namespace Security
         mutable YR_RULES *m_yara_rules;
         mutable uint64_t m_rules_loaded_count;
         void yara_compiler_rules() const;
-        static YR_CALLBACK_FUNC yara_scan_callback_default(YR_SCAN_CONTEXT *,
-                                                           const int,
-                                                           void *,
-                                                           void *);
+        static YR_CALLBACK_FUNC yara_scan_fast_callback(YR_SCAN_CONTEXT *,
+                                                        const int,
+                                                        void *,
+                                                        void *);
     };
 } // namespace Security

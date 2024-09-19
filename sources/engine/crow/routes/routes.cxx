@@ -149,7 +149,7 @@ namespace Crow
                     ROUTE_SCAN_YARA,
                     p_data.size());
 
-                m_scan_yara->yara_scan_bytes(p_data);
+                m_scan_yara->yara_scan_fast_bytes(p_data);
                 p_context.conn_broadcast(
                     &p_conn, m_scan_yara->dto_to_json().json_to_string());
             });

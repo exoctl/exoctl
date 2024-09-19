@@ -18,7 +18,7 @@ namespace Controllers
             ScanYara(Parser::Toml &);
             ~ScanYara();
 
-            const void yara_scan_bytes(const std::string);
+            const void yara_scan_fast_bytes(const std::string);
             const void yara_load_rules(
                 const std::function<void(void *)> &) const;
 
