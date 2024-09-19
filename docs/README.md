@@ -20,12 +20,6 @@ For compile engine necessary :
 
 This API provides WebSocket-based endpoints for scanning data and searching within the system. The service is designed to handle real-time communication, ensuring efficient data transfer and processing. Below are the details for each available route, along with their respective functionalities.
 
-### SDKs
-
-#### Signatures
-
-
-
 ---
 
 ### Endpoints
@@ -46,13 +40,17 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   ```
   - **onmessage:**
   ```json
-  {"is_malicius":0,"yara_rule":"none"}
+  {     
+    "yara_match_status": 0,
+    "yara_namespace": "",
+    "yara_rule": "" 
+  }
   ```
   - **onclose:** 
   - **onerror:** 
 
 - **Details:**
-  - **`is_malicious` Values:**
+  - **`yara_match_status` Values:**
     - `0`: Benign
     - `1`: Malicious
     - `2`: None
