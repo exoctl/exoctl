@@ -78,7 +78,7 @@ namespace Crypto
 
     const std::string Sha::sha_gen_sha3_256_hash(const std::string &p_str)
     {
-        unsigned char hash[SHA256_DIGEST_LENGTH]; // Mesmo tamanho do SHA-256
+        unsigned char hash[SHA256_DIGEST_LENGTH];
 
         EVP_DigestInit_ex(m_ctx, EVP_sha3_256(), nullptr);
         EVP_DigestUpdate(m_ctx, p_str.c_str(), p_str.size());
@@ -90,7 +90,7 @@ namespace Crypto
 
     const std::string Sha::sha_gen_sha3_512_hash(const std::string &p_str)
     {
-        unsigned char hash[SHA512_DIGEST_LENGTH]; // Mesmo tamanho do SHA-512
+        unsigned char hash[SHA512_DIGEST_LENGTH];
 
         EVP_DigestInit_ex(m_ctx, EVP_sha3_512(), nullptr);
         EVP_DigestUpdate(m_ctx, p_str.c_str(), p_str.size());
