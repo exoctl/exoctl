@@ -6,6 +6,7 @@ namespace Crow
     CrowApp::CrowApp(Parser::Toml &p_config, Logging::Log &p_log)
         : m_config(p_config), m_log(p_log),
           m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
+          m_threads(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "threads")),
           m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
     {
     }
@@ -17,7 +18,7 @@ namespace Crow
     void CrowApp::crow_run()
     {
         TRY_BEGIN()
-        m_app.bindaddr(m_bindaddr).port(m_port).multithreaded().run();
+        m_app.bindaddr(m_bindaddr).port(m_port).concurrency(m_threads).run();
         TRY_END()
         CATCH(std::runtime_error, {
             LOG(m_log, error, "An exception runtime occurred: {}", e.what());
@@ -36,6 +37,11 @@ namespace Crow
     void CrowApp::crow_stop()
     {
         m_app.multithreaded().stop();
+    }
+
+    const uint16_t CrowApp::crow_get_concurrency()
+    {
+        return m_threads;
     }
 
     Parser::Toml &CrowApp::crow_get_config()

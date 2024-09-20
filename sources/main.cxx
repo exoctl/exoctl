@@ -51,10 +51,10 @@ int main()
                                                                    : "web",
                      route.path);
         }
-        LOG_INFO("Engine/{} Server is running at http://{}:{}",
+        LOG_INFO("Engine/{} Server is running at http://{}:{} using {} threads",
                  project_mode,
                  engine.engine_bindaddr(),
-                 engine.engine_port());
+                 engine.engine_port(), engine.engine_concurrency());
     });
     LOG_INFO("Engine stopped successfully.");
 

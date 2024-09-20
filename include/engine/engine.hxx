@@ -27,6 +27,7 @@ namespace Engine
 
         const std::string &engine_bindaddr();
         const uint16_t &engine_port();
+        const uint16_t engine_concurrency();
 
         const std::vector<Crow::Structs::Endpoints> &engine_routes();
         void engine_stop();

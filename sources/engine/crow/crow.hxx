@@ -15,6 +15,7 @@ namespace Crow
         Parser::Toml &m_config;
         Logging::Log &m_log;
         const std::uint16_t m_port;
+        const std::uint16_t m_threads;
         const std::string m_bindaddr;
 
       public:
@@ -22,6 +23,7 @@ namespace Crow
         ~CrowApp();
 
         crow::SimpleApp &crow_get_app();
+        const uint16_t crow_get_concurrency();
         Parser::Toml &crow_get_config();
         Logging::Log &crow_get_log();
         const std::string &crow_bindaddr();

@@ -32,6 +32,11 @@ namespace Engine
         return m_crow.crow_port();
     }
 
+    const uint16_t Engine::engine_concurrency()
+    {
+        return m_crow.crow_get_concurrency();
+    }
+
     void Engine::engine_run(const std::function<void()> &p_callback)
     {
         TRY_BEGIN()
