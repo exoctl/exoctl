@@ -33,7 +33,6 @@ target_link_libraries(engine PUBLIC
     Crow::Crow 
     yara 
     spdlog::spdlog 
-    pqxx 
     sqlite3  
     nlohmann_json::nlohmann_json
     fmt
@@ -49,7 +48,7 @@ if(FLAGS_OPTIMIZATIONS)
         -O2           
         -ftree-vectorize
         -mavx
-        -fno-stack-protector
+	-fno-stack-protector
         -march=native
         -fdelete-null-pointer-checks
         -fdelete-dead-exceptions
@@ -59,7 +58,7 @@ elseif(FLAGS_DEBUG)
         -ggdb3
         -fms-extensions
         --all-warnings
-        -DDEBUG
+	-DDEBUG
         -g
         -Warray-bounds
         -Werror

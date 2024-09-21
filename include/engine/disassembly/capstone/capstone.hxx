@@ -18,7 +18,7 @@ namespace Disassembly
         void capstone_disassembly(
             const uint8_t *,
             size_t,
-            const std::function<void(Struct::Data*, size_t)> &);
+            const std::function<void(Struct::Data *, size_t)> &);
 
         const cs_arch capstone_get_arch();
         const cs_mode capstone_get_mode();

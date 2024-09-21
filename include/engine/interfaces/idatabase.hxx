@@ -8,8 +8,8 @@ namespace Interfaces
     class IDatabase
     {
       public:
-        IDatabase() {};
-        virtual ~IDatabase() {};
+        IDatabase(){};
+        virtual ~IDatabase(){};
 
         virtual const bool open_db() const = 0;
         virtual const bool is_open_db() const = 0;

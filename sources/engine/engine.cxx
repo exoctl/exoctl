@@ -7,9 +7,8 @@ namespace Engine
 
     Engine::Engine(Parser::Toml &p_configuration)
         : m_configuration(p_configuration), m_log(p_configuration),
-          m_crow(p_configuration,
-                 m_log), /* m_database(p_configuration, m_log),*/
-          m_crow_routes(m_crow), m_crow_log(m_crow)
+          m_crow(p_configuration, m_log), m_crow_routes(m_crow),
+          m_crow_log(m_crow)
     {
     }
 

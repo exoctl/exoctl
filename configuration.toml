@@ -30,13 +30,6 @@ threads = 16 # minimum 2
 websocket_conn_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
 web_ssl_pem = ""
 
-[postgresql]
-dbname = ""
-hostaddr = "127.0.0.1"
-port = 6123
-password = ""
-user = ""
-
 [cache]
 type = "day"       # rotating
 name = "cache.db3"
