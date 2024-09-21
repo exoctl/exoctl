@@ -9,28 +9,21 @@ namespace Parser
     {
     }
 
-    const std::unique_ptr<const LIEF::ELF::Binary> Elf::elf_parser_buffer(
+    std::unique_ptr<const LIEF::ELF::Binary> &Elf::elf_parser_buffer(
         const std::string &p_buffer)
     {
-        std::unique_ptr<LIEF::ELF::Binary> elf = LIEF::ELF::Parser::parse(
+        m_elf = LIEF::ELF::Parser::parse(
             std::vector<uint8_t>(p_buffer.begin(), p_buffer.end()));
 
-        if (!elf)
-            return nullptr;
-
-        return elf;
+        return m_elf;
     }
 
-    const std::unique_ptr<const LIEF::ELF::Binary> Elf::elf_parser_file(
+    std::unique_ptr<const LIEF::ELF::Binary> &Elf::elf_parser_file(
         const std::string &p_file_path)
     {
-        std::unique_ptr<const LIEF::ELF::Binary> elf =
-            LIEF::ELF::Parser::parse(p_file_path);
+        m_elf = LIEF::ELF::Parser::parse(p_file_path);
 
-        if (!elf)
-            return nullptr;
-
-        return elf;
+        return m_elf;
     }
 
 } // namespace Parser

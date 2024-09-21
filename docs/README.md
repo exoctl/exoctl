@@ -69,11 +69,17 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {
-   "creation_date":"2024-09-04",
-   "entropy":3.9959065984842446,
-   "mime_type":"text/x-shellscript; charset=us-ascii",
-   "sha256":"0ca6e039ddb80b48f1b4a79dd47b90d5ec41337597f6d584603d63314a5a982c",
-   "size":36
+    "creation_date": "2024-09-20",
+    "entropy": 0,
+    "mime_type": "application/octet-stream; charset=binary",
+    "sha1": "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8",
+    "sha224": "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5",
+    "sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+    "sha3-256": "80084bf2fba02475726feb2cab2d8215eab14bc6bdd8bfb2c8151257032ecd8b",
+    "sha3-512": "697f2d856172cb8309d6b8b97dac4de344b549d4dee61edfb4962d8698b7fa803f4f93ff24393586e28b5b957ac3d1d369420ce53332712f997bd336d09ab02a",
+    "sha384": "54a59b9f22b0b80880d8427e548b7c23abd873486e1f035dce9cd697e85175033caa88e6d57bc35efae0b5afd3145f31",
+    "sha512": "1f40fc92da241694750979ee6cf582f2d5d7d28e18335de05abc54d0560e0f5302860c652bf08d560252aa5e74210546f369fbbbce8c12cfc7957b2652fe9a75",
+    "size": 1
   }
   ```
   - **onclose:** 

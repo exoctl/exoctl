@@ -6,14 +6,17 @@ namespace Parser
 {
     class Elf : public LIEF::ELF::Binary
     {
+      private:
+        std::unique_ptr<const LIEF::ELF::Binary> m_elf;
+
       public:
         Elf();
         ~Elf();
 
-        const std::unique_ptr<const LIEF::ELF::Binary> elf_parser_buffer(
+        std::unique_ptr<const LIEF::ELF::Binary> &elf_parser_buffer(
             const std::string &);
 
-        const std::unique_ptr<const LIEF::ELF::Binary> elf_parser_file(
+        std::unique_ptr<const LIEF::ELF::Binary> &elf_parser_file(
             const std::string &);
     };
 } // namespace Parser

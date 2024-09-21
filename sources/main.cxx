@@ -3,6 +3,7 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
+#include <engine/parser/elf.hxx>
 #include <include/engine/security/signatures/signatures.hxx>
 #include <log.hxx> // this log not save in file
 
@@ -54,7 +55,8 @@ int main()
         LOG_INFO("Engine/{} Server is running at http://{}:{} using {} threads",
                  project_mode,
                  engine.engine_bindaddr(),
-                 engine.engine_port(), engine.engine_concurrency());
+                 engine.engine_port(),
+                 engine.engine_concurrency());
     });
     LOG_INFO("Engine stopped successfully.");
 
