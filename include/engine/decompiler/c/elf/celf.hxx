@@ -5,11 +5,14 @@
 
 namespace Decompiler
 {
-    class PseudoCElf
+    class CElf
     {
       public:
-        ~PseudoCElf();
-        PseudoCElf();
+        ~CElf();
+        CElf();
+
+        const bool celf_parser_file();
+        const bool celf_parser_bytes();
 
       private:
         Disassembly::Capstone *m_capstone;

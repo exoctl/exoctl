@@ -7,6 +7,7 @@ copyright = "@maldeclabs"
 [yara]
 malware_rules = "rules/yara/malwares"
 packeds_rules = "rules/yara/packeds"
+cve_rules = "rules/yara/cve"
 
 [sig]
 packeds_rules = "rules/signatures/packeds"
@@ -28,7 +29,7 @@ bindaddr = "127.0.0.1"
 port = 8181
 threads = 16 # minimum 2
 websocket_conn_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
-web_ssl_pem = ""
+ssl_file_pem = ""
 
 [cache]
 type = "day"       # rotating

@@ -15,6 +15,8 @@ namespace Controllers
                   p_config, string, "yara", "malware_rules")),
               m_yara_packeds_rules(GET_TOML_TBL_VALUE(
                   p_config, string, "yara", "packeds_rules")),
+              m_yara_cve_rules(GET_TOML_TBL_VALUE(
+                  p_config, string, "yara", "cve_rules")),
               m_config(p_config)
         {
             dto_set_field("yara_rule", "none");

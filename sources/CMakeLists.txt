@@ -38,6 +38,7 @@ target_link_libraries(engine PUBLIC
     fmt
     LIEF::LIEF
     capstone
+    ssl
     signatures
     magic
     crypto
@@ -48,8 +49,9 @@ if(FLAGS_OPTIMIZATIONS)
         -O2           
         -ftree-vectorize
         -mavx
-	-fno-stack-protector
+	    -fno-stack-protector
         -march=native
+        -DCROW_OPENSSL
         -fdelete-null-pointer-checks
         -fdelete-dead-exceptions
     )
@@ -58,7 +60,8 @@ elseif(FLAGS_DEBUG)
         -ggdb3
         -fms-extensions
         --all-warnings
-	-DDEBUG
+	    -DDEBUG
+        -DCROW_OPENSSL
         -g
         -Warray-bounds
         -Werror

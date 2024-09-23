@@ -2,6 +2,11 @@
 
 #define CROW_ENFORCE_WS_SPEC
 
+#if CROW_OPENSSL
+  #define CROW_ENABLE_SSL
+#endif
+
+
 #include <crow.h>
 #include <engine/log.hxx>
 #include <engine/parser/toml.hxx>
@@ -16,6 +21,9 @@ namespace Crow
         Logging::Log &m_log;
         const std::uint16_t m_port;
         const std::uint16_t m_threads;
+#if CROW_OPENSSL
+        const std::string m_ssl_file_pem;
+#endif
         const std::string m_bindaddr;
 
       public:

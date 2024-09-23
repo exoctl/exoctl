@@ -7,6 +7,10 @@ namespace Crow
         : m_config(p_config), m_log(p_log),
           m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
           m_threads(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "threads")),
+#if CROW_OPENSSL
+          m_ssl_file_pem(
+              GET_TOML_TBL_VALUE(p_config, string, "crow", "ssl_file_pem")),
+#endif
           m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
     {
     }
@@ -18,7 +22,14 @@ namespace Crow
     void CrowApp::crow_run()
     {
         TRY_BEGIN()
-        m_app.bindaddr(m_bindaddr).port(m_port).concurrency(m_threads).run();
+        m_app
+            .bindaddr(m_bindaddr)
+#if CROW_OPENSSL
+            .ssl_file(m_ssl_file_pem)
+#endif
+            .port(m_port)
+            .concurrency(m_threads)
+            .run();
         TRY_END()
         CATCH(std::runtime_error, {
             LOG(m_log, error, "An exception runtime occurred: {}", e.what());
