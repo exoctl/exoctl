@@ -61,7 +61,6 @@ elseif(FLAGS_DEBUG)
         -fms-extensions
         --all-warnings
 	    -DDEBUG
-        -DCROW_OPENSSL
         -g
         -Warray-bounds
         -Werror

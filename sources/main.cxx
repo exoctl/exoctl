@@ -5,17 +5,22 @@
 #include <engine/engine_exception.hxx>
 #include <engine/parser/elf.hxx>
 #include <include/engine/security/signatures/signatures.hxx>
-#include <console.hxx>
+
+// clang-format off
+#include <console.hxx> 
+// clang-format on
 
 int main()
 {
+
     Parser::Toml configuration;
-    try {
-        configuration.toml_parser_file("configuration.toml");
-    } catch (const std::exception &e) {
+    TRY_BEGIN()
+    configuration.toml_parser_file("configuration.toml");
+    TRY_END()
+    CATCH(std::exception, {
         CONSOLE_ERROR("Failed to load configuration: {}", e.what());
         return EXIT_FAILURE;
-    }
+    })
 
     const std::string project_name =
         GET_TOML_TBL_VALUE(configuration, string, "project", "name");
@@ -38,7 +43,8 @@ int main()
     CONSOLE_INFO("Copyright   : {}", project_copyright);
     CONSOLE_INFO("Mode        : {}", project_mode);
 
-    CONSOLE_INFO("Running engine with configuration from 'configuration.toml'...");
+    CONSOLE_INFO(
+        "Running engine with configuration from 'configuration.toml'...");
 
     Engine::Engine engine(configuration);
 
@@ -48,15 +54,17 @@ int main()
     engine.engine_run([&]() {
         for (const auto &route : engine.engine_routes()) {
             CONSOLE_INFO("Created route {} '{}' ",
-                     (route.type == Crow::Types::Route::websocket) ? "websocket"
-                                                                   : "web",
-                     route.path);
+                         (route.type == Crow::Types::Route::websocket)
+                             ? "websocket"
+                             : "web",
+                         route.path);
         }
-        CONSOLE_INFO("Engine/{} Server is running at http://{}:{} using {} threads",
-                 project_mode,
-                 engine.engine_bindaddr(),
-                 engine.engine_port(),
-                 engine.engine_concurrency());
+        CONSOLE_INFO(
+            "Engine/{} Server is running at http://{}:{} using {} threads",
+            project_mode,
+            engine.engine_bindaddr(),
+            engine.engine_port(),
+            engine.engine_concurrency());
     });
     CONSOLE_INFO("Engine stopped successfully.");
 

@@ -5,17 +5,20 @@
 
 namespace Decompiler
 {
-    class CElf
+    namespace C
     {
-      public:
-        ~CElf();
-        CElf();
+        class CElf
+        {
+          public:
+            ~CElf();
+            CElf();
 
-        const bool celf_parser_file();
-        const bool celf_parser_bytes();
+            const bool celf_parser_file(const std::string &);
+            const bool celf_parser_bytes(const std::string &);
 
-      private:
-        Disassembly::Capstone *m_capstone;
-        Parser::Elf *m_elf;
-    };
+          private:
+            Disassembly::Capstone *m_capstone;
+            Parser::Elf m_elf;
+        };
+    } // namespace C
 } // namespace Decompiler
