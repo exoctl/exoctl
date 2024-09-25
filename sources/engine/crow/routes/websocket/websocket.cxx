@@ -73,7 +73,8 @@ namespace Crow
         m_context.conn_erase(p_conn);
         LOG(m_crow.crow_get_log(),
             info,
-            "Connection closed: reason = '{}'",
+            "Connection {} closed: reason = '{}'",
+            m_url,
             p_reason);
     }
 
@@ -86,7 +87,8 @@ namespace Crow
 
         LOG(m_crow.crow_get_log(),
             info,
-            "Connection opened from IP: {}",
+            "Connection opened {} from IP: {}",
+            m_url,
             m_context.conn_get_remote_ip(p_conn));
     }
 

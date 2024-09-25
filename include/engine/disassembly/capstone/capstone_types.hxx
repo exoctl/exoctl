@@ -1,5 +1,8 @@
 #pragma once
 
+#include <capstone/capstone.h>
+#include <stdint.h>
+
 namespace Disassembly
 {
     namespace Struct

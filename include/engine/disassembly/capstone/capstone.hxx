@@ -3,7 +3,7 @@
 #define CAPSTONE_AARCH64_COMPAT_HEADER
 
 #include <capstone/capstone.h>
-#include <engine/disassembly/capstone/capstone_type.hxx>
+#include <engine/disassembly/capstone/capstone_types.hxx>
 #include <functional>
 #include <string>
 

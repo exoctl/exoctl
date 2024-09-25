@@ -3,7 +3,6 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
-#include <engine/parser/elf.hxx>
 #include <include/engine/security/signatures/signatures.hxx>
 
 // clang-format off

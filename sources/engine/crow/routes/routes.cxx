@@ -241,14 +241,19 @@ namespace Crow
     void Routes::routes_init()
     {
         LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
+        TRY_BEGIN()
         GET_ROUTE(metadata);
         GET_ROUTE(capstone_disass_x86_64);
         GET_ROUTE(capstone_disass_arm_64);
         GET_ROUTE(scan_yara);
-
 #if DEBUG
         GET_ROUTE(endpoint);
 #endif
+        TRY_END()
+        CATCH(std::bad_alloc, {
+            LOG(m_crow.crow_get_log(), error, "{}", e.what());
+            throw CrowException::Abort(e.what());
+        })
     }
 
     const std::vector<Structs::Endpoints> &Routes::routes_get_endpoints()
