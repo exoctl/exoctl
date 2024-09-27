@@ -8,6 +8,7 @@
 #include <engine/crow/routes/web/web.hxx>
 #include <engine/crow/routes/websocket/websocket.hxx>
 #include <functional>
+#include <engine/crow/controllers/parser/elf.hxx>
 #include <vector>
 
 #define GET_ROUTE(route)                                                       \
@@ -31,16 +32,19 @@ namespace Crow
         std::size_t m_num_endpoints;
 
         WebSocket *m_socket_scan_yara;
+        WebSocket *m_socket_parser_elf;
         WebSocket *m_socket_metadata;
         WebSocket *m_socket_capstone_disass_x86_64;
         WebSocket *m_socket_capstone_disass_arm_64;
         Web<> *m_web_endpoins;
 
+        Controllers::Parser::ELF *m_parser_elf;
         Controllers::Analysis::ScanYara *m_scan_yara;
         Controllers::Rev::Capstone *m_capstone_x86_64;
         Controllers::Rev::Capstone *m_capstone_arm_64;
         Controllers::Data::Metadata *m_metadata;
 
+        void route_parser_elf();
         void routes_update_endpoints();
         void route_metadata();
         void route_scan_yara();

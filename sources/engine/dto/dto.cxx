@@ -18,7 +18,9 @@ namespace DTO
                 [this, &key](const auto &arg) {
                     if constexpr (std::is_same_v<std::decay_t<decltype(arg)>,
                                                  Parser::Json>) {
-                        m_json[key].push_back(arg);
+                        for (const auto &item : arg) {
+                            m_json[key].push_back(item);
+                        }
                     } else {
                         m_json[key] = arg;
                     }

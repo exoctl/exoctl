@@ -1,4 +1,5 @@
 #include <engine/parser/binary/elf.hxx>
+#include <stdint.h>
 
 namespace Parser
 {
@@ -11,21 +12,21 @@ namespace Parser
         {
         }
 
-        std::unique_ptr<const LIEF::ELF::Binary> &ELF::elf_parser_buffer(
-            const std::string &p_buffer)
+        void ELF::elf_parser_bytes(
+            const std::string &p_buffer,
+            const std::function<void(std::unique_ptr<const LIEF::ELF::Binary>)>
+                &p_callback)
         {
-            m_elf = LIEF::ELF::Parser::parse(
-                std::vector<uint8_t>(p_buffer.begin(), p_buffer.end()));
-
-            return m_elf;
+            p_callback(parse(std::vector<uint8_t>(p_buffer.begin(), p_buffer.end())));
         }
 
-        std::unique_ptr<const LIEF::ELF::Binary> &ELF::elf_parser_file(
-            const std::string &p_file_path)
+        void ELF::elf_parser_file(
+            const std::string &p_file_path,
+            const std::function<void(std::unique_ptr<const LIEF::ELF::Binary>)>
+                &p_callback)
         {
-            m_elf = LIEF::ELF::Parser::parse(p_file_path);
-
-            return m_elf;
+            p_callback(parse(p_file_path));
         }
+
     } // namespace Binary
 } // namespace Parser

@@ -101,7 +101,6 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
     "arch": "arch",
     "mode": "mode",
     "disassembly": [
-        [
             {
                 "address": "0x782f796c626d6573",
                 "bytes": "ff 15 f a0 0 0",
@@ -118,7 +117,6 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
                 "operands": "",
                 "size": 1
             }
-        ]
     ]
   }
   ```

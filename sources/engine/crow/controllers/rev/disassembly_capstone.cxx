@@ -2,6 +2,7 @@
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
+#include <stdint.h>
 
 namespace Controllers
 {

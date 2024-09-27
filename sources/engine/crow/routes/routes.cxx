@@ -21,6 +21,7 @@ namespace Crow
         delete m_socket_metadata;
         delete m_socket_capstone_disass_x86_64;
         delete m_socket_capstone_disass_arm_64;
+        delete m_socket_parser_elf; 
 #if DEBUG
         delete m_web_endpoins;
 #endif
@@ -155,6 +156,32 @@ namespace Crow
             });
     }
 
+    DEFINE_ROUTE(PARSER_ELF, "/parser", "/elf")
+    void Routes::route_parser_elf()
+    {
+        m_parser_elf = new Controllers::Parser::ELF();
+
+        m_socket_parser_elf = new WebSocket(
+            m_crow,
+            ROUTE_PARSER_ELF,
+            UINT64_MAX,
+            [&](Socket::Context &p_context,
+                crow::websocket::connection &p_conn,
+                const std::string &p_data,
+                bool p_is_binary) {
+                LOG(m_crow.crow_get_log(),
+                    debug,
+                    "Message received on route '{}': data size = {}",
+                    ROUTE_PARSER_ELF,
+                    p_data.size());
+
+                m_parser_elf->elf_parser_bytes("/usr/bin/ls");
+                p_context.conn_broadcast(
+                    &p_conn,
+                    m_parser_elf->dto_to_json().json_to_string());
+            });
+    }
+
     DEFINE_ROUTE(METADATA, "/data", "/metadata")
     void Routes::route_metadata()
     {
@@ -233,6 +260,11 @@ namespace Crow
             Types::Route::websocket,
             m_socket_capstone_disass_arm_64->websocket_size_connections());
 
+        m_endpoints.emplace_back(
+            ROUTE_PARSER_ELF,
+            Types::Route::websocket,
+            m_socket_parser_elf->websocket_size_connections());
+
 #if DEBUG
         m_endpoints.emplace_back(ROUTE_ROUTES, Types::Route::web, 0);
 #endif
@@ -246,6 +278,7 @@ namespace Crow
         GET_ROUTE(capstone_disass_x86_64);
         GET_ROUTE(capstone_disass_arm_64);
         GET_ROUTE(scan_yara);
+        GET_ROUTE(parser_elf);
 #if DEBUG
         GET_ROUTE(endpoint);
 #endif

@@ -13,9 +13,13 @@ namespace DTO
     class DTOBase
     {
       private:
-        std::unordered_map<
-            std::string,
-            std::variant<int, double, std::string, const char *, Parser::Json>>
+        std::unordered_map<std::string,
+                           std::variant<int,
+                                        double,
+                                        std::string,
+                                        const char *,
+                                        Parser::Json,
+                                        uint64_t>>
             m_fields;
 
         mutable Parser::Json m_json;
