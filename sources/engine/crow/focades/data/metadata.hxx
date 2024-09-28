@@ -4,6 +4,7 @@
 #include <engine/crow/focades/data/metadata_types.hxx>
 #include <engine/crypto/sha.hxx>
 #include <engine/magic/magic.hxx>
+#include <engine/parser/json.hxx>
 #include <functional>
 
 namespace Focades
@@ -19,6 +20,8 @@ namespace Focades
             const void metadata_parse(
                 const std::string &,
                 const std::function<void(Structs::DTO *)> &);
+
+            const Parser::Json metadata_dto_json(const Structs::DTO *);
 
           private:
             const double metadata_compute_entropy(const std::string &);

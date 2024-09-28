@@ -25,8 +25,8 @@ namespace Focades
         {
             struct Structs::DTO *dto = new Structs::DTO;
 
-            dto->p_arch = m_arch;
-            dto->p_mode = m_mode;
+            dto->arch = m_arch;
+            dto->mode = m_mode;
 
             m_capstone.capstone_disassembly(
                 reinterpret_cast<const uint8_t *>(p_code.data()),
@@ -46,11 +46,17 @@ namespace Focades
                         "{:x}",
                         fmt::join(insn.bytes, insn.bytes + insn.size, " "));
 
-                    // dto->instructions.emplace(instruction);
+                    //dto->instructions.push_back(instruction);
                 });
 
             p_callback(dto);
             delete dto;
+        }
+
+        const Parser::Json Capstone::capstone_dto_json(
+            const Structs::DTO *p_dto)
+        {
+            return Parser::Json{{{"arch", p_dto->arch}, {"mode", p_dto->mode}}};
         }
     } // namespace Rev
 } // namespace Focades

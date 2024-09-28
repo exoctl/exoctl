@@ -40,7 +40,7 @@ namespace Focades
         {
             m_yara.yara_scan_fast_bytes(
                 p_buffer, [&](Security::Structs::Data *p_data) {
-                    struct Structs::DTO *dto = new  Structs::DTO;
+                    struct Structs::DTO *dto = new Structs::DTO;
 
                     dto->yara_match_status = p_data->yara_match_status;
                     dto->yara_rule.assign(p_data->yara_rule);
@@ -49,6 +49,14 @@ namespace Focades
                     p_callback(dto);
                     delete dto;
                 });
+        }
+
+        const Parser::Json ScanYara::scan_yara_dto_json(const Structs::DTO *p_dto)
+        {
+            return Parser::Json{
+                {{"yara_namespace", p_dto->yara_namespace},
+                 {"yara_rule", p_dto->yara_rule},
+                 {"yara_match_status", p_dto->yara_match_status}}};
         }
     } // namespace Analysis
 } // namespace Focades

@@ -11,8 +11,8 @@ namespace Focades
         namespace Structs
         {
             typedef struct DTO {
-                std::string p_arch;
-                std::string p_mode;
+                std::string arch;
+                std::string mode;
                 std::map<std::string, std::string> instructions;
             } DTO;
         } // namespace Structs

@@ -44,6 +44,22 @@ namespace Focades
             delete dto;
         }
 
+        const Parser::Json Metadata::metadata_dto_json(
+            const Structs::DTO *p_dto)
+        {
+            return Parser::Json{{{"mime_type", p_dto->mime_type},
+                                {"sha256", p_dto->sha256},
+                                {"sha1", p_dto->sha1},
+                                {"sha512", p_dto->sha512},
+                                {"sha224", p_dto->sha224},
+                                {"sha384", p_dto->sha384},
+                                {"sha3_256", p_dto->sha3_256},
+                                {"sha3_512", p_dto->sha3_512},
+                                {"size", p_dto->size},
+                                {"creation_date", p_dto->creation_date},
+                                {"entropy", p_dto->entropy}}};
+        }
+
         const double Metadata::metadata_compute_entropy(
             const std::string &p_buffer)
         {

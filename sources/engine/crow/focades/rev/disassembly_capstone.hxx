@@ -2,6 +2,7 @@
 
 #include <engine/crow/focades/rev/disassembly_capstone_types.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
+#include <engine/parser/json.hxx>
 
 namespace Focades
 {
@@ -16,6 +17,8 @@ namespace Focades
             void capstone_disassembly(
                 const std::string &,
                 const std::function<void(Structs::DTO *)> &);
+
+            const Parser::Json capstone_dto_json(const Structs::DTO *);
 
           private:
             Disassembly::Capstone m_capstone;

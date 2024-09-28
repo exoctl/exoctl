@@ -22,7 +22,7 @@ namespace Crow
         delete m_socket_metadata;
         delete m_socket_capstone_disass_x86_64;
         delete m_socket_capstone_disass_arm_64;
-        //delete m_socket_parser_elf;
+        // delete m_socket_parser_elf;
 #if DEBUG
         delete m_web_endpoins;
 #endif
@@ -52,7 +52,7 @@ namespace Crow
                     TRY_BEGIN()
                     m_capstone_x86_64->capstone_disassembly(
                         p_data, [&](Focades::Rev::Structs::DTO *p_dto) {
-                            p_context.conn_broadcast(&p_conn, p_dto->p_arch);
+                            p_context.conn_broadcast(&p_conn, p_dto->arch);
                         });
                     TRY_END()
                     CATCH(Disassembly::CapstoneException::FailedDisassembly, {
@@ -95,12 +95,13 @@ namespace Crow
 
                     TRY_BEGIN()
                     m_capstone_arm_64->capstone_disassembly(
-                        p_data, [](Focades::Rev::Structs::DTO *) {
-
+                        p_data, [&](Focades::Rev::Structs::DTO *p_dto) {
+                            p_context.conn_broadcast(
+                                &p_conn,
+                                m_capstone_arm_64->capstone_dto_json(p_dto)
+                                    .json_to_string());
                         });
-                    // p_context.conn_broadcast(
-                    //     &p_conn,
-                    //     m_capstone_arm_64->dto_to_json().json_to_string());
+
                     TRY_END()
                     CATCH(Disassembly::CapstoneException::FailedDisassembly, {
                         LOG(m_crow.crow_get_log(),
@@ -154,14 +155,10 @@ namespace Crow
 
                 m_scan_yara->scan_yara_fast_bytes(
                     p_data, [&](Focades::Analysis::Structs::DTO *p_dto) {
-                        Parser::Json parse;
-
-                        parse["yara_namespace"] = p_dto->yara_namespace;
-                        parse["yara_rule"] = p_dto->yara_rule;
-                        parse["yara_match_status"] = p_dto->yara_match_status;
-
-                        p_context.conn_broadcast(&p_conn,
-                                                 parse.json_to_string());
+                        p_context.conn_broadcast(
+                            &p_conn,
+                            m_scan_yara->scan_yara_dto_json(p_dto)
+                                .json_to_string());
                     });
             });
     }
@@ -215,12 +212,13 @@ namespace Crow
                 std::string data = std::move(p_data);
                 data.erase(std::remove(data.begin(), data.end(), '\n'),
                            data.cend());
-                m_metadata->metadata_parse(data,
-                                           [](Focades::Data::Structs::DTO *) {
-
-                                           });
-                // p_context.conn_broadcast(
-                //    &p_conn, m_metadata->dto_to_json().json_to_string());
+                m_metadata->metadata_parse(
+                    data, [&](Focades::Data::Structs::DTO *p_dto) {
+                        p_context.conn_broadcast(
+                            &p_conn,
+                            m_metadata->metadata_dto_json(p_dto)
+                                .json_to_string());
+                    });
             });
     }
 

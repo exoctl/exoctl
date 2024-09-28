@@ -69,18 +69,19 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {
-    "creation_date": "2024-09-20",
-    "entropy": 0,
-    "mime_type": "application/octet-stream; charset=binary",
-    "sha1": "86f7e437faa5a7fce15d1ddcb9eaeaea377667b8",
-    "sha224": "abd37534c7d9a2efb9465de931cd7055ffdb8879563ae98078d6d6d5",
-    "sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
-    "sha3-256": "80084bf2fba02475726feb2cab2d8215eab14bc6bdd8bfb2c8151257032ecd8b",
-    "sha3-512": "697f2d856172cb8309d6b8b97dac4de344b549d4dee61edfb4962d8698b7fa803f4f93ff24393586e28b5b957ac3d1d369420ce53332712f997bd336d09ab02a",
-    "sha384": "54a59b9f22b0b80880d8427e548b7c23abd873486e1f035dce9cd697e85175033caa88e6d57bc35efae0b5afd3145f31",
-    "sha512": "1f40fc92da241694750979ee6cf582f2d5d7d28e18335de05abc54d0560e0f5302860c652bf08d560252aa5e74210546f369fbbbce8c12cfc7957b2652fe9a75",
-    "size": 1
+  "creation_date": "2024-09-28",
+  "entropy": -0.0,
+  "mime_type": "text/plain; charset=us-ascii",
+  "sha1": "755c001f4ae3c8843e5a50dd6aa2fa23893dd3ad",
+  "sha224": "5fa4fb5daff0a9b069061839e5605caff0446465f82268775a226333",
+  "sha256": "28cb017dfc99073aa1b47c1b30f413e3ce774c4991eb4158de50f9dbb36d8043",
+  "sha384": "05542a38ee06e71f2edac136126a2df339ab79fceb399b2dc82e80c856015c9ce9105d83f58f976bdd49ca5f9ccd088d",
+  "sha3_256": "350fbf3004cf9d3dea61e4a535c169b8c6d0e4e8d6db07c23b9c606fda37607f",
+  "sha3_512": "e458cf38eeb666474f34773af6e9fe909426627295b50f3480fab597c596c7a31ea51e1f7512dc096df689b13ebe145e59d8aa95dd1e22b4bfa08a6bc5963ca9",
+  "sha512": "2d5be0f423fee59bf2149f996e72d9f5f8df90540a7d23b68c0d0d9a9a32d2c144891ca8fe4a3c713cb6eb2991578541dad291ba623dbd7107c6a891ba00bcc8",
+  "size": 11
   }
+  
   ```
   - **onclose:** 
   - **onerror:** 
