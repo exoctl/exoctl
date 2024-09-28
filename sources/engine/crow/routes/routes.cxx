@@ -3,6 +3,7 @@
 #include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
 #include <engine/disassembly/capstone/capstone_exception.hxx>
+#include <engine/parser/json.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 
 namespace Crow
@@ -21,7 +22,7 @@ namespace Crow
         delete m_socket_metadata;
         delete m_socket_capstone_disass_x86_64;
         delete m_socket_capstone_disass_arm_64;
-        delete m_socket_parser_elf; 
+        //delete m_socket_parser_elf;
 #if DEBUG
         delete m_web_endpoins;
 #endif
@@ -31,8 +32,7 @@ namespace Crow
         CAPSTONE_DISASS_X86_64, "/rev", "/capstone", "/disassembly", "/x86_64")
     void Routes::route_capstone_disass_x86_64()
     {
-        m_capstone_x86_64 =
-            new Controllers::Rev::Capstone(CS_ARCH_X86, CS_MODE_64);
+        m_capstone_x86_64 = new Focades::Rev::Capstone(CS_ARCH_X86, CS_MODE_64);
 
         m_socket_capstone_disass_x86_64 = new WebSocket(
             m_crow,
@@ -50,10 +50,10 @@ namespace Crow
                         p_data.size());
 
                     TRY_BEGIN()
-                    m_capstone_x86_64->capstone_disassembly(p_data);
-                    p_context.conn_broadcast(
-                        &p_conn,
-                        m_capstone_x86_64->dto_to_json().json_to_string());
+                    m_capstone_x86_64->capstone_disassembly(
+                        p_data, [&](Focades::Rev::Structs::DTO *p_dto) {
+                            p_context.conn_broadcast(&p_conn, p_dto->p_arch);
+                        });
                     TRY_END()
                     CATCH(Disassembly::CapstoneException::FailedDisassembly, {
                         LOG(m_crow.crow_get_log(),
@@ -76,7 +76,7 @@ namespace Crow
     void Routes::route_capstone_disass_arm_64()
     {
         m_capstone_arm_64 =
-            new Controllers::Rev::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
+            new Focades::Rev::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
 
         m_socket_capstone_disass_arm_64 = new WebSocket(
             m_crow,
@@ -94,10 +94,13 @@ namespace Crow
                         p_data.size());
 
                     TRY_BEGIN()
-                    m_capstone_arm_64->capstone_disassembly(p_data);
-                    p_context.conn_broadcast(
-                        &p_conn,
-                        m_capstone_arm_64->dto_to_json().json_to_string());
+                    m_capstone_arm_64->capstone_disassembly(
+                        p_data, [](Focades::Rev::Structs::DTO *) {
+
+                        });
+                    // p_context.conn_broadcast(
+                    //     &p_conn,
+                    //     m_capstone_arm_64->dto_to_json().json_to_string());
                     TRY_END()
                     CATCH(Disassembly::CapstoneException::FailedDisassembly, {
                         LOG(m_crow.crow_get_log(),
@@ -118,11 +121,10 @@ namespace Crow
     DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan_yara")
     void Routes::route_scan_yara()
     {
-        m_scan_yara =
-            new Controllers::Analysis::ScanYara(m_crow.crow_get_config());
+        m_scan_yara = new Focades::Analysis::ScanYara(m_crow.crow_get_config());
 
         TRY_BEGIN()
-        m_scan_yara->yara_load_rules([&](void *p_total_rules) {
+        m_scan_yara->scan_yara_load_rules([&](void *p_total_rules) {
             LOG(m_crow.crow_get_log(),
                 info,
                 "Successfully loaded rules. Total Yara rules "
@@ -150,16 +152,25 @@ namespace Crow
                     ROUTE_SCAN_YARA,
                     p_data.size());
 
-                m_scan_yara->yara_scan_fast_bytes(p_data);
-                p_context.conn_broadcast(
-                    &p_conn, m_scan_yara->dto_to_json().json_to_string());
+                m_scan_yara->scan_yara_fast_bytes(
+                    p_data, [&](Focades::Analysis::Structs::DTO *p_dto) {
+                        Parser::Json parse;
+
+                        parse["yara_namespace"] = p_dto->yara_namespace;
+                        parse["yara_rule"] = p_dto->yara_rule;
+                        parse["yara_match_status"] = p_dto->yara_match_status;
+
+                        p_context.conn_broadcast(&p_conn,
+                                                 parse.json_to_string());
+                    });
             });
     }
 
+    /*
     DEFINE_ROUTE(PARSER_ELF, "/parser", "/elf")
     void Routes::route_parser_elf()
     {
-        m_parser_elf = new Controllers::Parser::ELF();
+        m_parser_elf = new Focades::Parser::ELF();
 
         m_socket_parser_elf = new WebSocket(
             m_crow,
@@ -177,15 +188,15 @@ namespace Crow
 
                 m_parser_elf->elf_parser_bytes("/usr/bin/ls");
                 p_context.conn_broadcast(
-                    &p_conn,
-                    m_parser_elf->dto_to_json().json_to_string());
+                    &p_conn, m_parser_elf->dto_to_json().json_to_string());
             });
     }
+    */
 
     DEFINE_ROUTE(METADATA, "/data", "/metadata")
     void Routes::route_metadata()
     {
-        m_metadata = new Controllers::Data::Metadata();
+        m_metadata = new Focades::Data::Metadata();
 
         m_socket_metadata = new WebSocket(
             m_crow,
@@ -204,9 +215,12 @@ namespace Crow
                 std::string data = std::move(p_data);
                 data.erase(std::remove(data.begin(), data.end(), '\n'),
                            data.cend());
-                m_metadata->metadata_parse(data);
-                p_context.conn_broadcast(
-                    &p_conn, m_metadata->dto_to_json().json_to_string());
+                m_metadata->metadata_parse(data,
+                                           [](Focades::Data::Structs::DTO *) {
+
+                                           });
+                // p_context.conn_broadcast(
+                //    &p_conn, m_metadata->dto_to_json().json_to_string());
             });
     }
 
@@ -260,10 +274,10 @@ namespace Crow
             Types::Route::websocket,
             m_socket_capstone_disass_arm_64->websocket_size_connections());
 
-        m_endpoints.emplace_back(
-            ROUTE_PARSER_ELF,
-            Types::Route::websocket,
-            m_socket_parser_elf->websocket_size_connections());
+        // m_endpoints.emplace_back(
+        //    ROUTE_PARSER_ELF,
+        //    Types::Route::websocket,
+        //    m_socket_parser_elf->websocket_size_connections());
 
 #if DEBUG
         m_endpoints.emplace_back(ROUTE_ROUTES, Types::Route::web, 0);
@@ -278,7 +292,7 @@ namespace Crow
         GET_ROUTE(capstone_disass_x86_64);
         GET_ROUTE(capstone_disass_arm_64);
         GET_ROUTE(scan_yara);
-        GET_ROUTE(parser_elf);
+        // GET_ROUTE(parser_elf);
 #if DEBUG
         GET_ROUTE(endpoint);
 #endif

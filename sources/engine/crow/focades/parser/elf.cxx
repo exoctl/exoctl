@@ -1,9 +1,10 @@
-#include <engine/crow/controllers/parser/elf.hxx>
+/*
+#include <engine/crow/focades/parser/elf.hxx>
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-namespace Controllers
+namespace Focades
 {
     namespace Parser
     {
@@ -16,16 +17,22 @@ namespace Controllers
 
         void ELF::elf_parser_bytes(const std::string &p_buffer)
         {
-            ::Parser::Json elf = ::Parser::Json::array();
-
             m_elf.elf_parser_file(
                 p_buffer, [&](std::unique_ptr<const LIEF::ELF::Binary> p_elf) {
                     if (p_elf) {
-                        elf.push_back(ELF::elf_header_json(p_elf));
+
+                        dto_set_field("header", ELF::elf_header_json(p_elf));
+
+                        ::Parser::Json dynamic_symbols;
+                        for (const auto &symbol :
+                             p_elf.get()->dynamic_symbols()) {
+                            dynamic_symbols["name"] = symbol.name();
+                            dynamic_symbols["type"] = symbol.type();
+
+                            // elf.push_back(dynamic_symbols);
+                        }
                     }
                 });
-
-            dto_set_field("elf", elf);
         }
 
         ::Parser::Json ELF::elf_header_json(
@@ -71,4 +78,6 @@ namespace Controllers
             return header;
         }
     } // namespace Parser
-} // namespace Controllers
+} // namespace Focades
+
+*/

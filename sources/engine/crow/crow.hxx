@@ -3,9 +3,8 @@
 #define CROW_ENFORCE_WS_SPEC
 
 #if CROW_OPENSSL
-  #define CROW_ENABLE_SSL
+#define CROW_ENABLE_SSL
 #endif
-
 
 #include <crow.h>
 #include <engine/log.hxx>

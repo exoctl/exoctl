@@ -20,10 +20,9 @@ namespace Decompiler
             if (m_elf.parse(p_file_path)) {
                 err = true;
 
-                //if (m_elf.parse(p_file_path).identity_class() ==
-                //    LIEF::ELF::Header::CLASS::ELF32) {
-                    m_capstone =
-                        new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
+                // if (m_elf.parse(p_file_path).identity_class() ==
+                //     LIEF::ELF::Header::CLASS::ELF32) {
+                m_capstone = new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
                 //}
 
                 m_capstone = new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);

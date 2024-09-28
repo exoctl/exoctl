@@ -16,7 +16,7 @@ namespace Decompiler
 
             const bool elf_parser_file(const std::string &);
             const bool elf_parser_bytes(const std::string &);
-            
+
             void elf_init_function(Structs::Function *, uint64_t, uint64_t);
 
           private:

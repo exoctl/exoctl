@@ -17,7 +17,7 @@ namespace Parser
     const std::string Toml::toml_get_tbl_string(const std::string &p_tbl,
                                                 const std::string &p_key)
     {
-        return  m_tbl[p_tbl][p_key].value<std::string>().value();
+        return m_tbl[p_tbl][p_key].value<std::string>().value();
     }
 
     const std::uint16_t Toml::toml_get_tbl_uint16_t(const std::string &p_tbl,

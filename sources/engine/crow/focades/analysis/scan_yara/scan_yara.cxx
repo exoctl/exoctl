@@ -1,9 +1,8 @@
-#include <engine/crow/controllers/analysis/scan_yara.hxx>
+#include <engine/crow/focades/analysis/scan_yara/scan_yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
-#include <iostream>
 #include <string>
 
-namespace Controllers
+namespace Focades
 {
     namespace Analysis
     {
@@ -15,17 +14,13 @@ namespace Controllers
                   p_config, string, "yara", "malware_rules")),
               m_yara_packeds_rules(GET_TOML_TBL_VALUE(
                   p_config, string, "yara", "packeds_rules")),
-              m_yara_cve_rules(GET_TOML_TBL_VALUE(
-                  p_config, string, "yara", "cve_rules")),
+              m_yara_cve_rules(
+                  GET_TOML_TBL_VALUE(p_config, string, "yara", "cve_rules")),
               m_config(p_config)
         {
-            dto_set_field("yara_rule", "none");
-            dto_set_field("yara_namespace", "none");
-            dto_set_field("yara_match_status",
-                          Security::Types::Scan::yara_none);
         }
 
-        const void ScanYara::yara_load_rules(
+        void ScanYara::scan_yara_load_rules(
             const std::function<void(void *)> &p_callback) const
         {
             m_yara.yara_load_rules([&](void *p_rules_count) {
@@ -39,15 +34,21 @@ namespace Controllers
             p_callback((void *) m_yara.get_rules_loaded_count());
         }
 
-        const void ScanYara::yara_scan_fast_bytes(const std::string p_buffer)
+        void ScanYara::scan_yara_fast_bytes(
+            const std::string p_buffer,
+            const std::function<void(Structs::DTO *)> &p_callback)
         {
             m_yara.yara_scan_fast_bytes(
                 p_buffer, [&](Security::Structs::Data *p_data) {
-                    dto_set_field("yara_match_status",
-                                  p_data->yara_match_status);
-                    dto_set_field("yara_rule", p_data->yara_rule);
-                    dto_set_field("yara_namespace", p_data->yara_namespace);
+                    struct Structs::DTO *dto = new  Structs::DTO;
+
+                    dto->yara_match_status = p_data->yara_match_status;
+                    dto->yara_rule.assign(p_data->yara_rule);
+                    dto->yara_namespace.assign(p_data->yara_namespace);
+
+                    p_callback(dto);
+                    delete dto;
                 });
         }
     } // namespace Analysis
-} //  namespace Controllers
+} // namespace Focades

@@ -26,7 +26,7 @@ max_size = 1048576
 
 [crow]
 bindaddr = "127.0.0.1"
-port = 8181
+port = 8182
 threads = 16 # minimum 2
 websocket_conn_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
 ssl_file_pem = ""

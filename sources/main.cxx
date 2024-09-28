@@ -6,7 +6,7 @@
 #include <include/engine/security/signatures/signatures.hxx>
 
 // clang-format off
-#include <console.hxx> 
+#include <console.hxx>
 // clang-format on
 
 int main()

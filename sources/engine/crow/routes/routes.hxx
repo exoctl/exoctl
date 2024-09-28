@@ -1,14 +1,14 @@
 #pragma once
 
-#include <engine/crow/controllers/analysis/scan_yara.hxx>
-#include <engine/crow/controllers/data/metadata.hxx>
-#include <engine/crow/controllers/rev/disassembly_capstone.hxx>
 #include <engine/crow/crow.hxx>
+#include <engine/crow/focades/analysis/scan_yara/scan_yara.hxx>
+#include <engine/crow/focades/data/metadata.hxx>
+#include <engine/crow/focades/parser/elf.hxx>
+#include <engine/crow/focades/rev/disassembly_capstone.hxx>
 #include <engine/crow/routes/routes_types.hxx>
 #include <engine/crow/routes/web/web.hxx>
 #include <engine/crow/routes/websocket/websocket.hxx>
 #include <functional>
-#include <engine/crow/controllers/parser/elf.hxx>
 #include <vector>
 
 #define GET_ROUTE(route)                                                       \
@@ -38,11 +38,11 @@ namespace Crow
         WebSocket *m_socket_capstone_disass_arm_64;
         Web<> *m_web_endpoins;
 
-        Controllers::Parser::ELF *m_parser_elf;
-        Controllers::Analysis::ScanYara *m_scan_yara;
-        Controllers::Rev::Capstone *m_capstone_x86_64;
-        Controllers::Rev::Capstone *m_capstone_arm_64;
-        Controllers::Data::Metadata *m_metadata;
+        //Focades::Parser::ELF *m_parser_elf;
+        Focades::Analysis::ScanYara *m_scan_yara;
+        Focades::Rev::Capstone *m_capstone_x86_64;
+        Focades::Rev::Capstone *m_capstone_arm_64;
+        Focades::Data::Metadata *m_metadata;
 
         void route_parser_elf();
         void routes_update_endpoints();
