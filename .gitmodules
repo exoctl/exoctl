@@ -10,9 +10,6 @@
 [submodule "libraries/tomlplusplus"]
 	path = libraries/tomlplusplus
 	url = https://github.com/marzer/tomlplusplus.git
-[submodule "libraries/json"]
-	path = libraries/json
-	url = https://github.com/nlohmann/json.git
 [submodule "libraries/fmt"]
 	path = libraries/fmt
 	url = https://github.com/fmtlib/fmt.git
@@ -28,3 +25,6 @@
 [submodule "libraries/signatures"]
 	path = libraries/signatures
 	url = git@github.com:maldeclabs/signatures.git
+[submodule "libraries/rapidjson"]
+	path = libraries/rapidjson
+	url = https://github.com/Tencent/rapidjson.git

@@ -22,17 +22,18 @@ namespace Crow
         delete m_socket_metadata;
         delete m_socket_capstone_disass_x86_64;
         delete m_socket_capstone_disass_arm_64;
-        // delete m_socket_parser_elf;
+        delete m_socket_parser_elf;
 #if DEBUG
         delete m_web_endpoins;
 #endif
     }
 
     DEFINE_ROUTE(
-        CAPSTONE_DISASS_X86_64, "/rev", "/capstone", "/disassembly", "/x86_64")
-    void Routes::route_capstone_disass_x86_64()
+        CAPSTONE_DISASS_X86_64, "/rev", "/disassembly", "/capstone", "/x86_64")
+    void Routes::routes_capstone_disass_x86_64()
     {
-        m_capstone_x86_64 = new Focades::Rev::Capstone(CS_ARCH_X86, CS_MODE_64);
+        m_capstone_x86_64 =
+            new Focades::Rev::Disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
 
         m_socket_capstone_disass_x86_64 = new WebSocket(
             m_crow,
@@ -51,8 +52,12 @@ namespace Crow
 
                     TRY_BEGIN()
                     m_capstone_x86_64->capstone_disassembly(
-                        p_data, [&](Focades::Rev::Structs::DTO *p_dto) {
-                            p_context.conn_broadcast(&p_conn, p_dto->arch);
+                        p_data,
+                        [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
+                            p_context.conn_broadcast(
+                                &p_conn,
+                                m_capstone_x86_64->capstone_dto_json(p_dto)
+                                    .json_to_string());
                         });
                     TRY_END()
                     CATCH(Disassembly::CapstoneException::FailedDisassembly, {
@@ -72,11 +77,11 @@ namespace Crow
     }
 
     DEFINE_ROUTE(
-        CAPSTONE_DISASS_ARM64, "/rev", "/capstone", "/disassembly", "/arm_64")
-    void Routes::route_capstone_disass_arm_64()
+        CAPSTONE_DISASS_ARM64, "/rev", "/disassembly", "/capstone", "/arm_64")
+    void Routes::routes_capstone_disass_arm_64()
     {
         m_capstone_arm_64 =
-            new Focades::Rev::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
+            new Focades::Rev::Disassembly::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
 
         m_socket_capstone_disass_arm_64 = new WebSocket(
             m_crow,
@@ -95,7 +100,8 @@ namespace Crow
 
                     TRY_BEGIN()
                     m_capstone_arm_64->capstone_disassembly(
-                        p_data, [&](Focades::Rev::Structs::DTO *p_dto) {
+                        p_data,
+                        [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
                             p_context.conn_broadcast(
                                 &p_conn,
                                 m_capstone_arm_64->capstone_dto_json(p_dto)
@@ -119,10 +125,11 @@ namespace Crow
             });
     }
 
-    DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan_yara")
-    void Routes::route_scan_yara()
+    DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan", "/yara")
+    void Routes::routes_scan_yara()
     {
-        m_scan_yara = new Focades::Analysis::ScanYara(m_crow.crow_get_config());
+        m_scan_yara =
+            new Focades::Analysis::Scan::Yara(m_crow.crow_get_config());
 
         TRY_BEGIN()
         m_scan_yara->scan_yara_load_rules([&](void *p_total_rules) {
@@ -154,7 +161,7 @@ namespace Crow
                     p_data.size());
 
                 m_scan_yara->scan_yara_fast_bytes(
-                    p_data, [&](Focades::Analysis::Structs::DTO *p_dto) {
+                    p_data, [&](Focades::Analysis::Scan::Structs::DTO *p_dto) {
                         p_context.conn_broadcast(
                             &p_conn,
                             m_scan_yara->scan_yara_dto_json(p_dto)
@@ -163,11 +170,10 @@ namespace Crow
             });
     }
 
-    /*
-    DEFINE_ROUTE(PARSER_ELF, "/parser", "/elf")
-    void Routes::route_parser_elf()
+    DEFINE_ROUTE(PARSER_ELF, "/parser", "/binary", "/elf")
+    void Routes::routes_parser_elf()
     {
-        m_parser_elf = new Focades::Parser::ELF();
+        m_parser_elf = new Focades::Parser::Binary::ELF();
 
         m_socket_parser_elf = new WebSocket(
             m_crow,
@@ -183,15 +189,18 @@ namespace Crow
                     ROUTE_PARSER_ELF,
                     p_data.size());
 
-                m_parser_elf->elf_parser_bytes("/usr/bin/ls");
-                p_context.conn_broadcast(
-                    &p_conn, m_parser_elf->dto_to_json().json_to_string());
+                m_parser_elf->elf_parser_bytes(
+                    "/usr/bin/ls",
+                    [&](Focades::Parser::Binary::Structs::DTO *p_dto) {
+                        p_context.conn_broadcast(
+                            &p_conn,
+                            m_parser_elf->elf_dto_json(p_dto).json_to_string());
+                    });
             });
     }
-    */
 
     DEFINE_ROUTE(METADATA, "/data", "/metadata")
-    void Routes::route_metadata()
+    void Routes::routes_metadata()
     {
         m_metadata = new Focades::Data::Metadata();
 
@@ -225,23 +234,25 @@ namespace Crow
 #ifdef DEBUG
 
     DEFINE_ROUTE(ROUTES, "/debug", "/endpoints")
-    void Routes::route_endpoint()
+    void Routes::routes_endpoint()
     {
         m_web_endpoins =
             new Web<>(m_crow, ROUTE_ROUTES, [&](const crow::request &p_req) {
-                Parser::Json routes_array = Parser::Json::array();
+                Parser::Json endpoints;
 
                 const auto &routes = Routes::routes_get_endpoints();
                 for (const auto &route : routes) {
-                    Parser::Json route_obj;
-                    route_obj["path"] = route.path;
-                    route_obj["type"] = static_cast<int>(route.type);
+                    Parser::Json endpoint;
+                    endpoint.json_add_member_string("path", route.path);
+                    endpoint.json_add_member_int("type", route.type);
                     if (route.type == Types::Route::websocket)
-                        route_obj["connections"] = route.connections;
-                    routes_array.push_back(route_obj);
+                        endpoint.json_add_member_int("connections",
+                                                     route.connections);
+
+                    endpoints.json_add_member_json(route.path, endpoint);
                 }
 
-                return routes_array.dump();
+                return endpoints.json_to_string();
             });
     }
 
@@ -272,10 +283,10 @@ namespace Crow
             Types::Route::websocket,
             m_socket_capstone_disass_arm_64->websocket_size_connections());
 
-        // m_endpoints.emplace_back(
-        //    ROUTE_PARSER_ELF,
-        //    Types::Route::websocket,
-        //    m_socket_parser_elf->websocket_size_connections());
+        m_endpoints.emplace_back(
+            ROUTE_PARSER_ELF,
+            Types::Route::websocket,
+            m_socket_parser_elf->websocket_size_connections());
 
 #if DEBUG
         m_endpoints.emplace_back(ROUTE_ROUTES, Types::Route::web, 0);
@@ -290,7 +301,7 @@ namespace Crow
         GET_ROUTE(capstone_disass_x86_64);
         GET_ROUTE(capstone_disass_arm_64);
         GET_ROUTE(scan_yara);
-        // GET_ROUTE(parser_elf);
+        GET_ROUTE(parser_elf);
 #if DEBUG
         GET_ROUTE(endpoint);
 #endif

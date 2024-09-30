@@ -9,6 +9,7 @@ include_directories(
     ../sources
     ../
     ../libraries/tomlplusplus/include
+    ../libraries/rapidjson/include
     ../libraries/lief/include
     ../libraries/capstone-engine/include/
     ../libraries/signatures/include
@@ -22,7 +23,6 @@ file(GLOB_RECURSE SOURCES
     engine/security/*/*.cxx
     engine/parser/*/*.cxx   
     engine/parser/*.cxx
-    dto/*.cxx
     engine/database/*.cxx
     engine/*.cxx
 )
@@ -33,8 +33,7 @@ target_link_libraries(engine PUBLIC
     Crow::Crow 
     yara 
     spdlog::spdlog 
-    sqlite3  
-    nlohmann_json::nlohmann_json
+    sqlite3
     fmt
     LIEF::LIEF
     capstone
@@ -46,7 +45,8 @@ target_link_libraries(engine PUBLIC
 
 if(FLAGS_OPTIMIZATIONS)
     target_compile_options(engine PUBLIC
-        -O2           
+        -O2
+        -fmodules-ts     
         -ftree-vectorize
         -mavx
 	    -fno-stack-protector
@@ -58,6 +58,7 @@ if(FLAGS_OPTIMIZATIONS)
 elseif(FLAGS_DEBUG)
     target_compile_options(engine PUBLIC
         -ggdb3
+        -fmodules-ts
         -fms-extensions
         --all-warnings
 	    -DDEBUG
@@ -71,7 +72,7 @@ add_subdirectory(../libraries/capstone-engine ${CMAKE_BINARY_DIR}/libraries/caps
 add_subdirectory(../libraries/crow ${CMAKE_BINARY_DIR}/libraries/crow)
 add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
 add_subdirectory(../libraries/spdlog ${CMAKE_BINARY_DIR}/libraries/spdlog)
-add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
 add_subdirectory(../libraries/lief ${CMAKE_BINARY_DIR}/libraries/lief)
 add_subdirectory(../libraries/signatures ${CMAKE_BINARY_DIR}/libraries/signatures)
+add_subdirectory(../libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson )

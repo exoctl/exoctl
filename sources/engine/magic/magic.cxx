@@ -18,7 +18,7 @@ namespace Magic
         magic_close(m_cookie);
     }
 
-    const void Magic::magic_load_mime(const std::string &p_buffer)
+    void Magic::magic_load_mime(const std::string &p_buffer)
     {
         m_mime = magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
     }

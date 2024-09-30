@@ -20,7 +20,7 @@ std::string concatenate_paths(const std::string &p_base, Args &&...p_args)
     ((result.append(p_args)),
      ...); // Fold expression to concatenate all arguments
     return result;
-} // namespace std::string
+}
 
 // Macro to define routes with variable prefixes
 #define DEFINE_ROUTE(name, ...)                                                \

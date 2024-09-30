@@ -6,7 +6,6 @@
 
 namespace Disassembly
 {
-
     Capstone::Capstone(cs_arch p_arch, cs_mode p_mode)
         : m_arch(p_arch), m_mode(p_mode)
     {

@@ -14,7 +14,7 @@ namespace Focades
         {
         }
 
-        const void Metadata::metadata_parse(
+        void Metadata::metadata_parse(
             const std::string &p_buffer,
             const std::function<void(Structs::DTO *)> &p_callback)
         {
@@ -47,17 +47,19 @@ namespace Focades
         const Parser::Json Metadata::metadata_dto_json(
             const Structs::DTO *p_dto)
         {
-            return Parser::Json{{{"mime_type", p_dto->mime_type},
-                                {"sha256", p_dto->sha256},
-                                {"sha1", p_dto->sha1},
-                                {"sha512", p_dto->sha512},
-                                {"sha224", p_dto->sha224},
-                                {"sha384", p_dto->sha384},
-                                {"sha3_256", p_dto->sha3_256},
-                                {"sha3_512", p_dto->sha3_512},
-                                {"size", p_dto->size},
-                                {"creation_date", p_dto->creation_date},
-                                {"entropy", p_dto->entropy}}};
+            Parser::Json json;
+            json.json_add_member_string("mime_type", p_dto->mime_type);
+            json.json_add_member_string("sha256", p_dto->sha256);
+            json.json_add_member_string("sha1", p_dto->sha1);
+            json.json_add_member_string("sha512", p_dto->sha512);
+            json.json_add_member_string("sha224", p_dto->sha224);
+            json.json_add_member_string("sha384", p_dto->sha384);
+            json.json_add_member_string("sha3_256", p_dto->sha3_256);
+            json.json_add_member_string("sha3_512", p_dto->sha3_512);
+            json.json_add_member_int("size", p_dto->size);
+            json.json_add_member_string("creation_date", p_dto->creation_date);
+            json.json_add_member_double("entropy", p_dto->entropy);
+            return json;
         }
 
         const double Metadata::metadata_compute_entropy(

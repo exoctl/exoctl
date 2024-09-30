@@ -1,10 +1,10 @@
 #pragma once
 
 #include <engine/crow/crow.hxx>
-#include <engine/crow/focades/analysis/scan_yara/scan_yara.hxx>
+#include <engine/crow/focades/analysis/scan/yara/yara.hxx>
 #include <engine/crow/focades/data/metadata.hxx>
-#include <engine/crow/focades/parser/elf.hxx>
-#include <engine/crow/focades/rev/disassembly_capstone.hxx>
+#include <engine/crow/focades/parser/binary/elf/elf.hxx>
+#include <engine/crow/focades/rev/disassembly/capstone.hxx>
 #include <engine/crow/routes/routes_types.hxx>
 #include <engine/crow/routes/web/web.hxx>
 #include <engine/crow/routes/websocket/websocket.hxx>
@@ -12,7 +12,7 @@
 #include <vector>
 
 #define GET_ROUTE(route)                                                       \
-    Routes::route_##route();                                                   \
+    Routes::routes_##route();                                                   \
     m_num_endpoints++;
 
 namespace Crow
@@ -38,22 +38,22 @@ namespace Crow
         WebSocket *m_socket_capstone_disass_arm_64;
         Web<> *m_web_endpoins;
 
-        //Focades::Parser::ELF *m_parser_elf;
-        Focades::Analysis::ScanYara *m_scan_yara;
-        Focades::Rev::Capstone *m_capstone_x86_64;
-        Focades::Rev::Capstone *m_capstone_arm_64;
+        Focades::Parser::Binary::ELF *m_parser_elf;
+        Focades::Analysis::Scan::Yara *m_scan_yara;
+        Focades::Rev::Disassembly::Capstone *m_capstone_x86_64;
+        Focades::Rev::Disassembly::Capstone *m_capstone_arm_64;
         Focades::Data::Metadata *m_metadata;
 
-        void route_parser_elf();
         void routes_update_endpoints();
-        void route_metadata();
-        void route_scan_yara();
-        void route_capstone_disass_x86_64();
-        void route_capstone_disass_arm_64();
+        void routes_parser_elf();
+        void routes_metadata();
+        void routes_scan_yara();
+        void routes_capstone_disass_x86_64();
+        void routes_capstone_disass_arm_64();
 
         /* Routes generate for debug */
 #ifdef DEBUG
-        void route_endpoint();
+        void routes_endpoint();
 #endif
     };
 } // namespace Crow

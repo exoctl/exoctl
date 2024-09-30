@@ -4,14 +4,13 @@
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
 #include <include/engine/security/signatures/signatures.hxx>
-
+#include <include/engine/parser/json.hxx>
 // clang-format off
 #include <console.hxx>
 // clang-format on
 
 int main()
 {
-
     Parser::Toml configuration;
     TRY_BEGIN()
     configuration.toml_parser_file("configuration.toml");

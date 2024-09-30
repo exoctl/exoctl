@@ -9,13 +9,16 @@ namespace Focades
 {
     namespace Analysis
     {
-        class ScanSig
+        namespace Scan
         {
-          public:
-            ScanSig();
-            ~ScanSig();
+            class Sig
+            {
+              public:
+                Sig();
+                ~Sig();
 
-          private:
-        };
+              private:
+            };
+        } // namespace Scan
     } // namespace Analysis
 } // namespace Focades
