@@ -15,6 +15,7 @@ include_directories(
     ../libraries/tomlplusplus/include
     ../libraries/lief/include
     ../libraries/benchmark/include
+    ../libraries/rapidjson/include
     .
 )
 
@@ -24,7 +25,7 @@ add_subdirectory(data/)
 add_subdirectory(parser/)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
 add_subdirectory(../libraries/benchmark/ ${CMAKE_BINARY_DIR}/libraries/benchmark)
-add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
+add_subdirectory(../libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson)
 
 
 add_executable(benchmark_engine benchmark_engine.cxx)

@@ -103,10 +103,6 @@ namespace Focades
                     fmt::format("{:x}",
                                 fmt::join(p_dto->header.identity(), " ")));
 
-                // Adiciona o objeto "header" como um membro "header" no
-                // JSON principal
-                header.json_add_member_json("header", header);
-
                 return header;
             }
         } // namespace Binary
