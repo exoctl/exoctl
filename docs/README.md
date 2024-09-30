@@ -56,7 +56,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
     - `2`: None
 
 
-#### 2. metadata
+#### 2. data/metadata
 - **Route:** `<version>/engine/data/metadata`
 - **Type:** WebSocket
 - **Description:** Endpoint for collect medatada.
@@ -86,7 +86,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onclose:** 
   - **onerror:** 
 
-#### 3. x86_64 or arm_64
+#### 3. capstone/x86_64 or arm_64
 - **Route:** `<version>/engine/rev/disassembly/capstone/<x86_64><arm_64>`
 - **Type:** WebSocket
 - **Description:** Endpoint for generate disassembly x86_64 or arm_64
@@ -124,7 +124,7 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onclose:** 
   - **onerror:** 
 
-#### 4. endpoints
+#### 4. debug/endpoints
 - **Route:** `<version>/engine/debug/endpoints`
 - **Type:** Web
 - **Description:** Endpoint for generate endpoints loaded
