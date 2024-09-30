@@ -120,7 +120,7 @@ TEST_F(CryptoTest, ShaGenSpecialCharacters)
 
 TEST_F(CryptoTest, ShaGenLargeString)
 {
-    std::string large_string(10000, 'a'); 
+    std::string large_string(10000, 'a');
 
     const std::string hash = sha->sha_gen_sha256_hash(large_string);
     ASSERT_FALSE(hash.empty()) << "Hash should not be empty for large input";

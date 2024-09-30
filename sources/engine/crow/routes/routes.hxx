@@ -12,7 +12,7 @@
 #include <vector>
 
 #define GET_ROUTE(route)                                                       \
-    Routes::routes_##route();                                                   \
+    Routes::routes_##route();                                                  \
     m_num_endpoints++;
 
 namespace Crow

@@ -27,7 +27,8 @@ namespace Engine
         [[nodiscard]] const uint16_t &engine_port();
         [[nodiscard]] const uint16_t engine_concurrency();
 
-        [[nodiscard]] const std::vector<Crow::Structs::Endpoints> &engine_routes();
+        [[nodiscard]] const std::vector<Crow::Structs::Endpoints> &
+        engine_routes();
         void engine_stop();
         void engine_run(const std::function<void()> & = nullptr);
     };

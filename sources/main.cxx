@@ -3,8 +3,8 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
-#include <include/engine/security/signatures/signatures.hxx>
 #include <include/engine/parser/json.hxx>
+#include <include/engine/security/signatures/signatures.hxx>
 // clang-format off
 #include <console.hxx>
 // clang-format on

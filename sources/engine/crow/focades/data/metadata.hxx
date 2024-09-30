@@ -24,7 +24,8 @@ namespace Focades
                 const Structs::DTO *);
 
           private:
-            [[nodiscard]] const double metadata_compute_entropy(const std::string &);
+            [[nodiscard]] const double metadata_compute_entropy(
+                const std::string &);
             Magic::Magic m_magic;
             Crypto::Sha m_sha;
         };

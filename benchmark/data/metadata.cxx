@@ -1,7 +1,6 @@
 #include <data/metadata.hxx>
 #include <fmt/core.h>
 
-
 BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
 {
     std::string test_string = fmt::format("{}", state.range(0));

@@ -130,24 +130,33 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
 - **Description:** Endpoint for generate endpoints loaded
 - **Response:**
 ```json
-[
-  {
-    "connections": 0,
-    "path": "/v1/engine/analysis/scan_yara",
-    "type": 0
+{
+  "/v1/engine/analysis/scan/yara": {
+    "path": "/v1/engine/analysis/scan/yara",
+    "type": 0,
+    "connections": 0
   },
-  {
-    "connections": 0,
+  "/v1/engine/data/metadata": {
     "path": "/v1/engine/data/metadata",
-    "type": 0
+    "type": 0,
+    "connections": 0
   },
-  {
+  "/v1/engine/rev/disassembly/capstone/x86_64": {
+    "path": "/v1/engine/rev/disassembly/capstone/x86_64",
+    "type": 0,
+    "connections": 0
+  }
+  "/v1/engine/parser/binary/elf": {
+    "path": "/v1/engine/parser/binary/elf",
+    "type": 0,
+    "connections": 0
+  },
+  "/v1/engine/debug/endpoints": {
     "path": "/v1/engine/debug/endpoints",
     "type": 1
   }
-
   <...>
-]
+}
 ```
 - **Details:**
   - **`type` Values:**

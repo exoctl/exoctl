@@ -44,11 +44,12 @@ namespace Security
         void yara_load_rules_folder(
             const std::filesystem::path & /* path */) const;
 
-        [[nodiscard]] const int yara_set_signature_rule_mem(const std::string &,
-                                              const std::string &) const;
-        [[nodiscard]] const int yara_set_signature_rule_fd(const std::string &,
-                                             const std::string &,
-                                             const std::string &) const;
+        [[nodiscard]] const int yara_set_signature_rule_mem(
+            const std::string &, const std::string &) const;
+        [[nodiscard]] const int yara_set_signature_rule_fd(
+            const std::string &,
+            const std::string &,
+            const std::string &) const;
 
         [[nodiscard]] const uint64_t get_rules_loaded_count() const;
 

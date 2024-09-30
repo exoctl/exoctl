@@ -12,7 +12,10 @@ class MetadataBenchmark : public benchmark::Fixture
         metadata = new Focades::Data::Metadata();
     }
 
-    void TearDown(const ::benchmark::State &state) override { delete metadata; }
+    void TearDown(const ::benchmark::State &state) override
+    {
+        delete metadata;
+    }
 
     Focades::Data::Metadata *metadata;
 };

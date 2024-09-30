@@ -11,6 +11,6 @@ namespace Focades
                 Yara();
                 ~Yara();
             };
-        } // namespace Scan
+        } // namespace Search
     } // namespace Analysis
 } // namespace Focades

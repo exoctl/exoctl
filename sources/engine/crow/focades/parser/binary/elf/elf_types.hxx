@@ -12,7 +12,7 @@ namespace Focades
             namespace Structs
             {
                 typedef struct DTO {
-                   LIEF::ELF::Header header;
+                    LIEF::ELF::Header header;
                 } DTO;
             } // namespace Structs
         } // namespace Binary

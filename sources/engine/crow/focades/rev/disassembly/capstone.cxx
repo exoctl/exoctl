@@ -55,7 +55,8 @@ namespace Focades
                 delete dto;
             }
 
-            ::Parser::Json Capstone::capstone_dto_json(const Structs::DTO *p_dto)
+            ::Parser::Json Capstone::capstone_dto_json(
+                const Structs::DTO *p_dto)
             {
                 Parser::Json disassembly;
                 std::vector<Parser::Json> ins;

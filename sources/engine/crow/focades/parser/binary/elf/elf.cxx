@@ -57,10 +57,10 @@ namespace Focades
                                 static_cast<int>(p_dto->header.file_type())));
                 header.json_add_member_string(
                     "identity_abi_version",
-                    fmt::format("{:x}",
-                                p_dto->header.identity_abi_version()));
+                    fmt::format("{:x}", p_dto->header.identity_abi_version()));
                 header.json_add_member_string(
-                    "entrypoint", fmt::format("{:x}", p_dto->header.entrypoint()));
+                    "entrypoint",
+                    fmt::format("{:x}", p_dto->header.entrypoint()));
                 header.json_add_member_string(
                     "program_headers_offset",
                     fmt::format("{:x}",
@@ -92,9 +92,9 @@ namespace Focades
                         static_cast<int>(p_dto->header.identity_data())));
                 header.json_add_member_string(
                     "abstract_endianness",
-                    fmt::format("{:x}",
-                                static_cast<int>(
-                                    p_dto->header.abstract_endianness())));
+                    fmt::format(
+                        "{:x}",
+                        static_cast<int>(p_dto->header.abstract_endianness())));
                 header.json_add_member_string(
                     "header_size",
                     fmt::format("{:x}", p_dto->header.header_size()));
