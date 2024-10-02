@@ -24,7 +24,8 @@ namespace Focades
 
               private:
                 ::Disassembly::Capstone m_capstone;
-                std::string m_arch, m_mode;
+                const std::string m_arch;
+                const std::string m_mode;
             };
         } // namespace Disassembly
     } // namespace Rev

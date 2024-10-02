@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <engine/crow/crow_exception.hxx>
-#include <engine/crow/routes/endpoints.hxx>
 #include <engine/crow/routes/routes.hxx>
 #include <engine/disassembly/capstone/capstone_exception.hxx>
 #include <engine/parser/json.hxx>
@@ -14,18 +13,6 @@ namespace Crow
 
     Routes::~Routes()
     {
-        delete m_scan_yara;
-        delete m_metadata;
-        delete m_capstone_x86_64;
-        delete m_capstone_arm_64;
-        delete m_socket_scan_yara;
-        delete m_socket_metadata;
-        delete m_socket_capstone_disass_x86_64;
-        delete m_socket_capstone_disass_arm_64;
-        delete m_socket_parser_elf;
-#if DEBUG
-        delete m_web_endpoins;
-#endif
     }
 
     DEFINE_ROUTE(
@@ -33,9 +20,10 @@ namespace Crow
     void Routes::routes_capstone_disass_x86_64()
     {
         m_capstone_x86_64 =
-            new Focades::Rev::Disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
+            std::make_unique<Focades::Rev::Disassembly::Capstone>(CS_ARCH_X86,
+                                                                  CS_MODE_64);
 
-        m_socket_capstone_disass_x86_64 = new WebSocket(
+        m_socket_capstone_disass_x86_64 = std::make_unique<WebSocket>(
             m_crow,
             ROUTE_CAPSTONE_DISASS_X86_64,
             UINT64_MAX,
@@ -50,7 +38,6 @@ namespace Crow
                         ROUTE_CAPSTONE_DISASS_X86_64,
                         p_data.size());
 
-                    TRY_BEGIN()
                     m_capstone_x86_64->capstone_disassembly(
                         p_data,
                         [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
@@ -59,16 +46,6 @@ namespace Crow
                                 m_capstone_x86_64->capstone_dto_json(p_dto)
                                     .json_to_string());
                         });
-                    TRY_END()
-                    CATCH(Disassembly::CapstoneException::FailedDisassembly, {
-                        LOG(m_crow.crow_get_log(),
-                            error,
-                            "Disassembly failed on route '{}': data size = {}, "
-                            "error: {}",
-                            ROUTE_CAPSTONE_DISASS_X86_64,
-                            p_data.size(),
-                            e.what());
-                    })
                 } else {
                     p_context.conn_broadcast(&p_conn,
                                              "{\"status\": \"error\"}");
@@ -81,9 +58,10 @@ namespace Crow
     void Routes::routes_capstone_disass_arm_64()
     {
         m_capstone_arm_64 =
-            new Focades::Rev::Disassembly::Capstone(CS_ARCH_ARM64, CS_MODE_ARM);
+            std::make_unique<Focades::Rev::Disassembly::Capstone>(CS_ARCH_ARM64,
+                                                                  CS_MODE_ARM);
 
-        m_socket_capstone_disass_arm_64 = new WebSocket(
+        m_socket_capstone_disass_arm_64 = std::make_unique<WebSocket>(
             m_crow,
             ROUTE_CAPSTONE_DISASS_ARM64,
             UINT64_MAX,
@@ -98,7 +76,6 @@ namespace Crow
                         ROUTE_CAPSTONE_DISASS_ARM64,
                         p_data.size());
 
-                    TRY_BEGIN()
                     m_capstone_arm_64->capstone_disassembly(
                         p_data,
                         [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
@@ -108,16 +85,6 @@ namespace Crow
                                     .json_to_string());
                         });
 
-                    TRY_END()
-                    CATCH(Disassembly::CapstoneException::FailedDisassembly, {
-                        LOG(m_crow.crow_get_log(),
-                            error,
-                            "Disassembly failed on route '{}': data size = {}, "
-                            "error: {}",
-                            ROUTE_CAPSTONE_DISASS_ARM64,
-                            p_data.size(),
-                            e.what());
-                    })
                 } else {
                     p_context.conn_broadcast(&p_conn,
                                              "{\"status\": \"error\"}");
@@ -128,8 +95,8 @@ namespace Crow
     DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan", "/yara")
     void Routes::routes_scan_yara()
     {
-        m_scan_yara =
-            new Focades::Analysis::Scan::Yara(m_crow.crow_get_config());
+        m_scan_yara = std::make_unique<Focades::Analysis::Scan::Yara>(
+            m_crow.crow_get_config());
 
         TRY_BEGIN()
         m_scan_yara->scan_yara_load_rules([&](void *p_total_rules) {
@@ -146,7 +113,7 @@ namespace Crow
             throw CrowException::Abort(e.what());
         })
 
-        m_socket_scan_yara = new WebSocket(
+        m_socket_scan_yara = std::make_unique<WebSocket>(
             m_crow,
             ROUTE_SCAN_YARA,
             UINT64_MAX,
@@ -173,9 +140,9 @@ namespace Crow
     DEFINE_ROUTE(PARSER_ELF, "/parser", "/binary", "/elf")
     void Routes::routes_parser_elf()
     {
-        m_parser_elf = new Focades::Parser::Binary::ELF();
+        m_parser_elf = std::make_unique<Focades::Parser::Binary::ELF>();
 
-        m_socket_parser_elf = new WebSocket(
+        m_socket_parser_elf = std::make_unique<WebSocket>(
             m_crow,
             ROUTE_PARSER_ELF,
             UINT64_MAX,
@@ -202,9 +169,9 @@ namespace Crow
     DEFINE_ROUTE(METADATA, "/data", "/metadata")
     void Routes::routes_metadata()
     {
-        m_metadata = new Focades::Data::Metadata();
+        m_metadata = std::make_unique<Focades::Data::Metadata>();
 
-        m_socket_metadata = new WebSocket(
+        m_socket_metadata = std::make_unique<WebSocket>(
             m_crow,
             ROUTE_METADATA,
             UINT64_MAX,
@@ -221,6 +188,7 @@ namespace Crow
                 std::string data = std::move(p_data);
                 data.erase(std::remove(data.begin(), data.end(), '\n'),
                            data.cend());
+
                 m_metadata->metadata_parse(
                     data, [&](Focades::Data::Structs::DTO *p_dto) {
                         p_context.conn_broadcast(
@@ -236,8 +204,8 @@ namespace Crow
     DEFINE_ROUTE(ROUTES, "/debug", "/endpoints")
     void Routes::routes_endpoint()
     {
-        m_web_endpoins =
-            new Web<>(m_crow, ROUTE_ROUTES, [&](const crow::request &p_req) {
+        m_web_endpoins = std::make_unique<Web<>>(
+            m_crow, ROUTE_ROUTES, [&](const crow::request &p_req) {
                 Parser::Json endpoints;
 
                 const auto &routes = Routes::routes_get_endpoints();
@@ -257,6 +225,39 @@ namespace Crow
     }
 
 #endif
+
+    void Routes::routes_init()
+    {
+        LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
+        TRY_BEGIN()
+        GET_ROUTE(metadata);
+        GET_ROUTE(capstone_disass_x86_64);
+        GET_ROUTE(capstone_disass_arm_64);
+        GET_ROUTE(scan_yara);
+        GET_ROUTE(parser_elf);
+#if DEBUG
+        GET_ROUTE(endpoint);
+#endif
+        TRY_END()
+        CATCH(std::bad_alloc, {
+            LOG(m_crow.crow_get_log(), error, "{}", e.what());
+            throw CrowException::Abort(e.what());
+        })
+        CATCH(std::runtime_error, {
+            LOG(m_crow.crow_get_log(), error, "{}", e.what());
+            throw CrowException::Abort(e.what());
+        })
+        CATCH(std::exception, {
+            LOG(m_crow.crow_get_log(), warn, "{}", e.what());
+            throw Crow::CrowException::ParcialAbort(e.what());
+        })
+    }
+
+    const std::vector<Structs::Endpoints> &Routes::routes_get_endpoints()
+    {
+        Routes::routes_update_endpoints();
+        return m_endpoints;
+    }
 
     void Routes::routes_update_endpoints()
     {
@@ -288,33 +289,6 @@ namespace Crow
             Types::Route::websocket,
             m_socket_parser_elf->websocket_size_connections());
 
-#if DEBUG
-        m_endpoints.emplace_back(ROUTE_ROUTES, Types::Route::web, 0);
-#endif
+        m_endpoints.shrink_to_fit();
     }
-
-    void Routes::routes_init()
-    {
-        LOG(m_crow.crow_get_log(), info, "Initializing Routes ... ");
-        TRY_BEGIN()
-        GET_ROUTE(metadata);
-        GET_ROUTE(capstone_disass_x86_64);
-        GET_ROUTE(capstone_disass_arm_64);
-        GET_ROUTE(scan_yara);
-        GET_ROUTE(parser_elf);
-#if DEBUG
-        GET_ROUTE(endpoint);
-#endif
-        TRY_END()
-        CATCH(std::bad_alloc, {
-            LOG(m_crow.crow_get_log(), error, "{}", e.what());
-            throw CrowException::Abort(e.what());
-        })
-    }
-
-    const std::vector<Structs::Endpoints> &Routes::routes_get_endpoints()
-    {
-        Routes::routes_update_endpoints();
-        return m_endpoints;
-    }
-}; // namespace Crow
+} // namespace Crow

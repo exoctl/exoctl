@@ -16,6 +16,7 @@ TEST_F(TomlTest, TomlGetTblArray)
 {
     toml::array expected_array;
     expected_array.push_back("127.0.0.1");
-    toml::array test_array = toml->toml_get_tbl_array("crow", "websocket_conn_whitelist");
+    toml::array test_array =
+        toml->toml_get_tbl_array("crow", "websocket_conn_whitelist");
     ASSERT_EQ(expected_array, test_array);
 }

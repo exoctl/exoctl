@@ -5,6 +5,7 @@
 #include <capstone/capstone.h>
 #include <engine/disassembly/capstone/capstone_types.hxx>
 #include <functional>
+#include <stdint.h>
 #include <string>
 
 namespace Disassembly

@@ -24,6 +24,7 @@ namespace Crow
                 m_url);
 
             m_crow.crow_get_app().route_dynamic(m_url)(m_on_request);
+            m_crow.crow_get_app().validate();
         }
 
         ~Web()

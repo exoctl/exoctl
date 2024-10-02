@@ -47,14 +47,14 @@ namespace Crow
                     m_on_error(m_context, p_conn, p_error);
             })
             .onaccept([this](const crow::request &p_req, void **p_userdata) {
-                const bool accept =
+                bool accept =
                     WebSocket::websocket_def_onaccept_connection(&p_req);
 
                 if (m_on_accept && accept)
                     m_on_accept(m_context, p_req, p_userdata);
 
                 return accept;
-            });
+            }).validate();
     }
 
     WebSocket::~WebSocket()

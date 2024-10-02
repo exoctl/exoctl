@@ -6,16 +6,16 @@
 
 class YaraTest : public ::testing::Test
 {
-    protected:
-        void SetUp() override
-        {
-            yara = new Security::Yara();
-        }
+  protected:
+    void SetUp() override
+    {
+        yara = new Security::Yara();
+    }
 
-        void TearDown() override
-        {
-            delete yara;
-        }
+    void TearDown() override
+    {
+        delete yara;
+    }
 
-        Security::Yara *yara;
+    Security::Yara *yara;
 };

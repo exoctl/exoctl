@@ -16,7 +16,7 @@ include_directories(
     ../libraries/capstone-engine/include/
     ../libraries/lief/include
     ../libraries/googletest/googletest/include
-    ../libraries/json/include/
+    ../libraries/rapidjson/include/
     .
 )
 
@@ -25,11 +25,10 @@ add_subdirectory(magic/)
 add_subdirectory(disassembly/capstone/)
 add_subdirectory(parser/)
 add_subdirectory(security/yara/)
-# add_subdirectory(data/)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
 add_subdirectory(../libraries/googletest/ ${CMAKE_BINARY_DIR}/libraries/googletest)
 add_subdirectory(../libraries/capstone-engine/ ${CMAKE_BINARY_DIR}/libraries/capstone-engine)
-add_subdirectory(../libraries/json ${CMAKE_BINARY_DIR}/libraries/json)
+add_subdirectory(../libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson)
 add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
 
 

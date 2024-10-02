@@ -1,6 +1,7 @@
 #include <alloca.h>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/disassembly/capstone/capstone_exception.hxx>
+#include <engine/memory.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
@@ -24,29 +25,21 @@ namespace Disassembly
         size_t p_code_size,
         const std::function<void(Struct::Data *p_data, size_t)> &p_callback)
     {
-        Struct::Data *data =
-            static_cast<Struct::Data *>(alloca(sizeof(Struct::Data *)));
-        data->address = 0;
+        if (!(IS_NULL(p_callback))) {
 
-        const size_t count = cs_disasm(
-            m_handle, p_code, p_code_size, data->address, 0, &data->insn);
+            Struct::Data *data =
+                static_cast<Struct::Data *>(alloca(sizeof(Struct::Data *)));
+            data->address = 0;
 
-        if (count > 0) {
-            if (p_callback) {
+            const size_t count = cs_disasm(
+                m_handle, p_code, p_code_size, data->address, 0, &data->insn);
+
+            if (count > 0) {
                 for (size_t i = 0; i < count; i++) {
                     p_callback(data, i);
                 }
-            }
 
-            cs_free(data->insn, count);
-        } else {
-            const cs_err err = cs_errno(m_handle);
-            if (err != CS_ERR_OK) {
-                throw CapstoneException::FailedDisassembly(fmt::format(
-                    "Disassembly failed: {}, address: {:#x}, code: {}",
-                    cs_strerror(err),
-                    data->address,
-                    fmt::join(p_code, p_code + p_code_size, " ")));
+                cs_free(data->insn, count);
             }
         }
     }

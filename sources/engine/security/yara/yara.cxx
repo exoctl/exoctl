@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <engine/memory.hxx>
 
 namespace Security
 {
@@ -33,10 +34,10 @@ namespace Security
             YaraException::Finalize("yr_finalize() error finalize yara");
         }
 
-        if (m_yara_compiler != nullptr)
+        if (!IS_NULL(m_yara_compiler))
             yr_compiler_destroy(m_yara_compiler);
 
-        if (m_yara_rules != nullptr) {
+        if (!IS_NULL(m_yara_rules)) {
             if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
                 YaraException::Finalize(
                     "yr_rules_destroy() failed destroy rules");
@@ -76,7 +77,7 @@ namespace Security
             throw YaraException::LoadRules(strerror(errno));
 
         const struct dirent *entry;
-        while ((entry = readdir(dir)) != nullptr) {
+        while (!IS_NULL((entry = readdir(dir)))) {
             const std::filesystem::path entry_name = entry->d_name;
             const std::string full_path =
                 fmt::format("{}/{}", p_path.c_str(), entry_name.c_str());

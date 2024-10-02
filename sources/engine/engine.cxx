@@ -1,6 +1,7 @@
 #include <engine/crow/crow_exception.hxx>
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
+#include <engine/memory.hxx>
 
 namespace Engine
 {
@@ -40,7 +41,7 @@ namespace Engine
     {
         TRY_BEGIN()
         m_crow_routes.routes_init();
-        (p_callback) ? p_callback() : (void) 0;
+        (!IS_NULL(p_callback)) ? p_callback() : (void) 0;
         m_crow.crow_run();
         TRY_END()
         CATCH(Crow::CrowException::Abort, {

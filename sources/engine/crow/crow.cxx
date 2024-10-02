@@ -21,7 +21,6 @@ namespace Crow
 
     void CrowApp::crow_run()
     {
-        TRY_BEGIN()
         m_app
             .bindaddr(m_bindaddr)
 #if CROW_OPENSSL
@@ -30,19 +29,6 @@ namespace Crow
             .port(m_port)
             .concurrency(m_threads)
             .run();
-        TRY_END()
-        CATCH(std::runtime_error, {
-            LOG(m_log, error, "An exception runtime occurred: {}", e.what());
-
-            throw Crow::CrowException::Abort("Initialization failed: " +
-                                             std::string(e.what()));
-        })
-        CATCH(std::exception, {
-            LOG(m_log, error, "An exception occurred: {}", e.what());
-
-            throw Crow::CrowException::ParcialAbort("Failed: " +
-                                                    std::string(e.what()));
-        })
     }
 
     void CrowApp::crow_stop()

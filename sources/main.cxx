@@ -11,6 +11,10 @@
 
 int main()
 {
+    CONSOLE("       (\\(\\ \n"
+            "       ( -.-) - 0xeb 0xdeadbeef\n"
+            "       o_(\")(\")\n");
+
     Parser::Toml configuration;
     TRY_BEGIN()
     configuration.toml_parser_file("configuration.toml");
