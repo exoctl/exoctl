@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/crow/crow.hxx>
+#include <engine/crow/focades/analysis/scan/clamav/clamav.hxx>
 #include <engine/crow/focades/analysis/scan/yara/yara.hxx>
 #include <engine/crow/focades/data/metadata.hxx>
 #include <engine/crow/focades/parser/binary/elf/elf.hxx>
@@ -31,8 +32,8 @@ std::string concatenate_paths(const std::string &p_base, Args &&...p_args)
 }
 
 // Macro to define routes with variable prefixes
-#define DEFINE_ROUTE(route, ...)                                                \
-    static const std::string ROUTE_##route =                                    \
+#define DEFINE_ROUTE(route, ...)                                               \
+    static const std::string ROUTE_##route =                                   \
         concatenate_paths(API_PREFIX, __VA_ARGS__);
 
 #define GET_ROUTE(route)                                                       \
@@ -58,6 +59,7 @@ namespace Crow
         std::unique_ptr<WebSocket> m_socket_scan_yara;
         std::unique_ptr<WebSocket> m_socket_parser_elf;
         std::unique_ptr<WebSocket> m_socket_metadata;
+        std::unique_ptr<WebSocket> m_socket_clamav;
         std::unique_ptr<WebSocket> m_socket_capstone_disass_x86_64;
         std::unique_ptr<WebSocket> m_socket_capstone_disass_arm_64;
         std::unique_ptr<Web<>> m_web_endpoins;
@@ -67,6 +69,7 @@ namespace Crow
         std::unique_ptr<Focades::Rev::Disassembly::Capstone> m_capstone_x86_64;
         std::unique_ptr<Focades::Rev::Disassembly::Capstone> m_capstone_arm_64;
         std::unique_ptr<Focades::Data::Metadata> m_metadata;
+        std::unique_ptr<Focades::Analysis::Scan::Clamav> m_scan_clamav;
 
         void routes_update_endpoints();
         void routes_parser_elf();
@@ -74,6 +77,7 @@ namespace Crow
         void routes_scan_yara();
         void routes_capstone_disass_x86_64();
         void routes_capstone_disass_arm_64();
+        void routes_scan_clamav();
 
         /* Routes generate for debug */
 #ifdef DEBUG

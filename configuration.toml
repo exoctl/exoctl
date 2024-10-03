@@ -9,11 +9,15 @@ malware_rules = "rules/yara/malwares"
 packeds_rules = "rules/yara/packeds"
 cve_rules = "rules/yara/cve"
 
+[clamav]
+default_database = "rules/clamav/default"
+
 [sig]
 packeds_rules = "rules/signatures/packeds"
 
 [log]
 name = "logs/engine.log"
+console = true
 level = 1                # level default (spdlog::level::debug)
 trace = 0                # update realtime log in file
 type = "day"             # rotating, basic (default)

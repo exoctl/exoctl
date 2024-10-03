@@ -36,6 +36,7 @@ target_link_libraries(engine PUBLIC
     sqlite3
     fmt
     LIEF::LIEF
+    clamav
     capstone
     ssl
     signatures

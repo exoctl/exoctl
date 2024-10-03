@@ -46,4 +46,11 @@ namespace Parser
     {
         return *m_tbl[p_key].as_array();
     }
+
+    [[nodiscard]] const bool Toml::toml_get_tbl_bool(const std::string &p_tbl,
+                                                     const std::string &p_key)
+    {
+        return m_tbl[p_tbl][p_key].value<bool>().value();
+    }
+
 } // namespace Parser

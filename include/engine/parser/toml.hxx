@@ -20,6 +20,9 @@ namespace Parser
         // TODO: implement type return for demand
         [[nodiscard]] const std::string toml_get_tbl_string(
             const std::string &, const std::string &);
+
+        [[nodiscard]] const bool toml_get_tbl_bool(const std::string &,
+                                                          const std::string &);
         [[nodiscard]] const std::uint16_t toml_get_tbl_uint16_t(
             const std::string &, const std::string &);
 

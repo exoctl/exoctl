@@ -38,23 +38,26 @@ namespace Crow
             .onmessage([this](crow::websocket::connection &p_conn,
                               const std::string &p_data,
                               bool p_is_binary) {
+                WebSocket::websocket_def_message_connection(&p_conn, p_data);
                 if (m_on_message)
                     m_on_message(m_context, p_conn, p_data, p_is_binary);
             })
             .onerror([this](crow::websocket::connection &p_conn,
                             const std::string &p_error) {
+                WebSocket::websocket_def_error_connection(&p_conn, p_error);
                 if (m_on_error)
                     m_on_error(m_context, p_conn, p_error);
             })
             .onaccept([this](const crow::request &p_req, void **p_userdata) {
                 bool accept =
-                    WebSocket::websocket_def_onaccept_connection(&p_req);
+                    WebSocket::websocket_def_accept_connection(&p_req);
 
                 if (m_on_accept && accept)
                     m_on_accept(m_context, p_req, p_userdata);
 
                 return accept;
-            }).validate();
+            })
+            .validate();
     }
 
     WebSocket::~WebSocket()
@@ -71,8 +74,9 @@ namespace Crow
     {
         std::lock_guard<std::mutex> _(m_mtx);
         m_context.conn_erase(p_conn);
+
         LOG(m_crow.crow_get_log(),
-            info,
+            warn,
             "Connection {} closed: reason = '{}'",
             m_url,
             p_reason);
@@ -92,19 +96,43 @@ namespace Crow
             m_context.conn_get_remote_ip(p_conn));
     }
 
-    bool WebSocket::websocket_def_onaccept_connection(
-        const crow::request *p_req)
+    bool WebSocket::websocket_def_accept_connection(const crow::request *p_req)
     {
         std::lock_guard<std::mutex> _(m_mtx);
         if (m_context.conn_check_whitelist(p_req))
             return true;
 
         LOG(m_crow.crow_get_log(),
-            warn,
+            critical,
             "Connection rejected from IP: {}",
             p_req->remote_ip_address);
 
         return false;
+    }
+
+    void WebSocket::websocket_def_message_connection(
+        crow::websocket::connection *p_connection, const std::string &p_data)
+    {
+        std::lock_guard<std::mutex> _(m_mtx);
+
+        LOG(m_crow.crow_get_log(),
+            debug,
+            "Message received on route '{}': data size = {} from IP: {}",
+            m_url,
+            p_data.size(),
+            p_connection->get_remote_ip());
+    }
+
+    void WebSocket::websocket_def_error_connection(
+        crow::websocket::connection *p_connection, const std::string &p_error)
+    {
+        std::lock_guard<std::mutex> _(m_mtx);
+
+        LOG(m_crow.crow_get_log(),
+            error,
+            "Error on route '{}': error = {}",
+            m_url,
+            p_error);
     }
 
 } // namespace Crow

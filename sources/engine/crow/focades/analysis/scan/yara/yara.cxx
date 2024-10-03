@@ -23,31 +23,31 @@ namespace Focades
             {
             }
 
-            void Yara::scan_yara_load_rules(
+            void Yara::yara_load_rules(
                 const std::function<void(void *)> &p_callback) const
             {
-                if (!IS_NULL(p_callback)) {
-                    m_yara.yara_load_rules([&](void *p_rules_count) {
-                        m_yara.yara_load_rules_folder(
-                            m_yara_packeds_rules); // rules for packeds
-                        m_yara.yara_load_rules_folder(
-                            m_yara_malware_rules); // rules for malwares
-                        /* implement based demand */
-                    });
+                m_yara.yara_load_rules([&](void *p_rules_count) {
+                    m_yara.yara_load_rules_folder(
+                        m_yara_packeds_rules); // rules for packeds
+                    m_yara.yara_load_rules_folder(
+                        m_yara_malware_rules); // rules for malwares
+                    /* implement based demand */
+                });
 
+                if (!IS_NULL(p_callback)) {
                     p_callback((void *) m_yara.get_rules_loaded_count());
                 }
             }
 
-            void Yara::scan_yara_fast_bytes(
+            void Yara::yara_scan_fast_bytes(
                 const std::string p_buffer,
-                const std::function<void(Structs::DTO *)> &p_callback)
+                const std::function<void(Yr::Structs::DTO *)> &p_callback)
             {
                 if (!IS_NULL(p_callback)) {
                     m_yara.yara_scan_fast_bytes(
                         p_buffer, [&](Security::Structs::Data *p_data) {
                             if (!IS_NULL(p_data)) {
-                                struct Structs::DTO *dto = new Structs::DTO;
+                                struct Yr::Structs::DTO *dto = new Yr::Structs::DTO;
 
                                 dto->yara_match_status =
                                     p_data->yara_match_status;
@@ -62,8 +62,8 @@ namespace Focades
                 }
             }
 
-            const Parser::Json Yara::scan_yara_dto_json(
-                const Structs::DTO *p_dto)
+            const Parser::Json Yara::yara_dto_json(
+                const Yr::Structs::DTO *p_dto)
             {
                 Parser::Json json;
 

@@ -3,17 +3,21 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
 #include <engine/engine_exception.hxx>
-#include <include/engine/parser/json.hxx>
-#include <include/engine/security/signatures/signatures.hxx>
+#include <engine/security/clamav/clamav.hxx>
 // clang-format off
 #include <console.hxx>
 // clang-format on
 
+void pr_banner()
+{
+    fmt::print("     (\\(\\             (\\__/)\n"
+               "     ( -.-) - yes...  (o.o ) - engine fast as a bunny!\n"
+               "     o_(\")(\")         (\")(\")\n");
+}
+
 int main()
 {
-    CONSOLE("       (\\(\\ \n"
-            "       ( -.-) - 0xeb 0xdeadbeef\n"
-            "       o_(\")(\")\n");
+    pr_banner();
 
     Parser::Toml configuration;
     TRY_BEGIN()
@@ -53,21 +57,7 @@ int main()
     TRY_BEGIN()
 
     CONSOLE_INFO("Starting engine...");
-    engine.engine_run([&]() {
-        for (const auto &route : engine.engine_routes()) {
-            CONSOLE_INFO("Created route {} '{}' ",
-                         (route.type == Crow::Types::Route::websocket)
-                             ? "websocket"
-                             : "web",
-                         route.path);
-        }
-        CONSOLE_INFO(
-            "Engine/{} Server is running at http://{}:{} using {} threads",
-            project_mode,
-            engine.engine_bindaddr(),
-            engine.engine_port(),
-            engine.engine_concurrency());
-    });
+    engine.engine_run();
     CONSOLE_INFO("Engine stopped successfully.");
 
     TRY_END()

@@ -1,8 +1,10 @@
 #include <engine/log.hxx>
 #include <spdlog/async.h>
+#include <spdlog/logger.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Logging
 {
@@ -14,6 +16,8 @@ namespace Logging
             GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "trace"));
         Log::log_active_level(
             GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "level"));
+        Log::log_active_console(
+            GET_TOML_TBL_VALUE(p_config, bool, "log", "console"));
     }
 
     Log::~Log()
@@ -54,4 +58,14 @@ namespace Logging
                 "basic", GET_TOML_TBL_VALUE(m_config, string, "log", "name"));
         }();
     }
+
+    void Log::log_active_console(const bool p_console)
+    {
+        if (p_console) {
+            auto console_sink =
+                std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+            m_logger->sinks().push_back(console_sink);
+        }
+    }
+
 } // namespace Logging

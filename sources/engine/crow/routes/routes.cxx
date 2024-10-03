@@ -32,11 +32,6 @@ namespace Crow
                 const std::string &p_data,
                 bool p_is_binary) {
                 if (p_is_binary) {
-                    LOG(m_crow.crow_get_log(),
-                        debug,
-                        "Message received on route '{}': data size = {}",
-                        ROUTE_CAPSTONE_DISASS_X86_64,
-                        p_data.size());
 
                     m_capstone_x86_64->capstone_disassembly(
                         p_data,
@@ -70,12 +65,7 @@ namespace Crow
                 const std::string &p_data,
                 bool p_is_binary) {
                 if (p_is_binary) {
-                    LOG(m_crow.crow_get_log(),
-                        debug,
-                        "Message received on route '{}': data size = {}",
-                        ROUTE_CAPSTONE_DISASS_ARM64,
-                        p_data.size());
-
+                    
                     m_capstone_arm_64->capstone_disassembly(
                         p_data,
                         [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
@@ -92,6 +82,37 @@ namespace Crow
             });
     }
 
+    DEFINE_ROUTE(SCAN_CLAMAV, "/analysis", "/scan", "/clamav")
+    void Routes::routes_scan_clamav()
+    {
+        m_scan_clamav = std::make_unique<Focades::Analysis::Scan::Clamav>(
+            m_crow.crow_get_config());
+
+        m_scan_clamav->clamav_load_rules([&]() {
+            LOG(m_crow.crow_get_log(),
+                info,
+                "Loading rules database clamav ...");
+        });
+
+        m_socket_clamav = std::make_unique<WebSocket>(
+            m_crow,
+            ROUTE_SCAN_CLAMAV,
+            UINT64_MAX,
+            [&](Socket::Context &p_context,
+                crow::websocket::connection &p_conn,
+                const std::string &p_data,
+                bool p_is_binary) {
+                m_scan_clamav->clamav_scan_bytes(
+                    p_data,
+                    [&](Focades::Analysis::Scan::Cl::Structs::DTO *p_dto) {
+                        p_context.conn_broadcast(
+                            &p_conn,
+                            m_scan_clamav->clamav_dto_json(p_dto)
+                                .json_to_string());
+                    });
+            });
+    }
+
     DEFINE_ROUTE(SCAN_YARA, "/analysis", "/scan", "/yara")
     void Routes::routes_scan_yara()
     {
@@ -99,7 +120,7 @@ namespace Crow
             m_crow.crow_get_config());
 
         TRY_BEGIN()
-        m_scan_yara->scan_yara_load_rules([&](void *p_total_rules) {
+        m_scan_yara->yara_load_rules([&](void *p_total_rules) {
             LOG(m_crow.crow_get_log(),
                 info,
                 "Successfully loaded rules. Total Yara rules "
@@ -121,18 +142,12 @@ namespace Crow
                 crow::websocket::connection &p_conn,
                 const std::string &p_data,
                 bool p_is_binary) {
-                LOG(m_crow.crow_get_log(),
-                    debug,
-                    "Message received on route '{}': data size = {}",
-                    ROUTE_SCAN_YARA,
-                    p_data.size());
-
-                m_scan_yara->scan_yara_fast_bytes(
-                    p_data, [&](Focades::Analysis::Scan::Structs::DTO *p_dto) {
+                m_scan_yara->yara_scan_fast_bytes(
+                    p_data,
+                    [&](Focades::Analysis::Scan::Yr::Structs::DTO *p_dto) {
                         p_context.conn_broadcast(
                             &p_conn,
-                            m_scan_yara->scan_yara_dto_json(p_dto)
-                                .json_to_string());
+                            m_scan_yara->yara_dto_json(p_dto).json_to_string());
                     });
             });
     }
@@ -150,12 +165,6 @@ namespace Crow
                 crow::websocket::connection &p_conn,
                 const std::string &p_data,
                 bool p_is_binary) {
-                LOG(m_crow.crow_get_log(),
-                    debug,
-                    "Message received on route '{}': data size = {}",
-                    ROUTE_PARSER_ELF,
-                    p_data.size());
-
                 m_parser_elf->elf_parser_bytes(
                     "/usr/bin/ls",
                     [&](Focades::Parser::Binary::Structs::DTO *p_dto) {
@@ -179,12 +188,6 @@ namespace Crow
                 crow::websocket::connection &p_conn,
                 const std::string &p_data,
                 bool p_is_binary) {
-                LOG(m_crow.crow_get_log(),
-                    debug,
-                    "Message received on route '{}': data size = {}",
-                    ROUTE_METADATA,
-                    p_data.size());
-
                 std::string data = std::move(p_data);
                 data.erase(std::remove(data.begin(), data.end(), '\n'),
                            data.cend());
@@ -234,10 +237,12 @@ namespace Crow
         GET_ROUTE(capstone_disass_x86_64);
         GET_ROUTE(capstone_disass_arm_64);
         GET_ROUTE(scan_yara);
+        GET_ROUTE(scan_clamav);
         GET_ROUTE(parser_elf);
 #if DEBUG
         GET_ROUTE(endpoint);
 #endif
+
         TRY_END()
         CATCH(std::bad_alloc, {
             LOG(m_crow.crow_get_log(), error, "{}", e.what());
@@ -251,6 +256,8 @@ namespace Crow
             LOG(m_crow.crow_get_log(), warn, "{}", e.what());
             throw Crow::CrowException::ParcialAbort(e.what());
         })
+
+        m_endpoints.reserve(m_num_endpoints);
     }
 
     const std::vector<Structs::Endpoints> &Routes::routes_get_endpoints()
@@ -261,7 +268,6 @@ namespace Crow
 
     void Routes::routes_update_endpoints()
     {
-        m_endpoints.reserve(m_num_endpoints);
         m_endpoints.clear();
 
         m_endpoints.emplace_back(
@@ -288,6 +294,10 @@ namespace Crow
             ROUTE_PARSER_ELF,
             Types::Route::websocket,
             m_socket_parser_elf->websocket_size_connections());
+
+        m_endpoints.emplace_back(ROUTE_SCAN_CLAMAV,
+                                 Types::Route::websocket,
+                                 m_socket_clamav->websocket_size_connections());
 
         m_endpoints.shrink_to_fit();
     }

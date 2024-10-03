@@ -8,7 +8,7 @@ For compile engine necessary :
 
 ### Debian-based
 
-`sudo apt install libasio-dev libyara-dev libpqxx-dev libsqlite3-dev`
+`sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev`
 
 ### Arch-based
 

@@ -20,13 +20,13 @@ namespace Focades
                 Yara(Parser::Toml &);
                 ~Yara();
 
-                void scan_yara_fast_bytes(
+                void yara_scan_fast_bytes(
                     const std::string,
-                    const std::function<void(Structs::DTO *)> &);
-                void scan_yara_load_rules(
+                    const std::function<void(Yr::Structs::DTO *)> &);
+                void yara_load_rules(
                     const std::function<void(void *)> &) const;
 
-                const Parser::Json scan_yara_dto_json(const Structs::DTO *);
+                const Parser::Json yara_dto_json(const Yr::Structs::DTO *);
 
               private:
                 const std::string m_yara_malware_rules;

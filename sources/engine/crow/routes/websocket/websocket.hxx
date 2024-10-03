@@ -56,7 +56,11 @@ namespace Crow
 
         void websocket_def_close_connection(crow::websocket::connection *,
                                             const std::string &);
+        void websocket_def_message_connection(crow::websocket::connection *,
+                                              const std::string &);
         void websocket_def_open_connection(crow::websocket::connection *);
-        bool websocket_def_onaccept_connection(const crow::request *);
+        bool websocket_def_accept_connection(const crow::request *);
+        void websocket_def_error_connection(crow::websocket::connection *,
+                                            const std::string &);
     };
 } // namespace Crow

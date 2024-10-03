@@ -1,9 +1,8 @@
 #pragma once
 
-#include <fmt/core.h>
+#include <spdlog/spdlog.h>
 
 // clang-format off
-#define CONSOLE(...) fmt::print("{}", fmt::format(__VA_ARGS__))
-#define CONSOLE_INFO(...) fmt::print("[INFO] {}\n", fmt::format(__VA_ARGS__))
-#define CONSOLE_ERROR(...) fmt::print(stderr, "[ERROR] {}\n", fmt::format(__VA_ARGS__))
+#define CONSOLE_INFO(...) spdlog::info(fmt::format(__VA_ARGS__))
+#define CONSOLE_ERROR(...) spdlog::error(fmt::format(__VA_ARGS__))
 // clang-format on
