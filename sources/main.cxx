@@ -2,7 +2,7 @@
 
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
-#include <engine/engine_exception.hxx>
+#include <engine/exception.hxx>
 #include <engine/security/clamav/clamav.hxx>
 // clang-format off
 #include <console.hxx>

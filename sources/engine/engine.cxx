@@ -1,6 +1,6 @@
 #include <engine/crowapp/exception.hxx>
 #include <engine/engine.hxx>
-#include <engine/engine_exception.hxx>
+#include <engine/exception.hxx>
 #include <engine/memory.hxx>
 
 namespace engine

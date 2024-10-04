@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/exception.hxx>
+#include <engine/interfaces/iexception.hxx>
 #include <string>
 
 namespace security
@@ -9,34 +9,54 @@ namespace security
     {
         namespace exception
         {
-            class CompilerRules : public ::exception::Exception
+            class CompilerRules : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit CompilerRules(const std::string &);
+                const char *what() const noexcept override;
             };
 
-            class LoadRules : public ::exception::Exception
+            class LoadRules : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit LoadRules(const std::string &);
+                const char *what() const noexcept override;
             };
 
-            class Initialize : public ::exception::Exception
+            class Initialize : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit Initialize(const std::string &);
+                const char *what() const noexcept override;
             };
 
-            class Finalize : public ::exception::Exception
+            class Finalize : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit Finalize(const std::string &);
+                const char *what() const noexcept override;
             };
 
-            class Scan : public ::exception::Exception
+            class Scan : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit Scan(const std::string &);
+                const char *what() const noexcept override;
             };
 
         } // namespace exception

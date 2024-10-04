@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/exception.hxx>
+#include <engine/interfaces/iexception.hxx>
 
 namespace disassembly
 {
@@ -8,10 +8,14 @@ namespace disassembly
     {
         namespace exception
         {
-            class Initialize : public ::exception::Exception
+            class Initialize : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit Initialize(const std::string &);
+                const char *what() const noexcept override;
             };
         } // namespace exception
     } // namespace capstone

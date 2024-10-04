@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/exception.hxx>
+#include <engine/interfaces/iexception.hxx>
 
 namespace security
 {
@@ -8,10 +8,14 @@ namespace security
     {
         namespace exception
         {
-            class CompilerSig : public ::exception::Exception
+            class CompilerSig : public interface::IException
             {
+              private:
+                const std::string m_error_message;
+
               public:
                 explicit CompilerSig(const std::string &);
+                const char *what() const noexcept override;
             };
         } // namespace exception
     } // namespace sig
