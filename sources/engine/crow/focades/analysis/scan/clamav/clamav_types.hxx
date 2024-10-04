@@ -15,7 +15,7 @@ namespace Focades
                 {
                     typedef struct DTO {
                         const char *clamav_virname;
-                        cl_error_t clamav_math_status;
+                        Security::Cl::Types::Scan clamav_math_status;
                     } DTO;
                 } // namespace Structs
             } // namespace Cl

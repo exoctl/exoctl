@@ -1,12 +1,12 @@
 #include <alloca.h>
 #include <dirent.h>
+#include <engine/memory.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/security/yara/yara_exception.hxx>
 #include <fcntl.h>
 #include <fmt/core.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <engine/memory.hxx>
 
 namespace Security
 {
@@ -100,10 +100,11 @@ namespace Security
         closedir(dir);
     }
 
-    void Yara::yara_load_rules(
-        const std::function<void(void *)> &p_callback) const
+    void Yara::yara_load_rules(const std::function<void()> &p_callback) const
     {
-        p_callback((void *) m_rules_loaded_count);
+        if (!IS_NULL(p_callback)) {
+            p_callback();
+        }
         Yara::yara_compiler_rules();
     }
 
@@ -139,12 +140,13 @@ namespace Security
 
     void Yara::yara_scan_fast_bytes(
         const std::string p_buffer,
-        const std::function<void(Structs::Data *)> &p_callback) const
+        const std::function<void(Yr::Structs::Data *)> &p_callback) const
     {
-        struct Structs::Data *data = static_cast<struct Structs::Data *>(
-            alloca(sizeof(struct Structs::Data)));
+        struct Yr::Structs::Data *data =
+            static_cast<struct Yr::Structs::Data *>(
+                alloca(sizeof(struct Yr::Structs::Data)));
 
-        data->yara_match_status = Types::Scan::yara_none;
+        data->yara_match_status = Yr::Types::Scan::yara_none;
 
         Yara::yara_scan_bytes(p_buffer,
                               reinterpret_cast<YR_CALLBACK_FUNC>(
@@ -162,12 +164,15 @@ namespace Security
                                   void *p_user_data)
     {
         const YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
-        Structs::Data *user_data = static_cast<Structs::Data *>(p_user_data);
+        Yr::Structs::Data *user_data =
+            static_cast<Yr::Structs::Data *>(p_user_data);
 
         switch (p_message) {
             case CALLBACK_MSG_SCAN_FINISHED:
-                if (user_data->yara_match_status == Types::Scan::yara_none) {
-                    user_data->yara_match_status = Types::Scan::yara_nomatch;
+                if (user_data->yara_match_status ==
+                    Yr::Types::Scan::yara_none) {
+                    user_data->yara_match_status =
+                        Yr::Types::Scan::yara_nomatch;
                     user_data->yara_rule = "";
                     user_data->yara_namespace = "";
                 }
@@ -176,7 +181,7 @@ namespace Security
             case CALLBACK_MSG_RULE_MATCHING:
                 user_data->yara_namespace = rule->ns->name;
                 user_data->yara_rule = rule->identifier;
-                user_data->yara_match_status = Types::Scan::yara_match;
+                user_data->yara_match_status = Yr::Types::Scan::yara_match;
                 return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:
@@ -186,7 +191,7 @@ namespace Security
         return CALLBACK_CONTINUE;
     }
 
-    const uint64_t Yara::get_rules_loaded_count() const
+    const uint64_t Yara::yara_get_rules_loaded_count() const
     {
         return m_rules_loaded_count;
     }

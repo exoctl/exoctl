@@ -16,7 +16,7 @@ namespace Focades
                     typedef struct DTO {
                         std::string yara_rule;
                         std::string yara_namespace;
-                        Security::Types::Scan yara_match_status;
+                        Security::Yr::Types::Scan yara_match_status;
                     } DTO;
                 } // namespace Structs
             } // namespace Yr

@@ -13,17 +13,16 @@ namespace Security
         Clamav();
         ~Clamav();
 
-        [[nodiscard]] const cl_error_t clamav_set_db_rule_fd(
-            const std::string &, unsigned int) const;
-
-        const void clamav_scan_bytes(
+        void clamav_set_db_rule_fd(const std::string &, unsigned int) const;
+        const void clamav_scan_fast_bytes(
             const std::string &,
-            const std::function<void(Cl::Structs::Data *)> &,
-            cl_scan_options * = nullptr);
+            Cl::Structs::ScanOptions,
+            const std::function<void(Cl::Structs::Data *)> &);
         void clamav_load_rules(const std::function<void()> &);
+        [[nodiscard]] const unsigned int clamav_get_rules_loaded_count() const;
 
       private:
         struct cl_engine *m_engine;
-        unsigned int *m_rules_loaded_count;
+        mutable unsigned int m_rules_loaded_count;
     };
 } // namespace Security

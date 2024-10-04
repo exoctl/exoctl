@@ -24,9 +24,9 @@ namespace Focades
             }
 
             void Yara::yara_load_rules(
-                const std::function<void(void *)> &p_callback) const
+                const std::function<void(uint64_t)> &p_callback) const
             {
-                m_yara.yara_load_rules([&](void *p_rules_count) {
+                m_yara.yara_load_rules([&]() {
                     m_yara.yara_load_rules_folder(
                         m_yara_packeds_rules); // rules for packeds
                     m_yara.yara_load_rules_folder(
@@ -35,7 +35,7 @@ namespace Focades
                 });
 
                 if (!IS_NULL(p_callback)) {
-                    p_callback((void *) m_yara.get_rules_loaded_count());
+                    p_callback(m_yara.yara_get_rules_loaded_count());
                 }
             }
 
@@ -45,7 +45,7 @@ namespace Focades
             {
                 if (!IS_NULL(p_callback)) {
                     m_yara.yara_scan_fast_bytes(
-                        p_buffer, [&](Security::Structs::Data *p_data) {
+                        p_buffer, [&](Security::Yr::Structs::Data *p_data) {
                             if (!IS_NULL(p_data)) {
                                 struct Yr::Structs::DTO *dto = new Yr::Structs::DTO;
 

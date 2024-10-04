@@ -18,5 +18,10 @@ namespace Security
             explicit LoadRules(const std::string &);
         };
 
+        class SetDbRules : public Exception::ExceptionBase
+        {
+          public:
+            explicit SetDbRules(const std::string &);
+        };
     } // namespace ClamavException
 } // namespace Security

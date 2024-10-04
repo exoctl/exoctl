@@ -32,7 +32,6 @@ namespace Crow
                 const std::string &p_data,
                 bool p_is_binary) {
                 if (p_is_binary) {
-
                     m_capstone_x86_64->capstone_disassembly(
                         p_data,
                         [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
@@ -65,7 +64,7 @@ namespace Crow
                 const std::string &p_data,
                 bool p_is_binary) {
                 if (p_is_binary) {
-                    
+
                     m_capstone_arm_64->capstone_disassembly(
                         p_data,
                         [&](Focades::Rev::Disassembly::Structs::DTO *p_dto) {
@@ -88,10 +87,14 @@ namespace Crow
         m_scan_clamav = std::make_unique<Focades::Analysis::Scan::Clamav>(
             m_crow.crow_get_config());
 
-        m_scan_clamav->clamav_load_rules([&]() {
+        LOG(m_crow.crow_get_log(), info, "Loading rules database clamav ...");
+        m_scan_clamav->clamav_load_rules([&](unsigned int p_total_rules) {
             LOG(m_crow.crow_get_log(),
                 info,
-                "Loading rules database clamav ...");
+                "Successfully loaded rules. Total Clamav rules "
+                "count: "
+                "{:d}",
+                p_total_rules);
         });
 
         m_socket_clamav = std::make_unique<WebSocket>(
@@ -102,8 +105,8 @@ namespace Crow
                 crow::websocket::connection &p_conn,
                 const std::string &p_data,
                 bool p_is_binary) {
-                m_scan_clamav->clamav_scan_bytes(
-                    p_data,
+                m_scan_clamav->clamav_scan_fast_bytes(
+                    "/home/mob/Downloads/ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
                     [&](Focades::Analysis::Scan::Cl::Structs::DTO *p_dto) {
                         p_context.conn_broadcast(
                             &p_conn,
@@ -120,13 +123,14 @@ namespace Crow
             m_crow.crow_get_config());
 
         TRY_BEGIN()
-        m_scan_yara->yara_load_rules([&](void *p_total_rules) {
+        LOG(m_crow.crow_get_log(), info, "Loading rules yara ...");
+        m_scan_yara->yara_load_rules([&](uint64_t p_total_rules) {
             LOG(m_crow.crow_get_log(),
                 info,
                 "Successfully loaded rules. Total Yara rules "
                 "count: "
                 "{:d}",
-                (uint64_t) p_total_rules);
+                p_total_rules);
         });
         TRY_END()
         CATCH(Security::YaraException::LoadRules, {

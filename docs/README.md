@@ -16,6 +16,19 @@ For compile engine necessary :
 
 ---
 
+### Compile and Run
+
+```
+git clone --recurse-submodules git@gitlab.com:maldec-labs/malware-analysis/Engine.git
+git lfs pull
+mkdir build
+cd build
+cmake ..
+make
+```
+
+execute `./build/sources/engine`
+
 ### Overview
 
 This API provides WebSocket-based endpoints for scanning data and searching within the system. The service is designed to handle real-time communication, ensuring efficient data transfer and processing. Below are the details for each available route, along with their respective functionalities.
@@ -162,3 +175,29 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **`type` Values:**
     - `0`: Websocket
     - `1`: Web
+
+#### 5. scan/clamav
+- **Route:** `<version>/engine/analysis/scan/clamav`
+- **Type:** WebSocket
+- **Description:** Endpoint for scanning Clamav rules.
+- **Handlers:**
+  - **onaccept:**
+  - **onopen:** 
+  ```json
+  { "status": "ready" }
+  ```
+  - **onmessage:**
+  ```json
+  {     
+   "clamav_virname":"",
+   "clamav_math_status": 8
+  }
+  ```
+  - **onclose:** 
+  - **onerror:** 
+
+- **Details:**
+  - **`clamav_math_status` Values:**
+    - `0`: Benign
+    - `1`: Malicious
+    - `2`: None

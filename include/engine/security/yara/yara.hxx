@@ -20,25 +20,25 @@ namespace Security
          * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback
          * yara_scan_fast_callback
          * @param string buffer for scan
-         * @param callback receiver callback for pass parameter Structs::Data
-         * scanned yara_scan_fast_callback
+         * @param callback receiver callback for pass parameter
+         * Yr::Structs::Data scanned yara_scan_fast_callback
          */
         void yara_scan_fast_bytes(
             const std::string,
-            const std::function<void(Structs::Data *)> &) const;
+            const std::function<void(Yr::Structs::Data *)> &) const;
 
         /**
          * @brief function for scan, but, you pass flag and callback for scan
          * yara YR_CALLBACK_FUNC
          * @param YR_CALLBACK_FUNC callback for scan yara
-         * @param void* user_data, pass for example Structs::Data*
+         * @param void* user_data, pass for example Yr::Structs::Data
          * @param int flags used for scan
          */
         void yara_scan_bytes(const std::string,
                              YR_CALLBACK_FUNC,
                              void *,
                              int) const;
-        void yara_load_rules(const std::function<void(void *)> &) const;
+        void yara_load_rules(const std::function<void()> &) const;
 
         /* load rules if extension file '.yar'*/
         void yara_load_rules_folder(
@@ -51,7 +51,7 @@ namespace Security
             const std::string &,
             const std::string &) const;
 
-        [[nodiscard]] const uint64_t get_rules_loaded_count() const;
+        [[nodiscard]] const uint64_t yara_get_rules_loaded_count() const;
 
       private:
         YR_COMPILER *m_yara_compiler;

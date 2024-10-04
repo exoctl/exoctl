@@ -14,5 +14,10 @@ namespace Security
             : ExceptionBase(p_message)
         {
         }
+
+        SetDbRules::SetDbRules(const std::string &p_message)
+            : ExceptionBase(p_message)
+        {
+        }
     } // namespace ClamavException
 } // namespace Security

@@ -24,7 +24,7 @@ namespace Focades
                     const std::string,
                     const std::function<void(Yr::Structs::DTO *)> &);
                 void yara_load_rules(
-                    const std::function<void(void *)> &) const;
+                    const std::function<void(uint64_t)> &) const;
 
                 const Parser::Json yara_dto_json(const Yr::Structs::DTO *);
 

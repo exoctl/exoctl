@@ -2,12 +2,15 @@
 
 namespace Security
 {
-    namespace Types
+    namespace Si
     {
-        enum Sig {
-            sig_nomatch,
-            sig_match,
-            sig_none /* default value */
-        };
-    } // namespace Types
+        namespace Types
+        {
+            enum Scan {
+                sig_nomatch,
+                sig_match,
+                sig_none /* default value */
+            };
+        } // namespace Types
+    } // namespace Sig
 } // namespace Security
