@@ -13,17 +13,15 @@
 
 #define TRY_END() }
 
-namespace exception
+namespace interface
 {
-    class Exception : public std::exception
+    class IException : public std::exception
     {
-      private:
-        const std::string m_error_message;
-
       protected:
-        explicit Exception(const std::string &message);
+        explicit IException() = default;
 
       public:
-        const char *what() const noexcept override;
+        virtual ~IException() = default;
+        virtual const char *what() const noexcept override = 0;
     };
-} // namespace exception
+} // namespace interface

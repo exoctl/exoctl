@@ -1,10 +1,10 @@
 #pragma once
 
-namespace Cache
+namespace cache
 {
     class Cache
     {
         Cache();
         ~Cache();
     };
-}; // namespace Cache
+} // namespace cache

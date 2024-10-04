@@ -1,6 +1,6 @@
 #include <engine/cache.hxx>
 
-namespace Cache
+namespace cache
 {
     Cache::Cache()
     {
