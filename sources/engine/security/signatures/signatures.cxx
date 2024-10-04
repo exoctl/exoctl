@@ -1,8 +1,8 @@
 #include <engine/security/signatures/signatures.hxx>
-#include <engine/security/signatures/signatures_exception.hxx>
+#include <engine/security/signatures/exception.hxx>
 #include <fmt/core.h>
 
-namespace Security
+namespace security
 {
     Sig::Sig()
     {
@@ -11,4 +11,4 @@ namespace Security
     {
     }
 
-} // namespace Security
+} // namespace security

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "idatabase.hxx"
-#include "log.hxx"
+#include "logging.hxx"
 #include "parser/toml.hxx"
 
-namespace Database
+namespace database
 {
-    class Sqlite3 : public Interfaces::IDatabase
+    class Sqlite3 : public interface::IDatabase
     {
       public:
         Sqlite3();
@@ -24,4 +24,4 @@ namespace Database
         Logging::Log &m_log;
         Parser::Toml &m_config;
     };
-} // namespace Database
+} // namespace database

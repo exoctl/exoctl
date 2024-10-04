@@ -1,13 +1,13 @@
 #pragma once
 
-#include <engine/security/yara/yara_types.hxx>
+#include <engine/security/yara/entitys.hxx>
 #include <filesystem>
 #include <functional>
 #include <stack>
 #include <string>
 #include <yara.h>
 
-namespace Security
+namespace security
 {
     class Yara
     {
@@ -25,7 +25,7 @@ namespace Security
          */
         void yara_scan_fast_bytes(
             const std::string,
-            const std::function<void(Yr::Structs::Data *)> &) const;
+            const std::function<void(yara::record::Data *)> &) const;
 
         /**
          * @brief function for scan, but, you pass flag and callback for scan
@@ -63,4 +63,4 @@ namespace Security
                                                         void *,
                                                         void *);
     };
-} // namespace Security
+} // namespace security

@@ -1,17 +1,17 @@
 #include <alloca.h>
 #include <engine/disassembly/capstone/capstone.hxx>
-#include <engine/disassembly/capstone/capstone_exception.hxx>
+#include <engine/disassembly/capstone/exception.hxx>
 #include <engine/memory.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
-namespace Disassembly
+namespace disassembly
 {
     Capstone::Capstone(cs_arch p_arch, cs_mode p_mode)
         : m_arch(p_arch), m_mode(p_mode)
     {
         if (cs_open(p_arch, p_mode, &m_handle) != CS_ERR_OK)
-            throw CapstoneException::Initialize(
+            throw capstone::exception::Initialize(
                 "Failed to initialize Capstone");
     }
 
@@ -23,23 +23,29 @@ namespace Disassembly
     void Capstone::capstone_disassembly(
         const uint8_t *p_code,
         size_t p_code_size,
-        const std::function<void(Struct::Data *p_data, size_t)> &p_callback)
+        const std::function<void(capstone::record::Data *p_data, size_t)>
+            &p_callback)
     {
         if (!(IS_NULL(p_callback))) {
 
-            Struct::Data *data =
-                static_cast<Struct::Data *>(alloca(sizeof(Struct::Data *)));
-            data->address = 0;
+            capstone::record::Data *data =
+                static_cast<capstone::record::Data *>(
+                    alloca(sizeof(capstone::record::Data *)));
+            data->capstone_address = 0;
 
-            const size_t count = cs_disasm(
-                m_handle, p_code, p_code_size, data->address, 0, &data->insn);
+            const size_t count = cs_disasm(m_handle,
+                                           p_code,
+                                           p_code_size,
+                                           data->capstone_address,
+                                           0,
+                                           &data->capstone_insn);
 
             if (count > 0) {
                 for (size_t i = 0; i < count; i++) {
                     p_callback(data, i);
                 }
 
-                cs_free(data->insn, count);
+                cs_free(data->capstone_insn, count);
             }
         }
     }
@@ -124,4 +130,4 @@ namespace Disassembly
 
         return mode(p_mode);
     }
-} // namespace Disassembly
+} // namespace disassembly

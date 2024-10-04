@@ -2,9 +2,9 @@
 
 #include <LIEF/ELF.hpp>
 
-namespace Parser
+namespace parser
 {
-    namespace Binary
+    namespace binary
     {
         class ELF : public LIEF::ELF::Parser
         {

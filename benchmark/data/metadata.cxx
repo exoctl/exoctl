@@ -9,7 +9,7 @@ BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
         benchmark::DoNotOptimize(test_string);
 
         metadata->metadata_parse(test_string,
-                                 [&](Focades::Data::Structs::DTO *p_dto) {
+                                 [&](focades::Data::Structs::DTO *p_dto) {
                                      benchmark::DoNotOptimize(p_dto);
                                  });
     }

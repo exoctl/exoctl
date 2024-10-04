@@ -1,14 +1,13 @@
 #include <engine/exception.hxx>
 
-namespace Exception
+namespace exception
 {
-    ExceptionBase::ExceptionBase(const std::string &message)
-        : m_error_message(message)
+    Exception::Exception(const std::string &message) : m_error_message(message)
     {
     }
 
-    const char *ExceptionBase::what() const noexcept
+    const char *Exception::what() const noexcept
     {
         return m_error_message.c_str();
     }
-} // namespace Exception
+} // namespace exception

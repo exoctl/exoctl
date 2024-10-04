@@ -2,20 +2,20 @@
 #include <dirent.h>
 #include <engine/memory.hxx>
 #include <engine/security/yara/yara.hxx>
-#include <engine/security/yara/yara_exception.hxx>
+#include <engine/security/yara/exception.hxx>
 #include <fcntl.h>
 #include <fmt/core.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-namespace Security
+namespace security
 {
     Yara::Yara()
         : m_yara_compiler(nullptr), m_yara_rules(nullptr),
           m_rules_loaded_count(0)
     {
         if (yr_initialize() != ERROR_SUCCESS) {
-            throw YaraException::Initialize(
+            throw yara::exception::Initialize(
                 "yr_initialize() error initialize yara");
         }
 
@@ -23,7 +23,7 @@ namespace Security
 
         if (yr_compiler != ERROR_SUCCESS &&
             yr_compiler == ERROR_INSUFFICIENT_MEMORY) {
-            throw YaraException::Initialize(
+            throw yara::exception::Initialize(
                 "yr_compiler_create() error initialize compiler yara");
         }
     }
@@ -31,7 +31,7 @@ namespace Security
     Yara::~Yara()
     {
         if (yr_finalize() != ERROR_SUCCESS) {
-            YaraException::Finalize("yr_finalize() error finalize yara");
+            yara::exception::Finalize("yr_finalize() error finalize yara");
         }
 
         if (!IS_NULL(m_yara_compiler))
@@ -39,7 +39,7 @@ namespace Security
 
         if (!IS_NULL(m_yara_rules)) {
             if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
-                YaraException::Finalize(
+                yara::exception::Finalize(
                     "yr_rules_destroy() failed destroy rules");
             }
         }
@@ -74,7 +74,7 @@ namespace Security
 
         DIR *dir = opendir(p_path.c_str());
         if (!dir)
-            throw YaraException::LoadRules(strerror(errno));
+            throw yara::exception::LoadRules(strerror(errno));
 
         const struct dirent *entry;
         while (!IS_NULL((entry = readdir(dir)))) {
@@ -88,7 +88,7 @@ namespace Security
             if (entry_name.extension() == ".yar") {
                 if (Yara::yara_set_signature_rule_fd(
                         full_path, entry_name, folder) != ERROR_SUCCESS) {
-                    throw YaraException::LoadRules(
+                    throw yara::exception::LoadRules(
                         "yara_set_signature_rule() failed to compile rule " +
                         std::string(full_path));
                 }
@@ -114,7 +114,7 @@ namespace Security
             yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
         if (compiler_rules != ERROR_SUCCESS ||
             compiler_rules == ERROR_INSUFFICIENT_MEMORY) {
-            throw YaraException::CompilerRules(
+            throw yara::exception::CompilerRules(
                 "yr_compiler_get_rules() falied compiler rules " +
                 compiler_rules);
         }
@@ -133,24 +133,24 @@ namespace Security
                 p_callback,
                 p_data,
                 0) == ERROR_INTERNAL_FATAL_ERROR) {
-            throw YaraException::Scan(
+            throw yara::exception::Scan(
                 "yr_rules_scan_mem() falied scan buffer, internal error");
         }
     }
 
     void Yara::yara_scan_fast_bytes(
         const std::string p_buffer,
-        const std::function<void(Yr::Structs::Data *)> &p_callback) const
+        const std::function<void(yara::record::Data *)> &p_callback) const
     {
-        struct Yr::Structs::Data *data =
-            static_cast<struct Yr::Structs::Data *>(
-                alloca(sizeof(struct Yr::Structs::Data)));
+        struct yara::record::Data *data =
+            static_cast<struct yara::record::Data *>(
+                alloca(sizeof(struct yara::record::Data)));
 
-        data->yara_match_status = Yr::Types::Scan::yara_none;
+        data->yara_match_status = yara::type::Scan::yara_none;
 
         Yara::yara_scan_bytes(p_buffer,
                               reinterpret_cast<YR_CALLBACK_FUNC>(
-                                  Security::Yara::yara_scan_fast_callback),
+                                  security::Yara::yara_scan_fast_callback),
                               data,
                               SCAN_FLAGS_FAST_MODE);
 
@@ -164,15 +164,15 @@ namespace Security
                                   void *p_user_data)
     {
         const YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
-        Yr::Structs::Data *user_data =
-            static_cast<Yr::Structs::Data *>(p_user_data);
+        yara::record::Data *user_data =
+            static_cast<yara::record::Data *>(p_user_data);
 
         switch (p_message) {
             case CALLBACK_MSG_SCAN_FINISHED:
                 if (user_data->yara_match_status ==
-                    Yr::Types::Scan::yara_none) {
+                    yara::type::Scan::yara_none) {
                     user_data->yara_match_status =
-                        Yr::Types::Scan::yara_nomatch;
+                        yara::type::Scan::yara_nomatch;
                     user_data->yara_rule = "";
                     user_data->yara_namespace = "";
                 }
@@ -181,7 +181,7 @@ namespace Security
             case CALLBACK_MSG_RULE_MATCHING:
                 user_data->yara_namespace = rule->ns->name;
                 user_data->yara_rule = rule->identifier;
-                user_data->yara_match_status = Yr::Types::Scan::yara_match;
+                user_data->yara_match_status = yara::type::Scan::yara_match;
                 return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:
@@ -195,4 +195,4 @@ namespace Security
     {
         return m_rules_loaded_count;
     }
-}; // namespace Security
+}; // namespace security

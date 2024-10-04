@@ -2,7 +2,7 @@
 #include <openssl/sha.h>
 #include <string>
 
-namespace Crypto
+namespace crypto
 {
     class Sha
     {
@@ -27,4 +27,4 @@ namespace Crypto
       private:
         EVP_MD_CTX *m_ctx;
     };
-} // namespace Crypto
+} // namespace crypto

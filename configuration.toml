@@ -32,7 +32,7 @@ max_size = 1048576
 bindaddr = "127.0.0.1"
 port = 8181
 threads = 16 # minimum 2
-websocket_conn_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
+websocket_context_whitelist = ["127.0.0.1"] # whitelist for connect engine websocket
 ssl_file_pem = ""
 
 [cache]

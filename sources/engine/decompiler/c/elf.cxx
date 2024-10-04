@@ -22,10 +22,10 @@ namespace Decompiler
 
                 // if (m_elf.parse(p_file_path).identity_class() ==
                 //     LIEF::ELF::Header::CLASS::ELF32) {
-                m_capstone = new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
+                m_capstone = new disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
                 //}
 
-                m_capstone = new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
+                m_capstone = new disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
             }
 
             return err;
@@ -36,7 +36,7 @@ namespace Decompiler
             return true;
         }
 
-        void ELF::elf_init_function(Structs::Function *p_func,
+        void ELF::elf_init_function(record::Function *p_func,
                                     uint64_t p_start_function,
                                     uint64_t p_end_function)
         {

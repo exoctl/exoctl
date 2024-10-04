@@ -19,7 +19,7 @@ int main()
 {
     pr_banner();
 
-    Parser::Toml configuration;
+    parser::Toml configuration;
     TRY_BEGIN()
     configuration.toml_parser_file("configuration.toml");
     TRY_END()
@@ -52,7 +52,7 @@ int main()
     CONSOLE_INFO(
         "Running engine with configuration from 'configuration.toml'...");
 
-    Engine::Engine engine(configuration);
+    engine::Engine engine(configuration);
 
     TRY_BEGIN()
 
@@ -61,7 +61,7 @@ int main()
     CONSOLE_INFO("Engine stopped successfully.");
 
     TRY_END()
-    CATCH(Engine::EngineException::Run, {
+    CATCH(engine::exception::Run, {
         CONSOLE_ERROR("Engine encountered an error: {}", e.what());
         return EXIT_FAILURE;
     })

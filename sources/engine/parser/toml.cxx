@@ -1,6 +1,6 @@
 #include <engine/parser/toml.hxx>
 
-namespace Parser
+namespace parser
 {
     Toml::Toml()
     {
@@ -47,10 +47,10 @@ namespace Parser
         return *m_tbl[p_key].as_array();
     }
 
-    [[nodiscard]] const bool Toml::toml_get_tbl_bool(const std::string &p_tbl,
-                                                     const std::string &p_key)
+    const bool Toml::toml_get_tbl_bool(const std::string &p_tbl,
+                                       const std::string &p_key)
     {
         return m_tbl[p_tbl][p_key].value<bool>().value();
     }
 
-} // namespace Parser
+} // namespace parser

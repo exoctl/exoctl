@@ -16,7 +16,7 @@ include_directories(
 )
 
 file(GLOB_RECURSE SOURCES
-    engine/crow/*.cxx
+    engine/crowapp/*.cxx
     engine/analysis/*/*.cxx
     engine/data/*.cxx
     engine/crypto/*.cxx

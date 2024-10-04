@@ -7,7 +7,7 @@
 
 #define GET_TOML_VALUE(obj, type, key) obj.toml_get_tbl_##type(key)
 
-namespace Parser
+namespace parser
 {
     class Toml
     {

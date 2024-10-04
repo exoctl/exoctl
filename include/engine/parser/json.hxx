@@ -8,13 +8,13 @@
 #include <string>
 #include <vector>
 
-namespace Parser
+namespace parser
 {
     class Json
     {
       public:
         Json();
-        Json(const Parser::Json &);
+        Json(const parser::Json &);
         ~Json();
 
         [[nodiscard]] std::string json_to_string() const;

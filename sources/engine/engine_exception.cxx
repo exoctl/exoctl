@@ -1,11 +1,12 @@
 #include <engine/engine_exception.hxx>
 
-namespace Engine
+namespace engine
 {
-    namespace EngineException
+    namespace exception
     {
-        Run::Run(const std::string &p_message) : ExceptionBase(p_message)
+        Run::Run(const std::string &p_message)
+            : ::exception::Exception(p_message)
         {
         }
-    } // namespace EngineException
-} // namespace Engine
+    } // namespace exception
+} // namespace engine

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <engine/security/signatures/signatures_types.hxx>
+#include <engine/security/signatures/entitys.hxx>
 #include <functional>
 #include <signatures/signatures.hxx>
 
-namespace Security
+namespace security
 {
     class Sig
     {
@@ -14,4 +14,4 @@ namespace Security
 
       private:
     };
-} // namespace Security
+} // namespace security

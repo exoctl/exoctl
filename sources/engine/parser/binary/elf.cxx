@@ -1,9 +1,9 @@
 #include <engine/parser/binary/elf.hxx>
 #include <stdint.h>
 
-namespace Parser
+namespace parser
 {
-    namespace Binary
+    namespace binary
     {
         ELF::ELF()
         {

@@ -3,12 +3,12 @@
 #define CAPSTONE_AARCH64_COMPAT_HEADER
 
 #include <capstone/capstone.h>
-#include <engine/disassembly/capstone/capstone_types.hxx>
+#include <engine/disassembly/capstone/entitys.hxx>
 #include <functional>
 #include <stdint.h>
 #include <string>
 
-namespace Disassembly
+namespace disassembly
 {
     class Capstone
     {
@@ -19,7 +19,7 @@ namespace Disassembly
         void capstone_disassembly(
             const uint8_t *,
             size_t,
-            const std::function<void(Struct::Data *, size_t)> &);
+            const std::function<void(capstone::record::Data *, size_t)> &);
 
         [[nodiscard]] const cs_arch capstone_get_arch();
         [[nodiscard]] const cs_mode capstone_get_mode();
@@ -31,4 +31,4 @@ namespace Disassembly
         const cs_arch m_arch;
         const cs_mode m_mode;
     };
-} // namespace Disassembly
+} // namespace disassembly

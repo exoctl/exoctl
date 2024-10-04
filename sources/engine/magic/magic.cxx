@@ -1,17 +1,18 @@
 #include <engine/magic/magic.hxx>
-#include <engine/magic/magic_exception.hxx>
+#include <engine/magic/exception.hxx>
+#include <engine/memory.hxx>
 
-namespace Magic
+namespace magic
 {
     Magic::Magic() : m_cookie(magic_open(MAGIC_MIME))
     {
-        if (m_cookie == nullptr)
-            throw MagicException::Initialize(
+        if (IS_NULL(m_cookie))
+            throw magic::exception::Initialize(
                 "magic_open() failed to return a cookie");
 
         if (magic_load(m_cookie, nullptr) != 0)
-            throw MagicException::Initialize(
-                "magic_load failed to load magic database");
+            throw magic::exception::Initialize(
+                "magic_load() failed to load magic database");
     }
     Magic::~Magic()
     {
@@ -27,4 +28,4 @@ namespace Magic
     {
         return m_mime;
     }
-} // namespace Magic
+} // namespace magic

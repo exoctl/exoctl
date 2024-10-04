@@ -5,7 +5,7 @@
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 
-namespace Crypto
+namespace crypto
 {
     Sha::Sha() : m_ctx(EVP_MD_CTX_new())
     {
@@ -100,4 +100,4 @@ namespace Crypto
                            fmt::join(hash, hash + SHA512_DIGEST_LENGTH, ""));
     }
 
-} // namespace Crypto
+} // namespace crypto

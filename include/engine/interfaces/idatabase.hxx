@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 
-namespace Interfaces
+namespace interface
 {
     class IDatabase
     {
@@ -18,4 +18,4 @@ namespace Interfaces
                                 const std::function<void(void *)> &) const = 0;
         virtual void close_db() const = 0;
     };
-} // namespace Interfaces
+} // namespace interface

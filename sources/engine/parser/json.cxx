@@ -1,13 +1,13 @@
 #include <engine/parser/json.hxx>
 
-namespace Parser
+namespace parser
 {
     Json::Json()
     {
         m_document.SetObject();
     }
 
-    Json::Json(const Parser::Json &other)
+    Json::Json(const parser::Json &other)
     {
         m_document.CopyFrom(other.m_document, m_allocator);
     }

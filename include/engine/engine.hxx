@@ -1,36 +1,34 @@
 #pragma once
 
-#include <engine/crow/crow.hxx>
-#include <engine/crow/log/log.hxx>
-#include <engine/crow/routes/routes.hxx>
-#include <engine/log.hxx>
+#include <engine/crowapp/crowapp.hxx>
+#include <engine/crowapp/log/log.hxx>
+#include <engine/crowapp/bridge/bridge.hxx>
+#include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
 #include <functional>
 
-namespace Engine
+namespace engine
 {
-
     class Engine
     {
       private:
-        Parser::Toml &m_configuration;
-        Logging::Log m_log;
-        Crow::CrowApp m_crow;
-        Crow::Routes m_crow_routes;
-        Crow::Log m_crow_log;
+        parser::Toml &m_configuration;
+        logging::Logging m_log;
+        crowapp::CrowApp m_crow;
+        crowapp::Bridge m_crow_bridge;
+        crowapp::Log m_crow_log;
 
       public:
-        Engine(Parser::Toml &);
+        Engine(parser::Toml &);
         ~Engine();
 
         [[nodiscard]] const std::string &engine_bindaddr();
         [[nodiscard]] const uint16_t &engine_port();
         [[nodiscard]] const uint16_t engine_concurrency();
 
-        [[nodiscard]] const std::vector<Crow::Structs::Endpoints> &
+        [[nodiscard]] const std::vector<crowapp::bridge::record::Bridge> &
         engine_routes();
         void engine_stop();
         void engine_run(const std::function<void()> & = nullptr);
     };
-
 } // namespace Engine

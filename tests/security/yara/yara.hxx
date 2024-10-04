@@ -9,7 +9,7 @@ class YaraTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        yara = new Security::Yara();
+        yara = new security::Yara();
     }
 
     void TearDown() override
@@ -17,5 +17,5 @@ class YaraTest : public ::testing::Test
         delete yara;
     }
 
-    Security::Yara *yara;
+    security::Yara *yara;
 };

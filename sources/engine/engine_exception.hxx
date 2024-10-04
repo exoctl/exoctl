@@ -2,15 +2,14 @@
 
 #include <engine/exception.hxx>
 
-namespace Engine
+namespace engine
 {
-
-    namespace EngineException
+    namespace exception
     {
-        class Run : public Exception::ExceptionBase
+        class Run : public ::exception::Exception
         {
           public:
             explicit Run(const std::string &);
         };
-    } // namespace EngineException
-} // namespace Engine
+    } // namespace exception
+} // namespace engine
