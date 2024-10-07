@@ -6,10 +6,8 @@ namespace crowapp
     {
         namespace websocket
         {
-            Context::Context(parser::Toml &p_config)
-                : m_context(0), m_config(p_config),
-                  m_whitelist(GET_TOML_TBL_VALUE(
-                      m_config, array, "crow", "websocket_context_whitelist"))
+            Context::Context(configuration::Configuration &p_config)
+                : m_context(0), m_config(p_config)
             {
             }
 
@@ -17,30 +15,29 @@ namespace crowapp
             {
             }
 
-            const void Context::context_erase(crow::websocket::connection *p_conn)
+            const void Context::erase(crow::websocket::connection *p_conn)
             {
                 m_context.erase(p_conn);
             }
 
-            const void Context::context_broadcast(
-                crow::websocket::connection *p_conn,
-                const std::string p_msg) const
+            const void Context::broadcast(crow::websocket::connection *p_conn,
+                                          const std::string p_msg) const
             {
                 if (m_context.find(p_conn) != m_context.end())
                     p_conn->send_text(p_msg);
             }
 
-            const void Context::context_add(crow::websocket::connection *p_conn)
+            const void Context::add(crow::websocket::connection *p_conn)
             {
                 m_context.insert(p_conn);
             }
 
-            const std::size_t Context::context_size() const
+            const std::size_t Context::size() const
             {
                 return m_context.size();
             }
 
-            const std::string Context::context_get_remote_ip(
+            const std::string Context::get_remote_ip(
                 crow::websocket::connection *p_conn) const
             {
                 return (m_context.find(p_conn) != m_context.end())
@@ -48,10 +45,9 @@ namespace crowapp
                            : nullptr;
             }
 
-            const bool Context::context_check_whitelist(
-                const crow::request *p_request)
+            const bool Context::check_whitelist(const crow::request *p_request)
             {
-                for (const auto &list : m_whitelist)
+                for (const auto &list : m_config.get_crowapp().context_whitelist)
                     if (const auto str = list.as_string()) {
                         if (p_request->remote_ip_address == str->get())
                             return true;

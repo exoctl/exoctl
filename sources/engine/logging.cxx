@@ -8,58 +8,55 @@
 
 namespace logging
 {
-    Logging::Logging(parser::Toml &p_config) : m_config(p_config)
+    Logging::Logging(configuration::Configuration &p_config)
+        : m_config(p_config)
     {
-        Logging::logging_active_type(
-            GET_TOML_TBL_VALUE(p_config, string, "log", "type"));
-        Logging::logging_active_trace(
-            GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "trace"));
-        Logging::logging_active_level(
-            GET_TOML_TBL_VALUE(p_config, uint16_t, "log", "level"));
-        Logging::logging_active_console(
-            GET_TOML_TBL_VALUE(p_config, bool, "log", "console"));
+        Logging::active_type(m_config.get_log().type);
+        Logging::active_trace(m_config.get_log().trace);
+        Logging::active_level(m_config.get_log().level);
+        Logging::active_console(m_config.get_log().console);
     }
 
     Logging::~Logging()
     {
     }
 
-    void Logging::logging_active_trace(const uint16_t p_level)
+    void Logging::active_trace(const uint16_t p_level)
     {
         m_logger->flush_on(static_cast<spdlog::level::level_enum>(p_level));
     }
 
-    void Logging::logging_active_level(const uint16_t p_level)
+    void Logging::active_level(const uint16_t p_level)
     {
         m_logger->set_level(static_cast<spdlog::level::level_enum>(p_level));
     }
 
-    void Logging::logging_active_type(const std::string &p_type)
+    void Logging::active_type(const std::string &p_type)
     {
         m_logger = [&]() -> std::shared_ptr<spdlog::logger> {
             if (p_type == "day") {
                 return spdlog::daily_logger_mt<spdlog::async_factory>(
                     "day",
-                    GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
-                    GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "hours"),
-                    GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "minutes"),
+                    m_config.get_log().name,
+                    m_config.get_log().hours,
+                    m_config.get_log().minutes,
                     false,
-                    GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "max_files"));
+                    m_config.get_log().max_files);
             } else if (p_type == "rotation") {
                 return spdlog::rotating_logger_mt<spdlog::async_factory>(
                     "rotation",
-                    GET_TOML_TBL_VALUE(m_config, string, "log", "name"),
-                    GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "max_size"),
-                    GET_TOML_TBL_VALUE(m_config, uint16_t, "log", "max_files"));
+                    m_config.get_log().name,
+                    m_config.get_log().max_size,
+                    m_config.get_log().max_files);
             }
 
             /* default logger */
             return spdlog::basic_logger_mt<spdlog::async_factory>(
-                "basic", GET_TOML_TBL_VALUE(m_config, string, "log", "name"));
+                "basic", m_config.get_log().name);
         }();
     }
 
-    void Logging::logging_active_console(const bool p_console)
+    void Logging::active_console(const bool p_console)
     {
         if (p_console) {
             auto console_sink =
@@ -68,4 +65,4 @@ namespace logging
         }
     }
 
-} // namespace Logging
+} // namespace logging

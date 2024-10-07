@@ -4,7 +4,7 @@
 TEST_F(CapstoneTest, CapstoneDisassembly)
 {
     const std::string opcode = "\xc3";
-    EXPECT_NO_THROW(capstone->capstone_disassembly(
+    EXPECT_NO_THROW(capstone->disassembly(
         reinterpret_cast<const uint8_t *>(opcode.data()),
         opcode.size(),
         [&](const Disassembly::Struct::Data *p_data, size_t index) {
@@ -16,20 +16,20 @@ TEST_F(CapstoneTest, CapstoneDisassembly)
 
 TEST_F(CapstoneTest, CapstoneGetArch)
 {
-    ASSERT_EQ(capstone->capstone_get_arch(), CS_ARCH_X86);
+    ASSERT_EQ(capstone->get_arch(), CS_ARCH_X86);
 }
 
 TEST_F(CapstoneTest, CapstoneGetMode)
 {
-    ASSERT_EQ(capstone->capstone_get_mode(), CS_MODE_64);
+    ASSERT_EQ(capstone->get_mode(), CS_MODE_64);
 }
 
 TEST_F(CapstoneTest, CapstoneArchToString)
 {
-    EXPECT_EQ(capstone->capstone_arch_to_string(CS_ARCH_X86), "x86");
+    EXPECT_EQ(capstone->arch_to_string(CS_ARCH_X86), "x86");
 }
 
 TEST_F(CapstoneTest, CapstoneModeToString)
 {
-    EXPECT_EQ(capstone->capstone_mode_to_string(CS_MODE_64), "64-bit");
+    EXPECT_EQ(capstone->mode_to_string(CS_MODE_64), "64-bit");
 }

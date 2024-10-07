@@ -7,9 +7,9 @@ namespace security
         namespace type
         {
             enum Scan {
-                sig_nomatch,
-                sig_match,
-                sig_none /* default value */
+                nomatch,
+                match,
+                none /* default value */
             };
         } // namespace Types
     } // namespace Sig

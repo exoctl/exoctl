@@ -1,14 +1,14 @@
 #pragma once
 
+#include <engine/crowapp/bridge/entitys.hxx>
+#include <engine/crowapp/bridge/web/web.hxx>
+#include <engine/crowapp/bridge/websocket/websocket.hxx>
 #include <engine/crowapp/crowapp.hxx>
 #include <engine/crowapp/focades/analysis/scan/clamav/clamav.hxx>
 #include <engine/crowapp/focades/analysis/scan/yara/yara.hxx>
 #include <engine/crowapp/focades/data/metadata/metadata.hxx>
 #include <engine/crowapp/focades/parser/binary/elf/elf.hxx>
 #include <engine/crowapp/focades/rev/disassembly/capstone/capstone.hxx>
-#include <engine/crowapp/bridge/entitys.hxx>
-#include <engine/crowapp/bridge/web/web.hxx>
-#include <engine/crowapp/bridge/websocket/websocket.hxx>
 #include <engine/version.hxx>
 #include <functional>
 #include <memory>
@@ -37,7 +37,7 @@ std::string concatenate_paths(const std::string &p_base, Args &&...p_args)
         concatenate_paths(API_PREFIX, __VA_ARGS__);
 
 #define GET_ROUTE(route)                                                       \
-    Bridge::routes_##route();                                                  \
+    Bridge::route();                                                         \
     m_num_endpoints++;
 
 namespace crowapp
@@ -48,8 +48,8 @@ namespace crowapp
         Bridge(CrowApp &);
         ~Bridge();
 
-        void routes_init();
-        const std::vector<bridge::record::Bridge> &routes_get_endpoints();
+        void load();
+        const std::vector<bridge::record::Bridge> &get_endpoints();
 
       private:
         CrowApp &m_crow;
@@ -60,8 +60,10 @@ namespace crowapp
         std::unique_ptr<crowapp::bridge::WebSocket> m_socket_parser_elf;
         std::unique_ptr<crowapp::bridge::WebSocket> m_socket_metadata;
         std::unique_ptr<crowapp::bridge::WebSocket> m_socket_clamav;
-        std::unique_ptr<crowapp::bridge::WebSocket> m_socket_capstone_disass_x86_64;
-        std::unique_ptr<crowapp::bridge::WebSocket> m_socket_capstone_disass_arm_64;
+        std::unique_ptr<crowapp::bridge::WebSocket>
+            m_socket_capstone_disass_x86_64;
+        std::unique_ptr<crowapp::bridge::WebSocket>
+            m_socket_capstone_disass_arm_64;
         std::unique_ptr<crowapp::bridge::Web<>> m_web_endpoins;
 
         std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;
@@ -71,17 +73,17 @@ namespace crowapp
         std::unique_ptr<focades::rev::disassembly::Capstone> m_capstone_arm_64;
         std::unique_ptr<focades::data::Metadata> m_metadata;
 
-        void routes_update_endpoints();
-        void routes_parser_elf();
-        void routes_metadata();
-        void routes_scan_yara();
-        void routes_capstone_disass_x86_64();
-        void routes_capstone_disass_arm_64();
-        void routes_scan_clamav();
+        void update_endpoints();
+        void parser_elf();
+        void metadata();
+        void scan_yara();
+        void capstone_disass_x86_64();
+        void capstone_disass_arm_64();
+        void scan_clamav();
 
         /* Routes generate for debug */
 #ifdef DEBUG
-        void routes_endpoint();
+        void endpoint();
 #endif
     };
 } // namespace crowapp

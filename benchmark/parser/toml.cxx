@@ -3,13 +3,13 @@
 BENCHMARK_DEFINE_F(TomlBenchmark, TomlParserFile)(benchmark::State &state)
 {
     for (const auto _ : state)
-        toml->toml_parser_file("./configuration.toml");
+        toml->parser_file("./configuration.toml");
 }
 
 BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblString)(benchmark::State &state)
 {
     for (const auto _ : state) {
-        std::string tbl_string = toml->toml_get_tbl_string("project", "name");
+        std::string tbl_string = toml->get_tbl_string("project", "name");
         benchmark::DoNotOptimize(tbl_string);
     }
 }
@@ -26,7 +26,7 @@ BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblArray)(benchmark::State &state)
 {
     for (const auto _ : state) {
         toml::array array_test =
-            toml->toml_get_tbl_array("crow", "websocket_conn_whitelist");
+            toml->get_tbl_array("crow", "websocket_conn_whitelist");
         benchmark::DoNotOptimize(array_test);
     }
 }

@@ -10,8 +10,8 @@ namespace disassembly
         namespace record
         {
             typedef struct Data {
-                uint64_t capstone_address;
-                cs_insn *capstone_insn;
+                uint64_t address;
+                cs_insn *insn;
             } Data;
         } // namespace structs
     } // namespace capstone

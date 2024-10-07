@@ -60,7 +60,7 @@ namespace security
         return error_success;
     }
 
-    const int Yara::yara_set_signature_rule_mem(const std::string &p_rule,
+    const int Yara::set_signature_rule_mem(const std::string &p_rule,
                                                 const std::string &p_yrns) const
     {
         m_rules_loaded_count++;
@@ -68,7 +68,7 @@ namespace security
             m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
     }
 
-    void Yara::yara_load_rules_folder(const std::filesystem::path &p_path) const
+    void Yara::load_rules_folder(const std::filesystem::path &p_path) const
     {
         const std::string folder = p_path.filename();
 
@@ -93,22 +93,22 @@ namespace security
                         std::string(full_path));
                 }
             } else if (entry->d_type == DT_DIR) {
-                yara_load_rules_folder(full_path);
+                load_rules_folder(full_path);
             }
         }
 
         closedir(dir);
     }
 
-    void Yara::yara_load_rules(const std::function<void()> &p_callback) const
+    void Yara::load_rules(const std::function<void()> &p_callback) const
     {
         if (!IS_NULL(p_callback)) {
             p_callback();
         }
-        Yara::yara_compiler_rules();
+        Yara::compiler_rules();
     }
 
-    void Yara::yara_compiler_rules() const
+    void Yara::compiler_rules() const
     {
         const int compiler_rules =
             yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
@@ -120,7 +120,7 @@ namespace security
         }
     }
 
-    void Yara::yara_scan_bytes(const std::string p_buffer,
+    void Yara::scan_bytes(const std::string p_buffer,
                                YR_CALLBACK_FUNC p_callback,
                                void *p_data,
                                int p_flags) const
@@ -138,7 +138,7 @@ namespace security
         }
     }
 
-    void Yara::yara_scan_fast_bytes(
+    void Yara::scan_fast_bytes(
         const std::string p_buffer,
         const std::function<void(yara::record::Data *)> &p_callback) const
     {
@@ -146,11 +146,11 @@ namespace security
             static_cast<struct yara::record::Data *>(
                 alloca(sizeof(struct yara::record::Data)));
 
-        data->yara_match_status = yara::type::Scan::yara_none;
+        data->match_status = yara::type::Scan::none;
 
-        Yara::yara_scan_bytes(p_buffer,
+        Yara::scan_bytes(p_buffer,
                               reinterpret_cast<YR_CALLBACK_FUNC>(
-                                  security::Yara::yara_scan_fast_callback),
+                                  security::Yara::scan_fast_callback),
                               data,
                               SCAN_FLAGS_FAST_MODE);
 
@@ -158,7 +158,7 @@ namespace security
     }
 
     YR_CALLBACK_FUNC
-    Yara::yara_scan_fast_callback(YR_SCAN_CONTEXT *p_context,
+    Yara::scan_fast_callback(YR_SCAN_CONTEXT *p_context,
                                   const int p_message,
                                   void *p_message_data,
                                   void *p_user_data)
@@ -169,19 +169,19 @@ namespace security
 
         switch (p_message) {
             case CALLBACK_MSG_SCAN_FINISHED:
-                if (user_data->yara_match_status ==
-                    yara::type::Scan::yara_none) {
-                    user_data->yara_match_status =
-                        yara::type::Scan::yara_nomatch;
-                    user_data->yara_rule = "";
-                    user_data->yara_namespace = "";
+                if (user_data->match_status ==
+                    yara::type::Scan::none) {
+                    user_data->match_status =
+                        yara::type::Scan::nomatch;
+                    user_data->rule = "";
+                    user_data->ns = "";
                 }
                 break;
 
             case CALLBACK_MSG_RULE_MATCHING:
-                user_data->yara_namespace = rule->ns->name;
-                user_data->yara_rule = rule->identifier;
-                user_data->yara_match_status = yara::type::Scan::yara_match;
+                user_data->ns = rule->ns->name;
+                user_data->rule = rule->identifier;
+                user_data->match_status = yara::type::Scan::match;
                 return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
 
             case CALLBACK_MSG_RULE_NOT_MATCHING:
@@ -191,7 +191,7 @@ namespace security
         return CALLBACK_CONTINUE;
     }
 
-    const uint64_t Yara::yara_get_rules_loaded_count() const
+    const uint64_t Yara::get_rules_loaded_count() const
     {
         return m_rules_loaded_count;
     }

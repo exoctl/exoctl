@@ -1,6 +1,6 @@
 #include <engine/decompiler/c/elf.hxx>
 
-namespace Decompiler
+namespace decompiler
 {
     namespace C
     {
@@ -13,7 +13,7 @@ namespace Decompiler
         {
         }
 
-        const bool ELF::elf_parser_file(const std::string &p_file_path)
+        const bool ELF::parser_file(const std::string &p_file_path)
         {
             bool err = false;
 
@@ -31,12 +31,12 @@ namespace Decompiler
             return err;
         }
 
-        const bool ELF::elf_parser_bytes(const std::string &p_buffer)
+        const bool ELF::parser_bytes(const std::string &p_buffer)
         {
             return true;
         }
 
-        void ELF::elf_init_function(record::Function *p_func,
+        void ELF::init_function(record::Function *p_func,
                                     uint64_t p_start_function,
                                     uint64_t p_end_function)
         {

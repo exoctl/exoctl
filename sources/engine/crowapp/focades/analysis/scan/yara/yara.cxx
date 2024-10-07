@@ -12,48 +12,44 @@ namespace focades
             Yara::~Yara()
             {
             }
-            Yara::Yara(parser::Toml &p_config)
-                : m_yara_malware_rules(GET_TOML_TBL_VALUE(
-                      p_config, string, "yara", "malware_rules")),
-                  m_yara_packeds_rules(GET_TOML_TBL_VALUE(
-                      p_config, string, "yara", "packeds_rules")),
-                  m_yara_cve_rules(GET_TOML_TBL_VALUE(
-                      p_config, string, "yara", "cve_rules")),
-                  m_config(p_config)
+            Yara::Yara(configuration::Configuration &p_config)
+                : m_config(p_config)
             {
             }
 
-            void Yara::yara_load_rules(
+            void Yara::load_rules(
                 const std::function<void(uint64_t)> &p_callback) const
             {
-                m_yara.yara_load_rules([&]() {
-                    m_yara.yara_load_rules_folder(
-                        m_yara_packeds_rules); // rules for packeds
-                    m_yara.yara_load_rules_folder(
-                        m_yara_malware_rules); // rules for malwares
+                m_yara.load_rules([&]() {
+                    m_yara.load_rules_folder(
+                        m_config.get_yara().cve_rules); // rules for cve
+                    m_yara.load_rules_folder(
+                        m_config.get_yara()
+                            .malware_rules); // rules for malwares
+                    m_yara.load_rules_folder(
+                        m_config.get_yara().packeds_rules); // rules for packeds
                     /* implement based demand */
                 });
 
                 if (!IS_NULL(p_callback)) {
-                    p_callback(m_yara.yara_get_rules_loaded_count());
+                    p_callback(m_yara.get_rules_loaded_count());
                 }
             }
 
-            void Yara::yara_scan_fast_bytes(
+            void Yara::scan_fast_bytes(
                 const std::string p_buffer,
                 const std::function<void(yara::record::DTO *)> &p_callback)
             {
                 if (!IS_NULL(p_callback)) {
-                    m_yara.yara_scan_fast_bytes(
+                    m_yara.scan_fast_bytes(
                         p_buffer, [&](security::yara::record::Data *p_data) {
                             if (!IS_NULL(p_data)) {
-                                struct yara::record::DTO *dto = new yara::record::DTO;
+                                struct yara::record::DTO *dto =
+                                    new yara::record::DTO;
 
-                                dto->yara_match_status =
-                                    p_data->yara_match_status;
-                                dto->yara_rule.assign(p_data->yara_rule);
-                                dto->yara_namespace.assign(
-                                    p_data->yara_namespace);
+                                dto->match_status = p_data->match_status;
+                                dto->rule.assign(p_data->rule);
+                                dto->ns.assign(p_data->ns);
 
                                 p_callback(dto);
                                 delete dto;
@@ -62,18 +58,15 @@ namespace focades
                 }
             }
 
-            const parser::Json Yara::yara_dto_json(
-                const yara::record::DTO *p_dto)
+            const parser::Json Yara::dto_json(const yara::record::DTO *p_dto)
             {
                 parser::Json json;
 
                 if (!IS_NULL(p_dto)) {
 
-                    json.json_add_member_string("yara_namespace",
-                                                p_dto->yara_namespace);
-                    json.json_add_member_string("yara_rule", p_dto->yara_rule);
-                    json.json_add_member_int("yara_match_status",
-                                             p_dto->yara_match_status);
+                    json.add_member_string("ns", p_dto->ns);
+                    json.add_member_string("rule", p_dto->rule);
+                    json.add_member_int("match_status", p_dto->match_status);
                 }
 
                 return json;

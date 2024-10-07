@@ -1,7 +1,7 @@
 #pragma once
 
 #include <crow.h>
-#include <engine/parser/toml.hxx>
+#include <engine/configuration/configuration.hxx>
 #include <list>
 #include <unordered_set>
 
@@ -14,7 +14,7 @@ namespace crowapp
             class Context
             {
               public:
-                Context(parser::Toml &);
+                Context(configuration::Configuration &);
                 ~Context();
 
                 /**
@@ -23,12 +23,12 @@ namespace crowapp
                  * @return true
                  * @return false
                  */
-                const bool context_check_whitelist(const crow::request *);
-                const void context_add(crow::websocket::connection *);
-                const void context_erase(crow::websocket::connection *);
-                const std::size_t context_size() const;
-                const void context_broadcast(crow::websocket::connection *,
-                                          const std::string) const;
+                const bool check_whitelist(const crow::request *);
+                const void add(crow::websocket::connection *);
+                const void erase(crow::websocket::connection *);
+                const std::size_t size() const;
+                const void broadcast(crow::websocket::connection *,
+                                     const std::string) const;
 
                 /**
                  * @brief return what ip connected
@@ -36,14 +36,13 @@ namespace crowapp
                  * @return const std::string
                  * @return nullptr
                  */
-                const std::string context_get_remote_ip(
+                const std::string get_remote_ip(
                     crow::websocket::connection *) const;
 
               private:
                 std::unordered_set<crow::websocket::connection *> m_context;
-                parser::Toml &m_config;
-                toml::array m_whitelist;
+                configuration::Configuration &m_config;
             };
-        } // namespace WebSocketManager
-    } // namespace BridgeManager
+        } // namespace websocket
+    } // namespace bridge
 } // namespace crowapp

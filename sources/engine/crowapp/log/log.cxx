@@ -3,10 +3,9 @@
 namespace crowapp
 {
 
-    Log::Log(CrowApp &p_crow) : m_log(p_crow.crow_get_log()), m_crow(p_crow)
+    Log::Log(CrowApp &p_crow) : m_log(p_crow.get_log()), m_crow(p_crow)
     {
         crow::logger::setHandler(this); // define global logger for CrowApp
-        
     }
 
     Log::~Log()
@@ -34,9 +33,9 @@ namespace crowapp
         }
     }
 
-    void Log::log_active_level(crow::LogLevel p_level)
+    void Log::active_level(crow::LogLevel p_level)
     {
-        m_crow.crow_get_app().loglevel(p_level);
+        m_crow.get_app().loglevel(p_level);
     }
 
 } // namespace crowapp

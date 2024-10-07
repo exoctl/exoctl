@@ -3,7 +3,7 @@
 #include <engine/disassembly/capstone/entitys.hxx>
 #include <stdint.h>
 
-namespace Decompiler
+namespace decompiler
 {
     namespace record
     {

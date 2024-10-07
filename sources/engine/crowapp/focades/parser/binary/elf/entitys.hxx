@@ -14,7 +14,7 @@ namespace focades
                 namespace record
                 {
                     typedef struct DTO {
-                        LIEF::ELF::Header elf_header;
+                        LIEF::ELF::Header header;
                     } DTO;
                 } // namespace record
             } // namespace elf

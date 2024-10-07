@@ -15,18 +15,18 @@ namespace focades
                 namespace record
                 {
                     typedef struct Instruction {
-                        std::string capstone_address;
-                        std::string capstone_mnemonic;
-                        std::string capstone_operands;
-                        uint16_t capstone_size;
-                        int capstone_id;
-                        std::string capstone_bytes;
+                        std::string address;
+                        std::string mnemonic;
+                        std::string operands;
+                        uint16_t size;
+                        int id;
+                        std::string bytes;
                     } Instruction;
 
                     typedef struct DTO {
-                        std::string capstone_arch;
-                        std::string capstone_mode;
-                        std::vector<Instruction> capstone_instructions;
+                        std::string arch;
+                        std::string mode;
+                        std::vector<Instruction> instructions;
                     } DTO;
                 } // namespace record
             } // namespace capstone

@@ -54,16 +54,16 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {     
-    "yara_match_status": 0,
-    "yara_namespace": "",
-    "yara_rule": "" 
+    "match_status": 0,
+    "ns": "",
+    "rule": "" 
   }
   ```
   - **onclose:** 
   - **onerror:** 
 
 - **Details:**
-  - **`yara_match_status` Values:**
+  - **`match_status` Values:**
     - `0`: Benign
     - `1`: Malicious
     - `2`: None
@@ -189,15 +189,15 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {     
-   "clamav_virname":"",
-   "clamav_math_status": 8
+   "virname":"",
+   "math_status": 8
   }
   ```
   - **onclose:** 
   - **onerror:** 
 
 - **Details:**
-  - **`clamav_math_status` Values:**
+  - **`math_status` Values:**
     - `0`: Benign
     - `1`: Malicious
     - `2`: None

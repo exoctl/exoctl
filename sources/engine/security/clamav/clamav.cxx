@@ -19,7 +19,7 @@ namespace security
         }
     }
 
-    void Clamav::clamav_set_db_rule_fd(const std::string &p_path,
+    void Clamav::set_db_rule_fd(const std::string &p_path,
                                        unsigned int p_dboptions) const
     {
         const cl_error_t ret = cl_load(
@@ -31,7 +31,7 @@ namespace security
         }
     }
 
-    const void Clamav::clamav_scan_fast_bytes(
+    const void Clamav::scan_fast_bytes(
         const std::string &p_buffer,
         clamav::record::scan::Options p_options,
         const std::function<void(clamav::record::Data *)> &p_callback)
@@ -41,29 +41,29 @@ namespace security
                 alloca(sizeof(struct clamav::record::Data)));
 
         struct cl_scan_options scanopts =
-            (cl_scan_options){.general = p_options.clamav_dev,
-                              .parse = p_options.clamav_parse,
-                              .heuristic = p_options.clamav_heuristic,
-                              .mail = p_options.clamav_mail,
-                              .dev = p_options.clamav_dev};
+            (cl_scan_options){.general = p_options.dev,
+                              .parse = p_options.parse,
+                              .heuristic = p_options.heuristic,
+                              .mail = p_options.mail,
+                              .dev = p_options.dev};
 
         const cl_error_t ret = cl_scanfile(p_buffer.c_str(),
-                                           &data->clamav_virname,
+                                           &data->virname,
                                            nullptr,
                                            m_engine,
                                            &scanopts);
 
-        (IS_NULL(data->clamav_virname)) ? data->clamav_virname = ""
-                                        : data->clamav_virname;
+        (IS_NULL(data->virname)) ? data->virname = ""
+                                        : data->virname;
 
-        data->clamav_math_status = [ret]() {
+        data->math_status = [ret]() {
             switch (ret) {
                 case CL_VIRUS:
-                    return clamav::type::Scan::clamav_virus;
+                    return clamav::type::Scan::virus;
                 case CL_CLEAN:
-                    return clamav::type::Scan::clamav_clean;
+                    return clamav::type::Scan::clean;
                 default:
-                    return clamav::type::Scan::clamav_none;
+                    return clamav::type::Scan::none;
             }
         }();
 
@@ -72,7 +72,7 @@ namespace security
         }
     }
 
-    void Clamav::clamav_load_rules(const std::function<void()> &p_callback)
+    void Clamav::load_rules(const std::function<void()> &p_callback)
     {
         if (!IS_NULL(p_callback)) {
             p_callback();
@@ -86,7 +86,7 @@ namespace security
         }
     }
 
-    const unsigned int Clamav::clamav_get_rules_loaded_count() const
+    const unsigned int Clamav::get_rules_loaded_count() const
     {
         return m_rules_loaded_count;
     }

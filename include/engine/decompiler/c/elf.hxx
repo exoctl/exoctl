@@ -4,7 +4,7 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/parser/binary/elf.hxx>
 
-namespace Decompiler
+namespace decompiler
 {
     namespace C
     {
@@ -14,10 +14,10 @@ namespace Decompiler
             ~ELF();
             ELF();
 
-            const bool elf_parser_file(const std::string &);
-            const bool elf_parser_bytes(const std::string &);
+            const bool parser_file(const std::string &);
+            const bool parser_bytes(const std::string &);
 
-            void elf_init_function(record::Function *, uint64_t, uint64_t);
+            void init_function(record::Function *, uint64_t, uint64_t);
 
           private:
             disassembly::Capstone *m_capstone;

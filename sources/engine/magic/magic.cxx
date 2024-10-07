@@ -19,12 +19,12 @@ namespace magic
         magic_close(m_cookie);
     }
 
-    void Magic::magic_load_mime(const std::string &p_buffer)
+    void Magic::load_mime(const std::string &p_buffer)
     {
         m_mime = magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
     }
 
-    const std::string Magic::magic_get_mime()
+    const std::string Magic::get_mime()
     {
         return m_mime;
     }

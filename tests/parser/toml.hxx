@@ -9,7 +9,7 @@ class TomlTest : public ::testing::Test
     void SetUp() override
     {
         toml = new Parser::Toml();
-        toml->toml_parser_file("./configuration.toml");
+        toml->parser_file("./configuration.toml");
     }
 
     void TearDown() override

@@ -10,8 +10,8 @@ namespace magic
       public:
         Magic();
         ~Magic();
-        void magic_load_mime(const std::string &buffer);
-        [[nodiscard]] const std::string magic_get_mime();
+        void load_mime(const std::string &buffer);
+        [[nodiscard]] const std::string get_mime();
 
       private:
         magic_t m_cookie;

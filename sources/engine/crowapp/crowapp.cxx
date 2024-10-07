@@ -3,15 +3,9 @@
 
 namespace crowapp
 {
-    CrowApp::CrowApp(parser::Toml &p_config, logging::Logging &p_log)
-        : m_config(p_config), m_log(p_log),
-          m_port(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "port")),
-          m_threads(GET_TOML_TBL_VALUE(p_config, uint16_t, "crow", "threads")),
-#if CROW_OPENSSL
-          m_ssl_file_pem(
-              GET_TOML_TBL_VALUE(p_config, string, "crow", "ssl_file_pem")),
-#endif
-          m_bindaddr(GET_TOML_TBL_VALUE(p_config, string, "crow", "bindaddr"))
+    CrowApp::CrowApp(configuration::Configuration &p_config,
+                     logging::Logging &p_log)
+        : m_config(p_config), m_log(p_log)
     {
     }
 
@@ -19,50 +13,50 @@ namespace crowapp
     {
     }
 
-    void CrowApp::crow_run()
+    void CrowApp::run()
     {
         m_app
-            .bindaddr(m_bindaddr)
+            .bindaddr(m_config.get_crowapp().bindaddr)
 #if CROW_OPENSSL
-            .ssl_file(m_ssl_file_pem)
+            .ssl_file(m_config.get_crowapp().ssl_file_pem)
 #endif
-            .port(m_port)
-            .concurrency(m_threads)
+            .port(m_config.get_crowapp().port)
+            .concurrency(m_config.get_crowapp().threads)
             .run();
     }
 
-    void CrowApp::crow_stop()
+    void CrowApp::stop()
     {
         m_app.stop();
     }
 
-    const uint16_t CrowApp::crow_get_concurrency()
+    const uint16_t CrowApp::get_concurrency()
     {
-        return m_threads;
+        return m_config.get_crowapp().threads;
     }
 
-    parser::Toml &CrowApp::crow_get_config()
+    configuration::Configuration &CrowApp::get_config()
     {
         return m_config;
     }
 
-    crow::SimpleApp &CrowApp::crow_get_app()
+    crow::SimpleApp &CrowApp::get_app()
     {
         return m_app;
     }
 
-    logging::Logging &CrowApp::crow_get_log()
+    logging::Logging &CrowApp::get_log()
     {
         return m_log;
     }
 
-    const std::string &CrowApp::crow_bindaddr()
+    const std::string &CrowApp::get_bindaddr()
     {
-        return m_bindaddr;
+        return m_config.get_crowapp().bindaddr;
     }
 
-    const uint16_t &CrowApp::crow_port()
+    const uint16_t &CrowApp::get_port()
     {
-        return m_port;
+        return m_config.get_crowapp().port;
     }
 }; // namespace crowapp

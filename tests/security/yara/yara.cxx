@@ -2,12 +2,12 @@
 
 TEST_F(YaraTest, YaraSetSignatureRuleMemTest)
 {
-    const int status = yara->yara_set_signature_rule_mem(
+    const int status = yara->set_signature_rule_mem(
         "rule Malware { condition: true}", "malware");
     ASSERT_EQ(status, ERROR_SUCCESS);
 }
 
 TEST_F(YaraTest, YaraLoadRulesFolderTest)
 {
-    ASSERT_NO_THROW(yara->yara_load_rules_folder("./"));
+    ASSERT_NO_THROW(yara->load_rules_folder("./"));
 }

@@ -44,7 +44,7 @@ namespace crowapp
 
             ~WebSocket();
 
-            const std::size_t websocket_size_connections() const;
+            const std::size_t size_connections() const;
 
           private:
             CrowApp &m_crow;
@@ -58,13 +58,13 @@ namespace crowapp
             on_open_callback m_on_open;
             on_close_callback m_on_close;
 
-            void websocket_def_close_connection(crow::websocket::connection *,
+            void def_close_connection(crow::websocket::connection *,
                                                 const std::string &);
-            void websocket_def_message_connection(crow::websocket::connection *,
+            void def_message_connection(crow::websocket::connection *,
                                                   const std::string &);
-            void websocket_def_open_connection(crow::websocket::connection *);
-            bool websocket_def_accept_connection(const crow::request *);
-            void websocket_def_error_connection(crow::websocket::connection *,
+            void def_open_connection(crow::websocket::connection *);
+            bool def_accept_connection(const crow::request *);
+            void def_error_connection(crow::websocket::connection *,
                                                 const std::string &);
         };
     } // namespace bridge

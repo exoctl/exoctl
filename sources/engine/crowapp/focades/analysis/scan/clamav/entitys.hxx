@@ -14,8 +14,8 @@ namespace focades
                 namespace record
                 {
                     typedef struct DTO {
-                        const char *clamav_virname;
-                        security::clamav::type::Scan clamav_math_status;
+                        const char *virname;
+                        security::clamav::type::Scan math_status;
                     } DTO;
                 } // namespace record
             } // namespace clamav

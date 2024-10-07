@@ -11,9 +11,9 @@ namespace security
         namespace type
         {
             enum Scan {
-                clamav_clean,
-                clamav_virus,
-                clamav_none
+                clean,
+                virus,
+                none
             };
         } // namespace type
 
@@ -22,17 +22,17 @@ namespace security
             namespace scan
             {
                 typedef struct Options {
-                    uint32_t clamav_general;
-                    uint32_t clamav_parse;
-                    uint32_t clamav_heuristic;
-                    uint32_t clamav_mail;
-                    uint32_t clamav_dev;
+                    uint32_t general;
+                    uint32_t parse;
+                    uint32_t heuristic;
+                    uint32_t mail;
+                    uint32_t dev;
                 } Options;
             } // namespace scan
 
             typedef struct Data {
-                const char *clamav_virname;
-                type::Scan clamav_math_status;
+                const char *virname;
+                type::Scan math_status;
             } Data;
 
         } // namespace record

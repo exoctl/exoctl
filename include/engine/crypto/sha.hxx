@@ -10,18 +10,18 @@ namespace crypto
         Sha();
         ~Sha();
 
-        [[nodiscard]] const std::string sha_gen_sha256_hash(
+        [[nodiscard]] const std::string gen_sha256_hash(
             const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha1_hash(const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha512_hash(
+        [[nodiscard]] const std::string gen_sha1_hash(const std::string &);
+        [[nodiscard]] const std::string gen_sha512_hash(
             const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha224_hash(
+        [[nodiscard]] const std::string gen_sha224_hash(
             const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha384_hash(
+        [[nodiscard]] const std::string gen_sha384_hash(
             const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha3_256_hash(
+        [[nodiscard]] const std::string gen_sha3_256_hash(
             const std::string &);
-        [[nodiscard]] const std::string sha_gen_sha3_512_hash(
+        [[nodiscard]] const std::string gen_sha3_512_hash(
             const std::string &);
 
       private:

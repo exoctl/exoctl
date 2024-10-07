@@ -8,10 +8,8 @@ namespace focades
     {
         namespace scan
         {
-            Clamav::Clamav(parser::Toml &p_config)
-                : m_clamav(), m_config(p_config),
-                  m_clamav_default_rules(GET_TOML_TBL_VALUE(
-                      p_config, string, "clamav", "default_database"))
+            Clamav::Clamav(configuration::Configuration &p_config)
+                : m_clamav(), m_config(p_config)
             {
             }
 
@@ -19,20 +17,20 @@ namespace focades
             {
             }
 
-            void Clamav::clamav_load_rules(
+            void Clamav::load_rules(
                 const std::function<void(unsigned int)> &p_callback)
             {
-                m_clamav.clamav_load_rules([&]() {
-                    m_clamav.clamav_set_db_rule_fd(m_clamav_default_rules,
-                                                   CL_DB_STDOPT);
+                m_clamav.load_rules([&]() {
+                    m_clamav.set_db_rule_fd(m_config.get_clamav().default_database,
+                                            CL_DB_STDOPT);
                 });
 
                 if (!IS_NULL(p_callback)) {
-                    p_callback(m_clamav.clamav_get_rules_loaded_count());
+                    p_callback(m_clamav.get_rules_loaded_count());
                 }
             }
 
-            void Clamav::clamav_scan_fast_bytes(
+            void Clamav::scan_fast_bytes(
                 const std::string &p_buffer,
                 const std::function<void(clamav::record::DTO *)> &p_callback)
             {
@@ -41,37 +39,32 @@ namespace focades
 
                     security::clamav::record::scan::Options scanopts;
 
-                    scanopts.clamav_general =
-                        CL_SCAN_GENERAL_ALLMATCHES |
-                        CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE |
-                        CL_SCAN_GENERAL_COLLECT_METADATA;
-                    scanopts.clamav_parse = ~(0);
-                    scanopts.clamav_heuristic =
-                        CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE;
+                    scanopts.general = CL_SCAN_GENERAL_ALLMATCHES |
+                                       CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE |
+                                       CL_SCAN_GENERAL_COLLECT_METADATA;
+                    scanopts.parse = ~(0);
+                    scanopts.heuristic = CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE;
 
-                    m_clamav.clamav_scan_fast_bytes(
+                    m_clamav.scan_fast_bytes(
                         p_buffer,
                         scanopts,
                         [&](const security::clamav::record::Data *p_data) {
-                            dto->clamav_math_status =
-                                p_data->clamav_math_status;
-                            dto->clamav_virname = p_data->clamav_virname;
+                            dto->math_status = p_data->math_status;
+                            dto->virname = p_data->virname;
                         });
 
                     p_callback(dto);
                     delete dto;
                 }
             }
-            parser::Json Clamav::clamav_dto_json(clamav::record::DTO *p_dto)
+            parser::Json Clamav::dto_json(clamav::record::DTO *p_dto)
             {
                 parser::Json json;
 
                 if (!IS_NULL(p_dto)) {
 
-                    json.json_add_member_string("clamav_virname",
-                                                p_dto->clamav_virname);
-                    json.json_add_member_int("clamav_math_status",
-                                             p_dto->clamav_math_status);
+                    json.add_member_string("virname", p_dto->virname);
+                    json.add_member_int("math_status", p_dto->math_status);
                 }
 
                 return json;

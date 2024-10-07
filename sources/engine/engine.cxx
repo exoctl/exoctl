@@ -5,10 +5,11 @@
 
 namespace engine
 {
-    Engine::Engine(parser::Toml &p_configuration)
-        : m_configuration(p_configuration), m_log(p_configuration),
-          m_crow(p_configuration, m_log), m_crow_bridge(m_crow),
-          m_crow_log(m_crow)
+    Engine::Engine(configuration::Configuration &p_configuration,
+                   logging::Logging &p_log)
+        : m_configuration(p_configuration), m_log(p_log),
+          m_crowapp(p_configuration, p_log), m_crowapp_bridge(m_crowapp),
+          m_crowapp_log(m_crowapp)
     {
     }
 
@@ -16,48 +17,48 @@ namespace engine
     {
     }
 
-    void Engine::engine_stop()
+    void Engine::stop()
     {
-        m_crow.crow_stop();
+        m_crowapp.stop();
     }
 
-    const std::string &Engine::engine_bindaddr()
+    const std::string &Engine::get_bindaddr()
     {
-        return m_crow.crow_bindaddr();
+        return m_crowapp.get_bindaddr();
     }
 
-    const uint16_t &Engine::engine_port()
+    const uint16_t &Engine::get_port()
     {
-        return m_crow.crow_port();
+        return m_crowapp.get_port();
     }
 
-    const uint16_t Engine::engine_concurrency()
+    const uint16_t Engine::get_concurrency()
     {
-        return m_crow.crow_get_concurrency();
+        return m_crowapp.get_concurrency();
     }
 
-    void Engine::engine_run(const std::function<void()> &p_callback)
+    void Engine::run(const std::function<void()> &p_callback)
     {
         TRY_BEGIN()
-        m_crow_bridge.routes_init();
+        m_crowapp_bridge.load();
         (!IS_NULL(p_callback)) ? p_callback() : (void) 0;
-        m_crow.crow_run();
+        m_crowapp.run();
         TRY_END()
         CATCH(crowapp::exception::Abort, {
             LOG(m_log,
                 error,
                 "Critical Crow aborted. Engine stopping. Reason: {}",
                 e.what());
-            Engine::engine_stop();
+            Engine::stop();
             throw exception::Run("Operation failed, Crow was aborted: " +
-                                       std::string(e.what()));
+                                 std::string(e.what()));
         })
         CATCH(crowapp::exception::ParcialAbort,
               { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
     }
 
-    const std::vector<crowapp::bridge::record::Bridge> &Engine::engine_routes()
+    const std::vector<crowapp::bridge::record::Bridge> &Engine::get_routes()
     {
-        return m_crow_bridge.routes_get_endpoints();
+        return m_crowapp_bridge.get_endpoints();
     }
-} // namespace Engine
+} // namespace engine

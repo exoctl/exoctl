@@ -1,12 +1,11 @@
 #define CROW_MAIN
 
+#include <engine/configuration/configuration.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
+#include <engine/logging.hxx>
 #include <engine/security/clamav/clamav.hxx>
-// clang-format off
-#include <console.hxx>
-// clang-format on
 
 void pr_banner()
 {
@@ -19,53 +18,50 @@ int main()
 {
     pr_banner();
 
-    parser::Toml configuration;
+    configuration::Configuration config("configuration.toml");
+
     TRY_BEGIN()
-    configuration.toml_parser_file("configuration.toml");
+    config.load(); 
     TRY_END()
     CATCH(std::exception, {
-        CONSOLE_ERROR("Failed to load configuration: {}", e.what());
+        fmt::print(stderr, "Failed to load configuration: {}\n", e.what());
         return EXIT_FAILURE;
     })
 
-    const std::string project_name =
-        GET_TOML_TBL_VALUE(configuration, string, "project", "name");
-    const std::string project_version =
-        GET_TOML_TBL_VALUE(configuration, string, "project", "version");
-    const std::string project_description =
-        GET_TOML_TBL_VALUE(configuration, string, "project", "description");
-    const std::string project_copyright =
-        GET_TOML_TBL_VALUE(configuration, string, "project", "copyright");
-    const std::string project_mode =
+    logging::Logging log(config);
+
+    LOG(log, info, "Name        : {}", config.get_project().name);
+    LOG(log, info, "Version     : {}", config.get_project().version);
+    LOG(log, info, "Description : {}", config.get_project().description);
+    LOG(log, info, "Copyright   : {}", config.get_project().copyright);
+    LOG(log,
+        info,
+        "Mode        : {}",
 #if DEBUG
-        "Debug";
+        "Debug");
 #else
-        "Realese";
+        "Release");
 #endif
 
-    CONSOLE_INFO("Name        : {}", project_name);
-    CONSOLE_INFO("Version     : {}", project_version);
-    CONSOLE_INFO("Description : {}", project_description);
-    CONSOLE_INFO("Copyright   : {}", project_copyright);
-    CONSOLE_INFO("Mode        : {}", project_mode);
+    LOG(log,
+        info,
+        "Running engine with configuration from '{}'...",
+        config.get_path_config());
 
-    CONSOLE_INFO(
-        "Running engine with configuration from 'configuration.toml'...");
-
-    engine::Engine engine(configuration);
+    engine::Engine engine(config, log);
 
     TRY_BEGIN()
 
-    CONSOLE_INFO("Starting engine...");
-    engine.engine_run();
-    CONSOLE_INFO("Engine stopped successfully.");
+    LOG(log, info, "Starting engine...");
+    engine.run();
+    LOG(log, info, "Engine stopped successfully.");
 
     TRY_END()
     CATCH(engine::exception::Run, {
-        CONSOLE_ERROR("Engine encountered an error: {}", e.what());
+        LOG(log, error, "Engine encountered an error: {}", e.what());
         return EXIT_FAILURE;
     })
 
-    CONSOLE_INFO("Exiting program.");
+    LOG(log, info, "Exiting program.");
     return EXIT_SUCCESS;
 }

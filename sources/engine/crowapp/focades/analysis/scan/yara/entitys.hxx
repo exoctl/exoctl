@@ -14,9 +14,9 @@ namespace focades
                 namespace record
                 {
                     typedef struct DTO {
-                        std::string yara_rule;
-                        std::string yara_namespace;
-                        security::yara::type::Scan yara_match_status;
+                        std::string rule;
+                        std::string ns;
+                        security::yara::type::Scan match_status;
                     } DTO;
                 } // namespace record
             } // namespace yara

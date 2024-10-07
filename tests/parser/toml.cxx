@@ -2,7 +2,7 @@
 
 TEST_F(TomlTest, TomlGetTblString)
 {
-    std::string tbl_string = toml->toml_get_tbl_string("project", "name");
+    std::string tbl_string = toml->get_tbl_string("project", "name");
     EXPECT_EQ("Engine", tbl_string);
 }
 
@@ -17,6 +17,6 @@ TEST_F(TomlTest, TomlGetTblArray)
     toml::array expected_array;
     expected_array.push_back("127.0.0.1");
     toml::array test_array =
-        toml->toml_get_tbl_array("crow", "websocket_conn_whitelist");
+        toml->get_tbl_array("crow", "websocket_conn_whitelist");
     ASSERT_EQ(expected_array, test_array);
 }

@@ -13,7 +13,7 @@ namespace crowapp
         ~Log();
 
         void log(std::string, crow::LogLevel) override;
-        void log_active_level(
+        void active_level(
             crow::LogLevel); // TODO: insert level in CrowLog for remove message
                              // "Call `app.loglevel(crow::LogLevel::Warning)` to
                              // hide Info level logs."

@@ -17,15 +17,15 @@ namespace focades
             Metadata();
             ~Metadata();
 
-            void metadata_parse(
+            void parse(
                 const std::string &,
                 const std::function<void(metadata::record::DTO *)> &);
 
-            [[nodiscard]] const parser::Json metadata_dto_json(
+            [[nodiscard]] const parser::Json dto_json(
                 const metadata::record::DTO *);
 
           private:
-            [[nodiscard]] const double metadata_compute_entropy(
+            [[nodiscard]] const double compute_entropy(
                 const std::string &);
             magic::Magic m_magic;
             crypto::Sha m_sha;

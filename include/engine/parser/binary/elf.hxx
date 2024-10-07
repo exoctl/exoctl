@@ -12,12 +12,12 @@ namespace parser
             ELF();
             ~ELF();
 
-            void elf_parser_bytes(
+            void parser_bytes(
                 const std::string &,
                 const std::function<void(std::unique_ptr<const LIEF::ELF::Binary>)>
                     &);
 
-            void elf_parser_file(
+            void parser_file(
                 const std::string &,
                 const std::function<void(std::unique_ptr<const LIEF::ELF::Binary>)>
                     &);

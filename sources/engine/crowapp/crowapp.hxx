@@ -7,9 +7,10 @@
 #endif
 
 #include <crow.h>
+#include <cstdint>
+#include <engine/configuration/configuration.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
-#include <cstdint>
 
 namespace crowapp
 {
@@ -17,26 +18,20 @@ namespace crowapp
     {
       private:
         crow::SimpleApp m_app;
-        parser::Toml &m_config;
+        configuration::Configuration &m_config;
         logging::Logging &m_log;
-        const std::uint16_t m_port;
-        const std::uint16_t m_threads;
-#if CROW_OPENSSL
-        const std::string m_ssl_file_pem;
-#endif
-        const std::string m_bindaddr;
 
       public:
-        CrowApp(parser::Toml &, logging::Logging &);
+        CrowApp(configuration::Configuration &, logging::Logging &);
         ~CrowApp();
 
-        crow::SimpleApp &crow_get_app();
-        const uint16_t crow_get_concurrency();
-        parser::Toml &crow_get_config();
-        logging::Logging &crow_get_log();
-        const std::string &crow_bindaddr();
-        const uint16_t &crow_port();
-        void crow_run();
-        void crow_stop();
+        crow::SimpleApp &get_app();
+        const uint16_t get_concurrency();
+        configuration::Configuration &get_config();
+        logging::Logging &get_log();
+        const std::string &get_bindaddr();
+        const uint16_t &get_port();
+        void run();
+        void stop();
     };
-}; // namespace crow
+}; // namespace crowapp

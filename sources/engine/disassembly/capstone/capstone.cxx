@@ -20,7 +20,7 @@ namespace disassembly
         cs_close(&m_handle);
     }
 
-    void Capstone::capstone_disassembly(
+    void Capstone::disassembly(
         const uint8_t *p_code,
         size_t p_code_size,
         const std::function<void(capstone::record::Data *p_data, size_t)>
@@ -31,35 +31,35 @@ namespace disassembly
             capstone::record::Data *data =
                 static_cast<capstone::record::Data *>(
                     alloca(sizeof(capstone::record::Data *)));
-            data->capstone_address = 0;
+            data->address = 0;
 
             const size_t count = cs_disasm(m_handle,
                                            p_code,
                                            p_code_size,
-                                           data->capstone_address,
+                                           data->address,
                                            0,
-                                           &data->capstone_insn);
+                                           &data->insn);
 
             if (count > 0) {
                 for (size_t i = 0; i < count; i++) {
                     p_callback(data, i);
                 }
 
-                cs_free(data->capstone_insn, count);
+                cs_free(data->insn, count);
             }
         }
     }
 
-    const cs_arch Capstone::capstone_get_arch()
+    const cs_arch Capstone::get_arch()
     {
         return m_arch;
     }
-    const cs_mode Capstone::capstone_get_mode()
+    const cs_mode Capstone::get_mode()
     {
         return m_mode;
     }
 
-    const std::string Capstone::capstone_arch_to_string(const cs_arch p_arch)
+    const std::string Capstone::arch_to_string(const cs_arch p_arch)
     {
         const auto arch = [](const cs_arch p_arch) -> std::string {
             switch (p_arch) {
@@ -87,7 +87,7 @@ namespace disassembly
         return arch(p_arch);
     }
 
-    const std::string Capstone::capstone_mode_to_string(const cs_mode p_mode)
+    const std::string Capstone::mode_to_string(const cs_mode p_mode)
     {
         const auto mode = [](const cs_mode p_mode) -> std::string {
             switch (p_mode) {

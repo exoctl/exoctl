@@ -16,11 +16,11 @@ namespace focades
                 Capstone(const cs_arch, const cs_mode);
                 ~Capstone();
 
-                void capstone_disassembly(
+                void disassembly(
                     const std::string &,
                     const std::function<void(capstone::record::DTO *)> &);
 
-                ::parser::Json capstone_dto_json(const capstone::record::DTO *);
+                ::parser::Json dto_json(const capstone::record::DTO *);
 
               private:
                 ::disassembly::Capstone m_capstone;
