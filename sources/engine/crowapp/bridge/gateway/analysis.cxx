@@ -17,6 +17,7 @@ namespace crowapp
             Analysis::prepare();
 
             // add new routes
+            Analysis::scan();
             Analysis::scan_yara();
             Analysis::scan_av_clamav();
         }
@@ -24,7 +25,43 @@ namespace crowapp
         Analysis::~Analysis()
         {
         }
-        
+
+        void Analysis::scan()
+        {
+            m_map.add_route("/scan", [&]() {
+                m_socket_scan = std::make_unique<gateway::WebSocket>(
+                    m_crowapp,
+                    BASE_ANALYSIS "/scan",
+                    UINT64_MAX,
+                    [&](gateway::websocket::Context &p_context,
+                        crow::websocket::connection &p_conn,
+                        const std::string &p_data,
+                        bool p_is_binary) {
+                        parser::Json json;
+
+                        m_scan_yara->scan_fast_bytes(
+                            p_data,
+                            [&](focades::analysis::scan::yara::record::DTO
+                                    *p_dto) {
+                                json.add_member_json(
+                                    "yara", m_scan_yara->dto_json(p_dto));
+                            });
+
+                        m_scan_av_clamav->scan_fast_bytes(
+                            "/home/mob/Downloads/"
+                            "ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
+                            [&](focades::analysis::scan::av::clamav::record::DTO
+                                    *p_dto) {
+                                json.add_member_json(
+                                    "av/clamav",
+                                    m_scan_av_clamav->dto_json(p_dto));
+                            });
+
+                        p_context.broadcast(&p_conn, json.to_string());
+                    });
+            });
+        }
+
         void Analysis::scan_av_clamav()
         {
             m_map.add_route("/scan/av/clamav", [&]() {
@@ -36,14 +73,15 @@ namespace crowapp
                         crow::websocket::connection &p_conn,
                         const std::string &p_data,
                         bool p_is_binary) {
-                        m_scan_clamav->scan_fast_bytes(
+                        m_scan_av_clamav->scan_fast_bytes(
                             "/home/mob/Downloads/"
                             "ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
                             [&](focades::analysis::scan::av::clamav::record::DTO
                                     *p_dto) {
                                 p_context.broadcast(
                                     &p_conn,
-                                    m_scan_clamav->dto_json(p_dto).to_string());
+                                    m_scan_av_clamav->dto_json(p_dto)
+                                        .to_string());
                             });
                     });
             });
@@ -82,7 +120,7 @@ namespace crowapp
         {
             m_scan_yara = std::make_unique<focades::analysis::scan::Yara>(
                 m_crowapp.get_config());
-            m_scan_clamav =
+            m_scan_av_clamav =
                 std::make_unique<focades::analysis::scan::av::Clamav>(
                     m_crowapp.get_config());
 
@@ -98,7 +136,7 @@ namespace crowapp
             });
 
             LOG(m_crowapp.get_log(), info, "Loading rules clamav ...");
-            m_scan_clamav->load_rules([&](unsigned int p_total_rules) {
+            m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
                 LOG(m_crowapp.get_log(),
                     info,
                     "Successfully loaded rules. Total Clamav rules "
