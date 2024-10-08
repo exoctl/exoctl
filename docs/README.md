@@ -176,8 +176,8 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
     - `0`: Websocket
     - `1`: Web
 
-#### 5. scan/clamav
-- **Route:** `<version>/engine/analysis/scan/clamav`
+#### 5. scan/av/clamav
+- **Route:** `<version>/engine/analysis/scan/av/clamav`
 - **Type:** WebSocket
 - **Description:** Endpoint for scanning Clamav rules.
 - **Handlers:**
