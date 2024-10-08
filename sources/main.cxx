@@ -5,7 +5,6 @@
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/logging.hxx>
-#include <engine/security/clamav/clamav.hxx>
 
 void pr_banner()
 {

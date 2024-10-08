@@ -15,6 +15,7 @@ namespace engine
       private:
         configuration::Configuration &m_configuration;
         logging::Logging &m_log;
+
         crowapp::CrowApp m_crowapp;
         crowapp::Bridge m_crowapp_bridge;
         crowapp::Log m_crowapp_log;

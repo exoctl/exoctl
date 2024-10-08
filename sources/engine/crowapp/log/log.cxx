@@ -3,7 +3,7 @@
 namespace crowapp
 {
 
-    Log::Log(CrowApp &p_crow) : m_log(p_crow.get_log()), m_crow(p_crow)
+    Log::Log(CrowApp &p_crow) : m_crow(p_crow)
     {
         crow::logger::setHandler(this); // define global logger for CrowApp
     }
@@ -16,19 +16,19 @@ namespace crowapp
     {
         switch (p_level) {
             case crow::LogLevel::Debug:
-                LOG(m_log, debug, "{}", p_message);
+                LOG(m_crow.get_log(), debug, "{}", p_message);
                 break;
             case crow::LogLevel::Info:
-                LOG(m_log, info, "{}", p_message);
+                LOG(m_crow.get_log(), info, "{}", p_message);
                 break;
             case crow::LogLevel::Warning:
-                LOG(m_log, warn, "{}", p_message);
+                LOG(m_crow.get_log(), warn, "{}", p_message);
                 break;
             case crow::LogLevel::Error:
-                LOG(m_log, error, "{}", p_message);
+                LOG(m_crow.get_log(), error, "{}", p_message);
                 break;
             case crow::LogLevel::Critical:
-                LOG(m_log, critical, "{}", p_message);
+                LOG(m_crow.get_log(), critical, "{}", p_message);
                 break;
         }
     }

@@ -1,0 +1,60 @@
+#include <engine/crowapp/bridge/gateway/data.hxx>
+
+namespace crowapp
+{
+    namespace bridge
+    {
+        Data::Data(CrowApp &p_crowapp)
+            : m_crowapp(p_crowapp), m_map(BASE_DATA)
+        {
+            LOG(m_crowapp.get_log(),
+                info,
+                "Preparing gateway data routes ...");
+            Data::prepare();
+
+            // add new routes
+            Data::data_metadata();
+        }
+
+        Data::~Data()
+        {
+        }
+
+        void Data::data_metadata()
+        {
+            m_map.add_route("/metadata", [&]() {
+                m_socket_metadata = std::make_unique<gateway::WebSocket>(
+                    m_crowapp,
+                    BASE_DATA "/metadata",
+                    UINT64_MAX,
+                    [&](gateway::websocket::Context &p_context,
+                        crow::websocket::connection &p_conn,
+                        const std::string &p_data,
+                        bool p_is_binary) {
+                        std::string data = std::move(p_data);
+                        data.erase(std::remove(data.begin(), data.end(), '\n'),
+                                   data.cend());
+
+                        m_data_metadata->parse(
+                            data,
+                            [&](focades::data::metadata::record::DTO *p_dto) {
+                                p_context.broadcast(
+                                    &p_conn,
+                                    m_data_metadata->dto_json(p_dto).to_string());
+                            });
+                    });
+            });
+        }
+
+        void Data::prepare()
+        {
+            m_data_metadata = std::make_unique<focades::data::Metadata>();
+        }
+
+        void Data::load() const
+        {
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
+    } // namespace bridge
+} // namespace crowapp
