@@ -23,8 +23,8 @@ trace_updates.interval = 0    # Update real-time log in file
 type = "daily"
 # Daily log configuration
 daily.max_size = 10485
-daily.hours = 2        
-daily.minutes = 30     
+daily.hours = 2
+daily.minutes = 30
 # Rotating log configuration
 rotation.max_size = 10485
 rotation.max_files = 100
@@ -34,10 +34,10 @@ server.bindaddr = "127.0.0.1"
 server.port = 8181
 server.ssl_certificate_path = "" # Path to SSL certificate file (if needed)
 server.threads = 16 # Minimum 2 threads
-server.context.whitelist = [
+server.websocket.context.whitelist = [
     "127.0.0.1",
 ] # Whitelist for connecting to engine WebSocket
 
 [cache]
-type = "daily"              # Options: rotating, daily
+type = "daily" # Options: rotating, daily
 path = "cache"

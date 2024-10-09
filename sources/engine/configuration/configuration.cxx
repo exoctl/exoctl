@@ -68,9 +68,8 @@ namespace configuration
         m_cache = (record::cache::Cache){
             .type =
                 m_toml.get_tbl()["cache"]["type"].value<std::string>().value(),
-            .path = m_toml.get_tbl()["cache"]["path"]
-                        .value<std::string>()
-                        .value()};
+            .path =
+                m_toml.get_tbl()["cache"]["path"].value<std::string>().value()};
     }
 
     void Configuration::load_clamav()
@@ -127,10 +126,12 @@ namespace configuration
                         .get_tbl()["crowapp"]["server"]["ssl_certificate_path"]
                         .value<std::string>()
                         .value(),
-                .context = {.whitelist = *m_toml
-                                              .get_tbl()["crowapp"]["server"]
-                                                        ["context"]["whitelist"]
-                                              .as_array()}}};
+                .context = {
+                    .whitelist =
+                        *m_toml
+                             .get_tbl()["crowapp"]["server"]["websocket"]
+                                       ["context"]["whitelist"]
+                             .as_array()}}};
     }
 
     void Configuration::load_yara()
@@ -155,6 +156,8 @@ namespace configuration
             .name = m_toml.get_tbl()["log"]["file"]["path"]
                         .value<std::string>()
                         .value(),
+            .type =
+                m_toml.get_tbl()["log"]["type"].value<std::string>().value(),
             .console = m_toml.get_tbl()["log"]["console"]["output_enabled"]
                            .value<bool>()
                            .value(),
@@ -163,8 +166,6 @@ namespace configuration
                           m_toml.get_tbl()["log"]["trace_updates"]["interval"]
                               .value<uint16_t>()
                               .value()},
-            .type =
-                m_toml.get_tbl()["log"]["type"].value<std::string>().value(),
             .daily_settings =
                 {.hours = m_toml.get_tbl()["log"]["daily"]["hours"]
                               .value<uint16_t>()

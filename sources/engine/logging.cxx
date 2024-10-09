@@ -34,9 +34,9 @@ namespace logging
     void Logging::active_type(const std::string &p_type)
     {
         m_logger = [&]() -> std::shared_ptr<spdlog::logger> {
-            if (p_type == "day") {
+            if (p_type == "daily") {
                 return spdlog::daily_logger_mt<spdlog::async_factory>(
-                    "day",
+                    "daily",
                     m_config.get_log().name,
                     m_config.get_log().daily_settings.hours,
                     m_config.get_log().daily_settings.minutes,
