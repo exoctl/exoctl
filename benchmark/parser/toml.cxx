@@ -1,37 +1,36 @@
 #include <parser/toml.hxx>
 
-BENCHMARK_DEFINE_F(TomlBenchmark, TomlParserFile)(benchmark::State &state)
+BENCHMARK_DEFINE_F(TomlBenchmark, TomlParse)(benchmark::State &state)
 {
+    static constexpr std::string_view some_toml = R"(
+        [project]
+        name = "Engine"
+        version = 1
+       )"sv;
+
     for (const auto _ : state)
-        toml->parser_file("./configuration.toml");
+        toml->parse_buffer(some_toml);
 }
 
 BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblString)(benchmark::State &state)
 {
     for (const auto _ : state) {
-        std::string tbl_string = toml->get_tbl_string("project", "name");
+        std::string tbl_string =
+            toml->get_tbl()["project"]["name"].value<std::string>().value();
         benchmark::DoNotOptimize(tbl_string);
     }
 }
 
-BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblUint16T)(benchmark::State &state)
+BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblUint16)(benchmark::State &state)
 {
     for (const auto _ : state) {
-        std::uint16_t test_short = toml->toml_get_tbl_uint16_t("log", "level");
+        std::uint16_t test_short = toml->get_tbl()["project"]["version"]
+                                       .value<std::uint16_t>()
+                                       .value();
         benchmark::DoNotOptimize(test_short);
     }
 }
 
-BENCHMARK_DEFINE_F(TomlBenchmark, TomlGetTblArray)(benchmark::State &state)
-{
-    for (const auto _ : state) {
-        toml::array array_test =
-            toml->get_tbl_array("crow", "websocket_conn_whitelist");
-        benchmark::DoNotOptimize(array_test);
-    }
-}
-
-BENCHMARK_REGISTER_F(TomlBenchmark, TomlParserFile);
+BENCHMARK_REGISTER_F(TomlBenchmark, TomlParse);
 BENCHMARK_REGISTER_F(TomlBenchmark, TomlGetTblString);
-BENCHMARK_REGISTER_F(TomlBenchmark, TomlGetTblUint16T);
-BENCHMARK_REGISTER_F(TomlBenchmark, TomlGetTblArray);
+BENCHMARK_REGISTER_F(TomlBenchmark, TomlGetTblUint16);

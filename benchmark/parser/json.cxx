@@ -36,26 +36,12 @@ BENCHMARK_DEFINE_F(JsonBenchmark, JsonAddMemberBool)(benchmark::State &state)
 
 BENCHMARK_DEFINE_F(JsonBenchmark, JsonAddMemberJson)(benchmark::State &state)
 {
-    Parser::Json inner_json;
-    inner_json.add_member_string("inner_name", "inner_value");
+    parser::Json json_2;
+
+    json_2.add_member_bool("is_match", true);
 
     for (const auto _ : state) {
-        json->add_member_json("inner_object", inner_json);
-        benchmark::DoNotOptimize(json);
-    }
-}
-
-BENCHMARK_DEFINE_F(JsonBenchmark, JsonAddMemberVector)(benchmark::State &state)
-{
-    std::vector<Parser::Json> json_vector;
-    for (int i = 0; i < 5; ++i) {
-        Parser::Json item;
-        item.add_member_string("item_name", "value_" + std::to_string(i));
-        json_vector.push_back(item);
-    }
-
-    for (const auto _ : state) {
-        json->add_member_vector("json_array", json_vector);
+        json->add_member_json("json", json_2);
         benchmark::DoNotOptimize(json);
     }
 }
@@ -81,6 +67,5 @@ BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberInt);
 BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberDouble);
 BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberBool);
 BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberJson);
-BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberVector);
 BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberUInt16);
 BENCHMARK_REGISTER_F(JsonBenchmark, JsonAddMemberUInt64);

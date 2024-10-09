@@ -21,7 +21,7 @@ include_directories(
 
 
 add_subdirectory(crypto/)
-add_subdirectory(data/)
+add_subdirectory(crowapp/focades/data/)
 add_subdirectory(parser/)
 add_subdirectory(../libraries/fmt ${CMAKE_BINARY_DIR}/libraries/fmt)
 add_subdirectory(../libraries/benchmark/ ${CMAKE_BINARY_DIR}/libraries/benchmark)

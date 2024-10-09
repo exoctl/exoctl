@@ -31,19 +31,22 @@ namespace configuration
             } Yara;
         } // namespace yara
 
-        namespace clamav
+        namespace av
         {
-            namespace database
+            namespace clamav
             {
-                struct Database {
-                    std::string default_path;
-                };
-            } // namespace database
+                namespace database
+                {
+                    struct Database {
+                        std::string default_path;
+                    };
+                } // namespace database
 
-            typedef struct Clamav {
-                database::Database database;
-            } Clamav;
-        } // namespace clamav
+                typedef struct Clamav {
+                    database::Database database;
+                } Clamav;
+            } // namespace clamav
+        } // namespace av
 
         namespace sig
         {

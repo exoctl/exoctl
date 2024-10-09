@@ -1,4 +1,4 @@
-#include <data/metadata.hxx>
+#include <crowapp/focades/data/metadata.hxx>
 #include <fmt/core.h>
 
 BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
@@ -9,7 +9,7 @@ BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
         benchmark::DoNotOptimize(test_string);
 
         metadata->parse(test_string,
-                                 [&](focades::Data::Structs::DTO *p_dto) {
+                                 [&](focades::data::metadata::record::DTO *p_dto) {
                                      benchmark::DoNotOptimize(p_dto);
                                  });
     }

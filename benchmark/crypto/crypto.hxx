@@ -9,7 +9,7 @@ class CryptoBenchmark : public benchmark::Fixture
   public:
     void SetUp(const ::benchmark::State &state) override
     {
-        sha = new Crypto::Sha();
+        sha = new crypto::Sha();
     }
 
     void TearDown(const ::benchmark::State &state) override
@@ -17,5 +17,5 @@ class CryptoBenchmark : public benchmark::Fixture
         delete sha;
     }
 
-    Crypto::Sha *sha;
+    crypto::Sha *sha;
 };

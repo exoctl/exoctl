@@ -16,7 +16,7 @@ namespace configuration
         load_sig();
         load_cache();
         load_log();
-        load_clamav();
+        load_av_clamav();
     }
 
     Configuration::~Configuration()
@@ -33,9 +33,9 @@ namespace configuration
         return m_cache;
     }
 
-    const record::clamav::Clamav &Configuration::get_clamav() const
+    const record::av::clamav::Clamav &Configuration::get_av_clamav() const
     {
-        return m_clamav;
+        return m_av_clamav;
     }
 
     const record::Project &Configuration::get_project() const
@@ -72,12 +72,12 @@ namespace configuration
                 m_toml.get_tbl()["cache"]["path"].value<std::string>().value()};
     }
 
-    void Configuration::load_clamav()
+    void Configuration::load_av_clamav()
     {
-        m_clamav = (record::clamav::Clamav){
+        m_av_clamav = (record::av::clamav::Clamav){
             .database = {
                 .default_path =
-                    m_toml.get_tbl()["clamav"]["database"]["default_path"]
+                    m_toml.get_tbl()["av"]["clamav"]["database"]["default_path"]
                         .value<std::string>()
                         .value()}};
     }

@@ -9,7 +9,7 @@ malware_path = "rules/yara/malwares"
 packed_path = "rules/yara/packeds"
 cve_path = "rules/yara/cve"
 
-[clamav]
+[av.clamav]
 database.default_path = "rules/clamav/default"
 
 [sig.rules]

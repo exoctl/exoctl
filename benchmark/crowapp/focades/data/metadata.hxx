@@ -1,7 +1,7 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
-#include <engine/crowapp/focades/data/metadata.hxx>
+#include <engine/crowapp/focades/data/metadata/metadata.hxx>
 #include <string>
 
 class MetadataBenchmark : public benchmark::Fixture
@@ -9,7 +9,7 @@ class MetadataBenchmark : public benchmark::Fixture
   public:
     void SetUp(const ::benchmark::State &state) override
     {
-        metadata = new focades::Data::Metadata();
+        metadata = new focades::data::Metadata();
     }
 
     void TearDown(const ::benchmark::State &state) override
@@ -17,5 +17,5 @@ class MetadataBenchmark : public benchmark::Fixture
         delete metadata;
     }
 
-    focades::Data::Metadata *metadata;
+    focades::data::Metadata *metadata;
 };
