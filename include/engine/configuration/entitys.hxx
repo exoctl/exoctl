@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
 #include <cstdint>
 #include <engine/parser/toml.hxx>
+#include <string>
 
 namespace configuration
 {
@@ -15,44 +15,100 @@ namespace configuration
             std::string copyright;
         } Project;
 
-        typedef struct Yara {
-            std::string malware_rules;
-            std::string packeds_rules;
-            std::string cve_rules;
-        } Yara;
+        namespace yara
+        {
+            struct Rule {
+                std::string malware_path;
+                std::string packed_path;
+                std::string cve_path;
+            };
 
-        typedef struct Clamav {
-            std::string default_database;
-        } Clamav;
+            typedef struct Yara {
+                Rule rules; // Seção de regras
+            } Yara;
+        } // namespace yara
 
-        typedef struct Sig {
-            std::string packeds_rules;
-        } Sig;
+        namespace clamav
+        {
+            struct Database {
+                std::string default_path;
+            };
 
-        typedef struct Log {
-            std::string name;
-            bool console;
-            uint16_t level;
-            uint16_t trace;
-            std::string type;
-            uint16_t max_files;
-            uint16_t hours; // for 'day' type
-            uint16_t minutes;
-            uint16_t max_size; // for 'rotating' type
-        } Log;
+            typedef struct Clamav {
+                Database database;
+            } Clamav;
+        } // namespace clamav
 
-        typedef struct CrowApp {
-            std::string bindaddr;
-            uint16_t port;
-            uint16_t threads;
-            toml::array context_whitelist;
-            std::string ssl_file_pem;
-        } CrowApp;
+        namespace sig
+        {
+            struct Rules {
+                std::string packed_path;
+            };
 
-        typedef struct Cache {
-            std::string type;
-            std::string name;
-        } Cache;
+            typedef struct Sig {
+                Rules rules; // Seção de regras
+            } Sig;
+        } // namespace sig
+
+        namespace log
+        {
+            typedef struct Daily {
+                uint16_t hours;
+                uint16_t minutes;
+                uint16_t max_size; // for 'rotating' type
+            } Daily;
+
+            typedef struct Rotation {
+                uint16_t max_files;
+                uint16_t max_size;
+            } Rotation;
+
+            typedef struct TraceUpdates {
+                uint16_t interval;
+            } TraceUpdates;
+
+            typedef struct Log {
+                std::string name;
+                bool console;
+                uint16_t level;
+                TraceUpdates trace;
+                std::string type;
+                Daily daily_settings;
+                Rotation rotation_settings;
+            } Log;
+
+        } // namespace log
+
+        namespace crowapp
+        {
+            namespace server
+            {
+                typedef struct Context {
+                    toml::array whitelist;
+                } Context;
+
+                typedef struct Server {
+                    std::string bindaddr;
+                    uint16_t port;
+                    uint16_t threads;
+                    std::string ssl_certificate_path;
+                    Context context;
+                } Server;
+
+            } // namespace server
+
+            typedef struct CrowApp {
+                server::Server server;
+            } CrowApp;
+        } // namespace crowapp
+
+        namespace cache
+        {
+            typedef struct Cache {
+                std::string type;
+                std::string path;
+            } Cache;
+        } // namespace cache
 
     } // namespace record
 } // namespace configuration

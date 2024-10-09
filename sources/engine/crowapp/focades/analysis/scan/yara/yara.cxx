@@ -22,12 +22,13 @@ namespace focades
             {
                 m_yara.load_rules([&]() {
                     m_yara.load_rules_folder(
-                        m_config.get_yara().cve_rules); // rules for cve
+                        m_config.get_yara().rules.cve_path); // rules for cve
                     m_yara.load_rules_folder(
                         m_config.get_yara()
-                            .malware_rules); // rules for malwares
+                            .rules.malware_path); // rules for malwares
                     m_yara.load_rules_folder(
-                        m_config.get_yara().packeds_rules); // rules for packeds
+                        m_config.get_yara()
+                            .rules.packed_path); // rules for packeds
                     /* implement based demand */
                 });
 

@@ -16,12 +16,12 @@ namespace crowapp
     void CrowApp::run()
     {
         m_app
-            .bindaddr(m_config.get_crowapp().bindaddr)
+            .bindaddr(m_config.get_crowapp().server.bindaddr)
 #if CROW_OPENSSL
-            .ssl_file(m_config.get_crowapp().ssl_file_pem)
+            .ssl_file(m_config.get_crowapp().server.ssl_certificate_path)
 #endif
-            .port(m_config.get_crowapp().port)
-            .concurrency(m_config.get_crowapp().threads)
+            .port(m_config.get_crowapp().server.port)
+            .concurrency(m_config.get_crowapp().server.threads)
             .run();
     }
 
@@ -32,7 +32,7 @@ namespace crowapp
 
     const uint16_t CrowApp::get_concurrency()
     {
-        return m_config.get_crowapp().threads;
+        return m_config.get_crowapp().server.threads;
     }
 
     configuration::Configuration &CrowApp::get_config()
@@ -52,11 +52,11 @@ namespace crowapp
 
     const std::string &CrowApp::get_bindaddr()
     {
-        return m_config.get_crowapp().bindaddr;
+        return m_config.get_crowapp().server.bindaddr;
     }
 
     const uint16_t &CrowApp::get_port()
     {
-        return m_config.get_crowapp().port;
+        return m_config.get_crowapp().server.port;
     }
 }; // namespace crowapp

@@ -53,7 +53,7 @@ namespace crowapp
                         const crow::request *p_request)
                     {
                         for (const auto &list :
-                             m_config.get_crowapp().context_whitelist)
+                             m_config.get_crowapp().server.context.whitelist)
                             if (const auto str = list.as_string()) {
                                 if (p_request->remote_ip_address == str->get())
                                     return true;

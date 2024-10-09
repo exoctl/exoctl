@@ -12,27 +12,26 @@ namespace configuration
         ~Configuration();
 
         void load();
-        const std::string &get_path_config() const ;
-        const record::Cache &get_cache() const;
-        const record::Clamav &get_clamav() const;
+        const std::string &get_path_config() const;
+        const record::cache::Cache &get_cache() const;
+        const record::clamav::Clamav &get_clamav() const;
         const record::Project &get_project() const;
-        const record::Yara &get_yara() const;
-        const record::Log &get_log() const;
-        const record::Sig &get_sig() const;
-        const record::CrowApp &get_crowapp() const;
-
+        const record::yara::Yara &get_yara() const;
+        const record::log::Log &get_log() const;
+        const record::sig::Sig &get_sig() const;
+        const record::crowapp::CrowApp &get_crowapp() const;
 
       private:
         const std::string m_path_config;
         parser::Toml m_toml;
-        
-        record::Cache m_cache;
-        record::Clamav m_clamav;
+
+        record::cache::Cache m_cache;
+        record::clamav::Clamav m_clamav;
         record::Project m_project;
-        record::Yara m_yara;
-        record::Log m_log;
-        record::Sig m_sig;
-        record::CrowApp m_crowapp;
+        record::yara::Yara m_yara;
+        record::log::Log m_log;
+        record::sig::Sig m_sig;
+        record::crowapp::CrowApp m_crowapp;
 
         void load_cache();
         void load_clamav();

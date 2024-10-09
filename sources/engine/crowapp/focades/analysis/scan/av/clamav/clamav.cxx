@@ -24,7 +24,7 @@ namespace focades
                 {
                     m_clamav.load_rules([&]() {
                         m_clamav.set_db_rule_fd(
-                            m_config.get_clamav().default_database,
+                            m_config.get_clamav().database.default_path,
                             CL_DB_STDOPT);
                     });
 

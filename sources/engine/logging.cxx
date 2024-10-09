@@ -12,7 +12,7 @@ namespace logging
         : m_config(p_config)
     {
         Logging::active_type(m_config.get_log().type);
-        Logging::active_trace(m_config.get_log().trace);
+        Logging::active_trace(m_config.get_log().trace.interval);
         Logging::active_level(m_config.get_log().level);
         Logging::active_console(m_config.get_log().console);
     }
@@ -38,16 +38,16 @@ namespace logging
                 return spdlog::daily_logger_mt<spdlog::async_factory>(
                     "day",
                     m_config.get_log().name,
-                    m_config.get_log().hours,
-                    m_config.get_log().minutes,
+                    m_config.get_log().daily_settings.hours,
+                    m_config.get_log().daily_settings.minutes,
                     false,
-                    m_config.get_log().max_files);
+                    m_config.get_log().daily_settings.max_size);
             } else if (p_type == "rotation") {
                 return spdlog::rotating_logger_mt<spdlog::async_factory>(
                     "rotation",
                     m_config.get_log().name,
-                    m_config.get_log().max_size,
-                    m_config.get_log().max_files);
+                    m_config.get_log().rotation_settings.max_size,
+                    m_config.get_log().rotation_settings.max_files);
             }
 
             /* default logger */
