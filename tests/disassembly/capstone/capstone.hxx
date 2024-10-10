@@ -9,7 +9,7 @@ class CapstoneTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        capstone = new Disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
+        capstone = new disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
     }
 
     void TearDown() override
@@ -17,5 +17,5 @@ class CapstoneTest : public ::testing::Test
         delete capstone;
     }
 
-    Disassembly::Capstone *capstone;
+    disassembly::Capstone *capstone;
 };

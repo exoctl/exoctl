@@ -10,7 +10,7 @@ class MagicTest : public ::testing::Test
     // O método SetUp será chamado antes de cada teste
     void SetUp() override
     {
-        magic = new Magic::Magic();
+        magic = new magic::Magic();
     }
 
     // O método TearDown será chamado após cada teste
@@ -19,5 +19,5 @@ class MagicTest : public ::testing::Test
         delete magic;
     }
 
-    Magic::Magic *magic;
+    magic::Magic *magic;
 };

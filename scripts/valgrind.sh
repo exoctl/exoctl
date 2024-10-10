@@ -1,0 +1,1 @@
+valgrind --leak-check=full --track-origins=yes --log-file=valgrind.log $1

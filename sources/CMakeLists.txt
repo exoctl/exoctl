@@ -1,8 +1,6 @@
 set(FLAGS_OPTIMIZATIONS OFF)
 set(FLAGS_DEBUG ON)
 
-option(LIEF_TESTS "Build LIEF tests" OFF)
-
 include_directories(
     ../include
     ../libraries

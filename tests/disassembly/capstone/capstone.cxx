@@ -1,5 +1,5 @@
 #include <disassembly/capstone/capstone.hxx>
-#include <engine/disassembly/capstone/capstone_exception.hxx>
+#include <engine/disassembly/capstone/exception.hxx>
 
 TEST_F(CapstoneTest, CapstoneDisassembly)
 {
@@ -7,7 +7,7 @@ TEST_F(CapstoneTest, CapstoneDisassembly)
     EXPECT_NO_THROW(capstone->disassembly(
         reinterpret_cast<const uint8_t *>(opcode.data()),
         opcode.size(),
-        [&](const Disassembly::Struct::Data *p_data, size_t index) {
+        [&](const disassembly::capstone::record::Data *p_data, size_t index) {
             ASSERT_EQ("ret", std::string(p_data->insn[index].mnemonic));
             ASSERT_EQ(1, p_data->insn[index].size);
             ASSERT_GE(p_data->insn[index].address, 0x0);

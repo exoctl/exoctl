@@ -3,13 +3,21 @@
 #include <engine/parser/toml.hxx>
 #include <gtest/gtest.h>
 
+using namespace std::string_view_literals;
+
 class TomlTest : public ::testing::Test
 {
   protected:
     void SetUp() override
     {
-        toml = new Parser::Toml();
-        toml->parser_file("./configuration.toml");
+        static constexpr std::string_view some_toml = R"(
+        [project]
+        name = "Engine"
+        version = 1
+        )"sv;
+
+        toml = new parser::Toml();
+        toml->parse_buffer(some_toml);
     }
 
     void TearDown() override
@@ -17,5 +25,5 @@ class TomlTest : public ::testing::Test
         delete toml;
     }
 
-    Parser::Toml *toml;
+    parser::Toml *toml;
 };
