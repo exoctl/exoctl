@@ -11,9 +11,6 @@ namespace crowapp
         Analysis::Analysis(CrowApp &p_crow)
             : m_crowapp(p_crow), m_map(BASE_ANALYSIS)
         {
-            LOG(m_crowapp.get_log(),
-                info,
-                "Preparing gateway analysis routes ...");
             Analysis::prepare();
 
             // add new routes
@@ -52,11 +49,9 @@ namespace crowapp
                             "/usr/bin/ls",
                             [&](focades::analysis::scan::av::clamav::record::DTO
                                     *p_dto) {
-
                                 av.add_member_json(
                                     "clamav",
                                     m_scan_av_clamav->dto_json(p_dto));
-                                
                             });
 
                         json.add_member_json("av", av);
@@ -121,6 +116,10 @@ namespace crowapp
 
         void Analysis::prepare()
         {
+            LOG(m_crowapp.get_log(),
+                info,
+                "Preparing gateway analysis routes ...");
+
             m_scan_yara = std::make_unique<focades::analysis::scan::Yara>(
                 m_crowapp.get_config());
             m_scan_av_clamav =

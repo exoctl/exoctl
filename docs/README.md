@@ -41,7 +41,7 @@ This API provides WebSocket-based endpoints for scanning data and searching with
 
 In the file [configuration.toml](../configuration.toml), you can modify the `crow=whitelist` setting to control whether a connection is accepted based on the IP address. If an IP address is not included in the whitelist, the connection will be rejected.
 
-#### 1. analysis/scan
+#### 0. analysis/scan
 - **Route:** `<version>/engine/analysis/scan`
 - **Type:** WebSocket
 - **Description:** Endpoint for scanning all.
@@ -135,9 +135,9 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onerror:** 
 
 #### 3. capstone/x86_64 or arm_64
-- **Route:** `<version>/engine/rev/disassembly/capstone/<x86_64><arm_64>`
+- **Route:** `<version>/engine/rev/disassembly/capstone/<x64><arm64>`
 - **Type:** WebSocket
-- **Description:** Endpoint for generate disassembly x86_64 or arm_64
+- **Description:** Endpoint for generate disassembly x64 or arm64
 - **Handlers:**
   - **onaccept:**
   - **onopen:** 
@@ -171,45 +171,6 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   ```
   - **onclose:** 
   - **onerror:** 
-
-#### 4. debug/endpoints
-- **Route:** `<version>/engine/debug/endpoints`
-- **Type:** Web
-- **Description:** Endpoint for generate endpoints loaded
-- **Response:**
-```json
-{
-  "/v1/engine/analysis/scan/yara": {
-    "path": "/v1/engine/analysis/scan/yara",
-    "type": 0,
-    "connections": 0
-  },
-  "/v1/engine/data/metadata": {
-    "path": "/v1/engine/data/metadata",
-    "type": 0,
-    "connections": 0
-  },
-  "/v1/engine/rev/disassembly/capstone/x86_64": {
-    "path": "/v1/engine/rev/disassembly/capstone/x86_64",
-    "type": 0,
-    "connections": 0
-  }
-  "/v1/engine/parser/binary/elf": {
-    "path": "/v1/engine/parser/binary/elf",
-    "type": 0,
-    "connections": 0
-  },
-  "/v1/engine/debug/endpoints": {
-    "path": "/v1/engine/debug/endpoints",
-    "type": 1
-  }
-  <...>
-}
-```
-- **Details:**
-  - **`type` Values:**
-    - `0`: Websocket
-    - `1`: Web
 
 #### 5. scan/av/clamav
 - **Route:** `<version>/engine/analysis/scan/av/clamav`

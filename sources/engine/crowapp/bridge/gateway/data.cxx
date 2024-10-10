@@ -7,9 +7,6 @@ namespace crowapp
         Data::Data(CrowApp &p_crowapp)
             : m_crowapp(p_crowapp), m_map(BASE_DATA)
         {
-            LOG(m_crowapp.get_log(),
-                info,
-                "Preparing gateway data routes ...");
             Data::prepare();
 
             // add new routes
@@ -48,6 +45,9 @@ namespace crowapp
 
         void Data::prepare()
         {
+            LOG(m_crowapp.get_log(),
+                info,
+                "Preparing gateway data routes ...");
             m_data_metadata = std::make_unique<focades::data::Metadata>();
         }
 

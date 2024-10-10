@@ -7,7 +7,7 @@
 #include <engine/interfaces/igateway.hxx>
 #include <memory>
 
-#define BASE_REV API_PREFIX "/data"
+#define BASE_REV API_PREFIX "/rev"
 
 namespace crowapp
 {

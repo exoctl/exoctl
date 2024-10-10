@@ -11,82 +11,12 @@ namespace crowapp
     {
         m_analysis = std::make_unique<bridge::Analysis>(m_crowapp);
         m_data = std::make_unique<bridge::Data>(m_crowapp);
+        m_rev = std::make_unique<bridge::Rev>(m_crowapp);
     }
 
     Bridge::~Bridge()
     {
     }
-
-    // DEFINE_ROUTE(
-    //     CAPSTONE_DISASS_X86_64, "/rev", "/disassembly", "/capstone",
-    //     "/x86_64")
-    // void Bridge::capstone_disass_x86_64()
-    //{
-    //     m_capstone_x86_64 =
-    //         std::make_unique<focades::rev::disassembly::Capstone>(CS_ARCH_X86,
-    //                                                               CS_MODE_64);
-    //
-    //    m_socket_capstone_disass_x86_64 =
-    //    std::make_unique<crowapp::bridge::WebSocket>(
-    //        m_crow,
-    //        ROUTE_CAPSTONE_DISASS_X86_64,
-    //        UINT64_MAX,
-    //        [&](bridge::websocket::Context &p_context,
-    //            crow::websocket::connection &p_conn,
-    //            const std::string &p_data,
-    //            bool p_is_binary) {
-    //            if (p_is_binary) {
-    //                m_capstone_x86_64->disassembly(
-    //                    p_data,
-    //                    [&](focades::rev::disassembly::capstone::record::DTO
-    //                    *p_dto) {
-    //                        p_context.broadcast(
-    //                            &p_conn,
-    //                            m_capstone_x86_64->dto_json(p_dto)
-    //                                .to_string());
-    //                    });
-    //            } else {
-    //                p_context.broadcast(&p_conn,
-    //                                         "{\"status\": \"error\"}");
-    //            }
-    //        });
-    //}
-    //
-    // DEFINE_ROUTE(
-    //    CAPSTONE_DISASS_ARM64, "/rev", "/disassembly", "/capstone", "/arm_64")
-    // void Bridge::capstone_disass_arm_64()
-    //{
-    //    m_capstone_arm_64 =
-    //        std::make_unique<focades::rev::disassembly::Capstone>(CS_ARCH_ARM64,
-    //                                                              CS_MODE_ARM);
-    //
-    //    m_socket_capstone_disass_arm_64 = std::make_unique<bridge::WebSocket>(
-    //        m_crow,
-    //        ROUTE_CAPSTONE_DISASS_ARM64,
-    //        UINT64_MAX,
-    //        [&](bridge::websocket::Context &p_context,
-    //            crow::websocket::connection &p_conn,
-    //            const std::string &p_data,
-    //            bool p_is_binary) {
-    //            if (p_is_binary) {
-    //
-    //                m_capstone_arm_64->disassembly(
-    //                    p_data,
-    //                    [&](focades::rev::disassembly::capstone::record::DTO
-    //                    *p_dto) {
-    //                        p_context.broadcast(
-    //                            &p_conn,
-    //                            m_capstone_arm_64->dto_json(p_dto)
-    //                                .to_string());
-    //                    });
-    //
-    //            } else {
-    //                p_context.broadcast(&p_conn,
-    //                                         "{\"status\": \"error\"}");
-    //            }
-    //        });
-    //}
-    //
 
     // DEFINE_ROUTE(PARSER_ELF, "/parser", "/binary", "/elf")
     // void Bridge::parser_elf()
@@ -111,43 +41,15 @@ namespace crowapp
     //        });
     //}
 
-    // #ifdef DEBUG
-    //
-    //     DEFINE_ROUTE(ROUTES, "/debug", "/endpoints")
-    //     void Bridge::endpoint()
-    //     {
-    //         m_web_endpoins = std::make_unique<bridge::Web<>>(
-    //             m_crow, ROUTE_ROUTES, [&](const crow::request &p_req) {
-    //                 parser::Json endpoints;
-    //
-    //                 const auto &routes = Bridge::get_endpoints();
-    //                 for (const auto &route : routes) {
-    //                     parser::Json endpoint;
-    //                     endpoint.add_member_string("path", route.path);
-    //                     endpoint.add_member_int("type", route.type);
-    //                     if (route.type == bridge::type::Bridge::websocket)
-    //                         endpoint.add_member_int("connections",
-    //                                                      route.connections);
-    //
-    //                     endpoints.add_member_json(route.path, endpoint);
-    //                 }
-    //
-    //                 return endpoints.to_string();
-    //             });
-    //     }
-    //
-    // #endif
-
     void Bridge::load()
     {
-        LOG(m_crowapp.get_log(), info, "Initializing Gateways ... ");
+        LOG(m_crowapp.get_log(), info, "Loading Gateways ... ");
+        
         TRY_BEGIN()
+
         m_analysis->load();
         m_data->load();
-
-#if DEBUG
-        // GET_ROUTE(endpoint);
-#endif
+        m_rev->load();
 
         TRY_END()
         CATCH(std::bad_alloc, {
