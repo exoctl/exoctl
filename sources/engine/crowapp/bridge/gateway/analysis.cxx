@@ -38,6 +38,7 @@ namespace crowapp
                         const std::string &p_data,
                         bool p_is_binary) {
                         parser::Json json;
+                        parser::Json av;
 
                         m_scan_yara->scan_fast_bytes(
                             p_data,
@@ -48,15 +49,17 @@ namespace crowapp
                             });
 
                         m_scan_av_clamav->scan_fast_bytes(
-                            "/home/mob/Downloads/"
-                            "ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
+                            "/usr/bin/ls",
                             [&](focades::analysis::scan::av::clamav::record::DTO
                                     *p_dto) {
-                                json.add_member_json(
-                                    "av/clamav",
+
+                                av.add_member_json(
+                                    "clamav",
                                     m_scan_av_clamav->dto_json(p_dto));
+                                
                             });
 
+                        json.add_member_json("av", av);
                         p_context.broadcast(&p_conn, json.to_string());
                     });
             });

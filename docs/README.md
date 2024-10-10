@@ -41,7 +41,7 @@ This API provides WebSocket-based endpoints for scanning data and searching with
 
 In the file [configuration.toml](../configuration.toml), you can modify the `crow=whitelist` setting to control whether a connection is accepted based on the IP address. If an IP address is not included in the whitelist, the connection will be rejected.
 
-#### 1. scan/yara
+#### 1. analysis/scan
 - **Route:** `<version>/engine/analysis/scan`
 - **Type:** WebSocket
 - **Description:** Endpoint for scanning all.
@@ -54,18 +54,22 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
   - **onmessage:**
   ```json
   {
-    "yara":
     {
-      "ns":"",
-      "rule":"",
-      "match_status":0
-    },
-    "av/clamav":
-    {
-      "virname":"",
-      "math_status":0
+      "yara":
+      {
+        "ns":"",
+        "rule":"",
+        "match_status":0
+      },
+      "av":
+      {
+        "clamav":
+        {
+          "virname":"",
+          "math_status":0
+        }
+      }
     }
-
     <...>
   }
   ```
