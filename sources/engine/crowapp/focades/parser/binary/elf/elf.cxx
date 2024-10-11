@@ -68,6 +68,10 @@ namespace focades
                     sec.add_member_string(
                         "virtual_address",
                         fmt::format("{:x}", section.virtual_address()));
+                    sec.add_member_string(
+                        "offset", fmt::format("{:x}", section.offset()));
+                    sec.add_member_string("size",
+                                          fmt::format("{:x}", section.size()));
 
                     sections.push_back(sec);
                 }
