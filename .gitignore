@@ -10,6 +10,7 @@ documentation/doxygen/*
 tests/*.sqlite3
 tests/inspector
 *~
+.cache
 *.autosave
 *.a
 *.core
