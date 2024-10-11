@@ -32,7 +32,6 @@ add_subdirectory(../libraries/capstone-engine/ ${CMAKE_BINARY_DIR}/libraries/cap
 add_subdirectory(../libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson)
 add_subdirectory(../libraries/tomlplusplus ${CMAKE_BINARY_DIR}/libraries/tomlplusplus)
 
-
 add_executable(tests_engine tests_engine.cxx)
 target_link_libraries(tests_engine
     tests_crypto
@@ -41,4 +40,7 @@ target_link_libraries(tests_engine
     tests_toml
     tests_yara
     GTest::gtest
-    fmt)
+    fmt
+)
+enable_testing()
+add_test(NAME TestsEngine COMMAND tests_engine)

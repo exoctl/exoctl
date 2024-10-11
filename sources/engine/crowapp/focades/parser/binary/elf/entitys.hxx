@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/parser/binary/elf.hxx>
-#include <string>
+#include <vector>
 
 namespace focades
 {
@@ -15,6 +15,7 @@ namespace focades
                 {
                     typedef struct DTO {
                         LIEF::ELF::Header header;
+                        std::vector<LIEF::ELF::Section> sections;
                     } DTO;
                 } // namespace record
             } // namespace elf

@@ -31,23 +31,48 @@ namespace focades
 
                             dto->header = p_elf.get()->header();
 
+                            dto->sections.reserve(
+                                p_elf.get()->sections().size());
+                            std::move(p_elf.get()->sections().begin(),
+                                      p_elf.get()->sections().end(),
+                                      std::back_inserter(dto->sections));
+
                             p_callback(dto);
                             delete dto;
                         }
                     });
             }
-            const ::parser::Json ELF::dto_json(
-                binary::elf::record::DTO *p_dto)
+
+            const ::parser::Json ELF::dto_json(binary::elf::record::DTO *p_dto)
             {
                 ::parser::Json elf;
-                
+
                 if (!IS_NULL(p_dto)) {
 
-                    elf.add_member_json("header",
-                                             ELF::header_json(p_dto));
+                    elf.add_member_json("header", ELF::header_json(p_dto));
+                    elf.add_member_vector("sections",
+                                          ELF::sections_json(p_dto));
                 }
 
                 return elf;
+            }
+
+            std::vector<::parser::Json> ELF::sections_json(
+                binary::elf::record::DTO *p_dto)
+            {
+                std::vector<::parser::Json> sections;
+
+                for (const auto &section : p_dto->sections) {
+                    ::parser::Json sec;
+                    sec.add_member_string("name", section.name());
+                    sec.add_member_string(
+                        "virtual_address",
+                        fmt::format("{:x}", section.virtual_address()));
+
+                    sections.push_back(sec);
+                }
+
+                return sections;
             }
 
             ::parser::Json ELF::header_json(binary::elf::record::DTO *p_dto)

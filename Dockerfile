@@ -6,7 +6,6 @@ RUN apt-get update && apt-get install -y \
     git \
     libasio-dev \ 
     libyara-dev \ 
-    libpqxx-dev \
     libsqlite3-dev
 
 WORKDIR /usr/sources/

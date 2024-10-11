@@ -25,7 +25,7 @@ namespace parser
     }
 
     void Json::add_member_string(const std::string &p_key,
-                                      const std::string &p_value)
+                                 const std::string &p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         rapidjson::Value v(p_value.c_str(), m_allocator);
@@ -39,35 +39,32 @@ namespace parser
     }
 
     void Json::add_member_uint16(const std::string &p_key,
-                                      const uint16_t p_value)
+                                 const uint16_t p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         m_document.AddMember(k, p_value, m_allocator);
     }
 
     void Json::add_member_uint64(const std::string &p_key,
-                                      const uint64_t p_value)
+                                 const uint64_t p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         m_document.AddMember(k, p_value, m_allocator);
     }
 
-    void Json::add_member_double(const std::string &p_key,
-                                      const double p_value)
+    void Json::add_member_double(const std::string &p_key, const double p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         m_document.AddMember(k, p_value, m_allocator);
     }
 
-    void Json::add_member_bool(const std::string &p_key,
-                                    const bool p_value)
+    void Json::add_member_bool(const std::string &p_key, const bool p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         m_document.AddMember(k, p_value, m_allocator);
     }
 
-    void Json::add_member_json(const std::string &p_key,
-                                    const Json &p_value)
+    void Json::add_member_json(const std::string &p_key, const Json &p_value)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         rapidjson::Value v;
@@ -76,7 +73,7 @@ namespace parser
     }
 
     void Json::add_member_vector(const std::string &p_key,
-                                      const std::vector<Json> &p_values)
+                                 const std::vector<Json> &p_values)
     {
         rapidjson::Value k(p_key.c_str(), m_allocator);
         rapidjson::Value array(rapidjson::kArrayType);
@@ -94,4 +91,4 @@ namespace parser
     {
         return m_document;
     }
-} // namespace Parser
+} // namespace parser

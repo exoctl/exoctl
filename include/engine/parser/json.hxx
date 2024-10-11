@@ -27,6 +27,7 @@ namespace parser
                                     const std::vector<Json> &);
         void add_member_uint16(const std::string &, const uint16_t);
         void add_member_uint64(const std::string &, const uint64_t);
+        void clear();
 
         [[nodiscard]] rapidjson::Document &get_document();
 

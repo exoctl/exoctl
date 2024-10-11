@@ -26,6 +26,8 @@ namespace crowapp
 
         void Parser::prepare()
         {
+            LOG(m_crowapp.get_log(), info, "Preparing gateway parser routes ...");
+
             m_parser_elf = std::make_unique<focades::parser::binary::ELF>();
         }
 
