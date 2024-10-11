@@ -197,3 +197,82 @@ In the file [configuration.toml](../configuration.toml), you can modify the `cro
     - `0`: Benign
     - `1`: Malicious
     - `2`: None
+
+#### 6. binary/elf
+- **Route:** `<version>/engine/parser/binary/elf`
+- **Type:** WebSocket
+- **Description:** Endpoint for parser elf.
+- **Handlers:**
+  - **onaccept:**
+  - **onopen:** 
+  ```json
+  { "status": "ready" }
+  ```
+  - **onmessage:**
+  ```json
+  {
+  "header": {
+    "identity_version": "1",
+    "file_type": "3",
+    "identity_abi_version": "0",
+    "entrypoint": "6d30",
+    "program_headers_offset": "40",
+    "section_headers_offset": "22428",
+    "numberof_segments": "d",
+    "numberof_sections": "1f",
+    "section_name_table_idx": "1e",
+    "program_header_size": "38",
+    "section_header_size": "40",
+    "identity_data": "1",
+    "abstract_endianness": "2",
+    "header_size": "40",
+    "identity": "7f 45 4c 46 2 1 1 0 0 0 0 0 0 0 0 0"
+  },
+  "sections": [
+    {
+      "name": "",
+      "virtual_address": "0",
+      "offset": "0",
+      "size": "0"
+    },
+    {
+      "name": ".interp",
+      "virtual_address": "318",
+      "offset": "318",
+      "size": "1c"
+    },
+    {
+      "name": ".note.gnu.property",
+      "virtual_address": "338",
+      "offset": "338",
+      "size": "30"
+    },
+    {
+      "name": ".note.gnu.build-id",
+      "virtual_address": "368",
+      "offset": "368",
+      "size": "24"
+    },
+    {
+      "name": ".note.ABI-tag",
+      "virtual_address": "38c",
+      "offset": "38c",
+      "size": "20"
+    },
+    {
+      "name": ".gnu.hash",
+      "virtual_address": "3b0",
+      "offset": "3b0",
+      "size": "50"
+    },
+    {
+      "name": ".dynsym",
+      "virtual_address": "400",
+      "offset": "400",
+      "size": "c00"
+    },
+
+    <...>
+  ```
+  - **onclose:** 
+  - **onerror:** 
