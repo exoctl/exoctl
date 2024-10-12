@@ -2,15 +2,15 @@
 
 #include <dlfcn.h>
 
-namespace dlopen
+namespace dll
 {
-    class Dlopen
+    class Dll
     {
       public:
-        Dlopen();
-        ~Dlopen();
+        Dll();
+        ~Dll();
         
       private:
-    
+
     };
 } // namespace dlopen
