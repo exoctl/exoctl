@@ -19,6 +19,6 @@ namespace crowapp
                              // hide Info level logs."
 
       private:
-        CrowApp &m_crow;
+        CrowApp &m_crowapp;
     };
 } // namespace crowapp

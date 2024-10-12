@@ -1,5 +1,3 @@
-#define CROW_MAIN
-
 #include <engine/configuration/configuration.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/engine.hxx>

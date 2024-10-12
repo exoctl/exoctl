@@ -17,7 +17,7 @@ namespace configuration
         const record::av::clamav::Clamav &get_av_clamav() const;
         const record::Project &get_project() const;
         const record::yara::Yara &get_yara() const;
-        const record::log::Log &get_log() const;
+        const record::logging::Logging &get_logging() const;
         const record::sig::Sig &get_sig() const;
         const record::crowapp::CrowApp &get_crowapp() const;
 
@@ -29,7 +29,7 @@ namespace configuration
         record::av::clamav::Clamav m_av_clamav;
         record::Project m_project;
         record::yara::Yara m_yara;
-        record::log::Log m_log;
+        record::logging::Logging m_logging;
         record::sig::Sig m_sig;
         record::crowapp::CrowApp m_crowapp;
 
@@ -39,6 +39,6 @@ namespace configuration
         void load_sig();
         void load_crowapp();
         void load_yara();
-        void load_log();
+        void load_logging();
     };
 } // namespace configuration

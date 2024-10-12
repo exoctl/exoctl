@@ -58,9 +58,4 @@ namespace engine
         CATCH(crowapp::exception::ParcialAbort,
               { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
     }
-
-    const std::vector<crowapp::bridge::record::Bridge> &Engine::get_routes()
-    {
-        return m_crowapp_bridge.get_endpoints();
-    }
 } // namespace engine

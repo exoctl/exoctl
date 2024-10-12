@@ -15,7 +15,7 @@ namespace configuration
         load_yara();
         load_sig();
         load_cache();
-        load_log();
+        load_logging();
         load_av_clamav();
     }
 
@@ -48,9 +48,9 @@ namespace configuration
         return m_yara;
     }
 
-    const record::log::Log &Configuration::get_log() const
+    const record::logging::Logging &Configuration::get_logging() const
     {
-        return m_log;
+        return m_logging;
     }
 
     const record::sig::Sig &Configuration::get_sig() const
@@ -111,6 +111,9 @@ namespace configuration
     void Configuration::load_crowapp()
     {
         m_crowapp = (record::crowapp::CrowApp){
+            .log = {.level = m_toml.get_tbl()["crowapp"]["log"]["level"]
+                                 .value<int>()
+                                 .value()},
             .server = {
                 .bindaddr = m_toml.get_tbl()["crowapp"]["server"]["bindaddr"]
                                 .value<std::string>()
@@ -150,37 +153,37 @@ namespace configuration
                                       .value()}};
     }
 
-    void Configuration::load_log()
+    void Configuration::load_logging()
     {
-        m_log = (record::log::Log){
-            .name = m_toml.get_tbl()["log"]["file"]["path"]
+        m_logging = (record::logging::Logging){
+            .name = m_toml.get_tbl()["logging"]["file"]["path"]
                         .value<std::string>()
                         .value(),
             .type =
-                m_toml.get_tbl()["log"]["type"].value<std::string>().value(),
-            .console = m_toml.get_tbl()["log"]["console"]["output_enabled"]
+                m_toml.get_tbl()["logging"]["type"].value<std::string>().value(),
+            .console = m_toml.get_tbl()["logging"]["console"]["output_enabled"]
                            .value<bool>()
                            .value(),
-            .level = m_toml.get_tbl()["log"]["level"].value<uint16_t>().value(),
+            .level = m_toml.get_tbl()["logging"]["level"].value<int>().value(),
             .trace = {.interval =
-                          m_toml.get_tbl()["log"]["trace_updates"]["interval"]
+                          m_toml.get_tbl()["logging"]["trace_updates"]["interval"]
                               .value<uint16_t>()
                               .value()},
             .daily_settings =
-                {.hours = m_toml.get_tbl()["log"]["daily"]["hours"]
+                {.hours = m_toml.get_tbl()["logging"]["daily"]["hours"]
                               .value<uint16_t>()
                               .value(),
-                 .minutes = m_toml.get_tbl()["log"]["daily"]["minutes"]
+                 .minutes = m_toml.get_tbl()["logging"]["daily"]["minutes"]
                                 .value<uint16_t>()
                                 .value(),
-                 .max_size = m_toml.get_tbl()["log"]["daily"]["max_size"]
+                 .max_size = m_toml.get_tbl()["logging"]["daily"]["max_size"]
                                  .value<uint16_t>()
                                  .value()},
             .rotation_settings = {
-                .max_files = m_toml.get_tbl()["log"]["rotation"]["max_files"]
+                .max_files = m_toml.get_tbl()["logging"]["rotation"]["max_files"]
                                  .value<uint16_t>()
                                  .value(),
-                .max_size = m_toml.get_tbl()["log"]["rotation"]["max_size"]
+                .max_size = m_toml.get_tbl()["logging"]["rotation"]["max_size"]
                                 .value<uint16_t>()
                                 .value()}};
     }

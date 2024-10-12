@@ -17,6 +17,7 @@ namespace focades
                         LIEF::ELF::Header header;
                         std::vector<LIEF::ELF::Section> sections;
                         std::vector<LIEF::ELF::Segment> segments;
+                        LIEF::ELF::DynamicEntry dynamic_entry;
                     } DTO;
                 } // namespace record
             } // namespace elf

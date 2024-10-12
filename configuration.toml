@@ -15,7 +15,7 @@ database.default_path = "rules/clamav/default"
 [sig.rules]
 packed_path = "rules/signatures/packeds"
 
-[log]
+[logging]
 file.path = "logs/engine.log"
 console.output_enabled = true
 level = 1                     # Default level (spdlog::level::debug)
@@ -30,6 +30,7 @@ rotation.max_size = 10485
 rotation.max_files = 100
 
 [crowapp]
+log.level = 1
 server.bindaddr = "127.0.0.1"
 server.port = 8181
 server.ssl_certificate_path = "" # Path to SSL certificate file (if needed)

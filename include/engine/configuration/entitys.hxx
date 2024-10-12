@@ -61,7 +61,7 @@ namespace configuration
             } Sig;
         } // namespace sig
 
-        namespace log
+        namespace logging
         {
             namespace daily
             {
@@ -87,11 +87,11 @@ namespace configuration
                 } TraceUpdates;
             } // namespace traceupdates
 
-            typedef struct Log {
+            typedef struct Logging {
                 std::string name;
                 std::string type;
                 bool console;
-                uint16_t level;
+                int level;
                 traceupdates::TraceUpdates trace;
                 daily::Daily daily_settings;
                 rotation::Rotation rotation_settings;
@@ -101,6 +101,12 @@ namespace configuration
 
         namespace crowapp
         {
+            namespace log
+            {
+                typedef struct Log {
+                    int level;
+                } Context;
+            } // namespace log
             namespace server
             {
                 namespace websocket
@@ -124,6 +130,7 @@ namespace configuration
             } // namespace server
 
             typedef struct CrowApp {
+                log::Log log;
                 server::Server server;
             } CrowApp;
         } // namespace crowapp

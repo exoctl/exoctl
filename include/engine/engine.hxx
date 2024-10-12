@@ -28,8 +28,6 @@ namespace engine
         [[nodiscard]] const uint16_t &get_port();
         [[nodiscard]] const uint16_t get_concurrency();
 
-        [[nodiscard]] const std::vector<crowapp::bridge::record::Bridge> &
-        get_routes();
         void stop();
         void run(const std::function<void()> & = nullptr);
     };

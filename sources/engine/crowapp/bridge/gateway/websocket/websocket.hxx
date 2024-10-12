@@ -65,7 +65,7 @@ namespace crowapp
                     void def_message_connection(crow::websocket::connection *,
                                                 const std::string &);
                     void def_open_connection(crow::websocket::connection *);
-                    bool def_accept_connection(const crow::request *);
+                    [[nodiscard]] bool def_accept_connection(const crow::request *);
                     void def_error_connection(crow::websocket::connection *,
                                               const std::string &);
                 };

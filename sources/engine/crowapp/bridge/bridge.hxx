@@ -20,8 +20,6 @@ namespace crowapp
         ~Bridge();
 
         void load();
-        const std::vector<bridge::record::Bridge> &get_endpoints();
-
       private:
         CrowApp &m_crowapp;
         std::vector<bridge::record::Bridge> m_endpoints;

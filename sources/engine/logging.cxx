@@ -11,10 +11,10 @@ namespace logging
     Logging::Logging(configuration::Configuration &p_config)
         : m_config(p_config)
     {
-        Logging::active_type(m_config.get_log().type);
-        Logging::active_trace(m_config.get_log().trace.interval);
-        Logging::active_level(m_config.get_log().level);
-        Logging::active_console(m_config.get_log().console);
+        Logging::active_type(m_config.get_logging().type);
+        Logging::active_trace(m_config.get_logging().trace.interval);
+        Logging::active_level(m_config.get_logging().level);
+        Logging::active_console(m_config.get_logging().console);
     }
 
     Logging::~Logging()
@@ -37,22 +37,22 @@ namespace logging
             if (p_type == "daily") {
                 return spdlog::daily_logger_mt<spdlog::async_factory>(
                     "daily",
-                    m_config.get_log().name,
-                    m_config.get_log().daily_settings.hours,
-                    m_config.get_log().daily_settings.minutes,
+                    m_config.get_logging().name,
+                    m_config.get_logging().daily_settings.hours,
+                    m_config.get_logging().daily_settings.minutes,
                     false,
-                    m_config.get_log().daily_settings.max_size);
+                    m_config.get_logging().daily_settings.max_size);
             } else if (p_type == "rotation") {
                 return spdlog::rotating_logger_mt<spdlog::async_factory>(
                     "rotation",
-                    m_config.get_log().name,
-                    m_config.get_log().rotation_settings.max_size,
-                    m_config.get_log().rotation_settings.max_files);
+                    m_config.get_logging().name,
+                    m_config.get_logging().rotation_settings.max_size,
+                    m_config.get_logging().rotation_settings.max_files);
             }
 
             /* default logger */
             return spdlog::basic_logger_mt<spdlog::async_factory>(
-                "basic", m_config.get_log().name);
+                "basic", m_config.get_logging().name);
         }();
     }
 

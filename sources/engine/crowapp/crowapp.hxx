@@ -1,6 +1,7 @@
 #pragma once
 
 #define CROW_ENFORCE_WS_SPEC
+#define CROW_MAIN
 
 #if CROW_OPENSSL
 #define CROW_ENABLE_SSL
