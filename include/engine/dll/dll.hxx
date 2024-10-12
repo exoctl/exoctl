@@ -1,16 +1,24 @@
 #pragma once
 
 #include <dlfcn.h>
+#include <functional>
+#include <link.h>
 
-namespace dll
+namespace engine
 {
-    class Dll
+    namespace dll
     {
-      public:
-        Dll();
-        ~Dll();
-        
-      private:
+        class Dll
+        {
+          public:
+            Dll();
+            ~Dll();
 
-    };
-} // namespace dlopen
+            [[nodiscard]] const void *open(const char *, int);
+            [[nodiscard]] const int close(void *);
+            void info(void *,
+                      int,
+                      const std::function<void(struct link_map &)> &);
+        };
+    } // namespace dll
+} // namespace engine

@@ -1,4 +1,4 @@
-#include <program.hxx>
+#include <program/program.hxx>
 
 int main(int argc, char *argv[])
 {

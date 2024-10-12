@@ -16,7 +16,7 @@ namespace program
       public:
         Program(int = 0, const char ** = nullptr);
         ~Program();
-        int run();
+        const int run();
 
       protected:
         friend struct ProgramEntry;

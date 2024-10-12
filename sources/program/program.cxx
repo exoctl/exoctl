@@ -1,5 +1,5 @@
 #include <engine/exception.hxx>
-#include <program.hxx>
+#include <program/program.hxx>
 
 namespace program
 {
@@ -28,7 +28,7 @@ namespace program
         
     }
 
-    int Program::run()
+    const int Program::run()
     {
         LOG(m_log, info, "Name        : {}", m_config.get_project().name);
         LOG(m_log, info, "Version     : {}", m_config.get_project().version);
