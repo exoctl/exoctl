@@ -23,6 +23,7 @@ file(GLOB_RECURSE SOURCES
     engine/parser/*.cxx
     engine/database/*.cxx
     engine/*.cxx
+    *.cxx
 )
 
 add_executable(engine main.cxx)
@@ -37,8 +38,10 @@ target_link_libraries(engine PUBLIC
     clamav
     capstone
     ssl
+    stdc++
     signatures
     magic
+    pthread
     crypto
 )
 

@@ -11,14 +11,18 @@ namespace logging
     Logging::Logging(configuration::Configuration &p_config)
         : m_config(p_config)
     {
-        Logging::active_type(m_config.get_logging().type);
-        Logging::active_trace(m_config.get_logging().trace.interval);
-        Logging::active_level(m_config.get_logging().level);
-        Logging::active_console(m_config.get_logging().console);
     }
 
     Logging::~Logging()
     {
+    }
+
+    void Logging::load()
+    {
+        Logging::active_type(m_config.get_logging().type);
+        Logging::active_trace(m_config.get_logging().trace.interval);
+        Logging::active_level(m_config.get_logging().level);
+        Logging::active_console(m_config.get_logging().console);
     }
 
     void Logging::active_trace(const uint16_t p_level)

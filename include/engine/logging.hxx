@@ -15,6 +15,8 @@ namespace logging
         Logging(configuration::Configuration &);
         ~Logging();
 
+        void load();
+
         template <typename... Args>
         void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
         {
