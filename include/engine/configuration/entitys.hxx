@@ -97,7 +97,7 @@ namespace configuration
                 rotation::Rotation rotation_settings;
             } Log;
 
-        } // namespace log
+        } // namespace logging
 
         namespace crowapp
         {

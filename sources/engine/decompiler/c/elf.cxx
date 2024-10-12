@@ -37,11 +37,11 @@ namespace decompiler
         }
 
         void ELF::init_function(record::Function *p_func,
-                                    uint64_t p_start_function,
-                                    uint64_t p_end_function)
+                                uint64_t p_start_function,
+                                uint64_t p_end_function)
         {
             p_func->end_function = p_end_function;
             p_func->start_function = p_start_function;
         }
     } // namespace C
-} // namespace Decompiler
+} // namespace decompiler

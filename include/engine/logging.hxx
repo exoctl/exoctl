@@ -1,9 +1,9 @@
 #pragma once
 
+#include <engine/configuration/configuration.hxx>
 #include <engine/parser/toml.hxx>
 #include <spdlog/spdlog.h>
 #include <stdint.h>
-#include <engine/configuration/configuration.hxx>
 
 #define LOG(obj, type, msg, ...) obj.type(msg, ##__VA_ARGS__)
 
@@ -54,4 +54,4 @@ namespace logging
         void active_trace(const uint16_t);
         void active_console(const bool);
     };
-} // namespace log
+} // namespace logging

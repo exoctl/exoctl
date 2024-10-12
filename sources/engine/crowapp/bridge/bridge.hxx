@@ -2,10 +2,10 @@
 
 #include <engine/crowapp/bridge/entitys.hxx>
 #include <engine/crowapp/bridge/gateway/analysis.hxx>
-#include <engine/crowapp/bridge/gateway/rev.hxx>
 #include <engine/crowapp/bridge/gateway/data.hxx>
-#include <engine/crowapp/crowapp.hxx>
 #include <engine/crowapp/bridge/gateway/parser.hxx>
+#include <engine/crowapp/bridge/gateway/rev.hxx>
+#include <engine/crowapp/crowapp.hxx>
 #include <functional>
 #include <memory>
 #include <utility>
@@ -20,6 +20,7 @@ namespace crowapp
         ~Bridge();
 
         void load();
+
       private:
         CrowApp &m_crowapp;
         std::vector<bridge::record::Bridge> m_endpoints;

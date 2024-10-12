@@ -23,7 +23,7 @@ namespace focades
                     std::string creation_date;
                     double entropy;
                 } DTO;
-            } // namespace structs
+            } // namespace record
         } // namespace metadata
     } // namespace data
 } // namespace focades

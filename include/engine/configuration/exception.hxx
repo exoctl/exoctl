@@ -2,10 +2,10 @@
 
 #include <engine/interfaces/iexception.hxx>
 
-namespace configuration 
+namespace configuration
 {
-    namespace exception 
+    namespace exception
     {
-        
+
     }
-}
+} // namespace configuration

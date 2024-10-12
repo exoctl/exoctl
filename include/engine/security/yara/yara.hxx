@@ -34,15 +34,11 @@ namespace security
          * @param void* user_data, pass for example Yr::Structs::Data
          * @param int flags used for scan
          */
-        void scan_bytes(const std::string,
-                             YR_CALLBACK_FUNC,
-                             void *,
-                             int) const;
+        void scan_bytes(const std::string, YR_CALLBACK_FUNC, void *, int) const;
         void load_rules(const std::function<void()> &) const;
 
         /* load rules if extension file '.yar'*/
-        void load_rules_folder(
-            const std::filesystem::path & /* path */) const;
+        void load_rules_folder(const std::filesystem::path & /* path */) const;
 
         [[nodiscard]] const int set_signature_rule_mem(
             const std::string &, const std::string &) const;
@@ -59,8 +55,8 @@ namespace security
         mutable uint64_t m_rules_loaded_count;
         void compiler_rules() const;
         static YR_CALLBACK_FUNC scan_fast_callback(YR_SCAN_CONTEXT *,
-                                                        const int,
-                                                        void *,
-                                                        void *);
+                                                   const int,
+                                                   void *,
+                                                   void *);
     };
 } // namespace security

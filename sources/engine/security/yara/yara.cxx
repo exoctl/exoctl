@@ -1,8 +1,8 @@
 #include <alloca.h>
 #include <dirent.h>
 #include <engine/memory.hxx>
-#include <engine/security/yara/yara.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/security/yara/yara.hxx>
 #include <fcntl.h>
 #include <fmt/core.h>
 #include <sys/types.h>
@@ -61,7 +61,7 @@ namespace security
     }
 
     const int Yara::set_signature_rule_mem(const std::string &p_rule,
-                                                const std::string &p_yrns) const
+                                           const std::string &p_yrns) const
     {
         m_rules_loaded_count++;
         return yr_compiler_add_string(
@@ -121,9 +121,9 @@ namespace security
     }
 
     void Yara::scan_bytes(const std::string p_buffer,
-                               YR_CALLBACK_FUNC p_callback,
-                               void *p_data,
-                               int p_flags) const
+                          YR_CALLBACK_FUNC p_callback,
+                          void *p_data,
+                          int p_flags) const
     {
         if (yr_rules_scan_mem(
                 m_yara_rules,
@@ -149,19 +149,19 @@ namespace security
         data->match_status = yara::type::Scan::none;
 
         Yara::scan_bytes(p_buffer,
-                              reinterpret_cast<YR_CALLBACK_FUNC>(
-                                  security::Yara::scan_fast_callback),
-                              data,
-                              SCAN_FLAGS_FAST_MODE);
+                         reinterpret_cast<YR_CALLBACK_FUNC>(
+                             security::Yara::scan_fast_callback),
+                         data,
+                         SCAN_FLAGS_FAST_MODE);
 
         p_callback(data);
     }
 
     YR_CALLBACK_FUNC
     Yara::scan_fast_callback(YR_SCAN_CONTEXT *p_context,
-                                  const int p_message,
-                                  void *p_message_data,
-                                  void *p_user_data)
+                             const int p_message,
+                             void *p_message_data,
+                             void *p_user_data)
     {
         const YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
         yara::record::Data *user_data =
@@ -169,10 +169,8 @@ namespace security
 
         switch (p_message) {
             case CALLBACK_MSG_SCAN_FINISHED:
-                if (user_data->match_status ==
-                    yara::type::Scan::none) {
-                    user_data->match_status =
-                        yara::type::Scan::nomatch;
+                if (user_data->match_status == yara::type::Scan::none) {
+                    user_data->match_status = yara::type::Scan::nomatch;
                     user_data->rule = "";
                     user_data->ns = "";
                 }

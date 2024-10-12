@@ -159,14 +159,16 @@ namespace configuration
             .name = m_toml.get_tbl()["logging"]["file"]["path"]
                         .value<std::string>()
                         .value(),
-            .type =
-                m_toml.get_tbl()["logging"]["type"].value<std::string>().value(),
+            .type = m_toml.get_tbl()["logging"]["type"]
+                        .value<std::string>()
+                        .value(),
             .console = m_toml.get_tbl()["logging"]["console"]["output_enabled"]
                            .value<bool>()
                            .value(),
             .level = m_toml.get_tbl()["logging"]["level"].value<int>().value(),
             .trace = {.interval =
-                          m_toml.get_tbl()["logging"]["trace_updates"]["interval"]
+                          m_toml
+                              .get_tbl()["logging"]["trace_updates"]["interval"]
                               .value<uint16_t>()
                               .value()},
             .daily_settings =
@@ -180,9 +182,10 @@ namespace configuration
                                  .value<uint16_t>()
                                  .value()},
             .rotation_settings = {
-                .max_files = m_toml.get_tbl()["logging"]["rotation"]["max_files"]
-                                 .value<uint16_t>()
-                                 .value(),
+                .max_files =
+                    m_toml.get_tbl()["logging"]["rotation"]["max_files"]
+                        .value<uint16_t>()
+                        .value(),
                 .max_size = m_toml.get_tbl()["logging"]["rotation"]["max_size"]
                                 .value<uint16_t>()
                                 .value()}};

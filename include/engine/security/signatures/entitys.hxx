@@ -11,6 +11,6 @@ namespace security
                 match,
                 none /* default value */
             };
-        } // namespace Types
-    } // namespace Sig
+        } // namespace type
+    } // namespace sig
 } // namespace security

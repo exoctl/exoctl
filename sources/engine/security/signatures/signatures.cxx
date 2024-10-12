@@ -1,5 +1,5 @@
-#include <engine/security/signatures/signatures.hxx>
 #include <engine/security/signatures/exception.hxx>
+#include <engine/security/signatures/signatures.hxx>
 #include <fmt/core.h>
 
 namespace security

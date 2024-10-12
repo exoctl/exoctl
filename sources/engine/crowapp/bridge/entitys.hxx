@@ -23,5 +23,5 @@ namespace crowapp
                 const uint64_t connections; /* only websocket connections */
             } Bridge;
         } // namespace record
-    } // namespace structs
+    } // namespace bridge
 } // namespace crowapp

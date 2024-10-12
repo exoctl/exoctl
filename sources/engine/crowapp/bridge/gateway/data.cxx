@@ -4,8 +4,7 @@ namespace crowapp
 {
     namespace bridge
     {
-        Data::Data(CrowApp &p_crowapp)
-            : m_crowapp(p_crowapp), m_map(BASE_DATA)
+        Data::Data(CrowApp &p_crowapp) : m_crowapp(p_crowapp), m_map(BASE_DATA)
         {
             Data::prepare();
 
@@ -37,7 +36,8 @@ namespace crowapp
                             [&](focades::data::metadata::record::DTO *p_dto) {
                                 p_context.broadcast(
                                     &p_conn,
-                                    m_data_metadata->dto_json(p_dto).to_string());
+                                    m_data_metadata->dto_json(p_dto)
+                                        .to_string());
                             });
                     });
             });
@@ -45,9 +45,7 @@ namespace crowapp
 
         void Data::prepare()
         {
-            LOG(m_crowapp.get_log(),
-                info,
-                "Preparing gateway data routes ...");
+            LOG(m_crowapp.get_log(), info, "Preparing gateway data routes ...");
             m_data_metadata = std::make_unique<focades::data::Metadata>();
         }
 

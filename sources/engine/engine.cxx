@@ -40,11 +40,11 @@ namespace engine
     void Engine::run(const std::function<void()> &p_callback)
     {
         TRY_BEGIN()
-        
+
         m_crowapp_bridge.load();
         (!IS_NULL(p_callback)) ? p_callback() : (void) 0;
         m_crowapp.run();
-        
+
         TRY_END()
         CATCH(crowapp::exception::Abort, {
             LOG(m_log,

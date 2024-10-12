@@ -96,7 +96,8 @@ namespace focades
                     seg.add_member_string(
                         "alignment", fmt::format("{:x}", segment.alignment()));
                     seg.add_member_string(
-                        "file_offset", fmt::format("{:x}", segment.file_offset()));
+                        "file_offset",
+                        fmt::format("{:x}", segment.file_offset()));
                     seg.add_member_string(
                         "content",
                         fmt::format("{}",

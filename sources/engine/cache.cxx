@@ -8,4 +8,4 @@ namespace cache
     Cache::~Cache()
     {
     }
-}; // namespace Cache
+}; // namespace cache

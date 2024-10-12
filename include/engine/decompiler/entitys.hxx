@@ -27,6 +27,6 @@ namespace decompiler
             size_t calls_buf_size;
             struct JumpBlock *next;
         } JumpBlock;
-    } // namespace Structs
+    } // namespace record
 
-} // namespace Decompiler
+} // namespace decompiler

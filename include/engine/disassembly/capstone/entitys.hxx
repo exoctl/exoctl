@@ -13,6 +13,6 @@ namespace disassembly
                 uint64_t address;
                 cs_insn *insn;
             } Data;
-        } // namespace structs
+        } // namespace record
     } // namespace capstone
 } // namespace disassembly

@@ -34,28 +34,28 @@ namespace crowapp
                             m_on_open(m_context, p_conn);
                     })
                     .onclose([&](crow::websocket::connection &p_conn,
-                                    const std::string &p_reason,
-                                    uint16_t p_code) {
+                                 const std::string &p_reason,
+                                 uint16_t p_code) {
                         WebSocket::def_close_connection(&p_conn, p_reason);
                         if (m_on_close)
                             m_on_close(m_context, p_conn, p_reason, p_code);
                     })
                     .onmessage([&](crow::websocket::connection &p_conn,
-                                      const std::string &p_data,
-                                      bool p_is_binary) {
+                                   const std::string &p_data,
+                                   bool p_is_binary) {
                         WebSocket::def_message_connection(&p_conn, p_data);
                         if (m_on_message)
                             m_on_message(
                                 m_context, p_conn, p_data, p_is_binary);
                     })
                     .onerror([&](crow::websocket::connection &p_conn,
-                                    const std::string &p_error) {
+                                 const std::string &p_error) {
                         WebSocket::def_error_connection(&p_conn, p_error);
                         if (m_on_error)
                             m_on_error(m_context, p_conn, p_error);
                     })
                     .onaccept([&](const crow::request &p_req,
-                                     void **p_userdata) {
+                                  void **p_userdata) {
                         bool accept = WebSocket::def_accept_connection(&p_req);
 
                         if (m_on_accept && accept)
@@ -95,7 +95,7 @@ namespace crowapp
                 std::lock_guard<std::mutex> _(m_mtx);
                 m_context.add(p_conn);
                 m_context.broadcast(p_conn, "{\"status\": \"ready\"}");
-                
+
                 LOG(m_crow.get_log(),
                     info,
                     "Connection opened {} from IP: {}",
@@ -104,7 +104,7 @@ namespace crowapp
             }
 
             bool WebSocket::def_accept_connection(const crow::request *p_req)
-            {    
+            {
                 std::lock_guard<std::mutex> _(m_mtx);
                 if (m_context.check_whitelist(p_req))
                     return true;

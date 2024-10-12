@@ -61,8 +61,7 @@ namespace focades
                 }
             }
 
-            parser::Json Capstone::dto_json(
-                const capstone::record::DTO *p_dto)
+            parser::Json Capstone::dto_json(const capstone::record::DTO *p_dto)
             {
                 parser::Json disassembly;
 
@@ -72,21 +71,17 @@ namespace focades
                     disassembly.add_member_string("arch", m_arch);
                     disassembly.add_member_string("mode", m_mode);
 
-                    for (const auto &instruction :
-                         p_dto->instructions) {
+                    for (const auto &instruction : p_dto->instructions) {
                         parser::Json ins_json;
-                        ins_json.add_member_string(
-                            "address", instruction.address);
-                        ins_json.add_member_string(
-                            "mnemonic", instruction.mnemonic);
-                        ins_json.add_member_string(
-                            "operands", instruction.operands);
-                        ins_json.add_member_uint16(
-                            "size", instruction.size);
-                        ins_json.add_member_int("id",
-                                                     instruction.id);
-                        ins_json.add_member_string(
-                            "bytes", instruction.bytes);
+                        ins_json.add_member_string("address",
+                                                   instruction.address);
+                        ins_json.add_member_string("mnemonic",
+                                                   instruction.mnemonic);
+                        ins_json.add_member_string("operands",
+                                                   instruction.operands);
+                        ins_json.add_member_uint16("size", instruction.size);
+                        ins_json.add_member_int("id", instruction.id);
+                        ins_json.add_member_string("bytes", instruction.bytes);
 
                         ins.push_back(ins_json);
                     }

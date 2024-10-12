@@ -62,16 +62,14 @@ namespace focades
                 json.add_member_string("sha3_256", p_dto->sha3_256);
                 json.add_member_string("sha3_512", p_dto->sha3_512);
                 json.add_member_int("size", p_dto->size);
-                json.add_member_string("creation_date",
-                                            p_dto->creation_date);
+                json.add_member_string("creation_date", p_dto->creation_date);
                 json.add_member_double("entropy", p_dto->entropy);
             }
 
             return json;
         }
 
-        const double Metadata::compute_entropy(
-            const std::string &p_buffer)
+        const double Metadata::compute_entropy(const std::string &p_buffer)
         {
             size_t map[256] = {0};
 

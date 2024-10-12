@@ -24,4 +24,4 @@ namespace decompiler
             parser::binary::ELF m_elf;
         };
     } // namespace C
-} // namespace Decompiler
+} // namespace decompiler

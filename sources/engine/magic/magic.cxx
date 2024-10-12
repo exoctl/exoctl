@@ -1,5 +1,5 @@
-#include <engine/magic/magic.hxx>
 #include <engine/magic/exception.hxx>
+#include <engine/magic/magic.hxx>
 #include <engine/memory.hxx>
 
 namespace magic

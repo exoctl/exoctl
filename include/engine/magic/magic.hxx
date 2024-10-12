@@ -17,4 +17,4 @@ namespace magic
         magic_t m_cookie;
         std::string m_mime;
     };
-} // namespace Magic
+} // namespace magic

@@ -22,7 +22,7 @@ namespace crowapp
     void Bridge::load()
     {
         LOG(m_crowapp.get_log(), info, "Loading Gateways ... ");
-        
+
         TRY_BEGIN()
 
         m_data->load();

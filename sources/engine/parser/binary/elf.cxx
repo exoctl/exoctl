@@ -17,7 +17,8 @@ namespace parser
             const std::function<void(std::unique_ptr<const LIEF::ELF::Binary>)>
                 &p_callback)
         {
-            p_callback(parse(std::vector<uint8_t>(p_buffer.begin(), p_buffer.end())));
+            p_callback(
+                parse(std::vector<uint8_t>(p_buffer.begin(), p_buffer.end())));
         }
 
         void ELF::parser_file(
@@ -28,5 +29,5 @@ namespace parser
             p_callback(parse(p_file_path));
         }
 
-    } // namespace Binary
-} // namespace Parser
+    } // namespace binary
+} // namespace parser

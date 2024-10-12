@@ -33,12 +33,8 @@ namespace disassembly
                     alloca(sizeof(capstone::record::Data *)));
             data->address = 0;
 
-            const size_t count = cs_disasm(m_handle,
-                                           p_code,
-                                           p_code_size,
-                                           data->address,
-                                           0,
-                                           &data->insn);
+            const size_t count = cs_disasm(
+                m_handle, p_code, p_code_size, data->address, 0, &data->insn);
 
             if (count > 0) {
                 for (size_t i = 0; i < count; i++) {

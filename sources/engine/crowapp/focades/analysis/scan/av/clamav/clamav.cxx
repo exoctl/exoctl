@@ -55,7 +55,8 @@ namespace focades
                         m_clamav.scan_fast_bytes(
                             p_buffer,
                             scanopts,
-                            [&](const security::av::clamav::record::Data *p_data) {
+                            [&](const security::av::clamav::record::Data
+                                    *p_data) {
                                 dto->math_status = p_data->math_status;
                                 dto->virname = p_data->virname;
                             });

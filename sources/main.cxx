@@ -18,7 +18,7 @@ int main()
     configuration::Configuration config("configuration.toml");
 
     TRY_BEGIN()
-    config.load(); 
+    config.load();
     TRY_END()
     CATCH(std::exception, {
         fmt::print(stderr, "Failed to load configuration: {}\n", e.what());

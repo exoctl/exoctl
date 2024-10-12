@@ -11,7 +11,7 @@ namespace security
                 match,
                 none /* default value */
             };
-        } // namespace Types
+        } // namespace type
 
         namespace record
         {
@@ -20,6 +20,6 @@ namespace security
                 const char *rule;
                 const char *ns;
             } Data;
-        } // namespace structs
-    } // namespace Yr
+        } // namespace record
+    } // namespace yara
 } // namespace security

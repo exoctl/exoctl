@@ -28,6 +28,7 @@ namespace crowapp
                 void get_routes(const std::function<void(const std::string)> &);
                 void call_route(const std::string &);
                 [[nodiscard]] const std::string get_base() const;
+
               private:
                 const std::string m_base;
                 std::map<std::string, std::function<void()>> m_routes;
