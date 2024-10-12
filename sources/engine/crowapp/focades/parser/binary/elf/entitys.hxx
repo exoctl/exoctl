@@ -16,6 +16,7 @@ namespace focades
                     typedef struct DTO {
                         LIEF::ELF::Header header;
                         std::vector<LIEF::ELF::Section> sections;
+                        std::vector<LIEF::ELF::Segment> segments;
                     } DTO;
                 } // namespace record
             } // namespace elf

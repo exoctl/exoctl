@@ -3,6 +3,7 @@
 #include <engine/parser/json.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
+#include <span>
 
 namespace focades
 {
@@ -37,6 +38,12 @@ namespace focades
                                       p_elf.get()->sections().end(),
                                       std::back_inserter(dto->sections));
 
+                            dto->segments.reserve(
+                                p_elf.get()->segments().size());
+                            std::move(p_elf.get()->segments().begin(),
+                                      p_elf.get()->segments().end(),
+                                      std::back_inserter(dto->segments));
+
                             p_callback(dto);
                             delete dto;
                         }
@@ -52,9 +59,56 @@ namespace focades
                     elf.add_member_json("header", ELF::header_json(p_dto));
                     elf.add_member_vector("sections",
                                           ELF::sections_json(p_dto));
+                    elf.add_member_vector("segments",
+                                          ELF::segments_json(p_dto));
                 }
 
                 return elf;
+            }
+
+            std::vector<::parser::Json> ELF::segments_json(
+                binary::elf::record::DTO *p_dto)
+            {
+                std::vector<::parser::Json> segments;
+
+                for (const auto &segment : p_dto->segments) {
+                    ::parser::Json seg;
+                    seg.add_member_string(
+                        "virtual_address",
+                        fmt::format("{:x}", segment.virtual_address()));
+                    seg.add_member_string(
+                        "virtual_size",
+                        fmt::format("{:x}", segment.virtual_size()));
+                    seg.add_member_string(
+                        "type",
+                        fmt::format("{:x}",
+                                    static_cast<uint32_t>(segment.type())));
+                    seg.add_member_string(
+                        "flags",
+                        fmt::format("{:x}",
+                                    static_cast<uint32_t>(segment.flags())));
+                    seg.add_member_string(
+                        "physical_size",
+                        fmt::format("{:x}", segment.physical_size()));
+                    seg.add_member_string(
+                        "physical_address",
+                        fmt::format("{:x}", segment.physical_address()));
+                    seg.add_member_string(
+                        "alignment", fmt::format("{:x}", segment.alignment()));
+                    seg.add_member_string(
+                        "file_offset", fmt::format("{:x}", segment.file_offset()));
+                    seg.add_member_string(
+                        "content",
+                        fmt::format("{}",
+                                    fmt::join(segment.content().data(),
+                                              segment.content().data() +
+                                                  segment.content().size(),
+                                              "")));
+
+                    segments.push_back(seg);
+                }
+
+                return segments;
             }
 
             std::vector<::parser::Json> ELF::sections_json(

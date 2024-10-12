@@ -24,6 +24,7 @@ namespace focades
               private:
                 ::parser::Json header_json(binary::elf::record::DTO *p_dto);
                 std::vector<::parser::Json> sections_json(binary::elf::record::DTO *p_dto);
+                std::vector<::parser::Json> segments_json(binary::elf::record::DTO *p_dto);
 
                 ::parser::binary::ELF m_elf;
             };
