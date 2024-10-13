@@ -1,26 +1,29 @@
 #include <engine/parser/toml.hxx>
 
-namespace parser
+namespace engine
 {
-    Toml::Toml()
+    namespace parser
     {
-    }
-    Toml::~Toml()
-    {
-    }
+        Toml::Toml()
+        {
+        }
+        Toml::~Toml()
+        {
+        }
 
-    void Toml::parse_file(const std::string &p_filepath)
-    {
-        m_tbl = toml::parse_file(p_filepath);
-    }
+        void Toml::parse_file(const std::string &p_filepath)
+        {
+            m_tbl = toml::parse_file(p_filepath);
+        }
 
-    void Toml::parse_buffer(const std::string_view &p_buffer)
-    {
-        m_tbl = toml::parse(p_buffer);
-    }
+        void Toml::parse_buffer(const std::string_view &p_buffer)
+        {
+            m_tbl = toml::parse(p_buffer);
+        }
 
-    const toml::table &Toml::get_tbl() const
-    {
-        return m_tbl;
-    }
-} // namespace parser
+        const toml::table &Toml::get_tbl() const
+        {
+            return m_tbl;
+        }
+    } // namespace parser
+} // namespace engine

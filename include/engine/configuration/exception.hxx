@@ -1,11 +1,13 @@
 #pragma once
 
 #include <engine/interfaces/iexception.hxx>
-
-namespace configuration
+namespace engine
 {
-    namespace exception
+    namespace configuration
     {
+        namespace exception
+        {
 
-    }
-} // namespace configuration
+        }
+    } // namespace configuration
+} // namespace engine

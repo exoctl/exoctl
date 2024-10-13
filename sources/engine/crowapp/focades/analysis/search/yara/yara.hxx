@@ -1,16 +1,19 @@
 #pragma once
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace Search
+        namespace analysis
         {
-            class Yara
+            namespace Search
             {
-                Yara();
-                ~Yara();
-            };
-        } // namespace Search
-    } // namespace analysis
-} // namespace focades
+                class Yara
+                {
+                    Yara();
+                    ~Yara();
+                };
+            } // namespace Search
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

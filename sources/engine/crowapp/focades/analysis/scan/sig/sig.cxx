@@ -1,17 +1,20 @@
 #include <engine/crowapp/focades/analysis/scan/sig/sig.hxx>
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace scan
+        namespace analysis
         {
-            Sig::Sig()
+            namespace scan
             {
-            }
-            Sig::~Sig()
-            {
-            }
-        } // namespace scan
-    } // namespace analysis
-} // namespace focades
+                Sig::Sig()
+                {
+                }
+                Sig::~Sig()
+                {
+                }
+            } // namespace scan
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

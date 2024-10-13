@@ -4,32 +4,36 @@
 #include <engine/parser/binary/elf.hxx>
 #include <engine/parser/json.hxx>
 
-namespace focades
+namespace engine
 {
-    namespace parser
+    namespace focades
     {
-        namespace binary
+        namespace parser
         {
-            class ELF
+            namespace binary
             {
-              public:
-                ELF();
-                ~ELF();
+                class ELF
+                {
+                  public:
+                    ELF();
+                    ~ELF();
 
-                void parser_bytes(
-                    const std::string &,
-                    const std::function<void(binary::elf::record::DTO *)> &);
-                const ::parser::Json dto_json(binary::elf::record::DTO *);
+                    void parser_bytes(
+                        const std::string &,
+                        const std::function<void(binary::elf::record::DTO *)>
+                            &);
+                    const ::engine::parser::Json dto_json(binary::elf::record::DTO *);
 
-              private:
-                ::parser::Json header_json(binary::elf::record::DTO *p_dto);
-                std::vector<::parser::Json> sections_json(
-                    binary::elf::record::DTO *p_dto);
-                std::vector<::parser::Json> segments_json(
-                    binary::elf::record::DTO *p_dto);
+                  private:
+                    ::engine::parser::Json header_json(binary::elf::record::DTO *p_dto);
+                    std::vector<::engine::parser::Json> sections_json(
+                        binary::elf::record::DTO *p_dto);
+                    std::vector<::engine::parser::Json> segments_json(
+                        binary::elf::record::DTO *p_dto);
 
-                ::parser::binary::ELF m_elf;
-            };
-        } // namespace binary
-    } // namespace parser
-} // namespace focades
+                    ::engine::parser::binary::ELF m_elf;
+                };
+            } // namespace binary
+        } // namespace parser
+    } // namespace focades
+} // namespace engine

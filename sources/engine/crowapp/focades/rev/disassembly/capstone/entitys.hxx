@@ -4,32 +4,35 @@
 #include <map>
 #include <string>
 
-namespace focades
+namespace engine
 {
-    namespace rev
+    namespace focades
     {
-        namespace disassembly
+        namespace rev
         {
-            namespace capstone
+            namespace disassembly
             {
-                namespace record
+                namespace capstone
                 {
-                    typedef struct Instruction {
-                        std::string address;
-                        std::string mnemonic;
-                        std::string operands;
-                        uint16_t size;
-                        int id;
-                        std::string bytes;
-                    } Instruction;
+                    namespace record
+                    {
+                        typedef struct Instruction {
+                            std::string address;
+                            std::string mnemonic;
+                            std::string operands;
+                            uint16_t size;
+                            int id;
+                            std::string bytes;
+                        } Instruction;
 
-                    typedef struct DTO {
-                        std::string arch;
-                        std::string mode;
-                        std::vector<Instruction> instructions;
-                    } DTO;
-                } // namespace record
-            } // namespace capstone
-        } // namespace disassembly
-    } // namespace rev
-} // namespace focades
+                        typedef struct DTO {
+                            std::string arch;
+                            std::string mode;
+                            std::vector<Instruction> instructions;
+                        } DTO;
+                    } // namespace record
+                } // namespace capstone
+            } // namespace disassembly
+        } // namespace rev
+    } // namespace focades
+} // namespace engine

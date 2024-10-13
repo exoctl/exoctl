@@ -3,18 +3,21 @@
 #include <magic.h>
 #include <string>
 
-namespace magic
+namespace engine
 {
-    class Magic
+    namespace magic
     {
-      public:
-        Magic();
-        ~Magic();
-        void load_mime(const std::string &buffer);
-        [[nodiscard]] const std::string get_mime();
+        class Magic
+        {
+          public:
+            Magic();
+            ~Magic();
+            void load_mime(const std::string &buffer);
+            [[nodiscard]] const std::string get_mime();
 
-      private:
-        magic_t m_cookie;
-        std::string m_mime;
-    };
-} // namespace magic
+          private:
+            magic_t m_cookie;
+            std::string m_mime;
+        };
+    } // namespace magic
+} // namespace engine

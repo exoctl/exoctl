@@ -3,16 +3,19 @@
 #include <capstone/capstone.h>
 #include <stdint.h>
 
-namespace disassembly
+namespace engine
 {
-    namespace capstone
+    namespace disassembly
     {
-        namespace record
+        namespace capstone
         {
-            typedef struct Data {
-                uint64_t address;
-                cs_insn *insn;
-            } Data;
-        } // namespace record
-    } // namespace capstone
-} // namespace disassembly
+            namespace record
+            {
+                typedef struct Data {
+                    uint64_t address;
+                    cs_insn *insn;
+                } Data;
+            } // namespace record
+        } // namespace capstone
+    } // namespace disassembly
+} // namespace engine

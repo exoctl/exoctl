@@ -2,44 +2,47 @@
 
 #include <engine/interfaces/iexception.hxx>
 
-namespace security
+namespace engine
 {
-    namespace av
+    namespace security
     {
-        namespace clamav
+        namespace av
         {
-            namespace exception
+            namespace clamav
             {
-                class Initialize : public interface::IException
+                namespace exception
                 {
-                  private:
-                    const std::string m_error_message;
+                    class Initialize : public interface::IException
+                    {
+                      private:
+                        const std::string m_error_message;
 
-                  public:
-                    explicit Initialize(const std::string &);
-                    const char *what() const noexcept override;
-                };
+                      public:
+                        explicit Initialize(const std::string &);
+                        const char *what() const noexcept override;
+                    };
 
-                class LoadRules : public interface::IException
-                {
-                  private:
-                    const std::string m_error_message;
+                    class LoadRules : public interface::IException
+                    {
+                      private:
+                        const std::string m_error_message;
 
-                  public:
-                    explicit LoadRules(const std::string &);
-                    const char *what() const noexcept override;
-                };
+                      public:
+                        explicit LoadRules(const std::string &);
+                        const char *what() const noexcept override;
+                    };
 
-                class SetDbRules : public interface::IException
-                {
-                  private:
-                    const std::string m_error_message;
+                    class SetDbRules : public interface::IException
+                    {
+                      private:
+                        const std::string m_error_message;
 
-                  public:
-                    explicit SetDbRules(const std::string &);
-                    const char *what() const noexcept override;
-                };
-            } // namespace exception
-        } // namespace clamav
-    } // namespace av
-} // namespace security
+                      public:
+                        explicit SetDbRules(const std::string &);
+                        const char *what() const noexcept override;
+                    };
+                } // namespace exception
+            } // namespace clamav
+        } // namespace av
+    } // namespace security
+} // namespace engine

@@ -4,14 +4,17 @@
 #include <functional>
 #include <signatures/signatures.hxx>
 
-namespace security
+namespace engine
 {
-    class Sig
+    namespace security
     {
-      public:
-        Sig();
-        ~Sig();
+        class Sig
+        {
+          public:
+            Sig();
+            ~Sig();
 
-      private:
-    };
-} // namespace security
+          private:
+        };
+    } // namespace security
+} // namespace engine

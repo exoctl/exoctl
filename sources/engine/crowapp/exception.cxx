@@ -1,25 +1,29 @@
 #include <engine/crowapp/exception.hxx>
 
-namespace crowapp
+namespace engine
 {
-    namespace exception
+    namespace crowapp
     {
-        Abort::Abort(const std::string &p_message) : m_error_message(p_message)
+        namespace exception
         {
-        }
-        const char *Abort::what() const noexcept
-        {
-            return m_error_message.c_str();
-        }
+            Abort::Abort(const std::string &p_message)
+                : m_error_message(p_message)
+            {
+            }
+            const char *Abort::what() const noexcept
+            {
+                return m_error_message.c_str();
+            }
 
-        ParcialAbort::ParcialAbort(const std::string &p_message)
-            : m_error_message(p_message)
-        {
-        }
-        const char *ParcialAbort::what() const noexcept
-        {
-            return m_error_message.c_str();
-        }
+            ParcialAbort::ParcialAbort(const std::string &p_message)
+                : m_error_message(p_message)
+            {
+            }
+            const char *ParcialAbort::what() const noexcept
+            {
+                return m_error_message.c_str();
+            }
 
-    } // namespace exception
-} // namespace crowapp
+        } // namespace exception
+    } // namespace crowapp
+} // namespace engine

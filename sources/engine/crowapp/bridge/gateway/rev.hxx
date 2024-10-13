@@ -9,32 +9,36 @@
 
 #define BASE_REV API_PREFIX "/rev"
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        class Rev : public interface::IGateway
+        namespace bridge
         {
-          public:
-            Rev(CrowApp &);
-            ~Rev();
+            class Rev : public interface::IGateway
+            {
+              public:
+                Rev(CrowApp &);
+                ~Rev();
 
-            void load() const override;
+                void load() const override;
 
-          private:
-            CrowApp &m_crowapp;
-            mutable gateway::Map m_map;
+              private:
+                CrowApp &m_crowapp;
+                mutable gateway::Map m_map;
 
-            std::unique_ptr<gateway::WebSocket> m_socket_capstone_x64;
-            std::unique_ptr<gateway::WebSocket> m_socket_capstone_arm64;
+                std::unique_ptr<gateway::WebSocket> m_socket_capstone_x64;
+                std::unique_ptr<gateway::WebSocket> m_socket_capstone_arm64;
 
-            std::unique_ptr<focades::rev::disassembly::Capstone> m_capstone_x64;
-            std::unique_ptr<focades::rev::disassembly::Capstone>
-                m_capstone_arm64;
+                std::unique_ptr<focades::rev::disassembly::Capstone>
+                    m_capstone_x64;
+                std::unique_ptr<focades::rev::disassembly::Capstone>
+                    m_capstone_arm64;
 
-            void prepare();
-            void capstone_x64();
-            void capstone_arm64();
-        };
-    } // namespace bridge
-} // namespace crowapp
+                void prepare();
+                void capstone_x64();
+                void capstone_arm64();
+            };
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

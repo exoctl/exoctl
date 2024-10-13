@@ -4,39 +4,42 @@
 #include <stdint.h>
 #include <string>
 
-namespace security
+namespace engine
 {
-    namespace av
+    namespace security
     {
-        namespace clamav
+        namespace av
         {
-            namespace type
+            namespace clamav
             {
-                enum Scan {
-                    clean,
-                    virus,
-                    none
-                };
-            } // namespace type
-
-            namespace record
-            {
-                namespace scan
+                namespace type
                 {
-                    typedef struct Options {
-                        uint32_t general;
-                        uint32_t parse;
-                        uint32_t heuristic;
-                        uint32_t mail;
-                        uint32_t dev;
-                    } Options;
-                } // namespace scan
+                    enum Scan {
+                        clean,
+                        virus,
+                        none
+                    };
+                } // namespace type
 
-                typedef struct Data {
-                    const char *virname;
-                    type::Scan math_status;
-                } Data;
-            } // namespace record
-        } // namespace clamav
-    } // namespace av
-} // namespace security
+                namespace record
+                {
+                    namespace scan
+                    {
+                        typedef struct Options {
+                            uint32_t general;
+                            uint32_t parse;
+                            uint32_t heuristic;
+                            uint32_t mail;
+                            uint32_t dev;
+                        } Options;
+                    } // namespace scan
+
+                    typedef struct Data {
+                        const char *virname;
+                        type::Scan math_status;
+                    } Data;
+                } // namespace record
+            } // namespace clamav
+        } // namespace av
+    } // namespace security
+} // namespace engine

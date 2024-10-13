@@ -1,8 +1,11 @@
 #include <engine/configuration/exception.hxx>
 
-namespace configuration
+namespace engine
 {
-    namespace exception
+    namespace configuration
     {
-    }
-} // namespace configuration
+        namespace exception
+        {
+        }
+    } // namespace configuration
+} // namespace engine

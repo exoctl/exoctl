@@ -3,29 +3,32 @@
 #include <engine/interfaces/iexception.hxx>
 #include <string>
 
-namespace magic
+namespace engine
 {
-    namespace exception
+    namespace magic
     {
-        class Initialize : public interface::IException
+        namespace exception
         {
-          private:
-            const std::string m_error_message;
+            class Initialize : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
 
-          public:
-            explicit Initialize(const std::string &);
-            const char *what() const noexcept override;
-        };
+              public:
+                explicit Initialize(const std::string &);
+                const char *what() const noexcept override;
+            };
 
-        class Finalize : public interface::IException
-        {
-          private:
-            const std::string m_error_message;
+            class Finalize : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
 
-          public:
-            explicit Finalize(const std::string &);
-            const char *what() const noexcept override;
-        };
+              public:
+                explicit Finalize(const std::string &);
+                const char *what() const noexcept override;
+            };
 
-    } // namespace exception
-} // namespace magic
+        } // namespace exception
+    } // namespace magic
+} // namespace engine

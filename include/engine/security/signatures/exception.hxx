@@ -2,21 +2,24 @@
 
 #include <engine/interfaces/iexception.hxx>
 
-namespace security
+namespace engine
 {
-    namespace sig
+    namespace security
     {
-        namespace exception
+        namespace sig
         {
-            class CompilerSig : public interface::IException
+            namespace exception
             {
-              private:
-                const std::string m_error_message;
+                class CompilerSig : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit CompilerSig(const std::string &);
-                const char *what() const noexcept override;
-            };
-        } // namespace exception
-    } // namespace sig
-} // namespace security
+                  public:
+                    explicit CompilerSig(const std::string &);
+                    const char *what() const noexcept override;
+                };
+            } // namespace exception
+        } // namespace sig
+    } // namespace security
+} // namespace engine

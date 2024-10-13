@@ -1,66 +1,70 @@
 #include <engine/crowapp/bridge/gateway/websocket/context/context.hxx>
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        namespace gateway
+        namespace bridge
         {
-            namespace websocket
+            namespace gateway
             {
-                Context::Context(configuration::Configuration &p_config)
-                    : m_context(0), m_config(p_config)
+                namespace websocket
                 {
-                }
+                    Context::Context(configuration::Configuration &p_config)
+                        : m_context(0), m_config(p_config)
+                    {
+                    }
 
-                Context::~Context()
-                {
-                }
+                    Context::~Context()
+                    {
+                    }
 
-                const void Context::erase(crow::websocket::connection *p_conn)
-                {
-                    m_context.erase(p_conn);
-                }
+                    const void Context::erase(
+                        crow::websocket::connection *p_conn)
+                    {
+                        m_context.erase(p_conn);
+                    }
 
-                const void Context::broadcast(
-                    crow::websocket::connection *p_conn,
-                    const std::string p_msg) const
-                {
-                    if (m_context.find(p_conn) != m_context.end())
-                        p_conn->send_text(p_msg);
-                }
+                    const void Context::broadcast(
+                        crow::websocket::connection *p_conn,
+                        const std::string p_msg) const
+                    {
+                        if (m_context.find(p_conn) != m_context.end())
+                            p_conn->send_text(p_msg);
+                    }
 
-                const void Context::add(crow::websocket::connection *p_conn)
-                {
-                    m_context.insert(p_conn);
-                }
+                    const void Context::add(crow::websocket::connection *p_conn)
+                    {
+                        m_context.insert(p_conn);
+                    }
 
-                const std::size_t Context::size() const
-                {
-                    return m_context.size();
-                }
+                    const std::size_t Context::size() const
+                    {
+                        return m_context.size();
+                    }
 
-                const std::string Context::get_remote_ip(
-                    crow::websocket::connection *p_conn) const
-                {
-                    return (m_context.find(p_conn) != m_context.end())
-                               ? p_conn->get_remote_ip()
-                               : nullptr;
-                }
+                    const std::string Context::get_remote_ip(
+                        crow::websocket::connection *p_conn) const
+                    {
+                        return (m_context.find(p_conn) != m_context.end())
+                                   ? p_conn->get_remote_ip()
+                                   : nullptr;
+                    }
 
-                const bool Context::check_whitelist(
-                    const crow::request *p_request)
-                {
-                    for (const auto &list :
-                         m_config.get_crowapp().server.context.whitelist)
-                        if (const auto str = list.as_string()) {
-                            if (p_request->remote_ip_address == str->get())
-                                return true;
-                        }
+                    const bool Context::check_whitelist(
+                        const crow::request *p_request)
+                    {
+                        for (const auto &list :
+                             m_config.get_crowapp().server.context.whitelist)
+                            if (const auto str = list.as_string()) {
+                                if (p_request->remote_ip_address == str->get())
+                                    return true;
+                            }
 
-                    return false;
-                }
-            } // namespace websocket
-        } // namespace gateway
-    } // namespace bridge
-} // namespace crowapp
+                        return false;
+                    }
+                } // namespace websocket
+            } // namespace gateway
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

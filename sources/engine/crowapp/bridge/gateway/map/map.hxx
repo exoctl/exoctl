@@ -11,28 +11,32 @@
 #define VERSION_PREFIX "/v" TOSTRING(ENGINE_VERSION_MAJOR)
 #define API_PREFIX VERSION_PREFIX "/engine"
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        namespace gateway
+        namespace bridge
         {
-            class Map
+            namespace gateway
             {
-              public:
-                Map(const std::string &);
-                ~Map();
+                class Map
+                {
+                  public:
+                    Map(const std::string &);
+                    ~Map();
 
-                void add_route(const std::string &,
-                               const std::function<void()> &);
-                void get_routes(const std::function<void(const std::string)> &);
-                void call_route(const std::string &);
-                [[nodiscard]] const std::string get_base() const;
+                    void add_route(const std::string &,
+                                   const std::function<void()> &);
+                    void get_routes(
+                        const std::function<void(const std::string)> &);
+                    void call_route(const std::string &);
+                    [[nodiscard]] const std::string get_base() const;
 
-              private:
-                const std::string m_base;
-                std::map<std::string, std::function<void()>> m_routes;
-            };
-        } // namespace gateway
-    } // namespace bridge
-} // namespace crowapp
+                  private:
+                    const std::string m_base;
+                    std::map<std::string, std::function<void()>> m_routes;
+                };
+            } // namespace gateway
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

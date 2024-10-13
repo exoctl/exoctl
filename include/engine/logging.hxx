@@ -7,53 +7,56 @@
 
 #define LOG(obj, type, msg, ...) obj.type(msg, ##__VA_ARGS__)
 
-namespace logging
+namespace engine
 {
-    class Logging
+    namespace logging
     {
-      public:
-        Logging(configuration::Configuration &);
-        ~Logging();
-
-        void load();
-
-        template <typename... Args>
-        void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
+        class Logging
         {
-            m_logger->warn(p_msg, std::forward<Args>(p_args)...);
-        }
+          public:
+            Logging(configuration::Configuration &);
+            ~Logging();
 
-        template <typename... Args>
-        void info(fmt::format_string<Args...> p_msg, Args &&...p_args)
-        {
-            m_logger->info(p_msg, std::forward<Args>(p_args)...);
-        }
+            void load();
 
-        template <typename... Args>
-        void error(fmt::format_string<Args...> p_msg, Args &&...p_args)
-        {
-            m_logger->error(p_msg, std::forward<Args>(p_args)...);
-        }
+            template <typename... Args>
+            void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
+            {
+                m_logger->warn(p_msg, std::forward<Args>(p_args)...);
+            }
 
-        template <typename... Args>
-        void debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
-        {
-            m_logger->debug(p_msg, std::forward<Args>(p_args)...);
-        }
+            template <typename... Args>
+            void info(fmt::format_string<Args...> p_msg, Args &&...p_args)
+            {
+                m_logger->info(p_msg, std::forward<Args>(p_args)...);
+            }
 
-        template <typename... Args>
-        void critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
-        {
-            m_logger->critical(p_msg, std::forward<Args>(p_args)...);
-        }
+            template <typename... Args>
+            void error(fmt::format_string<Args...> p_msg, Args &&...p_args)
+            {
+                m_logger->error(p_msg, std::forward<Args>(p_args)...);
+            }
 
-      private:
-        configuration::Configuration &m_config;
-        std::shared_ptr<spdlog::logger> m_logger;
+            template <typename... Args>
+            void debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
+            {
+                m_logger->debug(p_msg, std::forward<Args>(p_args)...);
+            }
 
-        void active_level(const uint16_t);
-        void active_type(const std::string &);
-        void active_trace(const uint16_t);
-        void active_console(const bool);
-    };
-} // namespace logging
+            template <typename... Args>
+            void critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
+            {
+                m_logger->critical(p_msg, std::forward<Args>(p_args)...);
+            }
+
+          private:
+            configuration::Configuration &m_config;
+            std::shared_ptr<spdlog::logger> m_logger;
+
+            void active_level(const uint16_t);
+            void active_type(const std::string &);
+            void active_trace(const uint16_t);
+            void active_console(const bool);
+        };
+    } // namespace logging
+} // namespace engine

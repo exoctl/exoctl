@@ -3,145 +3,147 @@
 #include <cstdint>
 #include <engine/parser/toml.hxx>
 #include <string>
-
-namespace configuration
+namespace engine
 {
-    namespace record
+    namespace configuration
     {
-        typedef struct Project {
-            std::string name;
-            std::string version;
-            std::string description;
-            std::string copyright;
-        } Project;
-
-        namespace yara
+        namespace record
         {
-            namespace rules
-            {
-                struct Rules {
-                    std::string malware_path;
-                    std::string packed_path;
-                    std::string cve_path;
-                };
-            } // namespace rules
-
-            typedef struct Yara {
-                rules::Rules rules; // Seção de regras
-            } Yara;
-        } // namespace yara
-
-        namespace av
-        {
-            namespace clamav
-            {
-                namespace database
-                {
-                    struct Database {
-                        std::string default_path;
-                    };
-                } // namespace database
-
-                typedef struct Clamav {
-                    database::Database database;
-                } Clamav;
-            } // namespace clamav
-        } // namespace av
-
-        namespace sig
-        {
-            namespace rules
-            {
-                struct Rules {
-                    std::string packed_path;
-                };
-            } // namespace rules
-            typedef struct Sig {
-                rules::Rules rules; // Seção de regras
-            } Sig;
-        } // namespace sig
-
-        namespace logging
-        {
-            namespace daily
-            {
-                typedef struct Daily {
-                    uint16_t hours;
-                    uint16_t minutes;
-                    uint16_t max_size; // for 'rotating' type
-                } Daily;
-            } // namespace daily
-
-            namespace rotation
-            {
-                typedef struct Rotation {
-                    uint16_t max_files;
-                    uint16_t max_size;
-                } Rotation;
-            } // namespace rotation
-
-            namespace traceupdates
-            {
-                typedef struct TraceUpdates {
-                    uint16_t interval;
-                } TraceUpdates;
-            } // namespace traceupdates
-
-            typedef struct Logging {
+            typedef struct Project {
                 std::string name;
-                std::string type;
-                bool console;
-                int level;
-                traceupdates::TraceUpdates trace;
-                daily::Daily daily_settings;
-                rotation::Rotation rotation_settings;
-            } Log;
+                std::string version;
+                std::string description;
+                std::string copyright;
+            } Project;
 
-        } // namespace logging
-
-        namespace crowapp
-        {
-            namespace log
+            namespace yara
             {
-                typedef struct Log {
-                    int level;
-                } Context;
-            } // namespace log
-            namespace server
-            {
-                namespace websocket
+                namespace rules
                 {
-                    namespace context
+                    struct Rules {
+                        std::string malware_path;
+                        std::string packed_path;
+                        std::string cve_path;
+                    };
+                } // namespace rules
+
+                typedef struct Yara {
+                    rules::Rules rules; // Seção de regras
+                } Yara;
+            } // namespace yara
+
+            namespace av
+            {
+                namespace clamav
+                {
+                    namespace database
                     {
-                        typedef struct Context {
-                            toml::array whitelist;
-                        } Context;
-                    } // namespace context
-                } // namespace websocket
+                        struct Database {
+                            std::string default_path;
+                        };
+                    } // namespace database
 
-                typedef struct Server {
-                    std::string bindaddr;
-                    uint16_t port;
-                    uint16_t threads;
-                    std::string ssl_certificate_path;
-                    websocket::context::Context context;
-                } Server;
+                    typedef struct Clamav {
+                        database::Database database;
+                    } Clamav;
+                } // namespace clamav
+            } // namespace av
 
-            } // namespace server
+            namespace sig
+            {
+                namespace rules
+                {
+                    struct Rules {
+                        std::string packed_path;
+                    };
+                } // namespace rules
+                typedef struct Sig {
+                    rules::Rules rules; // Seção de regras
+                } Sig;
+            } // namespace sig
 
-            typedef struct CrowApp {
-                log::Log log;
-                server::Server server;
-            } CrowApp;
-        } // namespace crowapp
+            namespace logging
+            {
+                namespace daily
+                {
+                    typedef struct Daily {
+                        uint16_t hours;
+                        uint16_t minutes;
+                        uint16_t max_size; // for 'rotating' type
+                    } Daily;
+                } // namespace daily
 
-        namespace cache
-        {
-            typedef struct Cache {
-                std::string type;
-                std::string path;
-            } Cache;
-        } // namespace cache
+                namespace rotation
+                {
+                    typedef struct Rotation {
+                        uint16_t max_files;
+                        uint16_t max_size;
+                    } Rotation;
+                } // namespace rotation
 
-    } // namespace record
-} // namespace configuration
+                namespace traceupdates
+                {
+                    typedef struct TraceUpdates {
+                        uint16_t interval;
+                    } TraceUpdates;
+                } // namespace traceupdates
+
+                typedef struct Logging {
+                    std::string name;
+                    std::string type;
+                    bool console;
+                    int level;
+                    traceupdates::TraceUpdates trace;
+                    daily::Daily daily_settings;
+                    rotation::Rotation rotation_settings;
+                } Log;
+
+            } // namespace logging
+
+            namespace crowapp
+            {
+                namespace log
+                {
+                    typedef struct Log {
+                        int level;
+                    } Context;
+                } // namespace log
+                namespace server
+                {
+                    namespace websocket
+                    {
+                        namespace context
+                        {
+                            typedef struct Context {
+                                toml::array whitelist;
+                            } Context;
+                        } // namespace context
+                    } // namespace websocket
+
+                    typedef struct Server {
+                        std::string bindaddr;
+                        uint16_t port;
+                        uint16_t threads;
+                        std::string ssl_certificate_path;
+                        websocket::context::Context context;
+                    } Server;
+
+                } // namespace server
+
+                typedef struct CrowApp {
+                    log::Log log;
+                    server::Server server;
+                } CrowApp;
+            } // namespace crowapp
+
+            namespace cache
+            {
+                typedef struct Cache {
+                    std::string type;
+                    std::string path;
+                } Cache;
+            } // namespace cache
+
+        } // namespace record
+    } // namespace configuration
+} // namespace engine

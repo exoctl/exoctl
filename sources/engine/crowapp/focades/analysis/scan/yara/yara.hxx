@@ -7,30 +7,34 @@
 #include <engine/security/yara/yara.hxx>
 #include <string>
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace scan
+        namespace analysis
         {
-            class Yara
+            namespace scan
             {
-              public:
-                Yara();
-                Yara(configuration::Configuration &);
-                ~Yara();
+                class Yara
+                {
+                  public:
+                    Yara();
+                    Yara(configuration::Configuration &);
+                    ~Yara();
 
-                void scan_fast_bytes(
-                    const std::string,
-                    const std::function<void(yara::record::DTO *)> &);
-                void load_rules(const std::function<void(uint64_t)> &) const;
+                    void scan_fast_bytes(
+                        const std::string,
+                        const std::function<void(yara::record::DTO *)> &);
+                    void load_rules(
+                        const std::function<void(uint64_t)> &) const;
 
-                const parser::Json dto_json(const yara::record::DTO *);
+                    const parser::Json dto_json(const yara::record::DTO *);
 
-              private:
-                configuration::Configuration &m_config;
-                security::Yara m_yara;
-            };
-        } // namespace scan
-    } // namespace analysis
-} // namespace focades
+                  private:
+                    configuration::Configuration &m_config;
+                    security::Yara m_yara;
+                };
+            } // namespace scan
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

@@ -1,17 +1,20 @@
 #include <engine/crowapp/focades/analysis/search/yara/yara.hxx>
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace Search
+        namespace analysis
         {
-            Yara::Yara()
+            namespace Search
             {
-            }
-            Yara::~Yara()
-            {
-            }
-        } // namespace Search
-    } // namespace analysis
-} // namespace focades
+                Yara::Yara()
+                {
+                }
+                Yara::~Yara()
+                {
+                }
+            } // namespace Search
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

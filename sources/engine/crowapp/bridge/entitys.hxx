@@ -3,25 +3,28 @@
 #include <stdint.h>
 #include <string>
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        namespace type
+        namespace bridge
         {
-            enum Bridge {
-                websocket,
-                web
-            };
-        } // namespace type
+            namespace type
+            {
+                enum Bridge {
+                    websocket,
+                    web
+                };
+            } // namespace type
 
-        namespace record
-        {
-            typedef struct Bridge {
-                const std::string path;
-                const type::Bridge type;
-                const uint64_t connections; /* only websocket connections */
-            } Bridge;
-        } // namespace record
-    } // namespace bridge
-} // namespace crowapp
+            namespace record
+            {
+                typedef struct Bridge {
+                    const std::string path;
+                    const type::Bridge type;
+                    const uint64_t connections; /* only websocket connections */
+                } Bridge;
+            } // namespace record
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

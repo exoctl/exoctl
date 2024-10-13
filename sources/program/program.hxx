@@ -16,7 +16,7 @@ namespace program
       public:
         Program(int = 0, const char ** = nullptr);
         ~Program();
-        const int run();
+        [[nodiscard]] const int run();
 
       protected:
         friend struct ProgramEntry;
@@ -25,8 +25,8 @@ namespace program
       private:
         const int m_argc;
         const char **m_argv;
-        configuration::Configuration m_config;
-        logging::Logging m_log;
+        engine::configuration::Configuration m_config;
+        engine::logging::Logging m_log;
         std::unique_ptr<engine::Engine> m_engine;
     };
 

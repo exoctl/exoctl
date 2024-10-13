@@ -10,34 +10,37 @@
 
 #define BASE_ANALYSIS API_PREFIX "/analysis"
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        class Analysis : public interface::IGateway
+        namespace bridge
         {
-          public:
-            Analysis(CrowApp &);
-            ~Analysis();
+            class Analysis : public interface::IGateway
+            {
+              public:
+                Analysis(CrowApp &);
+                ~Analysis();
 
-            void load() const override;
+                void load() const override;
 
-          private:
-            CrowApp &m_crowapp;
-            mutable gateway::Map m_map;
+              private:
+                CrowApp &m_crowapp;
+                mutable gateway::Map m_map;
 
-            std::unique_ptr<gateway::WebSocket> m_socket_scan_yara;
-            std::unique_ptr<gateway::WebSocket> m_socket_scan_av_clamav;
-            std::unique_ptr<gateway::WebSocket> m_socket_scan;
+                std::unique_ptr<gateway::WebSocket> m_socket_scan_yara;
+                std::unique_ptr<gateway::WebSocket> m_socket_scan_av_clamav;
+                std::unique_ptr<gateway::WebSocket> m_socket_scan;
 
-            std::unique_ptr<focades::analysis::scan::Yara> m_scan_yara;
-            std::unique_ptr<focades::analysis::scan::av::Clamav>
-                m_scan_av_clamav;
+                std::unique_ptr<focades::analysis::scan::Yara> m_scan_yara;
+                std::unique_ptr<focades::analysis::scan::av::Clamav>
+                    m_scan_av_clamav;
 
-            void prepare();
-            void scan();
-            void scan_yara();
-            void scan_av_clamav();
-        };
-    } // namespace bridge
-} // namespace crowapp
+                void prepare();
+                void scan();
+                void scan_yara();
+                void scan_av_clamav();
+            };
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

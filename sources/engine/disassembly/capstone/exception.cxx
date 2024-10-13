@@ -1,19 +1,22 @@
 #include <engine/disassembly/capstone/exception.hxx>
 
-namespace disassembly
+namespace engine
 {
-    namespace capstone
+    namespace disassembly
     {
-        namespace exception
+        namespace capstone
         {
-            Initialize::Initialize(const std::string &p_message)
-                : m_error_message(p_message)
+            namespace exception
             {
-            }
-            const char *Initialize::what() const noexcept
-            {
-                return m_error_message.c_str();
-            }
-        } // namespace exception
-    } // namespace capstone
-} // namespace disassembly
+                Initialize::Initialize(const std::string &p_message)
+                    : m_error_message(p_message)
+                {
+                }
+                const char *Initialize::what() const noexcept
+                {
+                    return m_error_message.c_str();
+                }
+            } // namespace exception
+        } // namespace capstone
+    } // namespace disassembly
+} // namespace engine

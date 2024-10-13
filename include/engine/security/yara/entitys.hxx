@@ -1,25 +1,28 @@
 #pragma once
 
-namespace security
+namespace engine
 {
-    namespace yara
+    namespace security
     {
-        namespace type
+        namespace yara
         {
-            enum Scan {
-                nomatch,
-                match,
-                none /* default value */
-            };
-        } // namespace type
+            namespace type
+            {
+                enum Scan {
+                    nomatch,
+                    match,
+                    none /* default value */
+                };
+            } // namespace type
 
-        namespace record
-        {
-            typedef struct Data {
-                type::Scan match_status;
-                const char *rule;
-                const char *ns;
-            } Data;
-        } // namespace record
-    } // namespace yara
-} // namespace security
+            namespace record
+            {
+                typedef struct Data {
+                    type::Scan match_status;
+                    const char *rule;
+                    const char *ns;
+                } Data;
+            } // namespace record
+        } // namespace yara
+    } // namespace security
+} // namespace engine

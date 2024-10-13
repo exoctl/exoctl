@@ -7,27 +7,30 @@
 
 #define BASE_PARSER API_PREFIX "/parser"
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        class Parser : public interface::IGateway
+        namespace bridge
         {
-          public:
-            Parser(CrowApp &);
-            ~Parser();
+            class Parser : public interface::IGateway
+            {
+              public:
+                Parser(CrowApp &);
+                ~Parser();
 
-            void load() const override;
+                void load() const override;
 
-          private:
-            CrowApp &m_crowapp;
-            mutable gateway::Map m_map;
+              private:
+                CrowApp &m_crowapp;
+                mutable gateway::Map m_map;
 
-            std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;
-            std::unique_ptr<gateway::WebSocket> m_socket_elf;
+                std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;
+                std::unique_ptr<gateway::WebSocket> m_socket_elf;
 
-            void prepare();
-            void parser_elf();
-        };
-    } // namespace bridge
-} // namespace crowapp
+                void prepare();
+                void parser_elf();
+            };
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

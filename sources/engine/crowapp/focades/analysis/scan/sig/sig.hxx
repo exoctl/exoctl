@@ -5,20 +5,23 @@
 #include <engine/security/signatures/signatures.hxx>
 #include <string>
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace scan
+        namespace analysis
         {
-            class Sig
+            namespace scan
             {
-              public:
-                Sig();
-                ~Sig();
+                class Sig
+                {
+                  public:
+                    Sig();
+                    ~Sig();
 
-              private:
-            };
-        } // namespace scan
-    } // namespace analysis
-} // namespace focades
+                  private:
+                };
+            } // namespace scan
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

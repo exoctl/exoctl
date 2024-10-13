@@ -11,23 +11,26 @@
 #include <utility>
 #include <vector>
 
-namespace crowapp
+namespace engine
 {
-    class Bridge
+    namespace crowapp
     {
-      public:
-        Bridge(CrowApp &);
-        ~Bridge();
+        class Bridge
+        {
+          public:
+            Bridge(CrowApp &);
+            ~Bridge();
 
-        void load();
+            void load();
 
-      private:
-        CrowApp &m_crowapp;
-        std::vector<bridge::record::Bridge> m_endpoints;
+          private:
+            CrowApp &m_crowapp;
+            std::vector<bridge::record::Bridge> m_endpoints;
 
-        std::unique_ptr<bridge::Analysis> m_analysis;
-        std::unique_ptr<bridge::Parser> m_parser;
-        std::unique_ptr<bridge::Rev> m_rev;
-        std::unique_ptr<bridge::Data> m_data;
-    };
-} // namespace crowapp
+            std::unique_ptr<bridge::Analysis> m_analysis;
+            std::unique_ptr<bridge::Parser> m_parser;
+            std::unique_ptr<bridge::Rev> m_rev;
+            std::unique_ptr<bridge::Data> m_data;
+        };
+    } // namespace crowapp
+} // namespace engine

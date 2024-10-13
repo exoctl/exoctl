@@ -13,26 +13,29 @@
 #include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
 
-namespace crowapp
+namespace engine
 {
-    class CrowApp
+    namespace crowapp
     {
-      private:
-        crow::SimpleApp m_app;
-        configuration::Configuration &m_config;
-        logging::Logging &m_log;
+        class CrowApp
+        {
+          private:
+            crow::SimpleApp m_app;
+            configuration::Configuration &m_config;
+            logging::Logging &m_log;
 
-      public:
-        CrowApp(configuration::Configuration &, logging::Logging &);
-        ~CrowApp();
+          public:
+            CrowApp(configuration::Configuration &, logging::Logging &);
+            ~CrowApp();
 
-        crow::SimpleApp &get_app();
-        const uint16_t get_concurrency();
-        configuration::Configuration &get_config();
-        logging::Logging &get_log();
-        const std::string &get_bindaddr();
-        const uint16_t &get_port();
-        void run();
-        void stop();
-    };
-}; // namespace crowapp
+            crow::SimpleApp &get_app();
+            const uint16_t get_concurrency();
+            configuration::Configuration &get_config();
+            logging::Logging &get_log();
+            const std::string &get_bindaddr();
+            const uint16_t &get_port();
+            void run();
+            void stop();
+        };
+    } // namespace crowapp
+} // namespace engine

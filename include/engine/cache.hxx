@@ -1,10 +1,13 @@
 #pragma once
 
-namespace cache
+namespace engine
 {
-    class Cache
+    namespace cache
     {
-        Cache();
-        ~Cache();
-    };
-} // namespace cache
+        class Cache
+        {
+            Cache();
+            ~Cache();
+        };
+    } // namespace cache
+} // namespace engine

@@ -2,23 +2,28 @@
 
 #include <LIEF/ELF.hpp>
 
-namespace parser
+namespace engine
 {
-    namespace binary
+    namespace parser
     {
-        class ELF : public LIEF::ELF::Parser
+        namespace binary
         {
-          public:
-            ELF();
-            ~ELF();
+            class ELF : public LIEF::ELF::Parser
+            {
+              public:
+                ELF();
+                ~ELF();
 
-            void parser_bytes(const std::string &,
-                              const std::function<void(
-                                  std::unique_ptr<const LIEF::ELF::Binary>)> &);
+                void parser_bytes(
+                    const std::string &,
+                    const std::function<
+                        void(std::unique_ptr<const LIEF::ELF::Binary>)> &);
 
-            void parser_file(const std::string &,
-                             const std::function<void(
-                                 std::unique_ptr<const LIEF::ELF::Binary>)> &);
-        };
-    } // namespace binary
-} // namespace parser
+                void parser_file(
+                    const std::string &,
+                    const std::function<
+                        void(std::unique_ptr<const LIEF::ELF::Binary>)> &);
+            };
+        } // namespace binary
+    } // namespace parser
+} // namespace engine

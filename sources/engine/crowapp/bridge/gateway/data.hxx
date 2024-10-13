@@ -9,27 +9,30 @@
 
 #define BASE_DATA API_PREFIX "/data"
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        class Data : public interface::IGateway
+        namespace bridge
         {
-          public:
-            Data(CrowApp &);
-            ~Data();
+            class Data : public interface::IGateway
+            {
+              public:
+                Data(CrowApp &);
+                ~Data();
 
-            void load() const override;
+                void load() const override;
 
-          private:
-            CrowApp &m_crowapp;
-            mutable gateway::Map m_map;
+              private:
+                CrowApp &m_crowapp;
+                mutable gateway::Map m_map;
 
-            std::unique_ptr<gateway::WebSocket> m_socket_metadata;
-            std::unique_ptr<focades::data::Metadata> m_data_metadata;
+                std::unique_ptr<gateway::WebSocket> m_socket_metadata;
+                std::unique_ptr<focades::data::Metadata> m_data_metadata;
 
-            void prepare();
-            void data_metadata();
-        };
-    } // namespace bridge
-} // namespace crowapp
+                void prepare();
+                void data_metadata();
+            };
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

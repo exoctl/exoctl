@@ -3,25 +3,28 @@
 #include <engine/security/av/clamav/entitys.hxx>
 #include <string>
 
-namespace focades
+namespace engine
 {
-    namespace analysis
+    namespace focades
     {
-        namespace scan
+        namespace analysis
         {
-            namespace av
+            namespace scan
             {
-                namespace clamav
+                namespace av
                 {
-                    namespace record
+                    namespace clamav
                     {
-                        typedef struct DTO {
-                            const char *virname;
-                            security::av::clamav::type::Scan math_status;
-                        } DTO;
-                    } // namespace record
-                } // namespace clamav
-            } // namespace av
-        } // namespace scan
-    } // namespace analysis
-} // namespace focades
+                        namespace record
+                        {
+                            typedef struct DTO {
+                                const char *virname;
+                                security::av::clamav::type::Scan math_status;
+                            } DTO;
+                        } // namespace record
+                    } // namespace clamav
+                } // namespace av
+            } // namespace scan
+        } // namespace analysis
+    } // namespace focades
+} // namespace engine

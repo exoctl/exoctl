@@ -2,28 +2,31 @@
 
 #include <engine/exception.hxx>
 
-namespace crowapp
+namespace engine
 {
-    namespace exception
+    namespace crowapp
     {
-        class Abort : public interface::IException
+        namespace exception
         {
-          private:
-            const std::string m_error_message;
+            class Abort : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
 
-          public:
-            explicit Abort(const std::string &);
-            const char *what() const noexcept override;
-        };
+              public:
+                explicit Abort(const std::string &);
+                const char *what() const noexcept override;
+            };
 
-        class ParcialAbort : public interface::IException
-        {
-          private:
-            const std::string m_error_message;
+            class ParcialAbort : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
 
-          public:
-            explicit ParcialAbort(const std::string &);
-            const char *what() const noexcept override;
-        };
-    } // namespace exception
-} // namespace crowapp
+              public:
+                explicit ParcialAbort(const std::string &);
+                const char *what() const noexcept override;
+            };
+        } // namespace exception
+    } // namespace crowapp
+} // namespace engine

@@ -3,62 +3,65 @@
 #include <engine/interfaces/iexception.hxx>
 #include <string>
 
-namespace security
+namespace engine
 {
-    namespace yara
+    namespace security
     {
-        namespace exception
+        namespace yara
         {
-            class CompilerRules : public interface::IException
+            namespace exception
             {
-              private:
-                const std::string m_error_message;
+                class CompilerRules : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit CompilerRules(const std::string &);
-                const char *what() const noexcept override;
-            };
+                  public:
+                    explicit CompilerRules(const std::string &);
+                    const char *what() const noexcept override;
+                };
 
-            class LoadRules : public interface::IException
-            {
-              private:
-                const std::string m_error_message;
+                class LoadRules : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit LoadRules(const std::string &);
-                const char *what() const noexcept override;
-            };
+                  public:
+                    explicit LoadRules(const std::string &);
+                    const char *what() const noexcept override;
+                };
 
-            class Initialize : public interface::IException
-            {
-              private:
-                const std::string m_error_message;
+                class Initialize : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit Initialize(const std::string &);
-                const char *what() const noexcept override;
-            };
+                  public:
+                    explicit Initialize(const std::string &);
+                    const char *what() const noexcept override;
+                };
 
-            class Finalize : public interface::IException
-            {
-              private:
-                const std::string m_error_message;
+                class Finalize : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit Finalize(const std::string &);
-                const char *what() const noexcept override;
-            };
+                  public:
+                    explicit Finalize(const std::string &);
+                    const char *what() const noexcept override;
+                };
 
-            class Scan : public interface::IException
-            {
-              private:
-                const std::string m_error_message;
+                class Scan : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
 
-              public:
-                explicit Scan(const std::string &);
-                const char *what() const noexcept override;
-            };
+                  public:
+                    explicit Scan(const std::string &);
+                    const char *what() const noexcept override;
+                };
 
-        } // namespace exception
-    } // namespace yara
-} // namespace security
+            } // namespace exception
+        } // namespace yara
+    } // namespace security
+} // namespace engine

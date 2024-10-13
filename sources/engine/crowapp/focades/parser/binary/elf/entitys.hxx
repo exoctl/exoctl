@@ -3,24 +3,27 @@
 #include <engine/parser/binary/elf.hxx>
 #include <vector>
 
-namespace focades
+namespace engine
 {
-    namespace parser
+    namespace focades
     {
-        namespace binary
+        namespace parser
         {
-            namespace elf
+            namespace binary
             {
-                namespace record
+                namespace elf
                 {
-                    typedef struct DTO {
-                        LIEF::ELF::Header header;
-                        std::vector<LIEF::ELF::Section> sections;
-                        std::vector<LIEF::ELF::Segment> segments;
-                        LIEF::ELF::DynamicEntry dynamic_entry;
-                    } DTO;
-                } // namespace record
-            } // namespace elf
-        } // namespace binary
-    } // namespace parser
-} // namespace focades
+                    namespace record
+                    {
+                        typedef struct DTO {
+                            LIEF::ELF::Header header;
+                            std::vector<LIEF::ELF::Section> sections;
+                            std::vector<LIEF::ELF::Segment> segments;
+                            LIEF::ELF::DynamicEntry dynamic_entry;
+                        } DTO;
+                    } // namespace record
+                } // namespace elf
+            } // namespace binary
+        } // namespace parser
+    } // namespace focades
+} // namespace engine

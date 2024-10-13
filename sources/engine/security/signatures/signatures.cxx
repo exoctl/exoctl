@@ -2,13 +2,16 @@
 #include <engine/security/signatures/signatures.hxx>
 #include <fmt/core.h>
 
-namespace security
+namespace engine
 {
-    Sig::Sig()
+    namespace security
     {
-    }
-    Sig::~Sig()
-    {
-    }
+        Sig::Sig()
+        {
+        }
+        Sig::~Sig()
+        {
+        }
 
-} // namespace security
+    } // namespace security
+} // namespace engine

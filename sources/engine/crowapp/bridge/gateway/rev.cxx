@@ -1,97 +1,106 @@
 #include <engine/crowapp/bridge/gateway/rev.hxx>
 
-namespace crowapp
+namespace engine
 {
-    namespace bridge
+    namespace crowapp
     {
-        Rev::Rev(CrowApp &p_crowapp) : m_crowapp(p_crowapp), m_map(BASE_REV)
+        namespace bridge
         {
-            Rev::prepare();
+            Rev::Rev(CrowApp &p_crowapp) : m_crowapp(p_crowapp), m_map(BASE_REV)
+            {
+                Rev::prepare();
 
-            // add new routes
-            Rev::capstone_x64();
-            Rev::capstone_arm64();
-        }
+                // add new routes
+                Rev::capstone_x64();
+                Rev::capstone_arm64();
+            }
 
-        Rev::~Rev()
-        {
-        }
+            Rev::~Rev()
+            {
+            }
 
-        void Rev::load() const
-        {
-            m_map.get_routes(
-                [&](const std::string p_route) { m_map.call_route(p_route); });
-        }
+            void Rev::load() const
+            {
+                m_map.get_routes([&](const std::string p_route) {
+                    m_map.call_route(p_route);
+                });
+            }
 
-        void Rev::prepare()
-        {
-            LOG(m_crowapp.get_log(), info, "Preparing gateway rev routes ...");
+            void Rev::prepare()
+            {
+                LOG(m_crowapp.get_log(),
+                    info,
+                    "Preparing gateway rev routes ...");
 
-            m_capstone_arm64 =
-                std::make_unique<focades::rev::disassembly::Capstone>(
-                    CS_ARCH_ARM64, CS_MODE_ARM);
-            m_capstone_x64 =
-                std::make_unique<focades::rev::disassembly::Capstone>(
-                    CS_ARCH_X86, CS_MODE_64);
-        }
+                m_capstone_arm64 =
+                    std::make_unique<focades::rev::disassembly::Capstone>(
+                        CS_ARCH_ARM64, CS_MODE_ARM);
+                m_capstone_x64 =
+                    std::make_unique<focades::rev::disassembly::Capstone>(
+                        CS_ARCH_X86, CS_MODE_64);
+            }
 
-        void Rev::capstone_x64()
-        {
-            m_map.add_route("/disassembly/capstone/x64", [&]() {
-                m_socket_capstone_x64 = std::make_unique<gateway::WebSocket>(
-                    m_crowapp,
-                    BASE_REV "/disassembly/capstone/x64",
-                    UINT64_MAX,
-                    [&](gateway::websocket::Context &p_context,
-                        crow::websocket::connection &p_conn,
-                        const std::string &p_data,
-                        bool p_is_binary) {
-                        if (p_is_binary) {
-                            m_capstone_x64->disassembly(
-                                p_data,
-                                [&](focades::rev::disassembly::capstone::
-                                        record::DTO *p_dto) {
+            void Rev::capstone_x64()
+            {
+                m_map.add_route("/disassembly/capstone/x64", [&]() {
+                    m_socket_capstone_x64 =
+                        std::make_unique<gateway::WebSocket>(
+                            m_crowapp,
+                            BASE_REV "/disassembly/capstone/x64",
+                            UINT64_MAX,
+                            [&](gateway::websocket::Context &p_context,
+                                crow::websocket::connection &p_conn,
+                                const std::string &p_data,
+                                bool p_is_binary) {
+                                if (p_is_binary) {
+                                    m_capstone_x64->disassembly(
+                                        p_data,
+                                        [&](focades::rev::disassembly::
+                                                capstone::record::DTO *p_dto) {
+                                            p_context.broadcast(
+                                                &p_conn,
+                                                m_capstone_x64->dto_json(p_dto)
+                                                    .to_string());
+                                        });
+                                } else {
                                     p_context.broadcast(
-                                        &p_conn,
-                                        m_capstone_x64->dto_json(p_dto)
-                                            .to_string());
-                                });
-                        } else {
-                            p_context.broadcast(&p_conn,
-                                                "{\"status\": \"error\"}");
-                        }
-                    });
-            });
-        }
+                                        &p_conn, "{\"status\": \"error\"}");
+                                }
+                            });
+                });
+            }
 
-        void Rev::capstone_arm64()
-        {
-            m_map.add_route("/disassembly/capstone/arm64", [&]() {
-                m_socket_capstone_arm64 = std::make_unique<gateway::WebSocket>(
-                    m_crowapp,
-                    BASE_REV "/disassembly/capstone/arm64",
-                    UINT64_MAX,
-                    [&](gateway::websocket::Context &p_context,
-                        crow::websocket::connection &p_conn,
-                        const std::string &p_data,
-                        bool p_is_binary) {
-                        if (p_is_binary) {
-                            m_capstone_arm64->disassembly(
-                                p_data,
-                                [&](focades::rev::disassembly::capstone::
-                                        record::DTO *p_dto) {
+            void Rev::capstone_arm64()
+            {
+                m_map.add_route("/disassembly/capstone/arm64", [&]() {
+                    m_socket_capstone_arm64 =
+                        std::make_unique<gateway::WebSocket>(
+                            m_crowapp,
+                            BASE_REV "/disassembly/capstone/arm64",
+                            UINT64_MAX,
+                            [&](gateway::websocket::Context &p_context,
+                                crow::websocket::connection &p_conn,
+                                const std::string &p_data,
+                                bool p_is_binary) {
+                                if (p_is_binary) {
+                                    m_capstone_arm64->disassembly(
+                                        p_data,
+                                        [&](focades::rev::disassembly::
+                                                capstone::record::DTO *p_dto) {
+                                            p_context.broadcast(
+                                                &p_conn,
+                                                m_capstone_arm64
+                                                    ->dto_json(p_dto)
+                                                    .to_string());
+                                        });
+                                } else {
                                     p_context.broadcast(
-                                        &p_conn,
-                                        m_capstone_arm64->dto_json(p_dto)
-                                            .to_string());
-                                });
-                        } else {
-                            p_context.broadcast(&p_conn,
-                                                "{\"status\": \"error\"}");
-                        }
-                    });
-            });
-        }
+                                        &p_conn, "{\"status\": \"error\"}");
+                                }
+                            });
+                });
+            }
 
-    } // namespace bridge
-} // namespace crowapp
+        } // namespace bridge
+    } // namespace crowapp
+} // namespace engine

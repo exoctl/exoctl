@@ -4,29 +4,32 @@
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/parser/json.hxx>
 
-namespace focades
+namespace engine
 {
-    namespace rev
+    namespace focades
     {
-        namespace disassembly
+        namespace rev
         {
-            class Capstone
+            namespace disassembly
             {
-              public:
-                Capstone(const cs_arch, const cs_mode);
-                ~Capstone();
+                class Capstone
+                {
+                  public:
+                    Capstone(const cs_arch, const cs_mode);
+                    ~Capstone();
 
-                void disassembly(
-                    const std::string &,
-                    const std::function<void(capstone::record::DTO *)> &);
+                    void disassembly(
+                        const std::string &,
+                        const std::function<void(capstone::record::DTO *)> &);
 
-                ::parser::Json dto_json(const capstone::record::DTO *);
+                    ::engine::parser::Json dto_json(const capstone::record::DTO *);
 
-              private:
-                ::disassembly::Capstone m_capstone;
-                const std::string m_arch;
-                const std::string m_mode;
-            };
-        } // namespace disassembly
-    } // namespace rev
-} // namespace focades
+                  private:
+                    ::engine::disassembly::Capstone m_capstone;
+                    const std::string m_arch;
+                    const std::string m_mode;
+                };
+            } // namespace disassembly
+        } // namespace rev
+    } // namespace focades
+} // namespace engine

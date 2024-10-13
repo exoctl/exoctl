@@ -1,11 +1,14 @@
 #include <engine/cache.hxx>
 
-namespace cache
+namespace engine
 {
-    Cache::Cache()
+    namespace cache
     {
-    }
-    Cache::~Cache()
-    {
-    }
-}; // namespace cache
+        Cache::Cache()
+        {
+        }
+        Cache::~Cache()
+        {
+        }
+    }; // namespace cache
+} // namespace engine
