@@ -22,13 +22,18 @@ namespace engine
                         const std::string &,
                         const std::function<void(binary::elf::record::DTO *)>
                             &);
-                    const ::engine::parser::Json dto_json(binary::elf::record::DTO *);
+                    const ::engine::parser::Json dto_json(
+                        binary::elf::record::DTO *);
 
                   private:
-                    ::engine::parser::Json header_json(binary::elf::record::DTO *p_dto);
+                    ::engine::parser::Json header_json(
+                        binary::elf::record::DTO *p_dto);
                     std::vector<::engine::parser::Json> sections_json(
                         binary::elf::record::DTO *p_dto);
                     std::vector<::engine::parser::Json> segments_json(
+                        binary::elf::record::DTO *p_dto);
+
+                    std::vector<::engine::parser::Json> dynamic_entries_json(
                         binary::elf::record::DTO *p_dto);
 
                     ::engine::parser::binary::ELF m_elf;

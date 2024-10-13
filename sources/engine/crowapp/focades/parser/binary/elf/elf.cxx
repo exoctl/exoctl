@@ -1,3 +1,7 @@
+#include "LIEF/ELF/DynamicEntry.hpp"
+#include "LIEF/ELF/DynamicEntryFlags.hpp"
+#include "LIEF/ELF/DynamicEntryLibrary.hpp"
+#include "fmt/format.h"
 #include <engine/crowapp/focades/parser/binary/elf/elf.hxx>
 #include <engine/memory.hxx>
 #include <engine/parser/json.hxx>
@@ -39,6 +43,13 @@ namespace engine
                                           p_elf.get()->sections().end(),
                                           std::back_inserter(dto->sections));
 
+                                dto->dynamic_entries.reserve(
+                                    p_elf.get()->dynamic_entries().size());
+                                std::move(
+                                    p_elf.get()->dynamic_entries().begin(),
+                                    p_elf.get()->dynamic_entries().end(),
+                                    std::back_inserter(dto->dynamic_entries));
+
                                 dto->segments.reserve(
                                     p_elf.get()->segments().size());
                                 std::move(p_elf.get()->segments().begin(),
@@ -54,24 +65,28 @@ namespace engine
                 const ::engine::parser::Json ELF::dto_json(
                     binary::elf::record::DTO *p_dto)
                 {
-                    ::engine::parser::Json elf;
+                    ::engine::parser::Json json;
 
                     if (!IS_NULL(p_dto)) {
 
-                        elf.add_member_json("header", ELF::header_json(p_dto));
-                        elf.add_member_vector("sections",
-                                              ELF::sections_json(p_dto));
-                        elf.add_member_vector("segments",
-                                              ELF::segments_json(p_dto));
+                        json.add_member_json("header", ELF::header_json(p_dto));
+                        json.add_member_vector("sections",
+                                               ELF::sections_json(p_dto));
+                        json.add_member_vector("segments",
+                                               ELF::segments_json(p_dto));
+                        json.add_member_vector(
+                            "dynamic_entries",
+                            ELF::dynamic_entries_json(p_dto));
                     }
 
-                    return elf;
+                    return json;
                 }
 
                 std::vector<::engine::parser::Json> ELF::segments_json(
                     binary::elf::record::DTO *p_dto)
                 {
                     std::vector<::engine::parser::Json> segments;
+                    segments.reserve(p_dto->segments.size());
 
                     for (const auto &segment : p_dto->segments) {
                         ::engine::parser::Json seg;
@@ -120,6 +135,7 @@ namespace engine
                     binary::elf::record::DTO *p_dto)
                 {
                     std::vector<::engine::parser::Json> sections;
+                    sections.reserve(p_dto->sections.size());
 
                     for (const auto &section : p_dto->sections) {
                         ::engine::parser::Json sec;
@@ -138,7 +154,8 @@ namespace engine
                     return sections;
                 }
 
-                ::engine::parser::Json ELF::header_json(binary::elf::record::DTO *p_dto)
+                ::engine::parser::Json ELF::header_json(
+                    binary::elf::record::DTO *p_dto)
                 {
                     ::engine::parser::Json header;
 
@@ -205,6 +222,26 @@ namespace engine
 
                     return header;
                 }
+
+                std::vector<::engine::parser::Json> ELF::dynamic_entries_json(
+                    binary::elf::record::DTO *p_dto)
+                {
+                    std::vector<::engine::parser::Json> dynamic_entries;
+                    dynamic_entries.reserve(p_dto->dynamic_entries.size());
+
+                    for (auto &entry : p_dto->dynamic_entries) {
+                        ::engine::parser::Json dyn;
+
+                        dyn.add_member_uint64("tag", entry.value());
+                        dyn.add_member_string(
+                            "type", LIEF::ELF::to_string(entry.tag()));
+
+                        dynamic_entries.push_back(dyn);
+                    }
+
+                    return dynamic_entries;
+                }
+
             } // namespace binary
         } // namespace parser
     } // namespace focades

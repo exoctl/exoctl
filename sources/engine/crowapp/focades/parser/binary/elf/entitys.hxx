@@ -19,7 +19,7 @@ namespace engine
                             LIEF::ELF::Header header;
                             std::vector<LIEF::ELF::Section> sections;
                             std::vector<LIEF::ELF::Segment> segments;
-                            LIEF::ELF::DynamicEntry dynamic_entry;
+                            std::vector<LIEF::ELF::DynamicEntry> dynamic_entries;
                         } DTO;
                     } // namespace record
                 } // namespace elf
