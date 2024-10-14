@@ -14,6 +14,7 @@ namespace engine
 
                 // add new routes
                 Parser::parser_elf();
+                Parser::parser_macho();
             }
 
             Parser::~Parser()
@@ -34,6 +35,7 @@ namespace engine
                     "Preparing gateway parser routes ...");
 
                 m_parser_elf = std::make_unique<focades::parser::binary::ELF>();
+                m_parser_macho = std::make_unique<focades::parser::binary::MACHO>();
             }
 
             void Parser::parser_elf()
@@ -48,12 +50,35 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             m_parser_elf->parser_bytes(
-                                "/usr/bin/ls",
+                                "/usr/bin/ls", // TODO: edit to p_buffer
                                 [&](focades::parser::binary::elf::record::DTO
                                         *p_dto) {
                                     p_context.broadcast(
                                         &p_conn,
                                         m_parser_elf->dto_json(p_dto)
+                                            .to_string());
+                                });
+                        });
+                });
+            }
+            void Parser::parser_macho()
+            {
+                m_map.add_route("/binary/macho", [&]() {
+                    m_socket_macho = std::make_unique<gateway::WebSocket>(
+                        m_crowapp,
+                        BASE_PARSER "/binary/macho",
+                        UINT64_MAX,
+                        [&](gateway::websocket::Context &p_context,
+                            crow::websocket::connection &p_conn,
+                            const std::string &p_data,
+                            bool p_is_binary) {
+                            m_parser_macho->parser_bytes(
+                                "/home/mob/Downloads/MachO-OSX-x64-ls", // TODO: edit to p_buffer
+                                [&](focades::parser::binary::macho::record::DTO
+                                        *p_dto) {
+                                    p_context.broadcast(
+                                        &p_conn,
+                                        m_parser_macho->dto_json(p_dto)
                                             .to_string());
                                 });
                         });

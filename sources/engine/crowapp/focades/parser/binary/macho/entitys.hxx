@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/parser/binary/elf.hxx>
+#include <engine/parser/binary/macho.hxx>
 
 namespace engine
 {
@@ -10,12 +10,12 @@ namespace engine
         {
             namespace binary
             {
-                namespace elf
+                namespace macho
                 {
                     namespace record
                     {
                         typedef struct DTO {
-                            std::unique_ptr<const LIEF::ELF::Binary> *elf;
+                            std::unique_ptr<const LIEF::MachO::FatBinary> *macho;
                         } DTO;
                     } // namespace record
                 } // namespace elf

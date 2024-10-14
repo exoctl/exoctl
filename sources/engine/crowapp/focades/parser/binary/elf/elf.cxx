@@ -1,14 +1,7 @@
-#include "LIEF/ELF/DynamicEntry.hpp"
-#include "LIEF/ELF/DynamicEntryFlags.hpp"
-#include "LIEF/ELF/DynamicEntryLibrary.hpp"
-#include "LIEF/json.hpp"
-#include "fmt/format.h"
+#include <LIEF/json.hpp>
 #include <engine/crowapp/focades/parser/binary/elf/elf.hxx>
 #include <engine/memory.hxx>
 #include <engine/parser/json.hxx>
-#include <fmt/core.h>
-#include <fmt/ranges.h>
-#include <memory>
 
 namespace engine
 {
