@@ -32,6 +32,7 @@ namespace engine
             void clear();
 
             [[nodiscard]] rapidjson::Document &get_document();
+            void from_string(const std::string &);
 
           private:
             rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> m_allocator;

@@ -16,11 +16,7 @@ namespace engine
                     namespace record
                     {
                         typedef struct DTO {
-                            LIEF::ELF::Header header;
-                            std::vector<LIEF::ELF::Section> sections;
-                            std::vector<LIEF::ELF::Segment> segments;
-                            std::vector<LIEF::ELF::DynamicEntry> dynamic_entries;
-                            std::vector<LIEF::ELF::Symbol> symbols;
+                            std::unique_ptr<const LIEF::ELF::Binary> *elf;
                         } DTO;
                     } // namespace record
                 } // namespace elf

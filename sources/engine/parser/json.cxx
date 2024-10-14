@@ -18,6 +18,11 @@ namespace engine
         {
         }
 
+        void Json::from_string(const std::string &json_str)
+        {
+            m_document.Parse(json_str.c_str());
+        }
+
         std::string Json::to_string() const
         {
             rapidjson::StringBuffer buffer;
