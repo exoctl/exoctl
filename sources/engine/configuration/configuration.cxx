@@ -1,4 +1,5 @@
 #include <engine/configuration/configuration.hxx>
+#include <engine/configuration/exception.hxx>
 
 namespace engine
 {
@@ -12,6 +13,7 @@ namespace engine
 
         void Configuration::load()
         {
+            TRY_BEGIN()
             load_project();
             load_crowapp();
             load_yara();
@@ -19,6 +21,8 @@ namespace engine
             load_cache();
             load_logging();
             load_av_clamav();
+            TRY_END()
+            CATCH(std::exception, { throw exception::Load(e.what()); });
         }
 
         Configuration::~Configuration()

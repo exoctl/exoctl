@@ -1,3 +1,4 @@
+#include <engine/configuration/exception.hxx>
 #include <engine/exception.hxx>
 #include <program/program.hxx>
 
@@ -9,13 +10,13 @@ namespace program
     {
         TRY_BEGIN()
         m_config.load();
+        m_log.load();
         TRY_END()
-        CATCH(std::exception, {
+        CATCH(engine::configuration::exception::Load, {
             fmt::print(stderr, "Failed to load configuration: {}\n", e.what());
-            throw std::runtime_error(e.what());
+            RETHROW();
         })
 
-        m_log.load();
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
     }
 
@@ -25,7 +26,6 @@ namespace program
 
     void Program::init_array()
     {
-        
     }
 
     const int Program::run()

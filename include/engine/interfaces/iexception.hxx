@@ -3,15 +3,17 @@
 #include <exception>
 #include <string>
 
-#define TRY_BEGIN() try {
+#define RETHROW() std::rethrow_exception(std::current_exception())
 
+#define TRY_BEGIN() try {
 #define CATCH(exception_type, action)                                          \
     catch (const exception_type &e)                                            \
     {                                                                          \
         action;                                                                \
     }
-
 #define TRY_END() }
+
+
 
 namespace engine
 {

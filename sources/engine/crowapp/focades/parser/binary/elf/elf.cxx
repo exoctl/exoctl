@@ -56,6 +56,12 @@ namespace engine
                                           p_elf.get()->segments().end(),
                                           std::back_inserter(dto->segments));
 
+                                dto->symbols.reserve(
+                                    p_elf.get()->symbols().size());
+                                std::move(p_elf.get()->symbols().begin(),
+                                          p_elf.get()->symbols().end(),
+                                          std::back_inserter(dto->symbols));
+
                                 p_callback(dto);
                                 delete dto;
                             }
@@ -77,9 +83,56 @@ namespace engine
                         json.add_member_vector(
                             "dynamic_entries",
                             ELF::dynamic_entries_json(p_dto));
+
+                        json.add_member_vector("symbols",
+                                               ELF::symbols_json(p_dto));
                     }
 
                     return json;
+                }
+
+                std::vector<::engine::parser::Json> ELF::symbols_json(
+                    binary::elf::record::DTO *p_dto)
+                {
+                    std::vector<::engine::parser::Json> symbols;
+                    symbols.reserve(p_dto->symbols.size());
+
+                    for (const auto &symbol : p_dto->symbols) {
+                        ::engine::parser::Json sym;
+
+                        sym.add_member_string("name", symbol.name());
+                        sym.add_member_string("demangled_name",
+                                              symbol.demangled_name());
+                        sym.add_member_bool("has_version",
+                                            symbol.has_version());
+                        sym.add_member_bool("is_static", symbol.is_static());
+                        sym.add_member_bool("is_variable",
+                                            symbol.is_variable());
+                        sym.add_member_bool("is_weak", symbol.is_weak());
+                        sym.add_member_bool("symbol_version",
+                                            symbol.symbol_version());
+                        sym.add_member_string(
+                            "type", LIEF::ELF::to_string(symbol.type()));
+                        sym.add_member_bool("is_global", symbol.is_global());
+                        sym.add_member_bool("is_local", symbol.is_local());
+                        sym.add_member_bool("is_imported",
+                                            symbol.is_imported());
+                        sym.add_member_string(
+                            "visibility",
+                            LIEF::ELF::to_string(symbol.visibility()));
+                        sym.add_member_string(
+                            "binding", LIEF::ELF::to_string(symbol.binding()));
+                        sym.add_member_string(
+                            "size", fmt::format("{:x}", symbol.size()));
+                        sym.add_member_string(
+                            "shndx", fmt::format("{:x}", symbol.shndx()));
+                        sym.add_member_string(
+                            "value", fmt::format("{:x}", symbol.value()));
+
+                        symbols.push_back(sym);
+                    }
+
+                    return symbols;
                 }
 
                 std::vector<::engine::parser::Json> ELF::segments_json(

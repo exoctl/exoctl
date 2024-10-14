@@ -32,8 +32,9 @@ namespace engine
                         binary::elf::record::DTO *p_dto);
                     std::vector<::engine::parser::Json> segments_json(
                         binary::elf::record::DTO *p_dto);
-
                     std::vector<::engine::parser::Json> dynamic_entries_json(
+                        binary::elf::record::DTO *p_dto);
+                    std::vector<::engine::parser::Json> symbols_json(
                         binary::elf::record::DTO *p_dto);
 
                     ::engine::parser::binary::ELF m_elf;
