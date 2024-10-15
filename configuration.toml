@@ -15,6 +15,7 @@ database.default_path = "rules/clamav/default"
 [sig.rules]
 packed_path = "rules/signatures/packeds"
 
+# global logger 
 [logging]
 file.path = "logs/engine.log"
 console.output_enabled = true
@@ -28,6 +29,9 @@ daily.minutes = 30
 # Rotating log configuration
 rotation.max_size = 10485
 rotation.max_files = 100
+
+[lief]
+log.level = 1
 
 [crowapp]
 log.level = 1

@@ -1,25 +1,13 @@
 #pragma once
 
-#include <engine/parser/binary/macho.hxx>
+#include <engine/parser/binary/lief/lief.hxx>
 
-namespace engine
+namespace engine::focades::parser::binary::macho
 {
-    namespace focades
+    namespace record
     {
-        namespace parser
-        {
-            namespace binary
-            {
-                namespace macho
-                {
-                    namespace record
-                    {
-                        typedef struct DTO {
-                            std::unique_ptr<const LIEF::MachO::FatBinary> *macho;
-                        } DTO;
-                    } // namespace record
-                } // namespace elf
-            } // namespace binary
-        } // namespace parser
-    } // namespace focades
-} // namespace engine
+        typedef struct DTO {
+            std::unique_ptr<const LIEF::MachO::FatBinary> *macho;
+        } DTO;
+    } // namespace record
+} // namespace engine::focades::parser::binary::macho

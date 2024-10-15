@@ -48,7 +48,7 @@ namespace program
 
         LOG(m_log,
             info,
-            "Running engine with m_configuration from '{}'...",
+            "Running engine with configuration from '{}'...",
             m_config.get_path_config());
 
         TRY_BEGIN()

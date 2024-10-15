@@ -25,7 +25,7 @@ namespace engine
                         &p_callback)
                 {
                     // TODO: edit to parser_buffer
-                    m_macho.parser_file(
+                    m_macho.parse_file(
                         p_buffer,
                         [&](std::unique_ptr<const LIEF::MachO::FatBinary>
                                 p_macho) {

@@ -1,4 +1,6 @@
+#include "LIEF/ELF/Binary.hpp"
 #include <engine/decompiler/c/elf.hxx>
+#include <memory>
 
 namespace engine
 {
@@ -15,27 +17,21 @@ namespace engine
             {
             }
 
-            const bool ELF::parser_file(const std::string &p_file_path)
+            const bool ELF::parse_file(const std::string &p_file_path)
             {
-                bool err = false;
+                m_elf.parse_file(
+                    p_file_path, [&](std::unique_ptr<const LIEF::ELF::Binary>) {
+                        m_capstone =
+                            new disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
 
-                if (m_elf.parse(p_file_path)) {
-                    err = true;
+                        m_capstone =
+                            new disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
+                    });
 
-                    // if (m_elf.parse(p_file_path).identity_class() ==
-                    //     LIEF::ELF::Header::CLASS::ELF32) {
-                    m_capstone =
-                        new disassembly::Capstone(CS_ARCH_X86, CS_MODE_32);
-                    //}
-
-                    m_capstone =
-                        new disassembly::Capstone(CS_ARCH_X86, CS_MODE_64);
-                }
-
-                return err;
+                return true;
             }
 
-            const bool ELF::parser_bytes(const std::string &p_buffer)
+            const bool ELF::parse_bytes(const std::string &p_buffer)
             {
                 return true;
             }

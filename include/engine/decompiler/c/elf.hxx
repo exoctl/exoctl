@@ -2,7 +2,7 @@
 
 #include <engine/decompiler/entitys.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
-#include <engine/parser/binary/elf.hxx>
+#include <engine/parser/binary/lief/lief.hxx>
 
 namespace engine
 {
@@ -16,14 +16,16 @@ namespace engine
                 ~ELF();
                 ELF();
 
-                const bool parser_file(const std::string &);
-                const bool parser_bytes(const std::string &);
+                const bool parse_file(const std::string &);
+                const bool parse_bytes(const std::string &);
 
                 void init_function(record::Function *, uint64_t, uint64_t);
 
               private:
                 disassembly::Capstone *m_capstone;
-                parser::binary::ELF m_elf;
+                ::engine::parser::binary::LIEF<const LIEF::ELF::Binary,
+                                               const LIEF::ELF::Parser>
+                    m_elf;
             };
         } // namespace C
     } // namespace decompiler

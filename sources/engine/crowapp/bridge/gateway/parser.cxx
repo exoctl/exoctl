@@ -15,6 +15,7 @@ namespace engine
                 // add new routes
                 Parser::parser_elf();
                 Parser::parser_macho();
+                Parser::parser_pe();
             }
 
             Parser::~Parser()
@@ -36,9 +37,34 @@ namespace engine
 
                 m_parser_elf = std::make_unique<focades::parser::binary::ELF>();
                 m_parser_macho = std::make_unique<focades::parser::binary::MACHO>();
+                m_parser_pe = std::make_unique<focades::parser::binary::PE>();
             }
 
             void Parser::parser_elf()
+            {
+                m_map.add_route("/binary/pe", [&]() {
+                    m_socket_pe = std::make_unique<gateway::WebSocket>(
+                        m_crowapp,
+                        BASE_PARSER "/binary/pe",
+                        UINT64_MAX,
+                        [&](gateway::websocket::Context &p_context,
+                            crow::websocket::connection &p_conn,
+                            const std::string &p_data,
+                            bool p_is_binary) {
+                            m_parser_pe->parser_bytes(
+                                "/home/mob/Downloads/pe-Windows-x86-cmd", // TODO: edit to p_buffer
+                                [&](focades::parser::binary::pe::record::DTO
+                                        *p_dto) {
+                                    p_context.broadcast(
+                                        &p_conn,
+                                        m_parser_pe->dto_json(p_dto)
+                                            .to_string());
+                                });
+                        });
+                });
+            }
+            
+            void Parser::parser_pe()
             {
                 m_map.add_route("/binary/elf", [&]() {
                     m_socket_elf = std::make_unique<gateway::WebSocket>(
@@ -61,6 +87,7 @@ namespace engine
                         });
                 });
             }
+
             void Parser::parser_macho()
             {
                 m_map.add_route("/binary/macho", [&]() {
