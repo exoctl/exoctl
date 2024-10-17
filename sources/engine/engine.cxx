@@ -9,7 +9,8 @@ namespace engine
                    logging::Logging &p_log)
         : m_configuration(p_configuration), m_log(p_log),
           m_crowapp(p_configuration, p_log), m_crowapp_bridge(m_crowapp),
-          m_crowapp_log(m_crowapp)
+          m_crowapp_log(p_configuration, p_log),
+          m_lief_log(p_configuration, p_log)
     {
     }
 

@@ -18,6 +18,7 @@ namespace engine
             ~Logging();
 
             void load();
+            spdlog::logger &get();
 
             template <typename... Args>
             void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -48,6 +49,9 @@ namespace engine
             {
                 m_logger->critical(p_msg, std::forward<Args>(p_args)...);
             }
+
+            std::shared_ptr<spdlog::logger> create_logger(const std::string &,
+                                                          const std::string &);
 
           private:
             configuration::Configuration &m_config;

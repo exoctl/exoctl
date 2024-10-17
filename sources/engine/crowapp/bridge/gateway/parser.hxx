@@ -2,9 +2,9 @@
 
 #include <engine/crowapp/bridge/gateway/map/map.hxx>
 #include <engine/crowapp/bridge/gateway/websocket/websocket.hxx>
-#include <engine/crowapp/focades/parser/binary/elf/elf.hxx>
-#include <engine/crowapp/focades/parser/binary/macho/macho.hxx>
-#include <engine/crowapp/focades/parser/binary/pe/pe.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/elf/elf.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/macho/macho.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/pe/pe.hxx>
 #include <engine/interfaces/igateway.hxx>
 
 #define BASE_PARSER API_PREFIX "/parser"

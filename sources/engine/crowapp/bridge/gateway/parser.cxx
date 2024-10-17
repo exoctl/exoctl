@@ -42,10 +42,10 @@ namespace engine
 
             void Parser::parser_elf()
             {
-                m_map.add_route("/binary/pe", [&]() {
+                m_map.add_route("/binary/lief/pe", [&]() {
                     m_socket_pe = std::make_unique<gateway::WebSocket>(
                         m_crowapp,
-                        BASE_PARSER "/binary/pe",
+                        BASE_PARSER "/binary/lief/pe",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
                             crow::websocket::connection &p_conn,
@@ -66,10 +66,10 @@ namespace engine
             
             void Parser::parser_pe()
             {
-                m_map.add_route("/binary/elf", [&]() {
+                m_map.add_route("/binary/lief/elf", [&]() {
                     m_socket_elf = std::make_unique<gateway::WebSocket>(
                         m_crowapp,
-                        BASE_PARSER "/binary/elf",
+                        BASE_PARSER "/binary/lief/elf",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
                             crow::websocket::connection &p_conn,
@@ -90,10 +90,10 @@ namespace engine
 
             void Parser::parser_macho()
             {
-                m_map.add_route("/binary/macho", [&]() {
+                m_map.add_route("/binary/lief/macho", [&]() {
                     m_socket_macho = std::make_unique<gateway::WebSocket>(
                         m_crowapp,
-                        BASE_PARSER "/binary/macho",
+                        BASE_PARSER "/binary/lief/macho",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
                             crow::websocket::connection &p_conn,

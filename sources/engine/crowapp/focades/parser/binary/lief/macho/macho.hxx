@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/crowapp/focades/parser/binary/macho/entitys.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/macho/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json.hxx>
 

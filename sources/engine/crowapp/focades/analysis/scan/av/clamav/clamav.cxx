@@ -24,11 +24,11 @@ namespace engine
                     void Clamav::load_rules(
                         const std::function<void(unsigned int)> &p_callback)
                     {
-                        m_clamav.load_rules([&]() {
-                            m_clamav.set_db_rule_fd(
-                                m_config.get_av_clamav().database.default_path,
-                                CL_DB_STDOPT);
-                        });
+                        //m_clamav.load_rules([&]() {
+                        //    m_clamav.set_db_rule_fd(
+                        //        m_config.get_av_clamav().database.default_path,
+                        //        CL_DB_STDOPT);
+                        //});
 
                         if (!IS_NULL(p_callback)) {
                             p_callback(m_clamav.get_rules_loaded_count());

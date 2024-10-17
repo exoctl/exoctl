@@ -33,7 +33,7 @@ namespace engine
 
                 if (ret != CL_SUCCESS) {
                     throw clamav::exception::SetDbRules(
-                        "cl_load() failed load db" +
+                        "cl_load() failed load db " +
                         std::string(cl_strerror(ret)));
                 }
             }

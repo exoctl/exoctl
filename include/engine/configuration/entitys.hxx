@@ -16,6 +16,23 @@ namespace engine
                 std::string copyright;
             } Project;
 
+            namespace lief
+            {
+                namespace _
+                {
+                    namespace Log
+                    {
+                        struct Log {
+                            int level;
+                        };
+                    } // namespace Log
+                } // namespace _
+
+                typedef struct Lief {
+                    _::Log::Log log;
+                } Lief;
+            } // namespace lief
+
             namespace yara
             {
                 namespace rules
@@ -102,12 +119,16 @@ namespace engine
 
             namespace crowapp
             {
-                namespace log
+                namespace _
                 {
-                    typedef struct Log {
-                        int level;
-                    } Context;
-                } // namespace log
+                    namespace log
+                    {
+                        typedef struct Log {
+                            int level;
+                        } Log;
+                    } // namespace log
+                } // namespace _
+                
                 namespace server
                 {
                     namespace websocket
@@ -131,7 +152,7 @@ namespace engine
                 } // namespace server
 
                 typedef struct CrowApp {
-                    log::Log log;
+                    _::log::Log log;
                     server::Server server;
                 } CrowApp;
             } // namespace crowapp

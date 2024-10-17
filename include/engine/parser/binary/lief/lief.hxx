@@ -3,9 +3,9 @@
 #include <LIEF/ELF.hpp>
 #include <LIEF/MachO.hpp>
 #include <LIEF/PE.hpp>
-#include <engine/exception.hxx>
 #include <functional>
 #include <memory>
+#include <netdb.h>
 #include <string>
 
 namespace engine::parser::binary

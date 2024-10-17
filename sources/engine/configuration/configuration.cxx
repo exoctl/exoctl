@@ -1,3 +1,4 @@
+#include "engine/configuration/entitys.hxx"
 #include <engine/configuration/configuration.hxx>
 #include <engine/configuration/exception.hxx>
 
@@ -14,13 +15,14 @@ namespace engine
         void Configuration::load()
         {
             TRY_BEGIN()
-            load_project();
-            load_crowapp();
-            load_yara();
-            load_sig();
-            load_cache();
-            load_logging();
-            load_av_clamav();
+            Configuration::load_project();
+            Configuration::load_crowapp();
+            Configuration::load_yara();
+            Configuration::load_sig();
+            Configuration::load_cache();
+            Configuration::load_logging();
+            Configuration::load_av_clamav();
+            Configuration::load_lief();
             TRY_END()
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
@@ -67,6 +69,11 @@ namespace engine
         const record::crowapp::CrowApp &Configuration::get_crowapp() const
         {
             return m_crowapp;
+        }
+
+        const record::lief::Lief &Configuration::get_lief() const
+        {
+            return m_lief;
         }
 
         void Configuration::load_cache()
@@ -120,7 +127,7 @@ namespace engine
         void Configuration::load_crowapp()
         {
             m_crowapp = (record::crowapp::CrowApp){
-                .log = {.level = m_toml.get_tbl()["crowapp"]["log"]["level"]
+                .log = {.level = m_toml.get_tbl()["_"]["crowapp"]["log"]["level"]
                                      .value<int>()
                                      .value()},
                 .server = {
@@ -205,6 +212,14 @@ namespace engine
                         m_toml.get_tbl()["logging"]["rotation"]["max_size"]
                             .value<uint16_t>()
                             .value()}};
+        }
+        
+        void Configuration::load_lief()
+        {
+            m_lief = (record::lief::Lief){
+                .log{.level = m_toml.get_tbl()["_"]["lief"]["log"]["level"]
+                                  .value<int>()
+                                  .value()}};
         }
     } // namespace configuration
 } // namespace engine

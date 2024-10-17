@@ -22,12 +22,15 @@ namespace engine
             const record::logging::Logging &get_logging() const;
             const record::sig::Sig &get_sig() const;
             const record::crowapp::CrowApp &get_crowapp() const;
+            const record::lief::Lief &get_lief() const;
+
 
           private:
             const std::string m_path_config;
             parser::Toml m_toml;
 
             record::cache::Cache m_cache;
+            record::lief::Lief m_lief;
             record::av::clamav::Clamav m_av_clamav;
             record::Project m_project;
             record::yara::Yara m_yara;
@@ -42,6 +45,7 @@ namespace engine
             void load_crowapp();
             void load_yara();
             void load_logging();
+            void load_lief();
         };
     } // namespace configuration
 } // namespace engine

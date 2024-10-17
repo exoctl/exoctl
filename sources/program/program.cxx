@@ -5,7 +5,7 @@
 namespace program
 {
     Program::Program(int p_argc, const char **p_argv)
-        : m_argc(p_argc), m_argv(p_argv), m_config("configuration.toml"),
+        : m_argc(p_argc), m_argv(p_argv), m_config("config/engine.conf"),
           m_log(m_config)
     {
         TRY_BEGIN()
