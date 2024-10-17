@@ -27,10 +27,11 @@ namespace engine
 
         void Logging::load()
         {
-            active_type(m_config.get_logging().type);
-            active_trace(m_config.get_logging().trace.interval);
-            active_level(m_config.get_logging().level);
-            active_console(m_config.get_logging().console);
+            Logging::active_type(m_config.get_logging().type);
+            Logging::active_trace(m_config.get_logging().trace.interval);
+            Logging::active_level(m_config.get_logging().level);
+            Logging::active_console(m_config.get_logging().console);
+            Logging::active_pattern(m_config.get_logging().pattern);
         }
 
         void Logging::active_trace(const uint16_t p_level)
@@ -42,6 +43,11 @@ namespace engine
         {
             m_logger->set_level(
                 static_cast<spdlog::level::level_enum>(p_level));
+        }
+
+        void Logging::active_pattern(const std::string &p_pattern)
+        {
+            m_logger->set_pattern(p_pattern);
         }
 
         void Logging::active_type(const std::string &p_type)

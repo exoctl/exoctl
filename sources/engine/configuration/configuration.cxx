@@ -127,9 +127,10 @@ namespace engine
         void Configuration::load_crowapp()
         {
             m_crowapp = (record::crowapp::CrowApp){
-                .log = {.level = m_toml.get_tbl()["_"]["crowapp"]["log"]["level"]
-                                     .value<int>()
-                                     .value()},
+                .log = {.level =
+                            m_toml.get_tbl()["_"]["crowapp"]["log"]["level"]
+                                .value<int>()
+                                .value()},
                 .server = {
                     .bindaddr =
                         m_toml.get_tbl()["crowapp"]["server"]["bindaddr"]
@@ -178,6 +179,9 @@ namespace engine
                 .name = m_toml.get_tbl()["logging"]["file"]["path"]
                             .value<std::string>()
                             .value(),
+                .pattern = m_toml.get_tbl()["logging"]["pattern"]
+                               .value<std::string>()
+                               .value(),
                 .type = m_toml.get_tbl()["logging"]["type"]
                             .value<std::string>()
                             .value(),
@@ -213,7 +217,7 @@ namespace engine
                             .value<uint16_t>()
                             .value()}};
         }
-        
+
         void Configuration::load_lief()
         {
             m_lief = (record::lief::Lief){

@@ -1,14 +1,14 @@
 #pragma once
 
+// clang-format off
+#include <engine/crowapp/bridge/gateway/parser.hxx>
+// clang-format on
 #include <engine/crowapp/bridge/entitys.hxx>
 #include <engine/crowapp/bridge/gateway/analysis.hxx>
 #include <engine/crowapp/bridge/gateway/data.hxx>
-#include <engine/crowapp/bridge/gateway/parser.hxx>
 #include <engine/crowapp/bridge/gateway/rev.hxx>
 #include <engine/crowapp/crowapp.hxx>
-#include <functional>
 #include <memory>
-#include <utility>
 #include <vector>
 
 namespace engine

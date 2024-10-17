@@ -1,5 +1,6 @@
 #pragma once
 
+#include <LIEF/ELF.hpp>
 #include <engine/decompiler/entitys.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/parser/binary/lief/lief.hxx>

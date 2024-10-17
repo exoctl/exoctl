@@ -1,4 +1,4 @@
-#include <engine/crowapp/focades/parser/binary/lief/elf/elf.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/dex/dex.hxx>
 #include <engine/memory.hxx>
 #include <engine/parser/json.hxx>
 
@@ -10,40 +10,40 @@ namespace engine
         {
             namespace binary
             {
-                ELF::ELF()
+                DEX::DEX()
                 {
                 }
-                ELF::~ELF()
+                DEX::~DEX()
                 {
                 }
 
-                void ELF::parser_bytes(
+                void DEX::parser_bytes(
                     const std::string &p_buffer,
-                    const std::function<void(binary::elf::record::DTO *)>
+                    const std::function<void(binary::dex::record::DTO *)>
                         &p_callback)
                 {
-                    m_elf.parse_file(
+                    m_dex.parse_file(
                         p_buffer,
-                        [&](std::unique_ptr<const LIEF::ELF::Binary> p_elf) {
-                            if (p_elf) {
-                                struct binary::elf::record::DTO *dto =
-                                    new binary::elf::record::DTO;
+                        [&](std::unique_ptr<const LIEF::DEX::File> p_dex) {
+                            if (p_dex) {
+                                struct binary::dex::record::DTO *dto =
+                                    new binary::dex::record::DTO;
 
-                                dto->elf = &p_elf;
-
+                                dto->dex = &p_dex;
                                 p_callback(dto);
+
                                 delete dto;
                             }
                         });
                 }
 
-                const ::engine::parser::Json ELF::dto_json(
-                    binary::elf::record::DTO *p_dto)
+                const ::engine::parser::Json DEX::dto_json(
+                    binary::dex::record::DTO *p_dto)
                 {
                     ::engine::parser::Json json;
 
                     if (!IS_NULL(p_dto)) {
-                        json.from_string(LIEF::to_json(*p_dto->elf->get()));
+                        json.from_string(LIEF::to_json(*p_dto->dex->get()));
                     }
 
                     return json;

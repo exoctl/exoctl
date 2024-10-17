@@ -50,10 +50,10 @@ namespace engine
                 }
             }
 
-            const parser::Json Metadata::dto_json(
+            const engine::parser::Json Metadata::dto_json(
                 const metadata::record::DTO *p_dto)
             {
-                parser::Json json;
+                engine::parser::Json json;
 
                 if (!IS_NULL(p_dto)) {
                     json.add_member_string("mime_type", p_dto->mime_type);

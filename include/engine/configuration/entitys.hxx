@@ -107,6 +107,7 @@ namespace engine
 
                 typedef struct Logging {
                     std::string name;
+                    std::string pattern;
                     std::string type;
                     bool console;
                     int level;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <engine/security/av/clamav/entitys.hxx>
-#include <string>
 
 namespace engine
 {

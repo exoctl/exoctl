@@ -1,8 +1,7 @@
 #pragma once
 
-#include <LIEF/ELF.hpp>
-#include <LIEF/MachO.hpp>
-#include <LIEF/PE.hpp>
+#include <LIEF/LIEF.hpp>
+#include <LIEF/json.hpp>
 #include <functional>
 #include <memory>
 #include <netdb.h>

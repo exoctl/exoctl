@@ -63,10 +63,10 @@ namespace engine
                     }
                 }
 
-                const parser::Json Yara::dto_json(
+                const engine::parser::Json Yara::dto_json(
                     const yara::record::DTO *p_dto)
                 {
-                    parser::Json json;
+                    engine::parser::Json json;
 
                     if (!IS_NULL(p_dto)) {
 

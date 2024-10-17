@@ -23,7 +23,7 @@ namespace engine
                     const std::string &,
                     const std::function<void(metadata::record::DTO *)> &);
 
-                [[nodiscard]] const parser::Json dto_json(
+                [[nodiscard]] const engine::parser::Json dto_json(
                     const metadata::record::DTO *);
 
               private:

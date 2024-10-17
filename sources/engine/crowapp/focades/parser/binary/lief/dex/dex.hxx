@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/crowapp/focades/parser/binary/lief/pe/entitys.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/dex/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json.hxx>
 
@@ -12,22 +12,23 @@ namespace engine
         {
             namespace binary
             {
-                class PE
+                class DEX
                 {
                   public:
-                    PE();
-                    ~PE();
+                    DEX();
+                    ~DEX();
 
                     void parser_bytes(
                         const std::string &,
-                        const std::function<void(binary::pe::record::DTO *)> &);
+                        const std::function<void(binary::dex::record::DTO *)>
+                            &);
                     const ::engine::parser::Json dto_json(
-                        binary::pe::record::DTO *);
+                        binary::dex::record::DTO *);
 
                   private:
-                    ::engine::parser::binary::LIEF<const LIEF::PE::Binary,
-                                                   const LIEF::PE::Parser>
-                        m_pe;
+                    ::engine::parser::binary::LIEF<const LIEF::DEX::File,
+                                                   const LIEF::DEX::Parser>
+                        m_dex;
                 };
             } // namespace binary
         } // namespace parser

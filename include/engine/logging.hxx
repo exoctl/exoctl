@@ -60,6 +60,7 @@ namespace engine
             void active_level(const uint16_t);
             void active_type(const std::string &);
             void active_trace(const uint16_t);
+            void active_pattern(const std::string &);
             void active_console(const bool);
         };
     } // namespace logging

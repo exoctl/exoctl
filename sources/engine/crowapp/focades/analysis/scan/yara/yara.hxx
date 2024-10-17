@@ -1,9 +1,9 @@
 #pragma once
 
+#include <engine/parser/json.hxx>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/crowapp/focades/analysis/scan/yara/entitys.hxx>
-#include <engine/parser/json.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <string>
 
@@ -28,7 +28,7 @@ namespace engine
                     void load_rules(
                         const std::function<void(uint64_t)> &) const;
 
-                    const parser::Json dto_json(const yara::record::DTO *);
+                    const engine::parser::Json dto_json(const yara::record::DTO *);
 
                   private:
                     configuration::Configuration &m_config;
