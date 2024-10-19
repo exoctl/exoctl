@@ -15,10 +15,9 @@ namespace engine
         {
           public:
             Logging(configuration::Configuration &);
-            ~Logging();
+            ~Logging() = default;
 
             void load();
-            spdlog::logger &get();
 
             template <typename... Args>
             void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -53,15 +52,15 @@ namespace engine
             std::shared_ptr<spdlog::logger> create_logger(const std::string &,
                                                           const std::string &);
 
+            std::shared_ptr<spdlog::logger> get_logger(
+                const std::string &) const;
+
           private:
             configuration::Configuration &m_config;
             std::shared_ptr<spdlog::logger> m_logger;
 
           protected:
             void active_instance(const std::string &, const std::string &);
-            void active_level(const uint16_t);
-            void active_trace(const uint16_t);
-            void active_pattern(const std::string &);
         };
     } // namespace logging
 } // namespace engine

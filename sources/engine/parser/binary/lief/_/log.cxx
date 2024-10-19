@@ -5,7 +5,8 @@ namespace engine::parser::binary::lief::_
     Log::Log(configuration::Configuration &p_config, logging::Logging &p_log)
         : m_config(p_config), m_log(p_log)
     {
-        auto log = m_log.create_logger(m_config.get_logging().type, m_config.get_lief().log.name);
+        auto log = m_log.create_logger(m_config.get_logging().type,
+                                       m_config.get_lief().log.name);
         LIEF::logging::set_logger(log);
         log->set_pattern(m_config.get_logging().pattern);
 

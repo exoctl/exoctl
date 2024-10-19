@@ -130,7 +130,10 @@ namespace engine
                 .log = {.level =
                             m_toml.get_tbl()["crowapp"]["_"]["log"]["level"]
                                 .value<int>()
-                                .value()},
+                                .value(),
+                        .name = m_toml.get_tbl()["crowapp"]["_"]["log"]["name"]
+                                    .value<std::string>()
+                                    .value()},
                 .server = {
                     .bindaddr =
                         m_toml.get_tbl()["crowapp"]["server"]["bindaddr"]
@@ -177,8 +180,8 @@ namespace engine
         {
             m_logging = (record::logging::Logging){
                 .filepath = m_toml.get_tbl()["logging"]["filepath"]
-                            .value<std::string>()
-                            .value(),
+                                .value<std::string>()
+                                .value(),
                 .name = m_toml.get_tbl()["logging"]["name"]
                             .value<std::string>()
                             .value(),
