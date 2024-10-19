@@ -19,9 +19,11 @@ namespace engine
                 void log(std::string, crow::LogLevel) override;
 
               private:
-                void active_level(crow::LogLevel);
                 configuration::Configuration &m_config;
                 logging::Logging &m_log;
+
+              protected:
+                void active_level(crow::LogLevel);
             };
         } // namespace _
     } // namespace crowapp

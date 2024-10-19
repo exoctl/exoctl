@@ -17,6 +17,7 @@ namespace program
             RETHROW();
         })
 
+        LOG(m_log, info, "Starting engine ...");
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
     }
 
@@ -52,17 +53,14 @@ namespace program
             m_config.get_path_config());
 
         TRY_BEGIN()
-        LOG(m_log, info, "Starting engine...");
         m_engine->run();
-        LOG(m_log, info, "Engine stopped successfully.");
-
         TRY_END()
         CATCH(engine::exception::Run, {
             LOG(m_log, error, "Engine encountered an error: {}", e.what());
             return EXIT_FAILURE;
         })
 
-        LOG(m_log, info, "Exiting program.");
+        LOG(m_log, info, "Engine stopped successfully.");
         return EXIT_SUCCESS;
     }
 } // namespace program

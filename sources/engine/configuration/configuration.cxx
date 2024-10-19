@@ -128,7 +128,7 @@ namespace engine
         {
             m_crowapp = (record::crowapp::CrowApp){
                 .log = {.level =
-                            m_toml.get_tbl()["_"]["crowapp"]["log"]["level"]
+                            m_toml.get_tbl()["crowapp"]["_"]["log"]["level"]
                                 .value<int>()
                                 .value()},
                 .server = {
@@ -176,7 +176,10 @@ namespace engine
         void Configuration::load_logging()
         {
             m_logging = (record::logging::Logging){
-                .name = m_toml.get_tbl()["logging"]["file"]["path"]
+                .filepath = m_toml.get_tbl()["logging"]["filepath"]
+                            .value<std::string>()
+                            .value(),
+                .name = m_toml.get_tbl()["logging"]["name"]
                             .value<std::string>()
                             .value(),
                 .pattern = m_toml.get_tbl()["logging"]["pattern"]
@@ -221,9 +224,12 @@ namespace engine
         void Configuration::load_lief()
         {
             m_lief = (record::lief::Lief){
-                .log{.level = m_toml.get_tbl()["_"]["lief"]["log"]["level"]
+                .log{.level = m_toml.get_tbl()["lief"]["_"]["log"]["level"]
                                   .value<int>()
-                                  .value()}};
+                                  .value(),
+                     .name = m_toml.get_tbl()["lief"]["_"]["log"]["name"]
+                                 .value<std::string>()
+                                 .value()}};
         }
     } // namespace configuration
 } // namespace engine

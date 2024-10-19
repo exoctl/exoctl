@@ -57,11 +57,11 @@ namespace engine
             configuration::Configuration &m_config;
             std::shared_ptr<spdlog::logger> m_logger;
 
+          protected:
+            void active_instance(const std::string &, const std::string &);
             void active_level(const uint16_t);
-            void active_type(const std::string &);
             void active_trace(const uint16_t);
             void active_pattern(const std::string &);
-            void active_console(const bool);
         };
     } // namespace logging
 } // namespace engine

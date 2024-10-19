@@ -27,10 +27,10 @@ namespace engine
 
         void Logging::load()
         {
-            Logging::active_type(m_config.get_logging().type);
+            Logging::active_instance(m_config.get_logging().type,
+                                     m_config.get_logging().name);
             Logging::active_trace(m_config.get_logging().trace.interval);
             Logging::active_level(m_config.get_logging().level);
-            Logging::active_console(m_config.get_logging().console);
             Logging::active_pattern(m_config.get_logging().pattern);
         }
 
@@ -50,42 +50,58 @@ namespace engine
             m_logger->set_pattern(p_pattern);
         }
 
-        void Logging::active_type(const std::string &p_type)
+        void Logging::active_instance(const std::string &p_type,
+                                      const std::string &p_name)
         {
-            m_logger = create_logger(p_type, p_type);
+            m_logger = create_logger(p_type, p_name);
         }
 
         std::shared_ptr<spdlog::logger> Logging::create_logger(
             const std::string &type, const std::string &name)
         {
+            std::vector<spdlog::sink_ptr> sinks;
+
             if (type == "daily") {
-                return spdlog::daily_logger_mt<spdlog::async_factory>(
-                    name,
-                    m_config.get_logging().name,
-                    m_config.get_logging().daily_settings.hours,
-                    m_config.get_logging().daily_settings.minutes,
-                    false,
-                    m_config.get_logging().daily_settings.max_size);
+                sinks.push_back(
+                    std::make_shared<spdlog::sinks::daily_file_sink_mt>(
+                        m_config.get_logging().filepath,
+                        m_config.get_logging().daily_settings.hours,
+                        m_config.get_logging().daily_settings.minutes,
+                        false,
+                        m_config.get_logging().daily_settings.max_size));
             } else if (type == "rotation") {
-                return spdlog::rotating_logger_mt<spdlog::async_factory>(
-                    name,
-                    m_config.get_logging().name,
-                    m_config.get_logging().rotation_settings.max_size,
-                    m_config.get_logging().rotation_settings.max_files);
+                sinks.push_back(
+                    std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+                        m_config.get_logging().filepath,
+                        m_config.get_logging().rotation_settings.max_size,
+                        m_config.get_logging().rotation_settings.max_files));
+            } else {
+                sinks.push_back(
+                    std::make_shared<spdlog::sinks::basic_file_sink_mt>(
+                        m_config.get_logging().filepath, true));
             }
 
-            /* default logger */
-            return spdlog::basic_logger_mt<spdlog::async_factory>(
-                name, m_config.get_logging().name);
-        }
-
-        void Logging::active_console(bool p_console)
-        {
-            if (p_console) {
+            if (m_config.get_logging().console) {
                 auto console_sink =
                     std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-                m_logger->sinks().push_back(console_sink);
+
+                if (std::none_of(
+                        sinks.begin(),
+                        sinks.end(),
+                        [](const spdlog::sink_ptr &s) {
+                            return dynamic_cast<
+                                       spdlog::sinks::stdout_color_sink_mt *>(
+                                       s.get()) != nullptr;
+                        })) {
+                    sinks.push_back(console_sink);
+                }
             }
+
+            auto logger = std::make_shared<spdlog::logger>(
+                name, sinks.begin(), sinks.end());
+            spdlog::register_logger(logger);
+
+            return logger;
         }
     } // namespace logging
 } // namespace engine

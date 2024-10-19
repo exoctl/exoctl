@@ -24,6 +24,7 @@ namespace engine
                     {
                         struct Log {
                             int level;
+                            std::string name;
                         };
                     } // namespace Log
                 } // namespace _
@@ -106,6 +107,7 @@ namespace engine
                 } // namespace traceupdates
 
                 typedef struct Logging {
+                    std::string filepath;
                     std::string name;
                     std::string pattern;
                     std::string type;
@@ -126,10 +128,11 @@ namespace engine
                     {
                         typedef struct Log {
                             int level;
+                            std::string name;
                         } Log;
                     } // namespace log
                 } // namespace _
-                
+
                 namespace server
                 {
                     namespace websocket
