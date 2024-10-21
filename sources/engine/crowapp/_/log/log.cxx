@@ -1,4 +1,3 @@
-#include "crow/logging.h"
 #include <engine/crowapp/_/log/log.hxx>
 
 namespace engine
@@ -23,7 +22,6 @@ namespace engine
 
             Log::~Log()
             {
-                crow::logger::setHandler(nullptr); // restore handle
             }
 
             void Log::log(std::string p_message, crow::LogLevel p_level)
