@@ -13,9 +13,6 @@
 [submodule "libraries/fmt"]
 	path = libraries/fmt
 	url = https://github.com/fmtlib/fmt.git
-[submodule "libraries/lief"]
-	path = libraries/lief
-	url = https://github.com/lief-project/LIEF.git
 [submodule "libraries/googletest"]
 	path = libraries/googletest
 	url = https://github.com/google/googletest.git
@@ -28,3 +25,9 @@
 [submodule "libraries/rapidjson"]
 	path = libraries/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
+[submodule "libraries/jwt"]
+	path = libraries/jwt
+	url = https://github.com/Thalhammer/jwt-cpp.git
+[submodule "libraries/lief"]
+	path = libraries/lief
+	url = git@github.com:maldeclabs/lief.git

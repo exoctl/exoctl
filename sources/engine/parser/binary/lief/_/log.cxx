@@ -8,8 +8,6 @@ namespace engine::parser::binary::lief::_
         auto log = m_log.create_logger(m_config.get_logging().type,
                                        m_config.get_lief().log.name);
         LIEF::logging::set_logger(log);
-        log->set_pattern(m_config.get_logging().pattern);
-
         Log::active_level(
             static_cast<LIEF::logging::LEVEL>(m_config.get_lief().log.level));
     }

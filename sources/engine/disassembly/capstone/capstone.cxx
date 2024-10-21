@@ -77,16 +77,14 @@ namespace engine
                         return "PPC";
                     case CS_ARCH_SPARC:
                         return "SPARC";
-                    case CS_ARCH_SYSZ:
-                        return "SYSZ";
                     case CS_ARCH_XCORE:
                         return "XCORE";
                     default:
                         return "";
                 }
-            };
+            }(p_arch);
 
-            return arch(p_arch);
+            return arch;
         }
 
         const std::string Capstone::mode_to_string(const cs_mode p_mode)
@@ -128,9 +126,9 @@ namespace engine
                 }
 
                 return "";
-            };
+            }(p_mode);
 
-            return mode(p_mode);
+            return mode;
         }
     } // namespace disassembly
 } // namespace engine
