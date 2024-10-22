@@ -7,19 +7,19 @@
 
 namespace engine::parser::binary::lief::_
 {
-    class Log : public LIEF::logging::ILogHandler
+    class Log : public ::LIEF::logging::ILogHandler
     {
       public:
         Log(configuration::Configuration &, logging::Logging &);
         ~Log();
 
-        void log(std::string, LIEF::logging::LEVEL) override;
+        void log(std::string, ::LIEF::logging::LEVEL) override;
 
       private:
         configuration::Configuration &m_config;
         logging::Logging &m_log;
 
       protected:
-        void active_level(LIEF::logging::LEVEL);
+        void active_level(::LIEF::logging::LEVEL);
     };
 } // namespace engine::parser::binary::lief::_

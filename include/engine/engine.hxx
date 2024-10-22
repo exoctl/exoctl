@@ -1,11 +1,11 @@
 #pragma once
 
-#include <engine/parser/binary/lief/_/log.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/crowapp/_/log/log.hxx>
 #include <engine/crowapp/bridge/bridge.hxx>
 #include <engine/crowapp/crowapp.hxx>
 #include <engine/logging.hxx>
+#include <engine/parser/binary/lief/_/log.hxx>
 #include <engine/parser/toml.hxx>
 #include <functional>
 

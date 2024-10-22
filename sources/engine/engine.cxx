@@ -1,7 +1,7 @@
 #include <engine/crowapp/exception.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 
 namespace engine
 {

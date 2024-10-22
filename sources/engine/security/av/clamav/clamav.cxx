@@ -1,4 +1,4 @@
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
 #include <engine/security/av/clamav/exception.hxx>
 #include <fmt/core.h>

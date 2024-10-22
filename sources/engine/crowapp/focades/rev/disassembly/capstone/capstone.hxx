@@ -22,7 +22,8 @@ namespace engine
                         const std::string &,
                         const std::function<void(capstone::record::DTO *)> &);
 
-                    ::engine::parser::Json dto_json(const capstone::record::DTO *);
+                    ::engine::parser::Json dto_json(
+                        const capstone::record::DTO *);
 
                   private:
                     ::engine::disassembly::Capstone m_capstone;

@@ -1,5 +1,5 @@
 #include <engine/crowapp/focades/analysis/scan/yara/yara.hxx>
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <string>
 

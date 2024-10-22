@@ -1,278 +1,375 @@
-### API Documentation
+## 📄 **API Documentation**  
+### Malware Detection Engine – MalDec Labs  
 
-Documentation engine for detect malwares and better laboratory maldec labs
-
-### Dependencies
-
-For compile engine necessary : 
-
-### Debian-based
-
-`sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev`
-
-### Arch-based
-
-`sudo pacman -S asio yara libpqxx sqlite`
+This API provides WebSocket-based endpoints for scanning data, binary analysis, metadata extraction, and disassembly. It ensures real-time communication with high efficiency and low latency.  
 
 ---
 
-### Compile and Run
-
+### **Requirements**  
+#### **Debian-based**  
+```bash
+sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev
 ```
+
+#### **Arch-based**  
+```bash
+sudo pacman -S asio yara libpqxx sqlite
+```
+
+---
+
+### **How to Build and Run**  
+```bash
 git clone --recurse-submodules git@gitlab.com:maldec-labs/malware-analysis/Engine.git
 git lfs pull
 mkdir build
 cd build
 cmake ..
 make
+./build/sources/engine
 ```
-
-execute `./build/sources/engine`
-
-### Overview
-
-This API provides WebSocket-based endpoints for scanning data and searching within the system. The service is designed to handle real-time communication, ensuring efficient data transfer and processing. Below are the details for each available route, along with their respective functionalities.
 
 ---
 
-### Endpoints
+## **Endpoints Overview**  
 
-#### WebSocket Endpoints
+### 📡 **Analysis Group**  
+#### **Full Scan**  
+- **Route:** `<version>/engine/analysis/scan`  
+- **Description:** Executes a full scan using YARA and ClamAV.  
 
-In the file [configuration.toml](../configuration.toml), you can modify the `crow=whitelist` setting to control whether a connection is accepted based on the IP address. If an IP address is not included in the whitelist, the connection will be rejected.
+**Received Message Example:**  
+```json
+{ "status": "ready" }
+```
 
-#### 0. analysis/scan
-- **Route:** `<version>/engine/analysis/scan`
-- **Type:** WebSocket
-- **Description:** Endpoint for scanning all.
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {
-    {
-      "yara":
-      {
-        "ns":"",
-        "rule":"",
-        "match_status":0
-      },
-      "av":
-      {
-        "clamav":
-        {
-          "virname":"",
-          "math_status":0
-        }
+**Sent Message Example:**  
+```json
+{
+  "yara": 
+  { 
+    "ns": "", 
+    "rule": "", 
+    "match_status": 0 
+  },
+  "av": 
+  { 
+    "clamav": 
+    { 
+      "virname": "", 
+      "match_status": 0 
       }
+  }
+}
+```
+
+---
+
+#### **YARA Scan**  
+- **Route:** `<version>/engine/analysis/scan/yara`  
+- **Description:** Runs a scan with YARA rules.  
+
+**Match Status:**  
+- `0`: Benign  
+- `1`: Malicious  
+- `2`: No Match  
+
+---
+
+#### **ClamAV Scan**  
+- **Route:** `<version>/engine/analysis/scan/av/clamav`  
+- **Description:** Executes a scan using ClamAV antivirus.  
+
+**Example Response:**  
+```json
+{ "virname": "", "match_status": 1 }
+```
+
+---
+
+### 🛠 **Metadata Extraction**  
+#### **File Metadata**  
+- **Route:** `<version>/engine/data/metadata`  
+- **Description:** Returns file information like hashes and MIME type.  
+
+**Example Response:**  
+```json
+{
+  "mime_type":"application/x-empty; charset=binary",
+  "sha256":"e3b0c44298fc1c149afbf4...",
+  "sha1":"da39a3ee5e6b4b0d3255bfef...",
+  "sha512":"cf83e1357eefb8bdf15428...",
+  "sha224":"d14a028c2a3a2bc9476102...",
+  "sha384":"38b060a751ac96384cd932...",
+  "sha3_256":"a7ffc6f8bf1ed76651c14756...",
+  "sha3_512":"a69f73cca23a9ac5c8b567dc...",
+  "size":0,
+  "creation_date":"2024-10-22",
+  "entropy":-0.0
+}
+```
+
+---
+
+### 🔍 **Binary Disassembly and Analysis**  
+#### **Disassembly with Capstone**  
+- **Route:** `<version>/engine/rev/disassembly/capstone/<x64|arm64>`  
+- **Description:** Generates disassembly for x86_64 or ARM64 binaries.  
+
+**Example Response:**  
+```json
+{
+  "arch": "x86_64",
+  "disassembly": [
+    { 
+      "address": "0x782f...", 
+      "mnemonic": "call", 
+      "operands": "[rip + 0xa00f]", 
+      "size": 6 
+    },
+    { 
+      "address": "0x782f...", 
+      "mnemonic": "ret", 
+      "size": 1 
     }
-    <...>
-  }
-  ```
-  - **onclose:** 
-  - **onerror:** 
+  ]
+}
+```
 
-#### 1. scan/yara
-- **Route:** `<version>/engine/analysis/scan/yara`
-- **Type:** WebSocket
-- **Description:** Endpoint for scanning Yara rules.
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {     
-    "match_status": 0,
-    "ns": "",
-    "rule": "" 
-  }
-  ```
-  - **onclose:** 
-  - **onerror:** 
+---
 
-- **Details:**
-  - **`match_status` Values:**
-    - `0`: Benign
-    - `1`: Malicious
-    - `2`: None
+#### **ELF Parser**  
+- **Route:** `<version>/engine/parser/binary/elf`  
+- **Description:** Parses ELF files and returns their headers.  
 
-
-#### 2. data/metadata
-- **Route:** `<version>/engine/data/metadata`
-- **Type:** WebSocket
-- **Description:** Endpoint for collect medatada.
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {
-  "creation_date": "2024-09-28",
-  "entropy": -0.0,
-  "mime_type": "text/plain; charset=us-ascii",
-  "sha1": "755c001f4ae3c8843e5a50dd6aa2fa23893dd3ad",
-  "sha224": "5fa4fb5daff0a9b069061839e5605caff0446465f82268775a226333",
-  "sha256": "28cb017dfc99073aa1b47c1b30f413e3ce774c4991eb4158de50f9dbb36d8043",
-  "sha384": "05542a38ee06e71f2edac136126a2df339ab79fceb399b2dc82e80c856015c9ce9105d83f58f976bdd49ca5f9ccd088d",
-  "sha3_256": "350fbf3004cf9d3dea61e4a535c169b8c6d0e4e8d6db07c23b9c606fda37607f",
-  "sha3_512": "e458cf38eeb666474f34773af6e9fe909426627295b50f3480fab597c596c7a31ea51e1f7512dc096df689b13ebe145e59d8aa95dd1e22b4bfa08a6bc5963ca9",
-  "sha512": "2d5be0f423fee59bf2149f996e72d9f5f8df90540a7d23b68c0d0d9a9a32d2c144891ca8fe4a3c713cb6eb2991578541dad291ba623dbd7107c6a891ba00bcc8",
-  "size": 11
-  }
-  
-  ```
-  - **onclose:** 
-  - **onerror:** 
-
-#### 3. capstone/x86_64 or arm_64
-- **Route:** `<version>/engine/rev/disassembly/capstone/<x64><arm64>`
-- **Type:** WebSocket
-- **Description:** Endpoint for generate disassembly x64 or arm64
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {
-    "arch": "arch",
-    "mode": "mode",
-    "disassembly": [
-            {
-                "address": "0x782f796c626d6573",
-                "bytes": "ff 15 f a0 0 0",
-                "id": 62,
-                "mnemonic": "call",
-                "operands": "qword ptr [rip + 0xa00f]",
-                "size": 6
-            },
-            {
-                "address": "0x782f796c626d6579",
-                "bytes": "c3",
-                "id": 633,
-                "mnemonic": "ret",
-                "operands": "",
-                "size": 1
-            }
-    ]
-  }
-  ```
-  - **onclose:** 
-  - **onerror:** 
-
-#### 5. scan/av/clamav
-- **Route:** `<version>/engine/analysis/scan/av/clamav`
-- **Type:** WebSocket
-- **Description:** Endpoint for scanning Clamav rules.
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {     
-   "virname":"",
-   "math_status": 8
-  }
-  ```
-  - **onclose:** 
-  - **onerror:** 
-
-- **Details:**
-  - **`math_status` Values:**
-    - `0`: Benign
-    - `1`: Malicious
-    - `2`: None
-
-#### 6. binary/elf
-- **Route:** `<version>/engine/parser/binary/elf`
-- **Type:** WebSocket
-- **Description:** Endpoint for parser elf.
-- **Handlers:**
-  - **onaccept:**
-  - **onopen:** 
-  ```json
-  { "status": "ready" }
-  ```
-  - **onmessage:**
-  ```json
-  {
+**Example Response:**  
+```json
+{
   "header": {
     "identity_version": "1",
-    "file_type": "3",
-    "identity_abi_version": "0",
     "entrypoint": "6d30",
     "program_headers_offset": "40",
-    "section_headers_offset": "22428",
-    "numberof_segments": "d",
-    "numberof_sections": "1f",
-    "section_name_table_idx": "1e",
-    "program_header_size": "38",
-    "section_header_size": "40",
-    "identity_data": "1",
-    "abstract_endianness": "2",
-    "header_size": "40",
-    "identity": "7f 45 4c 46 2 1 1 0 0 0 0 0 0 0 0 0"
-  },
-  "sections": [
-    {
-      "name": "",
-      "virtual_address": "0",
-      "offset": "0",
-      "size": "0"
-    },
-    {
-      "name": ".interp",
-      "virtual_address": "318",
-      "offset": "318",
-      "size": "1c"
-    },
-    {
-      "name": ".note.gnu.property",
-      "virtual_address": "338",
-      "offset": "338",
-      "size": "30"
-    },
-    {
-      "name": ".note.gnu.build-id",
-      "virtual_address": "368",
-      "offset": "368",
-      "size": "24"
-    },
-    {
-      "name": ".note.ABI-tag",
-      "virtual_address": "38c",
-      "offset": "38c",
-      "size": "20"
-    },
-    {
-      "name": ".gnu.hash",
-      "virtual_address": "3b0",
-      "offset": "3b0",
-      "size": "50"
-    },
-    {
-      "name": ".dynsym",
-      "virtual_address": "400",
-      "offset": "400",
-      "size": "c00"
-    },
+    "numberof_sections": "1f"
+  }
 
-    <...>
-  ```
-  - **onclose:** 
-  - **onerror:** 
+  ...
+}
+```
+
+#### **MACHO Parser**  
+- **Route:** `<version>/engine/parser/binary/macho`  
+- **Description:** Parses MACHO files and returns their headers.  
+
+**Example Response:**  
+```json
+{
+  "code_signature": {
+    "command": "CODE_SIGNATURE",
+    "command_offset": 2024,
+    "command_size": 16,
+    "data_hash": 8289885841418134514,
+    "data_offset": 34128,
+    "data_size": 5456
+  },
+  "dyld_info": {
+    "command": "DYLD_INFO_ONLY",
+    "command_offset": 1440,
+    "command_size": 48,
+    "data_hash": 15608440747057431502
+  },
+  "dylinker": {
+    "command": "LOAD_DYLINKER",
+    "command_offset": 1592,
+    "command_size": 32,
+    "data_hash": 1879844007031036313,
+    "name": "/usr/lib/dyld"
+  }
+
+  ...
+}
+
+```
+---
+
+#### **PE Parser**  
+- **Route:** `<version>/engine/parser/binary/pe`  
+- **Description:** Parses PE files and returns their headers.  
+
+**Example Response:**  
+```json
+{
+  "data_directories": [
+    {
+      "RVA": 0,
+      "size": 0,
+      "type": "EXPORT_TABLE"
+    },
+    {
+      "RVA": 0,
+      "size": 0,
+      "type": "CERTIFICATE_TABLE"
+    },
+    {
+      "RVA": 303104,
+      "section": ".reloc",
+      "size": 6940,
+      "type": "BASE_RELOCATION_TABLE"
+    },
+    {
+      "RVA": 145768,
+      "section": ".text",
+      "size": 56,
+      "type": "DEBUG_DIR"
+    },
+    {
+      "RVA": 0,
+      "size": 0,
+      "type": "ARCHITECTURE"
+    },
+    {
+      "RVA": 0,
+      "size": 0,
+      "type": "GLOBAL_PTR"
+    },
+    {
+      "RVA": 0,
+      "size": 0,
+      "type": "TLS_TABLE"
+    },
+    {
+      "RVA": 113552,
+      "section": ".text",
+      "size": 64,
+      "type": "LOAD_CONFIG_TABLE"
+    }
+  ]
+  ...
+}
+```
+
+---
+
+#### **DEX Parser**  
+- **Route:** `<version>/engine/parser/binary/dex`  
+- **Description:** Parses DEX files and returns their headers.  
+
+**Example Response:**  
+```json
+{
+  "classes": [
+    {
+      "fullname": "Lcom/rafaelkhan/android/download/DownloadMain$Downloader;",
+      "index": 0,
+      "access_flags": [],
+      "fields": [
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 2,
+          "is_static": false,
+          "name": "bout",
+          "type": {
+            "type": "CLASS",
+            "value": "Ljava/io/BufferedOutputStream;"
+          }
+        },
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 3,
+          "is_static": false,
+          "name": "fileName",
+          "type": {
+            "type": "CLASS",
+            "value": "Ljava/lang/String;"
+          }
+        },
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 4,
+          "is_static": false,
+          "name": "fileSize",
+          "type": {
+            "type": "PRIMITIVE",
+            "value": "int"
+          }
+        },
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 5,
+          "is_static": false,
+          "name": "http",
+          "type": {
+            "type": "CLASS",
+            "value": "Ljava/net/HttpURLConnection;"
+          }
+        },
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 6,
+          "is_static": false,
+          "name": "in",
+          "type": {
+            "type": "CLASS",
+            "value": "Ljava/io/BufferedInputStream;"
+          }
+        },
+        {
+          "access_flags": ["FINAL", "SYNTHETIC"],
+          "index": 7,
+          "is_static": false,
+          "name": "this$0",
+          "type": {
+            "type": "CLASS",
+            "value": "Lcom/rafaelkhan/android/download/DownloadMain;"
+          }
+        },
+        {
+          "access_flags": ["PRIVATE"],
+          "index": 8,
+          "is_static": false,
+          "name": "url",
+          "type": {
+            "type": "CLASS",
+            "value": "Ljava/net/URL;"
+          }
+        }
+      ],
+      "methods": [
+        {
+          "access_flags": ["PRIVATE", "CONSTRUCTOR"],
+          "index": 15,
+          "is_virtual": false,
+          "name": "<init>",
+          "code_offset": 2716,
+          "prototype": {
+            "parameters": [
+              {
+                "type": "CLASS",
+                "value": "Lcom/rafaelkhan/android/download/DownloadMain;"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+  ...
+}
+
+```
+
+## **WebSocket Interaction Guide**  
+1. **Connect:** Establish a connection with the endpoint.  
+2. **onopen:** API will respond with `{ "status": "ready" }`.  
+3. **onmessage:** Send a message for the desired analysis.  
+4. **onclose:** The connection will close after processing.  
+5. **onerror:** Errors will trigger an appropriate response.  
+
+---
+
+## **Final Notes**  
+- Use **`<version>`** to indicate the desired API version (e.g., `/v1/engine/...`).  
+- This API is optimized for real-time processing, ensuring fast and efficient sample analysis.  
+
+---
+
+This concise structure ensures easy navigation and practical examples, helping developers integrate the API seamlessly.

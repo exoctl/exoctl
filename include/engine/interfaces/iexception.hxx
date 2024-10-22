@@ -13,8 +13,6 @@
     }
 #define TRY_END() }
 
-
-
 namespace engine
 {
     namespace interface

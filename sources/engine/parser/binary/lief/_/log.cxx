@@ -1,4 +1,3 @@
-#include "LIEF/logging.hpp"
 #include <engine/parser/binary/lief/_/log.hxx>
 
 namespace engine::parser::binary::lief::_
@@ -20,7 +19,7 @@ namespace engine::parser::binary::lief::_
     {
     }
 
-    void Log::log(std::string p_message, LIEF::logging::LEVEL p_level)
+    void Log::log(std::string p_message, ::LIEF::logging::LEVEL p_level)
     {
         switch (p_level) {
             case LIEF::logging::LEVEL::Trace:
@@ -50,7 +49,7 @@ namespace engine::parser::binary::lief::_
         }
     }
 
-    void Log::active_level(LIEF::logging::LEVEL p_level)
+    void Log::active_level(::LIEF::logging::LEVEL p_level)
     {
         LIEF::logging::logger::setLogLevel(p_level);
     }

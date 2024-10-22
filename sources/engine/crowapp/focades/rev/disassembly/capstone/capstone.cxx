@@ -1,5 +1,5 @@
 #include <engine/crowapp/focades/rev/disassembly/capstone/capstone.hxx>
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <stdint.h>
@@ -39,8 +39,8 @@ namespace engine
                         m_capstone.disassembly(
                             reinterpret_cast<const uint8_t *>(p_code.data()),
                             p_code.size(),
-                            [&](struct ::engine::disassembly::capstone::record::Data
-                                    *p_user_data,
+                            [&](struct ::engine::disassembly::capstone::record::
+                                    Data *p_user_data,
                                 size_t p_count) {
                                 capstone::record::Instruction instruction;
                                 auto &insn = p_user_data->insn[p_count];

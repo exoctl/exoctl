@@ -70,8 +70,8 @@ namespace engine::logging
             }
         }
 
-        auto logger =
-            std::make_shared<spdlog::logger>(p_name, sinks.begin(), sinks.end());
+        auto logger = std::make_shared<spdlog::logger>(
+            p_name, sinks.begin(), sinks.end());
         spdlog::register_logger(logger);
 
         logger->flush_on(static_cast<spdlog::level::level_enum>(
@@ -83,4 +83,4 @@ namespace engine::logging
         return logger;
     }
 
-} // p_namespace engine::logging
+} // namespace engine::logging

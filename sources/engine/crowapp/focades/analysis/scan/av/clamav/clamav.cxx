@@ -1,5 +1,5 @@
 #include <engine/crowapp/focades/analysis/scan/av/clamav/clamav.hxx>
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 #include <fmt/core.h>
 
 namespace engine
@@ -69,7 +69,8 @@ namespace engine
                         }
                     }
 
-                    const engine::parser::Json Clamav::dto_json(clamav::record::DTO *p_dto)
+                    const engine::parser::Json Clamav::dto_json(
+                        clamav::record::DTO *p_dto)
                     {
                         parser::Json json;
 

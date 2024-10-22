@@ -1,7 +1,7 @@
 #include <alloca.h>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/disassembly/capstone/exception.hxx>
-#include <engine/memory.hxx>
+#include <engine/memory/memory.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
