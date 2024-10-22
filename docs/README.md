@@ -359,7 +359,7 @@ make
 
 ## **WebSocket Interaction Guide**  
 1. **Connect:** Establish a connection with the endpoint.  
-2. **onopen:** API will respond with `{ "status": "ready" }`.  
+2. **onopen:** API will respond with `{ "status": "ready", "code": 200 }`.  
 3. **onmessage:** Send a message for the desired analysis.  
 4. **onclose:** The connection will close after processing.  
 5. **onerror:** Errors will trigger an appropriate response.  
