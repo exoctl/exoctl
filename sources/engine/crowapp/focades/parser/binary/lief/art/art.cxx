@@ -1,4 +1,4 @@
-#include <engine/crowapp/focades/parser/binary/lief/pe/pe.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/art/art.hxx>
 #include <engine/memory.hxx>
 #include <engine/parser/json.hxx>
 
@@ -10,26 +10,26 @@ namespace engine
         {
             namespace binary
             {
-                PE::PE()
+                ART::ART()
                 {
                 }
-                PE::~PE()
+                ART::~ART()
                 {
                 }
 
-                void PE::parse_bytes(
+                void ART::parse_bytes(
                     const std::string &p_buffer,
-                    const std::function<void(binary::pe::record::DTO *)>
+                    const std::function<void(binary::art::record::DTO *)>
                         &p_callback)
                 {
-                    m_pe.parse_file(
+                    m_art.parse_file(
                         p_buffer,
-                        [&](std::unique_ptr<const LIEF::PE::Binary> p_pe) {
-                            if (p_pe) {
-                                struct binary::pe::record::DTO *dto =
-                                    new binary::pe::record::DTO;
+                        [&](std::unique_ptr<const LIEF::ART::File> p_art) {
+                            if (p_art) {
+                                struct binary::art::record::DTO *dto =
+                                    new binary::art::record::DTO;
 
-                                dto->pe = &p_pe;
+                                dto->art = &p_art;
 
                                 p_callback(dto);
                                 delete dto;
@@ -37,13 +37,13 @@ namespace engine
                         });
                 }
 
-                const ::engine::parser::Json PE::dto_json(
-                    binary::pe::record::DTO *p_dto)
+                const ::engine::parser::Json ART::dto_json(
+                    binary::art::record::DTO *p_dto)
                 {
                     ::engine::parser::Json json;
 
                     if (!IS_NULL(p_dto)) {
-                        json.from_string(LIEF::to_json(*p_dto->pe->get()));
+                        json.from_string(LIEF::to_json(*p_dto->art->get()));
                     }
 
                     return json;

@@ -18,7 +18,7 @@ namespace engine
                 {
                 }
                 
-                void MACHO::parser_bytes(
+                void MACHO::parse_bytes(
                     const std::string &p_buffer,
                     const std::function<void(binary::macho::record::DTO *)>
                         &p_callback)

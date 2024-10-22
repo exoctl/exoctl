@@ -17,7 +17,7 @@ namespace engine
                 {
                 }
 
-                void DEX::parser_bytes(
+                void DEX::parse_bytes(
                     const std::string &p_buffer,
                     const std::function<void(binary::dex::record::DTO *)>
                         &p_callback)

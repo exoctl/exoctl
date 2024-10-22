@@ -18,7 +18,7 @@ namespace engine
                     PE();
                     ~PE();
 
-                    void parser_bytes(
+                    void parse_bytes(
                         const std::string &,
                         const std::function<void(binary::pe::record::DTO *)> &);
                     const ::engine::parser::Json dto_json(

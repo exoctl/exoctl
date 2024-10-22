@@ -5,6 +5,7 @@
 #include <engine/crowapp/focades/parser/binary/lief/elf/elf.hxx>
 #include <engine/crowapp/focades/parser/binary/lief/macho/macho.hxx>
 #include <engine/crowapp/focades/parser/binary/lief/pe/pe.hxx>
+#include <engine/crowapp/focades/parser/binary/lief/art/art.hxx>
 #include <engine/interfaces/igateway.hxx>
 #include <engine/crowapp/focades/parser/binary/lief/dex/dex.hxx>
 
@@ -40,10 +41,14 @@ namespace engine
                 std::unique_ptr<focades::parser::binary::DEX> m_parser_dex;
                 std::unique_ptr<gateway::WebSocket> m_socket_dex;
 
+                std::unique_ptr<focades::parser::binary::ART> m_parser_art;
+                std::unique_ptr<gateway::WebSocket> m_socket_art;
+
                 void prepare();
                 void parser_elf();
                 void parser_pe();
                 void parser_dex();
+                void parser_art();
                 void parser_macho();
             };
         } // namespace bridge

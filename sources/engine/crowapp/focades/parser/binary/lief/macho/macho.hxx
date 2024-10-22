@@ -12,7 +12,7 @@ namespace engine::focades::parser::binary
         MACHO();
         ~MACHO();
 
-        void parser_bytes(
+        void parse_bytes(
             const std::string &,
             const std::function<void(binary::macho::record::DTO *)> &);
         const ::engine::parser::Json dto_json(binary::macho::record::DTO *);

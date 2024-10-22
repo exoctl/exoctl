@@ -18,7 +18,7 @@ namespace engine
                     ELF();
                     ~ELF();
 
-                    void parser_bytes(
+                    void parse_bytes(
                         const std::string &,
                         const std::function<void(binary::elf::record::DTO *)>
                             &);
