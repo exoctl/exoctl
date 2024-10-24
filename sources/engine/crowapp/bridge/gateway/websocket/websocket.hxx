@@ -22,7 +22,7 @@ namespace engine
                         std::function<void(websocket::Context &,
                                            crow::websocket::connection &,
                                            const std::string &)>;
-                    using on_accept_callback = std::function<void(
+                    using on_accept_callback = std::function<bool(
                         websocket::Context &, const crow::request &, void **)>;
                     using on_open_callback = std::function<void(
                         websocket::Context &, crow::websocket::connection &)>;

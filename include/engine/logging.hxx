@@ -52,8 +52,8 @@ namespace engine
             std::shared_ptr<spdlog::logger> create_logger(const std::string &,
                                                           const std::string &);
 
-            std::shared_ptr<spdlog::logger> get_logger(
-                const std::string &) const;
+           static  std::shared_ptr<spdlog::logger> get_logger(
+                const std::string &);
 
           private:
             configuration::Configuration &m_config;

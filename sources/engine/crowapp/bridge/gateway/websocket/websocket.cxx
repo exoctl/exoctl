@@ -1,5 +1,5 @@
-#include <engine/crowapp/bridge/gateway/websocket/websocket.hxx>
 #include <engine/crowapp/bridge/gateway/websocket/responses.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/websocket.hxx>
 
 namespace engine
 {
@@ -59,13 +59,11 @@ namespace engine
                         })
                         .onaccept(
                             [&](const crow::request &p_req, void **p_userdata) {
-                                bool accept =
-                                    WebSocket::def_accept_connection(&p_req);
-
-                                if (m_on_accept && accept)
-                                    m_on_accept(m_context, p_req, p_userdata);
-
-                                return accept;
+                                return (!m_on_accept)
+                                           ? WebSocket::def_accept_connection(
+                                                 &p_req)
+                                           : m_on_accept(
+                                                 m_context, p_req, p_userdata);
                             })
                         .validate();
                 }
@@ -94,7 +92,9 @@ namespace engine
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
                     m_context.add(p_conn);
-                    m_context.broadcast_text(p_conn, websocket::responses::Connected::to_json().to_string());
+                    m_context.broadcast_text(
+                        p_conn,
+                        websocket::responses::Connected::to_json().to_string());
 
                     LOG(m_crow.get_log(),
                         info,
@@ -107,15 +107,7 @@ namespace engine
                     const crow::request *p_req)
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
-                    if (m_context.check_whitelist(p_req))
-                        return true;
-
-                    LOG(m_crow.get_log(),
-                        critical,
-                        "Connection rejected from IP: {}",
-                        p_req->remote_ip_address);
-
-                    return false;
+                    return true;
                 }
 
                 void WebSocket::def_message_connection(

@@ -151,12 +151,7 @@ namespace engine
                                       ["ssl_certificate_path"]
                             .value<std::string>()
                             .value(),
-                    .context = {
-                        .whitelist =
-                            *m_toml
-                                 .get_tbl()["crowapp"]["server"]["websocket"]
-                                           ["context"]["whitelist"]
-                                 .as_array()}}};
+                }};
         }
 
         void Configuration::load_yara()

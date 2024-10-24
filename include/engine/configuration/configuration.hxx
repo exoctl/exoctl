@@ -24,6 +24,7 @@ namespace engine
             const record::crowapp::CrowApp &get_crowapp() const;
             const record::lief::Lief &get_lief() const;
 
+
           private:
             const std::string m_path_config;
             parser::Toml m_toml;

@@ -29,7 +29,7 @@ namespace engine::logging
     }
 
     std::shared_ptr<spdlog::logger> Logging::get_logger(
-        const std::string &p_name) const
+        const std::string &p_name)
     {
         return spdlog::get(p_name);
     }

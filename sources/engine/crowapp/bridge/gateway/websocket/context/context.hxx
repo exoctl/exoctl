@@ -21,13 +21,6 @@ namespace engine
                         Context(configuration::Configuration &);
                         ~Context();
 
-                        /**
-                         * @brief used in onaccept to check if ip is whitelisted
-                         * @details  if ip listed, return true else false
-                         * @return true
-                         * @return false
-                         */
-                        const bool check_whitelist(const crow::request *);
                         const void add(crow::websocket::connection *);
                         const void erase(crow::websocket::connection *);
                         const void close(crow::websocket::connection *,

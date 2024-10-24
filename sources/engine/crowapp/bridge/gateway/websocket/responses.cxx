@@ -5,7 +5,7 @@ namespace engine::crowapp::bridge::gateway::websocket::responses
     Connected::Connected()
     {
     }
-    
+
     const parser::Json Connected::_to_json() const
     {
         parser::Json json;
@@ -49,7 +49,7 @@ namespace engine::crowapp::bridge::gateway::websocket::responses
 
     const int UnsupportedData::_code() const
     {
-        return 1003;
+        return crow::websocket::CloseStatusCode::UnacceptableData;
     }
 
     const std::string UnsupportedData::_status() const

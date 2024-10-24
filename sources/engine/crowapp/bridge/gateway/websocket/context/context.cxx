@@ -64,21 +64,10 @@ namespace engine
                         uint16_t p_code,
                         const std::string &p_message)
                     {
-                        if (m_context.find(p_conn) != m_context.end())
+                        if (m_context.find(p_conn) != m_context.end()) {
                             p_conn->close(p_message, p_code);
-                    }
-
-                    const bool Context::check_whitelist(
-                        const crow::request *p_request)
-                    {
-                        for (const auto &list :
-                             m_config.get_crowapp().server.context.whitelist)
-                            if (const auto str = list.as_string()) {
-                                if (p_request->remote_ip_address == str->get())
-                                    return true;
-                            }
-
-                        return false;
+                            Context::erase(p_conn);
+                        }
                     }
                 } // namespace websocket
             } // namespace gateway

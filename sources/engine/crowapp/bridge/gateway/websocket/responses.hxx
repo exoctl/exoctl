@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/iresponse.hxx>
+#include <engine/crowapp/crowapp.hxx>
 
 namespace engine::crowapp::bridge::gateway::websocket::responses
 {

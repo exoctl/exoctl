@@ -135,22 +135,11 @@ namespace engine
 
                 namespace server
                 {
-                    namespace websocket
-                    {
-                        namespace context
-                        {
-                            typedef struct Context {
-                                toml::array whitelist;
-                            } Context;
-                        } // namespace context
-                    } // namespace websocket
-
                     typedef struct Server {
                         std::string bindaddr;
                         uint16_t port;
                         uint16_t threads;
                         std::string ssl_certificate_path;
-                        websocket::context::Context context;
                     } Server;
 
                 } // namespace server
