@@ -10,6 +10,7 @@
 #include <crow.h>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
+#include <engine/crowapp/middlewares/auth.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
 
@@ -17,10 +18,11 @@ namespace engine
 {
     namespace crowapp
     {
+        using App = crow::App<middleware::websocket::Auth>;
         class CrowApp
         {
           private:
-            crow::SimpleApp m_app;
+            App m_app;
             configuration::Configuration &m_config;
             logging::Logging &m_log;
 
@@ -28,7 +30,7 @@ namespace engine
             CrowApp(configuration::Configuration &, logging::Logging &);
             ~CrowApp();
 
-            crow::SimpleApp &get_app();
+            App &get_app();
             const uint16_t get_concurrency();
             configuration::Configuration &get_config();
             logging::Logging &get_log();

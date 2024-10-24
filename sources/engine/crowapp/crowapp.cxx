@@ -42,7 +42,7 @@ namespace engine
             return m_config;
         }
 
-        crow::SimpleApp &CrowApp::get_app()
+        App &CrowApp::get_app()
         {
             return m_app;
         }
