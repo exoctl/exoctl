@@ -39,7 +39,7 @@ namespace engine
                                 data,
                                 [&](focades::data::metadata::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_data_metadata->dto_json(p_dto)
                                             .to_string());

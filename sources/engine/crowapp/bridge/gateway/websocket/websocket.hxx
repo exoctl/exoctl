@@ -46,7 +46,7 @@ namespace engine
                               on_open_callback = nullptr,
                               on_close_callback = nullptr);
 
-                    ~WebSocket();
+                    ~WebSocket() = default;
 
                     const std::size_t size_connections() const;
 

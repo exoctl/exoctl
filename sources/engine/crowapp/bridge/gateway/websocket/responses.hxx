@@ -4,15 +4,27 @@
 
 namespace engine::crowapp::bridge::gateway::websocket::responses
 {
-    class Connected : public interface::IResponse
+    class Connected : public interface::IResponse<Connected>
     {
       public:
         Connected();
-        ~Connected() = default;
+        ~Connected() override = default;
 
-        const parser::Json to_json() const override;
-        const int code() const override;
-        const std::string status() const override;
+        const parser::Json _to_json() const override;
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
     };
 
+    class UnsupportedData : public interface::IResponse<UnsupportedData>
+    {
+      public:
+        UnsupportedData();
+        ~UnsupportedData() override = default;
+
+        const parser::Json _to_json() const override;
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
 } // namespace engine::crowapp::bridge::gateway::websocket::responses

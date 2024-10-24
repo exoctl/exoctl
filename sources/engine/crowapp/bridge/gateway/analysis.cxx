@@ -57,7 +57,7 @@ namespace engine
                                 });
 
                             json.add_member_json("av", av);
-                            p_context.broadcast(&p_conn, json.to_string());
+                            p_context.broadcast_text(&p_conn, json.to_string());
                         });
                 });
             }
@@ -79,7 +79,7 @@ namespace engine
                                     "ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
                                     [&](focades::analysis::scan::av::clamav::
                                             record::DTO *p_dto) {
-                                        p_context.broadcast(
+                                        p_context.broadcast_text(
                                             &p_conn,
                                             m_scan_av_clamav->dto_json(p_dto)
                                                 .to_string());
@@ -103,7 +103,7 @@ namespace engine
                                 p_data,
                                 [&](focades::analysis::scan::yara::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_scan_yara->dto_json(p_dto)
                                             .to_string());

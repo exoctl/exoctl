@@ -30,9 +30,15 @@ namespace engine
                         const bool check_whitelist(const crow::request *);
                         const void add(crow::websocket::connection *);
                         const void erase(crow::websocket::connection *);
+                        const void close(crow::websocket::connection *,
+                                         uint16_t,
+                                         const std::string &);
                         const std::size_t size() const;
-                        const void broadcast(crow::websocket::connection *,
-                                             const std::string) const;
+                        void broadcast_text(crow::websocket::connection *,
+                                            const std::string) const;
+
+                        void broadcast_binary(crow::websocket::connection *,
+                                              const std::string) const;
 
                         /**
                          * @brief return what ip connected

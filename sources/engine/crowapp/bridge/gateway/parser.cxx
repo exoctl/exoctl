@@ -61,7 +61,7 @@ namespace engine
                                                       // p_buffer
                                 [&](focades::parser::binary::pe::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_parser_pe->dto_json(p_dto)
                                             .to_string());
@@ -87,7 +87,7 @@ namespace engine
                                                // p_buffer
                                 [&](focades::parser::binary::dex::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_parser_dex->dto_json(p_dto)
                                             .to_string());
@@ -111,7 +111,7 @@ namespace engine
                                 "/usr/bin/ls", // TODO: edit to p_buffer
                                 [&](focades::parser::binary::elf::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_parser_elf->dto_json(p_dto)
                                             .to_string());
@@ -136,7 +136,7 @@ namespace engine
                                 "art.art", // TODO: edit to p_buffer
                                 [&](focades::parser::binary::art::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_parser_art->dto_json(p_dto)
                                             .to_string());
@@ -162,7 +162,7 @@ namespace engine
                                                     // p_buffer
                                 [&](focades::parser::binary::macho::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast(
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         m_parser_macho->dto_json(p_dto)
                                             .to_string());

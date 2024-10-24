@@ -25,12 +25,20 @@ namespace engine
                         m_context.erase(p_conn);
                     }
 
-                    const void Context::broadcast(
+                    void Context::broadcast_text(
                         crow::websocket::connection *p_conn,
                         const std::string p_msg) const
                     {
                         if (m_context.find(p_conn) != m_context.end())
                             p_conn->send_text(p_msg);
+                    }
+
+                    void Context::broadcast_binary(
+                        crow::websocket::connection *p_conn,
+                        const std::string p_msg) const
+                    {
+                        if (m_context.find(p_conn) != m_context.end())
+                            p_conn->send_binary(p_msg);
                     }
 
                     const void Context::add(crow::websocket::connection *p_conn)
@@ -48,7 +56,16 @@ namespace engine
                     {
                         return (m_context.find(p_conn) != m_context.end())
                                    ? p_conn->get_remote_ip()
-                                   : nullptr;
+                                   : "";
+                    }
+
+                    const void Context::close(
+                        crow::websocket::connection *p_conn,
+                        uint16_t p_code,
+                        const std::string &p_message)
+                    {
+                        if (m_context.find(p_conn) != m_context.end())
+                            p_conn->close(p_message, p_code);
                     }
 
                     const bool Context::check_whitelist(

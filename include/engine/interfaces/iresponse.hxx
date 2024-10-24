@@ -2,17 +2,39 @@
 
 #include <engine/parser/json.hxx>
 
-namespace engine
+namespace engine::interface
 {
-    namespace interface
+    // CRTP (Curiously Recurring Template Pattern)
+    template <typename Derived> class IResponse
     {
-        class IResponse
+      public:
+        static const parser::Json to_json()
         {
-          public:
-            virtual ~IResponse() = default;
-            virtual const parser::Json to_json() const = 0;
-            virtual const int code() const = 0;
-            virtual const std::string status() const = 0;
-        };
-    } // namespace interface
-} // namespace engine
+            return Derived()._to_json();
+        }
+
+        static const int code()
+        {
+            return Derived()._code();
+        }
+
+        static const std::string status()
+        {
+            return Derived()._status();
+        }
+
+        static const std::string message()
+        {
+            return Derived()._message();
+        }
+
+        virtual ~IResponse() = default;
+        explicit IResponse() = default;
+
+      private:
+        virtual const parser::Json _to_json() const = 0;
+        virtual const int _code() const = 0;
+        virtual const std::string _status() const = 0;
+        virtual const std::string _message() const = 0;
+    };
+} // namespace engine::interface

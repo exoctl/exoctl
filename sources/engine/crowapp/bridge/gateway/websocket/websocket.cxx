@@ -1,4 +1,5 @@
 #include <engine/crowapp/bridge/gateway/websocket/websocket.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/responses.hxx>
 
 namespace engine
 {
@@ -69,10 +70,6 @@ namespace engine
                         .validate();
                 }
 
-                WebSocket::~WebSocket()
-                {
-                }
-
                 const std::size_t WebSocket::size_connections() const
                 {
                     return m_context.size();
@@ -97,7 +94,7 @@ namespace engine
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
                     m_context.add(p_conn);
-                    m_context.broadcast(p_conn, "{\"status\": \"ready\"}");
+                    m_context.broadcast_text(p_conn, websocket::responses::Connected::to_json().to_string());
 
                     LOG(m_crow.get_log(),
                         info,
