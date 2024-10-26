@@ -1,5 +1,5 @@
 #include <engine/crowapp/bridge/gateway/rev.hxx>
-#include <engine/crowapp/bridge/gateway/websocket/responses.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/responses/responses.hxx>
 
 namespace engine
 {

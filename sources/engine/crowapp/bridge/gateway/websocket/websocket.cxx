@@ -1,4 +1,5 @@
-#include <engine/crowapp/bridge/gateway/websocket/responses.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/middlewares/jwtauth.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/responses/responses.hxx>
 #include <engine/crowapp/bridge/gateway/websocket/websocket.hxx>
 
 namespace engine
@@ -17,19 +18,21 @@ namespace engine
                                      on_accept_callback on_accept,
                                      on_open_callback on_open,
                                      on_close_callback on_close)
-                    : m_crow(p_crow), m_url(p_url),
+                    : m_crowapp(p_crow), m_url(p_url),
                       m_context(p_crow.get_config()), m_on_message(on_message),
                       m_on_error(on_error), m_on_accept(on_accept),
                       m_on_open(on_open), m_on_close(on_close)
                 {
-                    LOG(m_crow.get_log(),
+                    LOG(m_crowapp.get_log(),
                         info,
                         "Creating WebSocket route for URL: '{}'",
                         m_url);
 
-                    m_crow.get_app()
+                    m_crowapp.get_app()
                         .route_dynamic(m_url)
-                        .websocket(&m_crow.get_app())
+                        .CROW_MIDDLEWARES(m_crowapp.get_app(),
+                                          middleware::websocket::JWTAuth)
+                        .websocket(&m_crowapp.get_app())
                         .max_payload(p_max_payload)
                         .onopen([&](crow::websocket::connection &p_conn) {
                             WebSocket::def_open_connection(&p_conn);
@@ -80,7 +83,7 @@ namespace engine
                     std::lock_guard<std::mutex> _(m_mtx);
                     m_context.erase(p_conn);
 
-                    LOG(m_crow.get_log(),
+                    LOG(m_crowapp.get_log(),
                         warn,
                         "Connection {} closed: reason = '{}'",
                         m_url,
@@ -96,7 +99,7 @@ namespace engine
                         p_conn,
                         websocket::responses::Connected::to_json().to_string());
 
-                    LOG(m_crow.get_log(),
+                    LOG(m_crowapp.get_log(),
                         info,
                         "Connection opened {} from IP: {}",
                         m_url,
@@ -107,6 +110,9 @@ namespace engine
                     const crow::request *p_req)
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
+                    // auto &session =
+                    //     m_crowapp.get_app().get_context<Session>(*p_req);
+                    // fmt::print("{}", session.get("Cookie", "a"));
                     return true;
                 }
 
@@ -116,7 +122,7 @@ namespace engine
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
 
-                    LOG(m_crow.get_log(),
+                    LOG(m_crowapp.get_log(),
                         debug,
                         "Message received on route '{}': data size = {} from "
                         "IP: "
@@ -132,7 +138,7 @@ namespace engine
                 {
                     std::lock_guard<std::mutex> _(m_mtx);
 
-                    LOG(m_crow.get_log(),
+                    LOG(m_crowapp.get_log(),
                         error,
                         "Error on route '{}': error = {}",
                         m_url,

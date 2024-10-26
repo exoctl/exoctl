@@ -51,7 +51,7 @@ namespace engine
                     const std::size_t size_connections() const;
 
                   private:
-                    CrowApp &m_crow;
+                    CrowApp &m_crowapp;
                     std::string m_url;
                     websocket::Context m_context;
                     std::mutex m_mtx;

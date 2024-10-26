@@ -1,4 +1,4 @@
-#include <engine/crowapp/bridge/gateway/websocket/responses.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/responses/responses.hxx>
 
 namespace engine::crowapp::bridge::gateway::websocket::responses
 {
@@ -54,12 +54,38 @@ namespace engine::crowapp::bridge::gateway::websocket::responses
 
     const std::string UnsupportedData::_status() const
     {
-        return "unsupported";
+        return "unsupporteddata";
     }
 
     const std::string UnsupportedData::_message() const
     {
         return "Message received not supported by the server.";
+    }
+
+    const parser::Json InvalidTokenJWT::_to_json() const
+    {
+        parser::Json json;
+
+        json.add_member_string("status", InvalidTokenJWT::_status());
+        json.add_member_string("message", InvalidTokenJWT::_message());
+        json.add_member_int("code", InvalidTokenJWT::_code());
+
+        return json;
+    }
+
+    const int InvalidTokenJWT::_code() const
+    {
+        return 403;
+    }
+
+    const std::string InvalidTokenJWT::_status() const
+    {
+        return "invalidtokenjwt";
+    }
+
+    const std::string InvalidTokenJWT::_message() const
+    {
+        return "Invalid ";
     }
 
 } // namespace engine::crowapp::bridge::gateway::websocket::responses

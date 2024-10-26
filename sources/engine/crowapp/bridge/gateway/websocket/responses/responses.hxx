@@ -1,7 +1,7 @@
 #pragma once
 
-#include <engine/interfaces/iresponse.hxx>
 #include <engine/crowapp/crowapp.hxx>
+#include <engine/interfaces/iresponse.hxx>
 
 namespace engine::crowapp::bridge::gateway::websocket::responses
 {
@@ -22,6 +22,18 @@ namespace engine::crowapp::bridge::gateway::websocket::responses
       public:
         UnsupportedData();
         ~UnsupportedData() override = default;
+
+        const parser::Json _to_json() const override;
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
+
+    class InvalidTokenJWT : public interface::IResponse<InvalidTokenJWT>
+    {
+      public:
+        InvalidTokenJWT();
+        ~InvalidTokenJWT() override = default;
 
         const parser::Json _to_json() const override;
         const int _code() const override;

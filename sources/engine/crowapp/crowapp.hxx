@@ -10,7 +10,7 @@
 #include <crow.h>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
-#include <engine/crowapp/middlewares/auth.hxx>
+#include <engine/crowapp/bridge/gateway/websocket/middlewares/jwtauth.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
 
@@ -18,7 +18,7 @@ namespace engine
 {
     namespace crowapp
     {
-        using App = crow::App<middleware::websocket::Auth>;
+        using App = crow::App<middleware::websocket::JWTAuth>;
         class CrowApp
         {
           private:
