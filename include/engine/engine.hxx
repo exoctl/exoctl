@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/crowapp/_/log/log.hxx>
-#include <engine/crowapp/bridge/bridge.hxx>
-#include <engine/crowapp/crowapp.hxx>
+#include <engine/server/_/log/log.hxx>
+#include <engine/server/bridge/bridge.hxx>
+#include <engine/server/server.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/binary/lief/_/log.hxx>
 #include <engine/parser/toml.hxx>
@@ -17,9 +17,9 @@ namespace engine
         configuration::Configuration &m_configuration;
         logging::Logging &m_log;
 
-        crowapp::CrowApp m_crowapp;
-        crowapp::Bridge m_crowapp_bridge;
-        crowapp::_::Log m_crowapp_log;
+        server::Server m_server;
+        server::Bridge m_server_bridge;
+        server::_::Log m_server_log;
         parser::binary::lief::_::Log m_lief_log;
 
       public:

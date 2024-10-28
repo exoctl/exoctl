@@ -21,7 +21,7 @@ namespace engine
             const record::yara::Yara &get_yara() const;
             const record::logging::Logging &get_logging() const;
             const record::sig::Sig &get_sig() const;
-            const record::crowapp::CrowApp &get_crowapp() const;
+            const record::server::Server &get() const;
             const record::lief::Lief &get_lief() const;
 
 
@@ -36,13 +36,13 @@ namespace engine
             record::yara::Yara m_yara;
             record::logging::Logging m_logging;
             record::sig::Sig m_sig;
-            record::crowapp::CrowApp m_crowapp;
+            record::server::Server m_server;
 
             void load_cache();
             void load_av_clamav();
             void load_project();
             void load_sig();
-            void load_crowapp();
+            void load_server();
             void load_yara();
             void load_logging();
             void load_lief();

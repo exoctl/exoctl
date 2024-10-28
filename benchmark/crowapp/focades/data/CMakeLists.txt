@@ -1,5 +1,5 @@
 file(GLOB_RECURSE SOURCES
-    ../../../../sources/engine/crowapp/focades/data/*.cxx
+    ../../../../sources/engine/server/focades/data/*.cxx
     ../../../../sources/engine/magic/*.cxx
     ../../../../sources/engine/crypto/*.cxx
     ../../../../sources/engine/dto/*.cxx

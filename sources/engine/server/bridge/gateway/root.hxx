@@ -1,0 +1,36 @@
+#pragma once
+
+#include <engine/server/bridge/gateway/map/map.hxx>
+#include <engine/server/bridge/gateway/web/web.hxx>
+#include <engine/server/server.hxx>
+#include <engine/interfaces/igateway.hxx>
+#include <memory>
+
+#define BASE_ROOT   "/"
+
+namespace engine
+{
+    namespace server
+    {
+        namespace bridge
+        {
+            class Root : public interface::IGateway
+            {
+              public:
+                Root(Server &);
+                ~Root();
+
+                void load() const override;
+
+              private:
+                Server &m_server;
+                mutable gateway::Map m_map;
+
+                std::unique_ptr<gateway::Web<>> m_web_root;
+                
+                void prepare();
+                void root();
+            };
+        } // namespace bridge
+    } // namespace server
+} // namespace engine

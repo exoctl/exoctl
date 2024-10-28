@@ -16,7 +16,7 @@ namespace engine
         {
             TRY_BEGIN()
             Configuration::load_project();
-            Configuration::load_crowapp();
+            Configuration::load_server();
             Configuration::load_yara();
             Configuration::load_sig();
             Configuration::load_cache();
@@ -66,9 +66,9 @@ namespace engine
             return m_sig;
         }
 
-        const record::crowapp::CrowApp &Configuration::get_crowapp() const
+        const record::server::Server &Configuration::get() const
         {
-            return m_crowapp;
+            return m_server;
         }
 
         const record::lief::Lief &Configuration::get_lief() const
@@ -124,34 +124,31 @@ namespace engine
                                   .value()}};
         }
 
-        void Configuration::load_crowapp()
+        void Configuration::load_server()
         {
-            m_crowapp = (record::crowapp::CrowApp){
+            m_server = (record::server::Server){
                 .log = {.level =
-                            m_toml.get_tbl()["crowapp"]["_"]["log"]["level"]
+                            m_toml.get_tbl()["server"]["_"]["log"]["level"]
                                 .value<int>()
                                 .value(),
-                        .name = m_toml.get_tbl()["crowapp"]["_"]["log"]["name"]
+                        .name = m_toml.get_tbl()["server"]["_"]["log"]["name"]
                                     .value<std::string>()
                                     .value()},
-                .server = {
-                    .bindaddr =
-                        m_toml.get_tbl()["crowapp"]["server"]["bindaddr"]
-                            .value<std::string>()
-                            .value(),
-                    .port = m_toml.get_tbl()["crowapp"]["server"]["port"]
-                                .value<std::uint16_t>()
+                .bindaddr = m_toml.get_tbl()["server"]["bindaddr"]
+                                .value<std::string>()
                                 .value(),
-                    .threads = m_toml.get_tbl()["crowapp"]["server"]["threads"]
-                                   .value<std::uint16_t>()
-                                   .value(),
-                    .ssl_certificate_path =
-                        m_toml
-                            .get_tbl()["crowapp"]["server"]
-                                      ["ssl_certificate_path"]
-                            .value<std::string>()
+                .port = m_toml.get_tbl()["server"]["port"]
+                            .value<std::uint16_t>()
                             .value(),
-                }};
+                .threads = m_toml.get_tbl()["server"]["threads"]
+                               .value<std::uint16_t>()
+                               .value(),
+                .ssl_certificate_path =
+                    m_toml
+                        .get_tbl()["server"]["ssl_certificate_path"]
+                        .value<std::string>()
+                        .value(),
+            };
         }
 
         void Configuration::load_yara()

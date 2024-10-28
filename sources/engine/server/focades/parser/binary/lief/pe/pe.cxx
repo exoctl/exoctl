@@ -1,0 +1,55 @@
+#include <engine/server/focades/parser/binary/lief/pe/pe.hxx>
+#include <engine/memory/memory.hxx>
+#include <engine/parser/json.hxx>
+
+namespace engine
+{
+    namespace focades
+    {
+        namespace parser
+        {
+            namespace binary
+            {
+                PE::PE()
+                {
+                }
+                PE::~PE()
+                {
+                }
+
+                void PE::parse_bytes(
+                    const std::string &p_buffer,
+                    const std::function<void(binary::pe::record::DTO *)>
+                        &p_callback)
+                {
+                    m_pe.parse_file(
+                        p_buffer,
+                        [&](std::unique_ptr<const LIEF::PE::Binary> p_pe) {
+                            if (p_pe) {
+                                struct binary::pe::record::DTO *dto =
+                                    new binary::pe::record::DTO;
+
+                                dto->pe = &p_pe;
+
+                                p_callback(dto);
+                                delete dto;
+                            }
+                        });
+                }
+
+                const ::engine::parser::Json PE::dto_json(
+                    binary::pe::record::DTO *p_dto)
+                {
+                    ::engine::parser::Json json;
+
+                    if (!IS_NULL(p_dto)) {
+                        json.from_string(LIEF::to_json(*p_dto->pe->get()));
+                    }
+
+                    return json;
+                }
+
+            } // namespace binary
+        } // namespace parser
+    } // namespace focades
+} // namespace engine

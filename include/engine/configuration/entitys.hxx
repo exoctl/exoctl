@@ -120,7 +120,7 @@ namespace engine
 
             } // namespace logging
 
-            namespace crowapp
+            namespace server
             {
                 namespace _
                 {
@@ -133,22 +133,14 @@ namespace engine
                     } // namespace log
                 } // namespace _
 
-                namespace server
-                {
-                    typedef struct Server {
-                        std::string bindaddr;
-                        uint16_t port;
-                        uint16_t threads;
-                        std::string ssl_certificate_path;
-                    } Server;
-
-                } // namespace server
-
-                typedef struct CrowApp {
+                typedef struct Server {
                     _::log::Log log;
-                    server::Server server;
-                } CrowApp;
-            } // namespace crowapp
+                    std::string bindaddr;
+                    uint16_t port;
+                    uint16_t threads;
+                    std::string ssl_certificate_path;
+                } Server;
+            } // namespace server
 
             namespace cache
             {
