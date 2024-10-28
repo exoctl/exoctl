@@ -51,8 +51,8 @@ namespace engine
                 int fd;
 
                 TRY_BEGIN()
-                    fd = memory::Memory::fd("tmp_", MFD_CLOEXEC);
-                    memory::Memory::write(fd, p_buffer.c_str(), p_buffer.size());
+                fd = memory::Memory::fd("tmp_", MFD_CLOEXEC);
+                memory::Memory::write(fd, p_buffer.c_str(), p_buffer.size());
                 TRY_END()
                 CATCH(memory::exception::Fd, {
                     throw clamav::exception::Scan(
@@ -75,7 +75,9 @@ namespace engine
                 const cl_error_t ret = cl_scandesc(
                     fd, nullptr, &data->virname, nullptr, m_engine, &scanopts);
 
-                (IS_NULL(data->virname)) ? data->virname = "" : data->virname;
+                memory::Memory::close(fd);
+
+                data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
 
                 data->math_status = [ret]() {
                     switch (ret) {

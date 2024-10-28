@@ -1,7 +1,7 @@
-#include <engine/server/bridge/gateway/analysis.hxx>
-#include <engine/server/exception.hxx>
 #include <engine/logging.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/server/bridge/gateway/analysis.hxx>
+#include <engine/server/exception.hxx>
 #include <stdint.h>
 
 namespace engine
@@ -36,11 +36,14 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
                             parser::Json json;
                             parser::Json av;
 
                             m_scan_yara->scan_fast_bytes(
-                                p_data,
+                                data,
                                 [&](focades::analysis::scan::yara::record::DTO
                                         *p_dto) {
                                     json.add_member_json(
@@ -74,9 +77,11 @@ namespace engine
                                 crow::websocket::connection &p_conn,
                                 const std::string &p_data,
                                 bool p_is_binary) {
+                                const std::string &data =
+                                    crow::utility::base64decode(p_data,
+                                                                p_data.size());
                                 m_scan_av_clamav->scan_fast_bytes(
-                                    "/home/mob/Downloads/"
-                                    "ROTEIRO_DE_SISTEMAS_DIGITAIS.pdf",
+                                    data,
                                     [&](focades::analysis::scan::av::clamav::
                                             record::DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -99,8 +104,12 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
+
                             m_scan_yara->scan_fast_bytes(
-                                p_data,
+                                data,
                                 [&](focades::analysis::scan::yara::record::DTO
                                         *p_dto) {
                                     p_context.broadcast_text(

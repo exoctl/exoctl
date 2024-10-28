@@ -35,4 +35,9 @@ namespace engine::memory
             throw exception::Write("write() failed: " +
                                    std::string(strerror(errno)));
     }
+
+    void Memory::close(const int p_fd)
+    {
+        ::close(p_fd);
+    }
 } // namespace engine::memory
