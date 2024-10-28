@@ -16,7 +16,7 @@ class TomlTest : public ::testing::Test
         version = 1
         )"sv;
 
-        toml = new parser::Toml();
+        toml = new engine::parser::Toml();
         toml->parse_buffer(some_toml);
     }
 
@@ -25,5 +25,5 @@ class TomlTest : public ::testing::Test
         delete toml;
     }
 
-    parser::Toml *toml;
+    engine::parser::Toml *toml;
 };

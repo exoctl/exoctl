@@ -9,7 +9,7 @@ class CryptoTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        sha = new crypto::Sha();
+        sha = new engine::crypto::Sha();
     }
 
     void TearDown() override
@@ -17,5 +17,5 @@ class CryptoTest : public ::testing::Test
         delete sha;
     }
 
-    crypto::Sha *sha;
+    engine::crypto::Sha *sha;
 };
