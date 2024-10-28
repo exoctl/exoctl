@@ -31,22 +31,30 @@ namespace program
 
     const int Program::run()
     {
-        LOG(m_log, info, "Name        : {}", m_config.get_project().name);
-        LOG(m_log, info, "Version     : {}", m_config.get_project().version);
-        LOG(m_log,
-            info,
-            "Description : {}",
-            m_config.get_project().description);
-        LOG(m_log, info, "Copyright   : {}", m_config.get_project().copyright);
-        LOG(m_log,
-            info,
-            "Mode        : {}",
+        {
+            LOG(m_log, debug, "Name        : {}", m_config.get_project().name);
+            LOG(m_log,
+                debug,
+                "Version     : {}",
+                m_config.get_project().version);
+            LOG(m_log,
+                debug,
+                "Description : {}",
+                m_config.get_project().description);
+            LOG(m_log,
+                debug,
+                "Copyright   : {}",
+                m_config.get_project().copyright);
+            LOG(m_log,
+                debug,
+                "Mode        : {}",
 #if DEBUG
-            "Debug");
+                "Debug");
 #else
-            "Release");
+                "Release");
 #endif
-
+        }
+        
         LOG(m_log,
             info,
             "Running engine with configuration from '{}'...",

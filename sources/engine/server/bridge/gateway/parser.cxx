@@ -55,6 +55,10 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
+
                             m_parser_pe->parse_bytes(
                                 "/home/mob/Downloads/"
                                 "pe-Windows-x86-cmd", // TODO: edit to
@@ -81,6 +85,10 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
+
                             m_parser_dex->parse_bytes(
                                 "/home/mob/Downloads/"
                                 "classes.dex", // TODO: edit to
@@ -107,6 +115,9 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
                             m_parser_elf->parse_bytes(
                                 "/usr/bin/ls", // TODO: edit to p_buffer
                                 [&](focades::parser::binary::elf::record::DTO
@@ -131,6 +142,9 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
                             m_parser_art->parse_bytes(
                                 "/home/mob/Downloads/"
                                 "art.art", // TODO: edit to p_buffer
@@ -156,6 +170,9 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
+                            const std::string &data =
+                                crow::utility::base64decode(p_data,
+                                                            p_data.size());
                             m_parser_macho->parse_bytes(
                                 "/home/mob/Downloads/"
                                 "MachO-OSX-x64-ls", // TODO: edit to
