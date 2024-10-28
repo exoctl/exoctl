@@ -30,13 +30,9 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            std::string data = std::move(p_data);
-                            data.erase(
-                                std::remove(data.begin(), data.end(), '\n'),
-                                data.cend());
 
                             m_data_metadata->parse(
-                                data,
+                                p_data,
                                 [&](focades::data::metadata::record::DTO
                                         *p_dto) {
                                     p_context.broadcast_text(
