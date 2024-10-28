@@ -4,23 +4,33 @@
 
 namespace engine::memory::exception
 {
-    class Protection : public interface::IException
+    class Protect : public interface::IException
     {
       private:
         const std::string m_error_message;
 
       public:
-        explicit Protection(const std::string &);
+        explicit Protect(const std::string &);
         const char *what() const noexcept override;
     };
 
-    class Memfd : public interface::IException
+    class Fd : public interface::IException
     {
       private:
         const std::string m_error_message;
 
       public:
-        explicit Memfd(const std::string &);
+        explicit Fd(const std::string &);
+        const char *what() const noexcept override;
+    };
+
+    class Write : public interface::IException
+    {
+      private:
+        const std::string m_error_message;
+
+      public:
+        explicit Write(const std::string &);
         const char *what() const noexcept override;
     };
 } // namespace engine::memory::exception

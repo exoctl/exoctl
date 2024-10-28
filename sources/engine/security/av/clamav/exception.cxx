@@ -29,6 +29,15 @@ namespace engine
                         return m_error_message.c_str();
                     }
 
+                    Scan::Scan(const std::string &p_message)
+                        : m_error_message(p_message)
+                    {
+                    }
+                    const char *Scan::what() const noexcept
+                    {
+                        return m_error_message.c_str();
+                    }
+
                     SetDbRules::SetDbRules(const std::string &p_message)
                         : m_error_message(p_message)
                     {

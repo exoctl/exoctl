@@ -2,19 +2,26 @@
 
 namespace engine::memory::exception
 {
-    Protection::Protection(const std::string &p_message)
-        : m_error_message(p_message)
+    Protect::Protect(const std::string &p_message) : m_error_message(p_message)
     {
     }
-    const char *Protection::what() const noexcept
+    const char *Protect::what() const noexcept
     {
         return m_error_message.c_str();
     }
 
-    Memfd::Memfd(const std::string &p_message) : m_error_message(p_message)
+    Fd::Fd(const std::string &p_message) : m_error_message(p_message)
     {
     }
-    const char *Memfd::what() const noexcept
+    const char *Fd::what() const noexcept
+    {
+        return m_error_message.c_str();
+    }
+
+    Write::Write(const std::string &p_message) : m_error_message(p_message)
+    {
+    }
+    const char *Write::what() const noexcept
     {
         return m_error_message.c_str();
     }

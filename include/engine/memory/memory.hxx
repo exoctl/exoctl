@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <sys/mman.h>
 
 // clang-format off
 #define IS_NULL(ptr) (ptr == nullptr)
@@ -14,9 +15,10 @@ namespace engine::memory
     {
       public:
         Memory();
-        ~Memory();
+        ~Memory() = default;
 
-        static const void protection(void *, const size_t, const unsigned int);
-        static const int memfd(const char *, const unsigned int);
+        static const void protect(void *, const size_t, const unsigned int);
+        static const int fd(const char *, const unsigned int);
+        static void write(const int, const char *, const size_t);
     };
 } // namespace engine::memory

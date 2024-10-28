@@ -22,6 +22,16 @@ namespace engine
                         const char *what() const noexcept override;
                     };
 
+                    class Scan : public interface::IException
+                    {
+                      private:
+                        const std::string m_error_message;
+
+                      public:
+                        explicit Scan(const std::string &);
+                        const char *what() const noexcept override;
+                    };
+
                     class LoadRules : public interface::IException
                     {
                       private:

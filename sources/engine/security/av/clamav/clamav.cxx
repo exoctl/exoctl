@@ -2,6 +2,7 @@
 #include <engine/security/av/clamav/clamav.hxx>
 #include <engine/security/av/clamav/exception.hxx>
 #include <fmt/core.h>
+#include <include/engine/memory/exception.hxx>
 #include <memory.h>
 
 namespace engine
@@ -47,6 +48,23 @@ namespace engine
                     static_cast<struct clamav::record::Data *>(
                         alloca(sizeof(struct clamav::record::Data)));
 
+                int fd;
+
+                TRY_BEGIN()
+                    fd = memory::Memory::fd("tmp_", MFD_CLOEXEC);
+                    memory::Memory::write(fd, p_buffer.c_str(), p_buffer.size());
+                TRY_END()
+                CATCH(memory::exception::Fd, {
+                    throw clamav::exception::Scan(
+                        "scan_fast_bytes() : Scan falied, error : " +
+                        std::string(e.what()));
+                })
+                CATCH(memory::exception::Write, {
+                    throw clamav::exception::Scan(
+                        "scan_fast_bytes() : Scan falied, error : " +
+                        std::string(e.what()));
+                })
+
                 struct cl_scan_options scanopts =
                     (cl_scan_options){.general = p_options.dev,
                                       .parse = p_options.parse,
@@ -54,11 +72,8 @@ namespace engine
                                       .mail = p_options.mail,
                                       .dev = p_options.dev};
 
-                const cl_error_t ret = cl_scanfile(p_buffer.c_str(),
-                                                   &data->virname,
-                                                   nullptr,
-                                                   m_engine,
-                                                   &scanopts);
+                const cl_error_t ret = cl_scandesc(
+                    fd, nullptr, &data->virname, nullptr, m_engine, &scanopts);
 
                 (IS_NULL(data->virname)) ? data->virname = "" : data->virname;
 
