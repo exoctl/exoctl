@@ -1,4 +1,5 @@
 #include <engine/server/bridge/gateway/parser.hxx>
+#include <engine/server/bridge/gateway/websocket/responses/responses.hxx>
 
 namespace engine
 {
@@ -55,21 +56,25 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-
-                            m_parser_pe->parse_bytes(
-                                "/home/mob/Downloads/"
-                                "pe-Windows-x86-cmd", // TODO: edit to
-                                                      // p_buffer
-                                [&](focades::parser::binary::pe::record::DTO
-                                        *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_parser_pe->dto_json(p_dto)
+                            if (p_is_binary) {
+                                m_parser_pe->parse_bytes(
+                                    "/home/mob/Downloads/"
+                                    "pe-Windows-x86-cmd", // TODO: edit to
+                                                          // p_buffer
+                                    [&](focades::parser::binary::pe::record::DTO
+                                            *p_dto) {
+                                        p_context.broadcast_text(
+                                            &p_conn,
+                                            m_parser_pe->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                            } else {
+                                p_context.broadcast_text(
+                                    &p_conn,
+                                    gateway::websocket::responses::
+                                        UnsupportedData::to_json()
                                             .to_string());
-                                });
+                            }
                         });
                 });
             }
@@ -85,21 +90,25 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-
-                            m_parser_dex->parse_bytes(
-                                "/home/mob/Downloads/"
-                                "classes.dex", // TODO: edit to
-                                               // p_buffer
-                                [&](focades::parser::binary::dex::record::DTO
-                                        *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_parser_dex->dto_json(p_dto)
+                            if (p_is_binary) {
+                                m_parser_dex->parse_bytes(
+                                    "/home/mob/Downloads/"
+                                    "classes.dex", // TODO: edit to
+                                                   // p_buffer
+                                    [&](focades::parser::binary::dex::record::
+                                            DTO *p_dto) {
+                                        p_context.broadcast_text(
+                                            &p_conn,
+                                            m_parser_dex->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                            } else {
+                                p_context.broadcast_text(
+                                    &p_conn,
+                                    gateway::websocket::responses::
+                                        UnsupportedData::to_json()
                                             .to_string());
-                                });
+                            }
                         });
                 });
             }
@@ -115,18 +124,23 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-                            m_parser_elf->parse_bytes(
-                                "/usr/bin/ls", // TODO: edit to p_buffer
-                                [&](focades::parser::binary::elf::record::DTO
-                                        *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_parser_elf->dto_json(p_dto)
+                            if (p_is_binary) {
+                                m_parser_elf->parse_bytes(
+                                    "/usr/bin/ls", // TODO: edit to p_buffer
+                                    [&](focades::parser::binary::elf::record::
+                                            DTO *p_dto) {
+                                        p_context.broadcast_text(
+                                            &p_conn,
+                                            m_parser_elf->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                            } else {
+                                p_context.broadcast_text(
+                                    &p_conn,
+                                    gateway::websocket::responses::
+                                        UnsupportedData::to_json()
                                             .to_string());
-                                });
+                            }
                         });
                 });
             }
@@ -142,19 +156,24 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-                            m_parser_art->parse_bytes(
-                                "/home/mob/Downloads/"
-                                "art.art", // TODO: edit to p_buffer
-                                [&](focades::parser::binary::art::record::DTO
-                                        *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_parser_art->dto_json(p_dto)
+                            if (p_is_binary) {
+                                m_parser_art->parse_bytes(
+                                    "/home/mob/Downloads/"
+                                    "art.art", // TODO: edit to p_buffer
+                                    [&](focades::parser::binary::art::record::
+                                            DTO *p_dto) {
+                                        p_context.broadcast_text(
+                                            &p_conn,
+                                            m_parser_art->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                            } else {
+                                p_context.broadcast_text(
+                                    &p_conn,
+                                    gateway::websocket::responses::
+                                        UnsupportedData::to_json()
                                             .to_string());
-                                });
+                            }
                         });
                 });
             }
@@ -170,20 +189,25 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-                            m_parser_macho->parse_bytes(
-                                "/home/mob/Downloads/"
-                                "MachO-OSX-x64-ls", // TODO: edit to
-                                                    // p_buffer
-                                [&](focades::parser::binary::macho::record::DTO
-                                        *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_parser_macho->dto_json(p_dto)
+                            if (p_is_binary) {
+                                m_parser_macho->parse_bytes(
+                                    "/home/mob/Downloads/"
+                                    "MachO-OSX-x64-ls", // TODO: edit to
+                                                        // p_buffer
+                                    [&](focades::parser::binary::macho::record::
+                                            DTO *p_dto) {
+                                        p_context.broadcast_text(
+                                            &p_conn,
+                                            m_parser_macho->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                            } else {
+                                p_context.broadcast_text(
+                                    &p_conn,
+                                    gateway::websocket::responses::
+                                        UnsupportedData::to_json()
                                             .to_string());
-                                });
+                            }
                         });
                 });
             }

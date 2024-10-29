@@ -54,7 +54,7 @@ namespace engine::server::bridge::gateway::websocket::responses
 
     const std::string UnsupportedData::_status() const
     {
-        return "unsupporteddata";
+        return "unsupported_data";
     }
 
     const std::string UnsupportedData::_message() const
@@ -80,12 +80,12 @@ namespace engine::server::bridge::gateway::websocket::responses
 
     const std::string InvalidTokenJWT::_status() const
     {
-        return "invalidtokenjwt";
+        return "invalid_token_jwt";
     }
 
     const std::string InvalidTokenJWT::_message() const
     {
-        return "Invalid ";
+        return "Token is not valid";
     }
 
 } // namespace engine::server::bridge::gateway::websocket::responses
