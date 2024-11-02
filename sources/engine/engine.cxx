@@ -1,7 +1,7 @@
-#include <engine/server/exception.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/memory/memory.hxx>
+#include <engine/server/exception.hxx>
 
 namespace engine
 {
@@ -11,10 +11,6 @@ namespace engine
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_lief_log(p_configuration, p_log)
-    {
-    }
-
-    Engine::~Engine()
     {
     }
 

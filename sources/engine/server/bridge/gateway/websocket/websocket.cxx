@@ -101,9 +101,9 @@ namespace engine
 
                     LOG(m_server.get_log(),
                         info,
-                        "Connection opened {} from IP: {}",
+                        "Connection opened {} from IP: '{}',  SubProtocol : '{}'",
                         m_url,
-                        m_context.get_remote_ip(p_conn));
+                        m_context.get_remote_ip(p_conn), m_context.get_subprotocol(p_conn));
                 }
 
                 bool WebSocket::def_accept_connection(

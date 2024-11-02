@@ -59,6 +59,14 @@ namespace engine
                                    : "";
                     }
 
+                    const std::string Context::get_subprotocol(
+                        crow::websocket::connection *p_conn) const
+                    {
+                        return (m_context.find(p_conn) != m_context.end())
+                                   ? p_conn->get_subprotocol()
+                                   : "";
+                    }
+
                     const void Context::close(
                         crow::websocket::connection *p_conn,
                         uint16_t p_code,

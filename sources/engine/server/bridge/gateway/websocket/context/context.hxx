@@ -33,13 +33,10 @@ namespace engine
                         void broadcast_binary(crow::websocket::connection *,
                                               const std::string) const;
 
-                        /**
-                         * @brief return what ip connected
-                         *
-                         * @return const std::string
-                         * @return nullptr
-                         */
                         const std::string get_remote_ip(
+                            crow::websocket::connection *) const;
+
+                        const std::string get_subprotocol(
                             crow::websocket::connection *) const;
 
                       private:

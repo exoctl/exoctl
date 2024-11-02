@@ -24,7 +24,7 @@ namespace engine
 
       public:
         Engine(configuration::Configuration &, logging::Logging &);
-        ~Engine();
+        ~Engine() = default;
 
         [[nodiscard]] const std::string &get_bindaddr();
         [[nodiscard]] const uint16_t &get_port();
