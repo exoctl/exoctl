@@ -4,11 +4,17 @@
 #include <engine/engine.hxx>
 #include <engine/logging.hxx>
 
+
 namespace program
 {
     namespace sections
     {
         using init_array = void (*)();
+    }
+
+    namespace config 
+    {
+      static inline std::string config_engine = "config/engine/engine.conf";  
     }
 
     class Program

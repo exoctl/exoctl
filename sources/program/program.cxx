@@ -2,10 +2,11 @@
 #include <engine/exception.hxx>
 #include <program/program.hxx>
 
+
 namespace program
 {
     Program::Program(int p_argc, const char **p_argv)
-        : m_argc(p_argc), m_argv(p_argv), m_config("config/engine.conf"),
+        : m_argc(p_argc), m_argv(p_argv), m_config(config::config_engine),
           m_log(m_config)
     {
         TRY_BEGIN()
