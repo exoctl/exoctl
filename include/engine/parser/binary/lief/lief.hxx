@@ -31,8 +31,9 @@ namespace engine::parser::binary
             const std::function<void(std::unique_ptr<const BinaryType>)>
                 &p_callback)
         {
+            std::vector<uint8_t> raw(p_buffer.begin(), p_buffer.end());
             auto binary = ParserType::parse(
-                reinterpret_cast<const std::vector<uint8_t> &>(p_buffer));
+                raw);
             if (binary) {
                 p_callback(std::move(binary));
             }

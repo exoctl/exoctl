@@ -58,9 +58,7 @@ namespace engine
                             bool p_is_binary) {
                             if (p_is_binary) {
                                 m_parser_pe->parse_bytes(
-                                    "/home/mob/Downloads/"
-                                    "pe-Windows-x86-cmd", // TODO: edit to
-                                                          // p_buffer
+                                    p_data,
                                     [&](focades::parser::binary::pe::record::DTO
                                             *p_dto) {
                                         p_context.broadcast_text(
@@ -92,9 +90,7 @@ namespace engine
                             bool p_is_binary) {
                             if (p_is_binary) {
                                 m_parser_dex->parse_bytes(
-                                    "/home/mob/Downloads/"
-                                    "classes.dex", // TODO: edit to
-                                                   // p_buffer
+                                    p_data,
                                     [&](focades::parser::binary::dex::record::
                                             DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -126,7 +122,7 @@ namespace engine
                             bool p_is_binary) {
                             if (p_is_binary) {
                                 m_parser_elf->parse_bytes(
-                                    "/usr/bin/ls", // TODO: edit to p_buffer
+                                    p_data,
                                     [&](focades::parser::binary::elf::record::
                                             DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -158,8 +154,7 @@ namespace engine
                             bool p_is_binary) {
                             if (p_is_binary) {
                                 m_parser_art->parse_bytes(
-                                    "/home/mob/Downloads/"
-                                    "art.art", // TODO: edit to p_buffer
+                                    p_data, 
                                     [&](focades::parser::binary::art::record::
                                             DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -191,9 +186,7 @@ namespace engine
                             bool p_is_binary) {
                             if (p_is_binary) {
                                 m_parser_macho->parse_bytes(
-                                    "/home/mob/Downloads/"
-                                    "MachO-OSX-x64-ls", // TODO: edit to
-                                                        // p_buffer
+                                    p_data,
                                     [&](focades::parser::binary::macho::record::
                                             DTO *p_dto) {
                                         p_context.broadcast_text(

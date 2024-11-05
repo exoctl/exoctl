@@ -22,7 +22,7 @@ namespace engine
                     const std::function<void(binary::dex::record::DTO *)>
                         &p_callback)
                 {
-                    m_dex.parse_file(
+                    m_dex.parse_bytes(
                         p_buffer,
                         [&](std::unique_ptr<const LIEF::DEX::File> p_dex) {
                             if (p_dex) {

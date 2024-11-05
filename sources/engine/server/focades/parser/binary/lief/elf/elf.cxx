@@ -22,7 +22,7 @@ namespace engine
                     const std::function<void(binary::elf::record::DTO *)>
                         &p_callback)
                 {
-                    m_elf.parse_file(
+                    m_elf.parse_bytes(
                         p_buffer,
                         [&](std::unique_ptr<const LIEF::ELF::Binary> p_elf) {
                             if (p_elf) {

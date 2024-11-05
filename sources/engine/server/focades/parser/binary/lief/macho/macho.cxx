@@ -23,8 +23,7 @@ namespace engine
                     const std::function<void(binary::macho::record::DTO *)>
                         &p_callback)
                 {
-                    // TODO: edit to parser_buffer
-                    m_macho.parse_file(
+                    m_macho.parse_bytes(
                         p_buffer,
                         [&](std::unique_ptr<const LIEF::MachO::FatBinary>
                                 p_macho) {

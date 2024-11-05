@@ -22,7 +22,7 @@ namespace engine
                     const std::function<void(binary::art::record::DTO *)>
                         &p_callback)
                 {
-                    m_art.parse_file(
+                    m_art.parse_bytes(
                         p_buffer,
                         [&](std::unique_ptr<const LIEF::ART::File> p_art) {
                             if (p_art) {
