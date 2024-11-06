@@ -87,7 +87,6 @@ namespace engine
                 memory::Memory::close(fd);
 
                 data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
-
                 data->math_status = [ret]() {
                     switch (ret) {
                         case CL_VIRUS:
