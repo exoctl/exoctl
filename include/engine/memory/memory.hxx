@@ -19,6 +19,7 @@ namespace engine::memory
 
         static const void protect(void *, const size_t, const unsigned int);
         static const int fd(const char *, const unsigned int);
+        static void ftruncate(const int, const size_t);
         static void write(const int, const char *, const size_t);
         static void close(const int);
     };

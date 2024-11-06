@@ -29,9 +29,18 @@ namespace engine::memory
         return fd;
     }
 
+    void Memory::ftruncate(const int p_fd, const size_t p_size)
+    {
+        const int ret = ::ftruncate(p_fd, p_size);
+        if (ret < 0) {
+            throw exception::Ftruncate("ftruncate() failed: " +
+                                std::string(strerror(errno)));
+        }
+    }
+
     void Memory::write(const int p_fd, const char *p_data, const size_t p_size)
     {
-        if (::write(p_fd, p_data, p_size) == -1)
+        if (::write(p_fd, p_data, p_size) < 0)
             throw exception::Write("write() failed: " +
                                    std::string(strerror(errno)));
     }

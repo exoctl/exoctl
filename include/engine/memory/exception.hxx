@@ -24,6 +24,17 @@ namespace engine::memory::exception
         const char *what() const noexcept override;
     };
 
+    class Ftruncate : public interface::IException
+    {
+      private:
+        const std::string m_error_message;
+
+      public:
+        explicit Ftruncate(const std::string &);
+        const char *what() const noexcept override;
+    };
+
+
     class Write : public interface::IException
     {
       private:

@@ -18,6 +18,14 @@ namespace engine::memory::exception
         return m_error_message.c_str();
     }
 
+    Ftruncate::Ftruncate(const std::string &p_message) : m_error_message(p_message)
+    {
+    }
+    const char *Ftruncate::what() const noexcept
+    {
+        return m_error_message.c_str();
+    }
+
     Write::Write(const std::string &p_message) : m_error_message(p_message)
     {
     }

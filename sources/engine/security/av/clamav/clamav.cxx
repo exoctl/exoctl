@@ -4,6 +4,9 @@
 #include <fmt/core.h>
 #include <include/engine/memory/exception.hxx>
 #include <memory.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 
 namespace engine
 {
@@ -51,7 +54,8 @@ namespace engine
                 int fd;
 
                 TRY_BEGIN()
-                fd = memory::Memory::fd("tmp_", MFD_CLOEXEC);
+                fd = memory::Memory::fd("tmp_", MFD_ALLOW_SEALING);
+                memory::Memory::ftruncate(fd, p_buffer.size());
                 memory::Memory::write(fd, p_buffer.c_str(), p_buffer.size());
                 TRY_END()
                 CATCH(memory::exception::Fd, {
@@ -63,18 +67,23 @@ namespace engine
                     throw clamav::exception::Scan(
                         "scan_fast_bytes() : Scan falied, error : " +
                         std::string(e.what()));
-                })
+                })CATCH(memory::exception::Ftruncate, {
+                    throw clamav::exception::Scan(
+                        "scan_fast_bytes() : Scan falied, error : " +
+                        std::string(e.what()));
 
+                })
+                
+                data->virname = nullptr;
                 struct cl_scan_options scanopts =
                     (cl_scan_options){.general = p_options.dev,
                                       .parse = p_options.parse,
                                       .heuristic = p_options.heuristic,
                                       .mail = p_options.mail,
                                       .dev = p_options.dev};
-
                 const cl_error_t ret = cl_scandesc(
-                    fd, nullptr, &data->virname, nullptr, m_engine, &scanopts);
-
+                    fd, "tmp_", &data->virname, nullptr, m_engine, &scanopts);
+                
                 memory::Memory::close(fd);
 
                 data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
