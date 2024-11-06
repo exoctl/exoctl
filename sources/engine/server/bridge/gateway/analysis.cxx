@@ -36,14 +36,11 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
                             parser::Json json;
                             parser::Json av;
 
                             m_scan_yara->scan_fast_bytes(
-                                data,
+                                p_data,
                                 [&](focades::analysis::scan::yara::record::DTO
                                         *p_dto) {
                                     json.add_member_json(
@@ -51,7 +48,7 @@ namespace engine
                                 });
 
                             m_scan_av_clamav->scan_fast_bytes(
-                                "/usr/bin/ls",
+                                p_data,
                                 [&](focades::analysis::scan::av::clamav::
                                         record::DTO *p_dto) {
                                     av.add_member_json(
@@ -77,11 +74,8 @@ namespace engine
                                 crow::websocket::connection &p_conn,
                                 const std::string &p_data,
                                 bool p_is_binary) {
-                                const std::string &data =
-                                    crow::utility::base64decode(p_data,
-                                                                p_data.size());
                                 m_scan_av_clamav->scan_fast_bytes(
-                                    data,
+                                    p_data,
                                     [&](focades::analysis::scan::av::clamav::
                                             record::DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -104,12 +98,8 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-                            const std::string &data =
-                                crow::utility::base64decode(p_data,
-                                                            p_data.size());
-
                             m_scan_yara->scan_fast_bytes(
-                                data,
+                                p_data,
                                 [&](focades::analysis::scan::yara::record::DTO
                                         *p_dto) {
                                     p_context.broadcast_text(
