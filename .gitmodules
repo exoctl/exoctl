@@ -30,4 +30,4 @@
 	url = https://github.com/Thalhammer/jwt-cpp.git
 [submodule "libraries/lief"]
 	path = libraries/lief
-	url = git@github.com:maldeclabs/lief.git
+	url = https://github.com/lief-project/LIEF.git
