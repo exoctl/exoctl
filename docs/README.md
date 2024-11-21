@@ -20,7 +20,7 @@ sudo pacman -S asio yara libpqxx sqlite
 
 ### **How to Build and Run**  
 ```bash
-git clone --recurse-submodules git@gitlab.com:maldec-labs/malware-analysis/Engine.git
+git clone --recurse-submodules git@github.com:maldeclabs/engine.git 
 git lfs pull
 mkdir build
 cd build
