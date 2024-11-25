@@ -4,6 +4,7 @@
 [submodule "libraries/spdlog"]
 	path = libraries/spdlog
 	url = https://github.com/gabime/spdlog.git
+  branch = 16e0d2e7
 [submodule "libraries/benchmark"]
 	path = libraries/benchmark
 	url = https://github.com/google/benchmark.git
