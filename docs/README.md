@@ -13,7 +13,7 @@ sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev
 
 #### **Arch-based**  
 ```bash
-sudo pacman -S asio yara libpqxx sqlite
+sudo pacman -S asio yara libpqxx sqlite clamav
 ```
 
 ---
