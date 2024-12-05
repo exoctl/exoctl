@@ -1,11 +1,11 @@
 #include <engine/configuration/exception.hxx>
 #include <engine/exception.hxx>
-#include <program/program.hxx>
+#include <application/application.hxx>
 
 
-namespace program
+namespace application
 {
-    Program::Program(int p_argc, const char **p_argv)
+    Application::Application(int p_argc, const char **p_argv)
         : m_argc(p_argc), m_argv(p_argv), m_config(config::config_engine),
           m_log(m_config)
     {
@@ -22,15 +22,15 @@ namespace program
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
     }
 
-    Program::~Program()
+    Application::~Application()
     {
     }
 
-    void Program::init_array()
+    void Application::init_array()
     {
     }
 
-    const int Program::run()
+    const int Application::run()
     {
         {
             LOG(m_log, debug, "Name        : {}", m_config.get_project().name);
@@ -75,5 +75,5 @@ namespace program
 } // namespace program
 
 // section .init_array for implement DRM
-[[gnu::section(".init_array")]] program::sections::init_array init =
-    &program::ProgramEntry::invoke;
+[[gnu::section(".init_array")]] application::sections::init_array init =
+    &application::ProgramEntry::invoke;

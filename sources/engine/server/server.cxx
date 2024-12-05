@@ -11,10 +11,6 @@ namespace engine
         {
         }
 
-        Server::~Server()
-        {
-        }
-
         void Server::run()
         {
             m_app

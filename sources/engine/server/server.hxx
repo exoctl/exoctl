@@ -27,7 +27,7 @@ namespace engine
 
           public:
             Server(configuration::Configuration &, logging::Logging &);
-            ~Server();
+            ~Server() = default;
 
             App &get();
             const uint16_t get_concurrency();

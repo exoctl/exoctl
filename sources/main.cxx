@@ -1,4 +1,4 @@
-#include <program/program.hxx>
+#include <application/application.hxx>
 
 int main(int argc, char *argv[])
 {
@@ -9,6 +9,6 @@ int main(int argc, char *argv[])
                                     // branco
         "\033[35m     o_(\")(\")        \033[0m\033[37m(\")(\")\n\033[0m");
 
-    program::Program program(argc, (const char **) argv);
-    return program.run();
+    application::Application application(argc, (const char **) argv);
+    return application.run();
 }

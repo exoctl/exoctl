@@ -5,7 +5,7 @@
 #include <engine/logging.hxx>
 
 
-namespace program
+namespace application
 {
     namespace sections
     {
@@ -17,11 +17,11 @@ namespace program
       static inline std::string config_engine = "config/engine/engine.conf";  
     }
 
-    class Program
+    class Application
     {
       public:
-        Program(int = 0, const char ** = nullptr);
-        ~Program();
+        Application(int = 0, const char ** = nullptr);
+        ~Application();
         [[nodiscard]] const int run();
 
       protected:
@@ -39,7 +39,7 @@ namespace program
     struct ProgramEntry {
         static void invoke()
         {
-            Program::init_array();
+            Application::init_array();
         }
     };
-} // namespace program
+} // namespace application
