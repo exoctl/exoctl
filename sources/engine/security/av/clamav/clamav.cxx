@@ -84,7 +84,6 @@ namespace engine
                 const cl_error_t ret = cl_scandesc(
                     fd, "tmp_", &data->virname, nullptr, m_engine, &scanopts);
                 
-                memory::Memory::close(fd);
 
                 data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
                 data->math_status = [ret]() {
@@ -101,6 +100,8 @@ namespace engine
                 if (!IS_NULL(p_callback)) {
                     p_callback(data);
                 }
+                
+                memory::Memory::close(fd);
             }
 
             void Clamav::load_rules(const std::function<void()> &p_callback)

@@ -11,6 +11,7 @@ include_directories(
     ../libraries/lief/include
     ../libraries/capstone-engine/include/
     ../libraries/signatures/include
+    ../libraries/llama/include/
 )
 
 file(GLOB_RECURSE SOURCES
@@ -79,3 +80,4 @@ add_subdirectory(../libraries/lief ${CMAKE_BINARY_DIR}/libraries/lief)
 add_subdirectory(../libraries/signatures ${CMAKE_BINARY_DIR}/libraries/signatures)
 add_subdirectory(../libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson )
 add_subdirectory(../libraries/jwt ${CMAKE_BINARY_DIR}/libraries/jwt )
+add_subdirectory( ../libraries/llama/ ${CMAKE_BINARY_DIR}/libraries/llama )

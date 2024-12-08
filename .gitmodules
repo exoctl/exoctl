@@ -32,3 +32,6 @@
 [submodule "libraries/lief"]
 	path = libraries/lief
 	url = git@github.com:maldeclabs/lief.git
+[submodule "libraries/llama"]
+	path = libraries/llama
+	url = https://github.com/ggerganov/llama.cpp.git
