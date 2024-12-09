@@ -16,6 +16,9 @@ bool Llama::load_model(const std::string &path, llama_model_params p_params)
 
 bool Llama::load_context(llama_context_params p_params)
 {
+    if (!m_model)
+        return false;
+    
     m_context = llama_new_context_with_model(m_model, p_params);
 
     if (!m_context)
