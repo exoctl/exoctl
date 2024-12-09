@@ -12,6 +12,7 @@ include_directories(
     ../libraries/capstone-engine/include/
     ../libraries/signatures/include
     ../libraries/llama/include/
+    ../libraries/llama/ggml/include
 )
 
 file(GLOB_RECURSE SOURCES
