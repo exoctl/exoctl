@@ -1,5 +1,5 @@
 ## 📄 **API Documentation**  
-### Malware Detection Engine – MalDec Labs  
+### Malware Detection Engine Skull
 
 This API provides WebSocket-based endpoints for scanning data, binary analysis, metadata extraction, and disassembly. It ensures real-time communication with high efficiency and low latency.  
 

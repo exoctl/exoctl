@@ -1,14 +1,42 @@
 #include <application/application.hxx>
+#include <fmt/core.h>
+
+void asscii_banner(void);
 
 int main(int argc, char *argv[])
 {
-    fmt::print(
-        "\033[35m     (\\(\\            \033[0m\033[37m(\\__/)\n"
-        "\033[35m     ( -.-) - \033[36myes...\033[0m \033[37m(o.o )\033[32m - "
-        "engine fast as a bunny!\n" // Texto em ciano e partes do coelho em
-                                    // branco
-        "\033[35m     o_(\")(\")        \033[0m\033[37m(\")(\")\n\033[0m");
+    asscii_banner();
 
     application::Application application(argc, (const char **) argv);
     return application.run();
+}
+
+void asscii_banner(void)
+{
+    fmt::print("                                        \n"
+               "                   ..                   \n"
+               "              .-=*###*=:                \n"
+               "             -#@@@@@@@@%*:              \n"
+               "           .*@@%%%%%%%%%@%=             \n"
+               "          .+@%%%%%%%%%%%%@@=            \n"
+               "          -@%%%%%%%%%%%%%%@%.           \n"
+               "         .#@%%@@%%%%%%%@@%%@+           \n"
+               "         :%%@@#%@%%%%@@#%@%@#.          \n"
+               "         =@@%=..*@%%%%=.:+%@%:          \n"
+               "         *@*.   .%@%@*    -%@-          \n"
+               "         ##.    .#@%@=     =%+          \n"
+               "         :.     .#@@@+      ::          \n"
+               "                :%#+@*                  \n"
+               "                +@= #%:                 \n"
+               "           .:-=*@%. -@%+=-:.            \n"
+               "         :*%%@@@@+  .#@@@@%#=.          \n"
+               "        .#@@%%%%%:   =@%%%@@@=          \n"
+               "        .%@%%%%@%.   -@%%%%%@*          \n"
+               "        .%@%%%%@%:.:.=@%%%%%@*          \n"
+               "        .#@%%@%%@##%#%%%@@%%@+          \n"
+               "         *@@%%@@%@@@@%%@%%@@@-          \n"
+               "         -#+:.-#@%%@%%@+.:=**.          \n"
+               "               +@@%%@@%.                \n"
+               "               -@%-.=@#                 \n"
+               "               .*-   ++                 \n");
 }
