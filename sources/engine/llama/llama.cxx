@@ -1,28 +1,87 @@
+#include <engine/llama/exception.hxx>
 #include <engine/llama/llama.hxx>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
-Llama::Llama()
+namespace engine
 {
-}
+    Llama::Llama()
+    {
+    }
 
-bool Llama::load_model(const std::string &path, llama_model_params p_params)
-{
-    m_model = llama_load_model_from_file(path.c_str(), p_params);
+    bool Llama::load_model(const std::string &path, llama_model_params p_params)
+    {
+        m_model = llama_load_model_from_file(path.c_str(), p_params);
 
-    if (!m_model)
-        return false;
+        if (!m_model) {
+            return false;
+        }
 
-    return true;
-}
+        return true;
+    }
 
-bool Llama::load_context(llama_context_params p_params)
-{
-    if (!m_model)
-        return false;
-    
-    m_context = llama_new_context_with_model(m_model, p_params);
+    bool Llama::load_context(llama_context_params p_params)
+    {
+        if (!m_model) {
+            return false;
+        }
 
-    if (!m_context)
-        return false;
+        m_context = llama_new_context_with_model(m_model, p_params);
 
-    return true;
-}
+        if (!m_context) {
+            return false;
+        }
+
+        return true;
+    }
+
+    const std::string Llama::generate_text(const std::string &p_prompt,
+                                           int max_tokens)
+    {
+        if (!m_model) {
+            throw llama::exception::GenerateMessage(
+                "Model is not initialized.");
+        }
+
+        if (!m_context) {
+            throw llama::exception::GenerateMessage(
+                "Context is not initialized.");
+        }
+
+        int n_prompt = llama_tokenize(
+            m_model, p_prompt.c_str(), p_prompt.size(), nullptr, 0, true, true);
+        
+        if (n_prompt <= 0) {
+            throw llama::exception::GenerateMessage(
+                "Failed to tokenize prompt.");
+        }
+
+        std::vector<llama_token> prompt_tokens(n_prompt);
+        n_prompt = llama_tokenize(m_model,
+                                  p_prompt.c_str(),
+                                  p_prompt.size(),
+                                  prompt_tokens.data(),
+                                  n_prompt,
+                                  true,
+                                  true);
+
+        if (n_prompt <= 0) {
+            throw llama::exception::GenerateMessage(
+                "Error during prompt tokenization.");
+        }
+
+        return "";
+    }
+
+    Llama::~Llama()
+    {
+        if (m_context) {
+            llama_free(m_context);
+        }
+        if (m_model) {
+            llama_free_model(m_model);
+        }
+    }
+
+} // namespace engine

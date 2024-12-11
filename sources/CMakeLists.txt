@@ -34,6 +34,7 @@ target_link_libraries(engine PUBLIC
     Crow::Crow 
     yara 
     spdlog::spdlog 
+    llama
     sqlite3
     fmt
     LIEF::LIEF

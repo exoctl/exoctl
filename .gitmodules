@@ -35,3 +35,6 @@
 [submodule "libraries/llama"]
 	path = libraries/llama
 	url = https://github.com/ggerganov/llama.cpp.git
+[submodule "libraries/tree-sitter-c"]
+	path = libraries/tree-sitter-c
+	url = https://github.com/tree-sitter/tree-sitter-c.git
