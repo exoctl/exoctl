@@ -11,7 +11,6 @@
 
 namespace engine::logging
 {
-
     Logging::Logging(configuration::Configuration &config) : m_config(config)
     {
     }
