@@ -23,7 +23,7 @@ namespace engine
             const record::sig::Sig &get_sig() const;
             const record::server::Server &get() const;
             const record::lief::Lief &get_lief() const;
-
+            const record::decompiler::Decompiler &get_decompiler();
 
           private:
             const std::string m_path_config;
@@ -37,6 +37,7 @@ namespace engine
             record::logging::Logging m_logging;
             record::sig::Sig m_sig;
             record::server::Server m_server;
+            record::decompiler::Decompiler m_decompiler;
 
             void load_cache();
             void load_av_clamav();
@@ -46,6 +47,7 @@ namespace engine
             void load_yara();
             void load_logging();
             void load_lief();
+            void load_decompiler();
         };
     } // namespace configuration
 } // namespace engine

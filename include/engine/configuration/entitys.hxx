@@ -9,6 +9,16 @@ namespace engine
     {
         namespace record
         {
+            namespace decompiler
+            {
+                struct Llama {
+                    std::string model;
+                };
+                typedef struct Decompiler {
+                    Llama llama;
+                } Decompiler;
+            } // namespace decompiler
+
             typedef struct Project {
                 std::string name;
                 std::string version;

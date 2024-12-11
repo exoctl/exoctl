@@ -23,6 +23,7 @@ namespace engine
             Configuration::load_logging();
             Configuration::load_av_clamav();
             Configuration::load_lief();
+            Configuration::load_decompiler();
             TRY_END()
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
@@ -76,6 +77,11 @@ namespace engine
             return m_lief;
         }
 
+        const record::decompiler::Decompiler &Configuration::get_decompiler()
+        {
+            return m_decompiler;
+        }
+
         void Configuration::load_cache()
         {
             m_cache =
@@ -96,6 +102,15 @@ namespace engine
                                                ["default_path"]
                                      .value<std::string>()
                                      .value()}};
+        }
+
+        void Configuration::load_decompiler()
+        {
+            m_decompiler = (record::decompiler::Decompiler){
+                .llama = {.model =
+                              m_toml.get_tbl()["decompiler"]["llama"]["model"]
+                                  .value<std::string>()
+                                  .value()}};
         }
 
         void Configuration::load_project()
@@ -127,10 +142,9 @@ namespace engine
         void Configuration::load_server()
         {
             m_server = (record::server::Server){
-                .log = {.level =
-                            m_toml.get_tbl()["server"]["_"]["log"]["level"]
-                                .value<int>()
-                                .value(),
+                .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
+                                     .value<int>()
+                                     .value(),
                         .name = m_toml.get_tbl()["server"]["_"]["log"]["name"]
                                     .value<std::string>()
                                     .value()},
@@ -144,8 +158,7 @@ namespace engine
                                .value<std::uint16_t>()
                                .value(),
                 .ssl_certificate_path =
-                    m_toml
-                        .get_tbl()["server"]["ssl_certificate_path"]
+                    m_toml.get_tbl()["server"]["ssl_certificate_path"]
                         .value<std::string>()
                         .value(),
             };
