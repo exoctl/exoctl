@@ -8,12 +8,18 @@ namespace engine
 {
     Llama::Llama()
     {
+        ggml_backend_load_all();
     }
 
-    bool Llama::load_model(const std::string &path, llama_model_params p_params)
+    const bool Llama::load_model(const char *p_path, ...)
     {
-        m_model = llama_load_model_from_file(path.c_str(), p_params);
+        va_list ap;
+        va_start(ap, p_path);
+        m_model =
+            llama_load_model_from_file(p_path, va_arg(ap, llama_model_params));
 
+        va_end(ap);
+        
         if (!m_model) {
             return false;
         }
@@ -51,7 +57,7 @@ namespace engine
 
         int n_prompt = llama_tokenize(
             m_model, p_prompt.c_str(), p_prompt.size(), nullptr, 0, true, true);
-        
+
         if (n_prompt <= 0) {
             throw llama::exception::GenerateMessage(
                 "Failed to tokenize prompt.");

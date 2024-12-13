@@ -2,16 +2,18 @@
 
 #include <llama.h>
 #include <string>
+#include <engine/interfaces/iai.hxx>
+#include <engine/valist.hxx>
 
 namespace engine
 {
-    class Llama
+    class Llama : public interface::IAi
     {
       public:
         Llama();
         ~Llama();
 
-        bool load_model(const std::string &, llama_model_params);
+        const bool load_model(const char *p_path, ...) override;
         bool load_context(llama_context_params);
         const std::string generate_text(const std::string &, int);
 
