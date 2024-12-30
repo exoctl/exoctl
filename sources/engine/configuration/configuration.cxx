@@ -23,6 +23,7 @@ namespace engine
             Configuration::load_logging();
             Configuration::load_av_clamav();
             Configuration::load_lief();
+            Configuration::load_llama();
             Configuration::load_decompiler();
             TRY_END()
             CATCH(std::exception, { throw exception::Load(e.what()); });
@@ -75,6 +76,11 @@ namespace engine
         const record::lief::Lief &Configuration::get_lief() const
         {
             return m_lief;
+        }
+
+        const record::llama::Llama &Configuration::get_llama() const
+        {
+            return m_llama;
         }
 
         const record::decompiler::Decompiler &Configuration::get_decompiler()
@@ -239,5 +245,17 @@ namespace engine
                                  .value<std::string>()
                                  .value()}};
         }
+
+        void Configuration::load_llama()
+        {
+            m_llama = (record::llama::Llama){
+                .log{.level = m_toml.get_tbl()["llama"]["_"]["log"]["level"]
+                                  .value<int>()
+                                  .value(),
+                     .name = m_toml.get_tbl()["llama"]["_"]["log"]["name"]
+                                 .value<std::string>()
+                                 .value()}};
+        }
+
     } // namespace configuration
 } // namespace engine

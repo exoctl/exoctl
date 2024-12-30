@@ -6,6 +6,7 @@
 #include <engine/server/server.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/binary/lief/_/log.hxx>
+#include <engine/llama/_/log.hxx>
 #include <engine/parser/toml.hxx>
 #include <functional>
 
@@ -20,6 +21,8 @@ namespace engine
         server::Server m_server;
         server::Bridge m_server_bridge;
         server::_::Log m_server_log;
+        
+        llama::_::Log m_llama_log;
         parser::binary::lief::_::Log m_lief_log;
 
       public:

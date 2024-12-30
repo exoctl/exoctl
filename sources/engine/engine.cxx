@@ -10,6 +10,7 @@ namespace engine
         : m_configuration(p_configuration), m_log(p_log),
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
+          m_llama_log(p_configuration, p_log),
           m_lief_log(p_configuration, p_log)
     {
     }

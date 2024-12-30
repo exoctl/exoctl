@@ -1,5 +1,6 @@
 #include <engine/llama/exception.hxx>
 #include <engine/llama/llama.hxx>
+#include <llama/common/log.h>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -8,7 +9,6 @@ namespace engine
 {
     Llama::Llama()
     {
-        ggml_backend_load_all();
     }
 
     const bool Llama::load_model(const char *p_path, ...)
@@ -19,7 +19,7 @@ namespace engine
             llama_load_model_from_file(p_path, va_arg(ap, llama_model_params));
 
         va_end(ap);
-        
+
         if (!m_model) {
             return false;
         }

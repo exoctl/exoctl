@@ -9,6 +9,8 @@ namespace engine
     {
         namespace record
         {
+
+
             namespace decompiler
             {
                 struct Llama {
@@ -42,6 +44,24 @@ namespace engine
                 typedef struct Lief {
                     _::Log::Log log;
                 } Lief;
+            } // namespace lief
+
+             namespace llama
+            {
+                namespace _
+                {
+                    namespace Log
+                    {
+                        struct Log {
+                            int level;
+                            std::string name;
+                        };
+                    } // namespace Log
+                } // namespace _
+
+                typedef struct Llama {
+                    _::Log::Log log;
+                } Llama;
             } // namespace lief
 
             namespace yara
