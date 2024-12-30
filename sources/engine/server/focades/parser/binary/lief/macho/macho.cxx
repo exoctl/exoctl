@@ -1,6 +1,7 @@
-#include <engine/server/focades/parser/binary/lief/macho/macho.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json.hxx>
+#include <engine/server/focades/parser/binary/lief/macho/macho.hxx>
+#include <engine/parser/binary/lief/exception.hxx>
 
 namespace engine
 {
@@ -17,7 +18,7 @@ namespace engine
                 MACHO::~MACHO()
                 {
                 }
-                
+
                 void MACHO::parse_bytes(
                     const std::string &p_buffer,
                     const std::function<void(binary::macho::record::DTO *)>

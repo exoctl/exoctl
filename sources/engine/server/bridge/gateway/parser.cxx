@@ -57,6 +57,7 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             if (p_is_binary) {
+                                TRY_BEGIN()
                                 m_parser_pe->parse_bytes(
                                     p_data,
                                     [&](focades::parser::binary::pe::record::DTO
@@ -66,6 +67,16 @@ namespace engine
                                             m_parser_pe->dto_json(p_dto)
                                                 .to_string());
                                     });
+                                TRY_END()
+                                CATCH(engine::parser::binary::lief::exception::
+                                          Parser,
+                                      {
+                                          p_context.broadcast_text(
+                                              &p_conn,
+                                              gateway::websocket::responses::
+                                                  BadRequests::to_json()
+                                                      .to_string());
+                                      })
                             } else {
                                 p_context.broadcast_text(
                                     &p_conn,
@@ -89,6 +100,7 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             if (p_is_binary) {
+                                TRY_BEGIN()
                                 m_parser_dex->parse_bytes(
                                     p_data,
                                     [&](focades::parser::binary::dex::record::
@@ -98,6 +110,16 @@ namespace engine
                                             m_parser_dex->dto_json(p_dto)
                                                 .to_string());
                                     });
+                                TRY_END()
+                                CATCH(engine::parser::binary::lief::exception::
+                                          Parser,
+                                      {
+                                          p_context.broadcast_text(
+                                              &p_conn,
+                                              gateway::websocket::responses::
+                                                  BadRequests::to_json()
+                                                      .to_string());
+                                      })
                             } else {
                                 p_context.broadcast_text(
                                     &p_conn,
@@ -121,6 +143,7 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             if (p_is_binary) {
+                                TRY_BEGIN()
                                 m_parser_elf->parse_bytes(
                                     p_data,
                                     [&](focades::parser::binary::elf::record::
@@ -130,6 +153,16 @@ namespace engine
                                             m_parser_elf->dto_json(p_dto)
                                                 .to_string());
                                     });
+                                TRY_END()
+                                CATCH(engine::parser::binary::lief::exception::
+                                          Parser,
+                                      {
+                                          p_context.broadcast_text(
+                                              &p_conn,
+                                              gateway::websocket::responses::
+                                                  BadRequests::to_json()
+                                                      .to_string());
+                                      })
                             } else {
                                 p_context.broadcast_text(
                                     &p_conn,
@@ -153,8 +186,9 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             if (p_is_binary) {
+                                TRY_BEGIN()
                                 m_parser_art->parse_bytes(
-                                    p_data, 
+                                    p_data,
                                     [&](focades::parser::binary::art::record::
                                             DTO *p_dto) {
                                         p_context.broadcast_text(
@@ -162,6 +196,16 @@ namespace engine
                                             m_parser_art->dto_json(p_dto)
                                                 .to_string());
                                     });
+                                TRY_END()
+                                CATCH(engine::parser::binary::lief::exception::
+                                          Parser,
+                                      {
+                                          p_context.broadcast_text(
+                                              &p_conn,
+                                              gateway::websocket::responses::
+                                                  BadRequests::to_json()
+                                                      .to_string());
+                                      })
                             } else {
                                 p_context.broadcast_text(
                                     &p_conn,
@@ -185,6 +229,7 @@ namespace engine
                             const std::string &p_data,
                             bool p_is_binary) {
                             if (p_is_binary) {
+                                TRY_BEGIN()
                                 m_parser_macho->parse_bytes(
                                     p_data,
                                     [&](focades::parser::binary::macho::record::
@@ -194,6 +239,17 @@ namespace engine
                                             m_parser_macho->dto_json(p_dto)
                                                 .to_string());
                                     });
+                                TRY_END()
+                                CATCH(engine::parser::binary::lief::exception::
+                                          Parser,
+                                      {
+                                          p_context.broadcast_text(
+                                              &p_conn,
+                                              gateway::websocket::responses::
+                                                  BadRequests::to_json()
+                                                      .to_string());
+                                      })
+
                             } else {
                                 p_context.broadcast_text(
                                     &p_conn,

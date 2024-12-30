@@ -88,4 +88,34 @@ namespace engine::server::bridge::gateway::websocket::responses
         return "Token is not valid";
     }
 
+    BadRequests::BadRequests()
+    {
+    }
+
+    const parser::Json BadRequests::_to_json() const
+    {
+        parser::Json json;
+
+        json.add_member_string("status", BadRequests::_status());
+        json.add_member_string("message", BadRequests::_message());
+        json.add_member_int("code", BadRequests::_code());
+
+        return json;
+    }
+
+    const int BadRequests::_code() const
+    {
+        return 400;
+    }
+
+    const std::string BadRequests::_status() const
+    {
+        return "bad_requests";
+    }
+
+    const std::string BadRequests::_message() const
+    {
+        return "Bad requests raw data";
+    }
+
 } // namespace engine::server::bridge::gateway::websocket::responses

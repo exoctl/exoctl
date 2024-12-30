@@ -2,6 +2,7 @@
 
 #include <LIEF/LIEF.hpp>
 #include <LIEF/json.hpp>
+#include <engine/parser/binary/lief/exception.hxx>
 #include <functional>
 #include <memory>
 #include <netdb.h>
@@ -32,11 +33,11 @@ namespace engine::parser::binary
                 &p_callback)
         {
             std::vector<uint8_t> raw(p_buffer.begin(), p_buffer.end());
-            auto binary = ParserType::parse(
-                raw);
-            if (binary) {
-                p_callback(std::move(binary));
+            auto binary = ParserType::parse(raw);
+            if (!binary) {
+                throw lief::exception::Parser("Error parser binary");
             }
+            p_callback(std::move(binary));
         }
         /**
          * @brief Parses a binary from a file path.
@@ -49,9 +50,10 @@ namespace engine::parser::binary
                 &p_callback)
         {
             auto binary = ParserType::parse(p_filepath);
-            if (binary) {
-                p_callback(std::move(binary));
+            if (!binary) {
+                throw lief::exception::Parser("Error parser binary");
             }
+            p_callback(std::move(binary));
         }
     };
 } // namespace engine::parser::binary
