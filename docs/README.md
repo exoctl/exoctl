@@ -29,6 +29,13 @@ make
 ./build/sources/engine
 ```
 
+## Docker 🐳
+
+```bash
+docker build -t engine-skull .
+docker run -dt -p 8081:8081 --name engine-skull engine-skull
+```
+
 ---
 
 ## **Endpoints Overview**  
