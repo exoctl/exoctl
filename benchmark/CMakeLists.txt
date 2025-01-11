@@ -7,6 +7,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Disable Google Benchmark testing")
+
+option(RAPIDJSON_BUILD_TESTS "Build RapidJSON tests" OFF)
+option(RAPIDJSON_BUILD_DOC "Build RapidJSON documentation" OFF)
+option(RAPIDJSON_BUILD_EXAMPLES "Build RapidJSON examples" OFF)
+
+
 include_directories(
     ../include
     ../libraries
