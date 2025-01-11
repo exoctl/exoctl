@@ -49,7 +49,7 @@ namespace application
             LOG(m_log,
                 debug,
                 "Mode        : {}",
-#if DEBUG
+#ifndef DEBUG
                 "Debug");
 #else
                 "Release");

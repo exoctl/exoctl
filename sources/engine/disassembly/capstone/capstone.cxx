@@ -30,9 +30,7 @@ namespace engine
         {
             if (!(IS_NULL(p_callback))) {
 
-                capstone::record::Data *data =
-                    static_cast<capstone::record::Data *>(
-                        alloca(sizeof(capstone::record::Data *)));
+                capstone::record::Data *data = new capstone::record::Data;
                 data->address = 0;
 
                 const size_t count = cs_disasm(m_handle,
@@ -49,6 +47,7 @@ namespace engine
 
                     cs_free(data->insn, count);
                 }
+                delete data;
             }
         }
 

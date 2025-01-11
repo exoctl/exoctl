@@ -16,7 +16,7 @@ namespace engine
         va_list ap;
         va_start(ap, p_path);
         m_model =
-            llama_load_model_from_file(p_path, va_arg(ap, llama_model_params));
+            llama_model_load_from_file(p_path, va_arg(ap, llama_model_params));
 
         va_end(ap);
 
@@ -86,7 +86,7 @@ namespace engine
             llama_free(m_context);
         }
         if (m_model) {
-            llama_free_model(m_model);
+            llama_model_free(m_model);
         }
     }
 
