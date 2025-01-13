@@ -1,9 +1,10 @@
 #pragma once
 
+#include <memory>
+#include <string>
 #include <engine/configuration/configuration.hxx>
 #include <engine/engine.hxx>
 #include <engine/logging.hxx>
-
 
 namespace application
 {
@@ -12,34 +13,36 @@ namespace application
         using init_array = void (*)();
     }
 
-    namespace config 
+    namespace config
     {
-      static inline std::string config_engine = "config/engine/engine.conf";  
+        inline constexpr const char *ENGINE_CONFIG_PATH = "config/engine/engine.conf";
     }
 
     class Application
     {
-      public:
-        Application(int = 0, const char ** = nullptr);
-        ~Application();
-        [[nodiscard]] const int run();
+    public:
+        explicit Application(int argc = 0, const char **argv = nullptr);
+        ~Application() = default;
 
-      protected:
+        [[nodiscard]] int run();
+
+    protected:
         friend struct ProgramEntry;
-        static void init_array();
+        static void initialize_sections();
 
-      private:
-        const int m_argc;
+    private:
+        int m_argc;
         const char **m_argv;
         engine::configuration::Configuration m_config;
         engine::logging::Logging m_log;
         std::unique_ptr<engine::Engine> m_engine;
     };
 
-    struct ProgramEntry {
+    struct ProgramEntry
+    {
         static void invoke()
         {
-            Application::init_array();
+            Application::initialize_sections();
         }
     };
 } // namespace application

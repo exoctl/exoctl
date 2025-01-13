@@ -2,16 +2,15 @@
 #include <engine/exception.hxx>
 #include <application/application.hxx>
 
-
 namespace application
 {
     Application::Application(int p_argc, const char **p_argv)
-        : m_argc(p_argc), m_argv(p_argv), m_config(config::config_engine),
+        : m_argc(p_argc), m_argv(p_argv), m_config(config::ENGINE_CONFIG_PATH),
           m_log(m_config)
     {
         TRY_BEGIN()
-        m_config.load();
-        m_log.load();
+            m_config.load();
+            m_log.load();
         TRY_END()
         CATCH(engine::configuration::exception::Load, {
             fmt::print(stderr, "Failed to load configuration: {}\n", e.what());
@@ -22,47 +21,29 @@ namespace application
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
     }
 
-    Application::~Application()
+    void Application::initialize_sections()
     {
+        // Add initialization logic if needed
     }
 
-    void Application::init_array()
+    int Application::run()
     {
-    }
-
-    const int Application::run()
-    {
-        {
-            LOG(m_log, debug, "Name        : {}", m_config.get_project().name);
-            LOG(m_log,
-                debug,
-                "Version     : {}",
-                m_config.get_project().version);
-            LOG(m_log,
-                debug,
-                "Description : {}",
-                m_config.get_project().description);
-            LOG(m_log,
-                debug,
-                "Copyright   : {}",
-                m_config.get_project().copyright);
-            LOG(m_log,
-                debug,
-                "Mode        : {}",
+        LOG(m_log, debug, "Name        : {}", m_config.get_project().name);
+        LOG(m_log, debug, "Version     : {}", m_config.get_project().version);
+        LOG(m_log, debug, "Description : {}", m_config.get_project().description);
+        LOG(m_log, debug, "Copyright   : {}", m_config.get_project().copyright);
+        LOG(m_log, debug, "Mode        : {}",
 #ifndef DEBUG
-                "Debug");
+            "Release");
 #else
-                "Release");
+            "Debug");
 #endif
-        }
-        
-        LOG(m_log,
-            info,
-            "Running engine with configuration from '{}'...",
+
+        LOG(m_log, info, "Running engine with configuration from '{}'...",
             m_config.get_path_config());
 
         TRY_BEGIN()
-        m_engine->run();
+            m_engine->run();
         TRY_END()
         CATCH(engine::exception::Run, {
             LOG(m_log, error, "Engine encountered an error: {}", e.what());
@@ -72,8 +53,8 @@ namespace application
         LOG(m_log, info, "Engine stopped successfully.");
         return EXIT_SUCCESS;
     }
-} // namespace program
+} // namespace application
 
-// section .init_array for implement DRM
+// Section .init_array for implementing DRM
 [[gnu::section(".init_array")]] application::sections::init_array init =
     &application::ProgramEntry::invoke;

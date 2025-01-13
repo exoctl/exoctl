@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     git \
     libasio-dev \
+    ca-certificates \
     libyara-dev \
     libsqlite3-dev \
     libclamav-dev && \
