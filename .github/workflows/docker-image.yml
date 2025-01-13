@@ -11,19 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout do repositório
+    # 1. Checkout do repositório principal com submódulos
     - uses: actions/checkout@v4
       with:
-        submodules: true # Inclui os submódulos no checkout
+        submodules: true
 
-    # 2. Configurar SSH para acessar repositórios privados
-    - name: Setup SSH
+    # 2. Configurar SSH para acessar submódulos privados
+    - name: Setup SSH for private repositories
       run: |
         mkdir -p ~/.ssh
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-    # 3. Construir a imagem Docker
+    # 3. Atualizar submódulos com acesso SSH
+    - name: Update Submodules
+      run: |
+        git submodule sync
+        git submodule update --init --recursive
+
+    # 4. Construir a imagem Docker
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag engine-skull:$(date +%s)
