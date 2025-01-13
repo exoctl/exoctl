@@ -1,40 +1,30 @@
-name: Docker Image CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # 2. Configurar SSH para acessar o repositório principal e submódulos privados
-    - name: Setup SSH for private repositories
+    # Configurar SSH para acessar repositórios privados
+    - name: Setup SSH
       run: |
         mkdir -p ~/.ssh
-
-        # Configurar chave SSH para o repositório principal
         echo "${{ secrets.PRIVATE_KEY_SSH }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        echo -e "Host github.com\n  IdentityFile ~/.ssh/id_rsa \n" >> ~/.ssh/config
+        echo -e "Host github.com\n  IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-        # Garantir que as chaves SSH corretas sejam usadas para os submódulos
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-
-    # 1. Checkout do repositório principal com submódulos
+    # Checkout do repositório com submódulos
     - uses: actions/checkout@v4
       with:
-        submodules: true
+        submodules: recursive
+        fetch-depth: 0
+        ssh-keyscan: true
 
-    # 3. Atualizar submódulos com SSH
+    # Atualizar submódulos manualmente (opcional)
     - name: Update Submodules
       run: |
         git submodule sync
         git submodule update --init --recursive
 
-    
-    - name: Build the Docker image
+    # Construir a imagem Docker
+    - name: Build Docker Image
       run: docker build . --file Dockerfile --tag engine-skull:$(date +%s)
