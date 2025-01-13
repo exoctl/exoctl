@@ -16,20 +16,35 @@ jobs:
       with:
         submodules: true
 
-    # 2. Configurar SSH para acessar submódulos privados
+    # 2. Configurar SSH para acessar o repositório principal e submódulos privados
     - name: Setup SSH for private repositories
       run: |
         mkdir -p ~/.ssh
+
+        # Configurar chave SSH para o repositório principal
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        echo -e "Host github.com\n  IdentityFile ~/.ssh/id_rsa \n" >> ~/.ssh/config
+
+        # Configurar chave SSH para o submódulo 'lief'
+        echo "${{ secrets.SSH_PRIVATE_KEY_LIEF }}" > ~/.ssh/id_rsa_lief
+        chmod 600 ~/.ssh/id_rsa_lief
+        echo -e "Host github.com-maldeclabs-lief\n  IdentityFile ~/.ssh/id_rsa_lief\n" >> ~/.ssh/config
+
+        # Configurar chave SSH para o submódulo 'signatures'
+        echo "${{ secrets.SSH_PRIVATE_KEY_SIGNATURES }}" > ~/.ssh/id_rsa_signatures
+        chmod 600 ~/.ssh/id_rsa_signatures
+        echo -e "Host github.com-maldeclabs-signatures\n  IdentityFile ~/.ssh/id_rsa_signatures\n" >> ~/.ssh/config
+
+        # Garantir que as chaves SSH corretas sejam usadas para os submódulos
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-    # 3. Atualizar submódulos com acesso SSH
+    # 3. Atualizar submódulos com SSH
     - name: Update Submodules
       run: |
         git submodule sync
         git submodule update --init --recursive
 
-    # 4. Construir a imagem Docker
+    
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag engine-skull:$(date +%s)
