@@ -22,7 +22,7 @@ jobs:
         mkdir -p ~/.ssh
 
         # Configurar chave SSH para o repositório principal
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.GITHUB_ACTIONS_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         echo -e "Host github.com\n  IdentityFile ~/.ssh/id_rsa \n" >> ~/.ssh/config
 
