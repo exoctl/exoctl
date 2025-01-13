@@ -10,12 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Passo 1: Checkout do repositório principal
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: true  # Inclui os submódulos
-
       # Passo 2: Configurar chave SSH para o repositório principal e submódulos
       - name: Setup SSH for private repositories
         run: |
@@ -56,7 +50,12 @@ jobs:
               git remote set-url origin git@github.com:maldeclabs/signatures.git;
             fi
           '
-
+      # Passo 1: Checkout do repositório principal
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true  # Inclui os submódulos
+      
       # Passo 4: Build e testes (exemplo)
       - name: Build Project
         run: |
