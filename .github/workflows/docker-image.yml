@@ -11,11 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout do repositório principal com submódulos
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-
     # 2. Configurar SSH para acessar o repositório principal e submódulos privados
     - name: Setup SSH for private repositories
       run: |
@@ -38,6 +33,11 @@ jobs:
 
         # Garantir que as chaves SSH corretas sejam usadas para os submódulos
         ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+    # 1. Checkout do repositório principal com submódulos
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
 
     # 3. Atualizar submódulos com SSH
     - name: Update Submodules
