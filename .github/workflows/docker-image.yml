@@ -33,6 +33,12 @@ jobs:
           # Adicionar GitHub ao arquivo known_hosts para evitar a pergunta sobre a chave do host
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
+       # Passo 1: Checkout do repositório principal
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true  # Inclui os submódulos
+
       # Passo 3: Forçar o uso de SSH para os submódulos
       - name: Update Submodules with SSH
         run: |
@@ -50,11 +56,6 @@ jobs:
               git remote set-url origin git@github.com:maldeclabs/signatures.git;
             fi
           '
-      # Passo 1: Checkout do repositório principal
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: true  # Inclui os submódulos
       
       # Passo 4: Build e testes (exemplo)
       - name: Build Project
