@@ -32,6 +32,7 @@ option(RAPIDJSON_BUILD_DOC "Build RapidJSON documentation" OFF)
 option(RAPIDJSON_BUILD_EXAMPLES "Build RapidJSON examples" OFF)
 
 # External dependencies
+include(cmake/lua_library.cmake)
 add_subdirectory(libraries/llama ${CMAKE_BINARY_DIR}/libraries/llama)
 add_subdirectory(libraries/capstone-engine ${CMAKE_BINARY_DIR}/libraries/capstone-engine)
 add_subdirectory(libraries/crow ${CMAKE_BINARY_DIR}/libraries/crow)

@@ -8,6 +8,7 @@ include_directories(
     ../libraries
     ../sources
     ../
+    ../libraries/lua
     ../libraries/tomlplusplus/include
     ../libraries/rapidjson/include
     ../libraries/lief/include
@@ -47,6 +48,7 @@ target_link_libraries(engine PRIVATE
     fmt
     LIEF::LIEF
     clamav
+    liblua
     capstone
     ssl
     stdc++
