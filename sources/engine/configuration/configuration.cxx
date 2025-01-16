@@ -25,6 +25,7 @@ namespace engine
             Configuration::load_lief();
             Configuration::load_llama();
             Configuration::load_decompiler();
+            Configuration::load_plugins();
             TRY_END()
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
@@ -88,20 +89,37 @@ namespace engine
             return m_decompiler;
         }
 
+        const record::plugins::Plugins &Configuration::get_plugins()
+        {
+            return m_plugins;
+        }
+
         void Configuration::load_cache()
         {
-            m_cache =
-                (record::cache::Cache){.type = m_toml.get_tbl()["cache"]["type"]
-                                                   .value<std::string>()
-                                                   .value(),
-                                       .path = m_toml.get_tbl()["cache"]["path"]
-                                                   .value<std::string>()
-                                                   .value()};
+            m_cache = (record::cache::Cache) {
+                .type = m_toml.get_tbl()["cache"]["type"]
+                            .value<std::string>()
+                            .value(),
+                .path = m_toml.get_tbl()["cache"]["path"]
+                            .value<std::string>()
+                            .value()};
+        }
+
+        void Configuration::load_plugins()
+        {
+            m_plugins = (record::plugins::Plugins)
+            {
+                .path = m_toml.get_tbl()["plugins"]["path"]
+                            .value<std::string>()
+                            .value(),
+                .enable =
+                    m_toml.get_tbl()["plugins"]["enable"].value<bool>().value()
+            };
         }
 
         void Configuration::load_av_clamav()
         {
-            m_av_clamav = (record::av::clamav::Clamav){
+            m_av_clamav = (record::av::clamav::Clamav) {
                 .database = {.default_path =
                                  m_toml
                                      .get_tbl()["av"]["clamav"]["database"]
@@ -112,7 +130,7 @@ namespace engine
 
         void Configuration::load_decompiler()
         {
-            m_decompiler = (record::decompiler::Decompiler){
+            m_decompiler = (record::decompiler::Decompiler) {
                 .llama = {.model =
                               m_toml.get_tbl()["decompiler"]["llama"]["model"]
                                   .value<std::string>()
@@ -121,7 +139,7 @@ namespace engine
 
         void Configuration::load_project()
         {
-            m_project = (record::Project){
+            m_project = (record::Project) {
                 .name = m_toml.get_tbl()["project"]["name"]
                             .value<std::string>()
                             .value(),
@@ -138,7 +156,7 @@ namespace engine
 
         void Configuration::load_sig()
         {
-            m_sig = (record::sig::Sig){
+            m_sig = (record::sig::Sig) {
                 .rules = {.packed_path =
                               m_toml.get_tbl()["sig"]["rules"]["packed_path"]
                                   .value<std::string>()
@@ -147,7 +165,7 @@ namespace engine
 
         void Configuration::load_server()
         {
-            m_server = (record::server::Server){
+            m_server = (record::server::Server) {
                 .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
                                      .value<int>()
                                      .value(),
@@ -172,7 +190,7 @@ namespace engine
 
         void Configuration::load_yara()
         {
-            m_yara = (record::yara::Yara){
+            m_yara = (record::yara::Yara) {
                 .rules = {.malware_path =
                               m_toml.get_tbl()["yara"]["rules"]["malware_path"]
                                   .value<std::string>()
@@ -189,7 +207,7 @@ namespace engine
 
         void Configuration::load_logging()
         {
-            m_logging = (record::logging::Logging){
+            m_logging = (record::logging::Logging) {
                 .filepath = m_toml.get_tbl()["logging"]["filepath"]
                                 .value<std::string>()
                                 .value(),
@@ -237,7 +255,7 @@ namespace engine
 
         void Configuration::load_lief()
         {
-            m_lief = (record::lief::Lief){
+            m_lief = (record::lief::Lief) {
                 .log{.level = m_toml.get_tbl()["lief"]["_"]["log"]["level"]
                                   .value<int>()
                                   .value(),
@@ -248,7 +266,7 @@ namespace engine
 
         void Configuration::load_llama()
         {
-            m_llama = (record::llama::Llama){
+            m_llama = (record::llama::Llama) {
                 .log{.level = m_toml.get_tbl()["llama"]["_"]["log"]["level"]
                                   .value<int>()
                                   .value(),

@@ -1,5 +1,6 @@
 #include <application/application.hxx>
-#include <engine/llama/llama.hxx>
+#include <engine/plugins/plugins.hxx>
+#include <iostream>
 
 int main(int argc, char *argv[])
 {

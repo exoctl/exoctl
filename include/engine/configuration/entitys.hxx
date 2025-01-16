@@ -10,6 +10,13 @@ namespace engine
         namespace record
         {
 
+            namespace plugins
+            {
+                typedef struct Plugins {
+                    std::string path;
+                    bool enable;
+                } Plugins;
+            } // namespace plugins
 
             namespace decompiler
             {
@@ -46,7 +53,7 @@ namespace engine
                 } Lief;
             } // namespace lief
 
-             namespace llama
+            namespace llama
             {
                 namespace _
                 {
@@ -62,7 +69,7 @@ namespace engine
                 typedef struct Llama {
                     _::Log::Log log;
                 } Llama;
-            } // namespace lief
+            } // namespace llama
 
             namespace yara
             {

@@ -71,10 +71,8 @@ namespace engine
                 m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
         }
 
-        void Yara::load_rules_folder(const std::filesystem::path &p_path) const
+        void Yara::load_rules_folder(const std::string &p_path) const
         {
-            const std::string folder = p_path.filename();
-
             DIR *dir = opendir(p_path.c_str());
             if (!dir)
                 throw yara::exception::LoadRules(strerror(errno));
@@ -90,7 +88,7 @@ namespace engine
                 }
                 if (entry_name.extension() == ".yar") {
                     if (Yara::yara_set_signature_rule_fd(
-                            full_path, entry_name, folder) != ERROR_SUCCESS) {
+                            full_path, entry_name, p_path) != ERROR_SUCCESS) {
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
                             "rule " +

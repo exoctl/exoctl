@@ -9,6 +9,7 @@
 #include <engine/llama/_/log.hxx>
 #include <engine/parser/toml.hxx>
 #include <functional>
+#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
@@ -25,9 +26,14 @@ namespace engine
         llama::_::Log m_llama_log;
         parser::binary::lief::_::Log m_lief_log;
 
+        plugins::Plugins m_plugins;
+
+
       public:
+        bool is_running;
+        
         Engine(configuration::Configuration &, logging::Logging &);
-        ~Engine() = default;
+        ~Engine();
 
         [[nodiscard]] const std::string &get_bindaddr();
         [[nodiscard]] const uint16_t &get_port();

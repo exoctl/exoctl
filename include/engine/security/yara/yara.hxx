@@ -43,8 +43,7 @@ namespace engine
             void load_rules(const std::function<void()> &) const;
 
             /* load rules if extension file '.yar'*/
-            void load_rules_folder(
-                const std::filesystem::path & /* path */) const;
+            void load_rules_folder(const std::string & /* path */) const;
 
             [[nodiscard]] const int set_signature_rule_mem(
                 const std::string &, const std::string &) const;

@@ -10,9 +10,9 @@ ExternalProject_Add(lua
     BUILD_COMMAND make
     BUILD_ALWAYS true 
     BUILD_IN_SOURCE true  
-    INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${LUA_BUILD_DIR} && 
-                   ${CMAKE_COMMAND} -E copy ${LUA_SOURCE_DIR}/liblua.a ${LUA_BUILD_DIR}/liblua.a)
-
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${LUA_BUILD_DIR} &&
+                   ${CMAKE_COMMAND} -E copy_directory ${LUA_SOURCE_DIR} ${LUA_BUILD_DIR}
+)
 
 add_library(liblua STATIC IMPORTED)
 

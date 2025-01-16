@@ -11,13 +11,21 @@ namespace engine
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
-          m_lief_log(p_configuration, p_log)
+          m_lief_log(p_configuration, p_log), m_plugins(p_configuration), is_running(false)
     {
+    }
+
+    Engine::~Engine()
+    {
+        m_server.stop();
+        m_plugins.finalize();
     }
 
     void Engine::stop()
     {
+        is_running = false;
         m_server.stop();
+        m_plugins.finalize();
     }
 
     const std::string &Engine::get_bindaddr()
@@ -37,11 +45,20 @@ namespace engine
 
     void Engine::run(const std::function<void()> &p_callback)
     {
+        is_running = true;
+
         TRY_BEGIN()
 
         m_server_bridge.load();
+        m_plugins.load();
+
         (!IS_NULL(p_callback)) ? p_callback() : (void) 0;
+
+        m_plugins.run();
+
         m_server.run();
+
+        m_plugins.finalize();
 
         TRY_END()
         CATCH(server::exception::Abort, {

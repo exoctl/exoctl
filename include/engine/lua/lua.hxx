@@ -1,0 +1,87 @@
+#pragma once
+
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+}
+#include <memory>
+#include <string>
+#include <unordered_map>
+
+namespace engine
+{
+    namespace lua
+    {
+        class Lua
+        {
+          public:
+            Lua();
+            ~Lua();
+
+            bool load_script_file(const std::string &, const std::string &);
+
+            void run_all_scripts();
+
+            bool call_function(const std::string &, int = 0, int = 0);
+
+            template <typename T>
+            static void register_global(const std::string &, T &);
+
+            template <typename T>
+            static void register_class(const std::string &name, T *obj)
+            {
+                luaL_newmetatable(m_state, name.c_str());
+                lua_pushstring(m_state, "__index");
+                lua_pushlightuserdata(m_state, obj);
+                lua_settable(m_state, -3);
+
+                lua_setglobal(m_state, name.c_str());
+            }
+
+            template <typename T>
+            static void register_class_method(const std::string &,
+                                              const std::string &,
+                                              void (T::*)());
+
+            template <typename T>
+            static void register_class(const std::string &name,
+                                       std::unique_ptr<T> &obj)
+            {
+                luaL_newmetatable(m_state, name.c_str());
+
+                lua_pushstring(m_state, "__index");
+                lua_pushlightuserdata(
+                    m_state,
+                    static_cast<void *>(obj.get()));
+                lua_settable(m_state, -3);
+
+                lua_pushstring(m_state, "__gc");
+                lua_pushcfunction(m_state, [](lua_State *L) -> int {
+                    std::unique_ptr<T> *obj_ptr =
+                        static_cast<std::unique_ptr<T> *>(
+                            lua_touserdata(L, 1));
+                    obj_ptr->reset();
+                    return 0;
+                });
+                lua_settable(m_state, -3);
+
+                lua_setglobal(m_state, name.c_str());
+            }
+
+            template <typename T>
+            static void register_class_member(const std::string &,
+                                       const std::string &,
+                                       T &);
+
+            lua_State *get_state() const;
+
+          private:
+            static lua_State *m_state;
+            std::unordered_map<std::string, std::string> m_scripts;
+
+            Lua(const Lua &) = delete;
+            Lua &operator=(const Lua &) = delete;
+        };
+    } // namespace lua
+} // namespace engine

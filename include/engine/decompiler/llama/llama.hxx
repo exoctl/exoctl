@@ -21,7 +21,7 @@ namespace engine
                 const std::function<void(llama::record::CData *)> &);
 
           private:
-            ::engine::Llama m_llama;
+            ::engine::llama::Llama m_llama;
         };
     } // namespace decompiler
 } // namespace engine

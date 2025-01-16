@@ -34,11 +34,13 @@ file(GLOB_RECURSE SOURCES
 
 # Define the executable
 add_executable(engine main.cxx)
+add_dependencies(engine lua)
 
 # Add source files to the target
 target_sources(engine PRIVATE ${SOURCES})
 
 # Link libraries
+target_link_libraries(engine PRIVATE /home/covinhas/Documents/MalDec/engine-skull/build/libraries/lua/liblua.a)
 target_link_libraries(engine PRIVATE
     Crow::Crow
     yara
@@ -48,7 +50,6 @@ target_link_libraries(engine PRIVATE
     fmt
     LIEF::LIEF
     clamav
-    liblua
     capstone
     ssl
     stdc++
@@ -66,6 +67,7 @@ if(FLAGS_OPTIMIZATIONS)
         -fmodules-ts
         -ftree-vectorize
         -mavx
+        -ldl
         -fno-stack-protector
         -march=native
         -DCROW_OPENSSL
@@ -76,6 +78,7 @@ elseif(FLAGS_DEBUG)
     message(STATUS "Building with debug flags enabled")
     target_compile_options(engine PRIVATE
         -ggdb3
+        -ldl
         -fmodules-ts
         -fms-extensions
         --all-warnings
