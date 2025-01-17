@@ -20,11 +20,8 @@ namespace application
 
         LOG(m_log, info, "Starting engine ...");
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
-        
-        
+
         engine::plugins::Plugins::register_class("engine", &m_engine);
-        engine::plugins::Plugins::register_t_global("is_running",
-                                                  m_engine.get()->is_running);
         engine::plugins::Plugins::register_class_member(
             "engine", "is_running", m_engine.get()->is_running);
     }

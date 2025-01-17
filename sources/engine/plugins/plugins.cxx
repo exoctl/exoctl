@@ -12,6 +12,8 @@ namespace engine
                          logging::Logging &p_log)
             : m_config(p_config), m_log(p_log), m_lua()
         {
+            if (!m_config.get_plugins().enable)
+                LOG(m_log, warn, "Plugins not enabled");
         }
 
         Plugins::~Plugins()
@@ -62,7 +64,9 @@ namespace engine
 
         void Plugins::load()
         {
-            Plugins::load_plugins_folder(m_config.get_plugins().path);
+            if (m_config.get_plugins().enable) {
+                Plugins::load_plugins_folder(m_config.get_plugins().path);
+            }
         }
 
         void Plugins::finalize()
@@ -71,8 +75,10 @@ namespace engine
 
         void Plugins::run()
         {
-            LOG(m_log, info, "Running all plugins ...");
-            m_lua.run_all_scripts();
+            if (m_config.get_plugins().enable) {
+                LOG(m_log, info, "Running all plugins ...");
+                m_lua.run_all_scripts();
+            }
         }
 
         void Plugins::load_plugins_folder(const std::string &p_path)
@@ -92,7 +98,7 @@ namespace engine
                 } else if (entry->d_type == DT_DIR) {
                     Plugins::load_plugins_folder(full_path);
                 }
-                
+
                 LOG(m_log, info, "Loading plugin '{}'", entry_name.c_str());
                 Plugins::load_plugin_file(full_path);
             }

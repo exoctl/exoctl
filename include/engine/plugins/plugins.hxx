@@ -11,6 +11,7 @@ namespace engine
 {
     namespace plugins
     {
+        // TODO: improve the plugin manager so it becomes async
         class Plugins
         {
           public:
