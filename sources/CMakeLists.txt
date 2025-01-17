@@ -40,9 +40,9 @@ add_dependencies(engine lua)
 target_sources(engine PRIVATE ${SOURCES})
 
 # Link libraries
-target_link_libraries(engine PRIVATE /home/covinhas/Documents/MalDec/engine-skull/build/libraries/lua/liblua.a)
 target_link_libraries(engine PRIVATE
     Crow::Crow
+    liblua
     yara
     spdlog::spdlog
     llama
