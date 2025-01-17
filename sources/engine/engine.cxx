@@ -11,7 +11,7 @@ namespace engine
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
-          m_lief_log(p_configuration, p_log), m_plugins(p_configuration), is_running(false)
+          m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log), is_running(false)
     {
     }
 

@@ -8,8 +8,9 @@ namespace engine
 {
     namespace plugins
     {
-        Plugins::Plugins(configuration::Configuration &p_config)
-            : m_config(p_config), m_lua()
+        Plugins::Plugins(configuration::Configuration &p_config,
+                         logging::Logging &p_log)
+            : m_config(p_config), m_log(p_log), m_lua()
         {
         }
 
@@ -70,6 +71,7 @@ namespace engine
 
         void Plugins::run()
         {
+            LOG(m_log, info, "Running all plugins ...");
             m_lua.run_all_scripts();
         }
 
@@ -90,7 +92,8 @@ namespace engine
                 } else if (entry->d_type == DT_DIR) {
                     Plugins::load_plugins_folder(full_path);
                 }
-
+                
+                LOG(m_log, info, "Loading plugin '{}'", entry_name.c_str());
                 Plugins::load_plugin_file(full_path);
             }
             closedir(dir);

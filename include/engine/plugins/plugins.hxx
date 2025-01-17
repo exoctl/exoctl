@@ -2,6 +2,7 @@
 
 #include <engine/configuration/configuration.hxx>
 #include <engine/lua/lua.hxx>
+#include <engine/logging.hxx>
 #include <engine/plugins/exception.hxx>
 #include <filesystem>
 #include <memory>
@@ -13,7 +14,7 @@ namespace engine
         class Plugins
         {
           public:
-            Plugins(configuration::Configuration &);
+            Plugins(configuration::Configuration &, logging::Logging &);
             ~Plugins();
 
             void load_plugin_buff(const std::string &);
@@ -52,6 +53,8 @@ namespace engine
 
           private:
             configuration::Configuration &m_config;
+            logging::Logging &m_log;
+
             lua::Lua m_lua;
         };
     } // namespace plugins
