@@ -68,6 +68,7 @@ if(FLAGS_OPTIMIZATIONS)
         -ftree-vectorize
         -mavx
         -ldl
+        -fmodules-ts
         -fno-stack-protector
         -march=native
         -DCROW_OPENSSL
@@ -82,6 +83,7 @@ elseif(FLAGS_DEBUG)
         -fmodules-ts
         -fms-extensions
         --all-warnings
+        -fmodules-ts
         -DDEBUG
         -g
         -Warray-bounds

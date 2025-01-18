@@ -23,7 +23,7 @@ namespace engine
                 void load() const override;
 
               private:
-                Server &m_server;
+                Server &SERVER_INSTANCE;
                 mutable gateway::Map m_map;
 
                 std::unique_ptr<gateway::Web<>> m_web_root;

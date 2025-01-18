@@ -5,8 +5,8 @@
 
 namespace application
 {
-    Application::Application(int p_argc, const char **p_argv)
-        : m_argc(p_argc), m_argv(p_argv), m_config(config::ENGINE_CONFIG_PATH),
+    Application::Application(int argc, const char **argv)
+        : m_argc(argc), m_argv(argv), m_config(config::ENGINE_CONFIG_PATH),
           m_log(m_config)
     {
         TRY_BEGIN()
@@ -19,16 +19,13 @@ namespace application
         })
 
         LOG(m_log, info, "Starting engine ...");
-        m_engine = std::make_unique<engine::Engine>(m_config, m_log);
+        ENGINE_INSTANCE = std::make_unique<engine::Engine>(m_config, m_log);
 
-        engine::plugins::Plugins::register_class("engine", &m_engine);
-        engine::plugins::Plugins::register_class_member(
-            "engine", "is_running", m_engine.get()->is_running);
+#include <application/_plugins.inc>
     }
 
     void Application::initialize_sections()
     {
-        // Add initialization logic if needed
     }
 
     int Application::run()
@@ -40,6 +37,7 @@ namespace application
             "Description : {}",
             m_config.get_project().description);
         LOG(m_log, debug, "Copyright   : {}", m_config.get_project().copyright);
+
         LOG(m_log,
             debug,
             "Mode        : {}",
@@ -55,7 +53,7 @@ namespace application
             m_config.get_path_config());
 
         TRY_BEGIN()
-        m_engine->run();
+        ENGINE_INSTANCE->run();
         TRY_END()
         CATCH(engine::exception::Run, {
             LOG(m_log, error, "Engine encountered an error: {}", e.what());
@@ -67,6 +65,6 @@ namespace application
     }
 } // namespace application
 
-// Section .init_array for implementing DRM
+// section .init_array to implement DRM
 [[gnu::section(".init_array")]] application::sections::init_array init =
     &application::ProgramEntry::invoke;

@@ -9,7 +9,7 @@ namespace engine
         {
 
             Parser::Parser(Server &p_server)
-                : m_server(p_server), m_map(BASE_PARSER)
+                : SERVER_INSTANCE(p_server), m_map(BASE_PARSER)
             {
                 Parser::prepare();
 
@@ -34,7 +34,7 @@ namespace engine
 
             void Parser::prepare()
             {
-                LOG(m_server.get_log(),
+                LOG(SERVER_INSTANCE.get_log(),
                     info,
                     "Preparing gateway parser routes ...");
 
@@ -49,7 +49,7 @@ namespace engine
             {
                 m_map.add_route("/binary/lief/pe", [&]() {
                     m_socket_pe = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_PARSER "/binary/lief/pe",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -92,7 +92,7 @@ namespace engine
             {
                 m_map.add_route("/binary/lief/dex", [&]() {
                     m_socket_dex = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_PARSER "/binary/lief/dex",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -135,7 +135,7 @@ namespace engine
             {
                 m_map.add_route("/binary/lief/elf", [&]() {
                     m_socket_elf = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_PARSER "/binary/lief/elf",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -178,7 +178,7 @@ namespace engine
             {
                 m_map.add_route("/binary/lief/art", [&]() {
                     m_socket_art = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_PARSER "/binary/lief/art",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -221,7 +221,7 @@ namespace engine
             {
                 m_map.add_route("/binary/lief/macho", [&]() {
                     m_socket_macho = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_PARSER "/binary/lief/macho",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,

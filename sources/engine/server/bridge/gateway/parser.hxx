@@ -26,7 +26,7 @@ namespace engine
                 void load() const override;
 
               private:
-                Server &m_server;
+                Server &SERVER_INSTANCE;
                 mutable gateway::Map m_map;
 
                 std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;

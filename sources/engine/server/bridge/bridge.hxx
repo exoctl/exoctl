@@ -25,7 +25,7 @@ namespace engine
             void load();
 
           private:
-            Server &m_server;
+            Server &SERVER_INSTANCE;
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::Analysis> m_analysis;

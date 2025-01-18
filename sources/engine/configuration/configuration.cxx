@@ -71,7 +71,7 @@ namespace engine
 
         const record::server::Server &Configuration::get_server() const
         {
-            return m_server;
+            return SERVER_INSTANCE;
         }
 
         const record::lief::Lief &Configuration::get_lief() const
@@ -165,7 +165,7 @@ namespace engine
 
         void Configuration::load_server()
         {
-            m_server = (record::server::Server) {
+            SERVER_INSTANCE = (record::server::Server) {
                 .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
                                      .value<int>()
                                      .value(),

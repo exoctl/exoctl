@@ -7,7 +7,7 @@ namespace engine
     {
         namespace bridge
         {
-            Rev::Rev(Server &p_server) : m_server(p_server), m_map(BASE_REV)
+            Rev::Rev(Server &p_server) : SERVER_INSTANCE(p_server), m_map(BASE_REV)
             {
                 Rev::prepare();
 
@@ -29,7 +29,7 @@ namespace engine
 
             void Rev::prepare()
             {
-                LOG(m_server.get_log(),
+                LOG(SERVER_INSTANCE.get_log(),
                     info,
                     "Preparing gateway rev routes ...");
 
@@ -46,7 +46,7 @@ namespace engine
                 m_map.add_route("/disassembly/capstone/x64", [&]() {
                     m_socket_capstone_x64 =
                         std::make_unique<gateway::WebSocket>(
-                            m_server,
+                            SERVER_INSTANCE,
                             BASE_REV "/disassembly/capstone/x64",
                             UINT64_MAX,
                             [&](gateway::websocket::Context &p_context,
@@ -79,7 +79,7 @@ namespace engine
                 m_map.add_route("/disassembly/capstone/arm64", [&]() {
                     m_socket_capstone_arm64 = std::make_unique<
                         gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_REV "/disassembly/capstone/arm64",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,

@@ -11,7 +11,7 @@ namespace engine
         namespace bridge
         {
             Analysis::Analysis(Server &p_crow)
-                : m_server(p_crow), m_map(BASE_ANALYSIS)
+                : SERVER_INSTANCE(p_crow), m_map(BASE_ANALYSIS)
             {
                 Analysis::prepare();
 
@@ -29,7 +29,7 @@ namespace engine
             {
                 m_map.add_route("/scan", [&]() {
                     m_socket_scan = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_ANALYSIS "/scan",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -67,7 +67,7 @@ namespace engine
                 m_map.add_route("/scan/av/clamav", [&]() {
                     m_socket_scan_av_clamav =
                         std::make_unique<gateway::WebSocket>(
-                            m_server,
+                            SERVER_INSTANCE,
                             BASE_ANALYSIS "/scan/av/clamav",
                             UINT64_MAX,
                             [&](gateway::websocket::Context &p_context,
@@ -91,7 +91,7 @@ namespace engine
             {
                 m_map.add_route("/scan/yara", [&]() {
                     m_socket_scan_yara = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_ANALYSIS "/scan/yara",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -120,20 +120,20 @@ namespace engine
 
             void Analysis::prepare()
             {
-                LOG(m_server.get_log(),
+                LOG(SERVER_INSTANCE.get_log(),
                     info,
                     "Preparing gateway analysis routes ...");
 
                 m_scan_yara = std::make_unique<focades::analysis::scan::Yara>(
-                    m_server.get_config());
+                    SERVER_INSTANCE.get_config());
                 m_scan_av_clamav =
                     std::make_unique<focades::analysis::scan::av::Clamav>(
-                        m_server.get_config());
+                        SERVER_INSTANCE.get_config());
 
                 TRY_BEGIN()
-                LOG(m_server.get_log(), info, "Loading rules yara ...");
+                LOG(SERVER_INSTANCE.get_log(), info, "Loading rules yara ...");
                 m_scan_yara->load_rules([&](uint64_t p_total_rules) {
-                    LOG(m_server.get_log(),
+                    LOG(SERVER_INSTANCE.get_log(),
                         info,
                         "Successfully loaded rules. Total Yara rules "
                         "count: "
@@ -141,9 +141,9 @@ namespace engine
                         p_total_rules);
                 });
 
-                LOG(m_server.get_log(), info, "Loading rules clamav ...");
+                LOG(SERVER_INSTANCE.get_log(), info, "Loading rules clamav ...");
                 m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
-                    LOG(m_server.get_log(),
+                    LOG(SERVER_INSTANCE.get_log(),
                         info,
                         "Successfully loaded rules. Total Clamav rules "
                         "count: "
@@ -152,7 +152,7 @@ namespace engine
                 });
                 TRY_END()
                 CATCH(security::yara::exception::LoadRules, {
-                    LOG(m_server.get_log(), error, "{}", e.what());
+                    LOG(SERVER_INSTANCE.get_log(), error, "{}", e.what());
                     throw server::exception::Abort(e.what());
                 })
             }

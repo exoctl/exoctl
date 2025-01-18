@@ -11,6 +11,9 @@
 #include <engine/server/server.hxx>
 #include <functional>
 
+
+#define SERVER_INSTANCE m_server
+
 namespace engine
 {
     class Engine
@@ -19,7 +22,7 @@ namespace engine
         configuration::Configuration &m_configuration;
         logging::Logging &m_log;
 
-        server::Server m_server;
+        server::Server SERVER_INSTANCE;
         server::Bridge m_server_bridge;
         server::_::Log m_server_log;
 

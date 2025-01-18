@@ -8,31 +8,25 @@ namespace engine
     Engine::Engine(configuration::Configuration &p_configuration,
                    logging::Logging &p_log)
         : m_configuration(p_configuration), m_log(p_log),
-          m_server(p_configuration, p_log), m_server_bridge(m_server),
+          SERVER_INSTANCE(p_configuration, p_log), m_server_bridge(SERVER_INSTANCE),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
           m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
           is_running(false)
     {
-        // register class server
-        plugins::Plugins::register_class("server", &m_server);
-        plugins::Plugins::register_class_member(
-            "server", "port", m_server.port);
-        plugins::Plugins::register_class_member(
-            "server", "bindaddr", m_server.bindaddr);
-
+#include <engine/_plugins.inc>
     }
 
     Engine::~Engine()
     {
-        m_server.stop();
+        SERVER_INSTANCE.stop();
         m_plugins.finalize();
     }
 
     void Engine::stop()
     {
         is_running = false;
-        m_server.stop();
+        SERVER_INSTANCE.stop();
         m_plugins.finalize();
     }
 
@@ -49,7 +43,7 @@ namespace engine
 
         m_plugins.run();
 
-        m_server.run();
+        SERVER_INSTANCE.run();
 
         m_plugins.finalize();
 

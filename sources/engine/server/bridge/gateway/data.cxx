@@ -7,7 +7,7 @@ namespace engine
         namespace bridge
         {
             Data::Data(Server &p_server)
-                : m_server(p_server), m_map(BASE_DATA)
+                : SERVER_INSTANCE(p_server), m_map(BASE_DATA)
             {
                 Data::prepare();
 
@@ -23,7 +23,7 @@ namespace engine
             {
                 m_map.add_route("/metadata", [&]() {
                     m_socket_metadata = std::make_unique<gateway::WebSocket>(
-                        m_server,
+                        SERVER_INSTANCE,
                         BASE_DATA "/metadata",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
@@ -46,7 +46,7 @@ namespace engine
 
             void Data::prepare()
             {
-                LOG(m_server.get_log(),
+                LOG(SERVER_INSTANCE.get_log(),
                     info,
                     "Preparing gateway data routes ...");
                 m_data_metadata = std::make_unique<focades::data::Metadata>();
