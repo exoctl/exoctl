@@ -69,7 +69,7 @@ namespace engine
             return m_sig;
         }
 
-        const record::server::Server &Configuration::get() const
+        const record::server::Server &Configuration::get_server() const
         {
             return m_server;
         }

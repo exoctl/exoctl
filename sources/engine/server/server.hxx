@@ -30,11 +30,12 @@ namespace engine
             ~Server() = default;
 
             App &get();
-            const uint16_t get_concurrency();
             configuration::Configuration &get_config();
             logging::Logging &get_log();
-            const std::string &get_bindaddr();
-            const uint16_t &get_port();
+            uint16_t concurrency;
+            std::string bindaddr;
+            unsigned short port;
+            const std::string &ssl_certificate_path;
             void run();
             void stop();
         };

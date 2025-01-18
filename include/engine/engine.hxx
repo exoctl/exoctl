@@ -1,15 +1,15 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
+#include <engine/llama/_/log.hxx>
+#include <engine/logging.hxx>
+#include <engine/parser/binary/lief/_/log.hxx>
+#include <engine/parser/toml.hxx>
+#include <engine/plugins/plugins.hxx>
 #include <engine/server/_/log/log.hxx>
 #include <engine/server/bridge/bridge.hxx>
 #include <engine/server/server.hxx>
-#include <engine/logging.hxx>
-#include <engine/parser/binary/lief/_/log.hxx>
-#include <engine/llama/_/log.hxx>
-#include <engine/parser/toml.hxx>
 #include <functional>
-#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
@@ -22,22 +22,17 @@ namespace engine
         server::Server m_server;
         server::Bridge m_server_bridge;
         server::_::Log m_server_log;
-        
+
         llama::_::Log m_llama_log;
         parser::binary::lief::_::Log m_lief_log;
 
         plugins::Plugins m_plugins;
 
-
       public:
         bool is_running;
-        
+
         Engine(configuration::Configuration &, logging::Logging &);
         ~Engine();
-
-        [[nodiscard]] const std::string &get_bindaddr();
-        [[nodiscard]] const uint16_t &get_port();
-        [[nodiscard]] const uint16_t get_concurrency();
 
         void stop();
         void run(const std::function<void()> & = nullptr);

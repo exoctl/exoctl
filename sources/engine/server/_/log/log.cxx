@@ -14,10 +14,10 @@ namespace engine
                     this); // define global logger for Server
 
                 m_log.create_logger(m_config.get_logging().type,
-                                    m_config.get().log.name);
+                                    m_config.get_server().log.name);
 
                 Log::active_level(static_cast<crow::LogLevel>(
-                    m_config.get().log.level));
+                    m_config.get_server().log.level));
             }
 
             Log::~Log()
@@ -28,23 +28,23 @@ namespace engine
             {
                 switch (p_level) {
                     case crow::LogLevel::Debug:
-                        m_log.get_logger(m_config.get().log.name)
+                        m_log.get_logger(m_config.get_server().log.name)
                             ->debug("{}", p_message);
                         break;
                     case crow::LogLevel::Info:
-                        m_log.get_logger(m_config.get().log.name)
+                        m_log.get_logger(m_config.get_server().log.name)
                             ->info("{}", p_message);
                         break;
                     case crow::LogLevel::Warning:
-                        m_log.get_logger(m_config.get().log.name)
+                        m_log.get_logger(m_config.get_server().log.name)
                             ->warn("{}", p_message);
                         break;
                     case crow::LogLevel::Error:
-                        m_log.get_logger(m_config.get().log.name)
+                        m_log.get_logger(m_config.get_server().log.name)
                             ->error("{}", p_message);
                         break;
                     case crow::LogLevel::Critical:
-                        m_log.get_logger(m_config.get().log.name)
+                        m_log.get_logger(m_config.get_server().log.name)
                             ->critical("{}", p_message);
                         break;
                 }

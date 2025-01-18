@@ -21,7 +21,7 @@ namespace engine
             const record::yara::Yara &get_yara() const;
             const record::logging::Logging &get_logging() const;
             const record::sig::Sig &get_sig() const;
-            const record::server::Server &get() const;
+            const record::server::Server &get_server() const;
             const record::lief::Lief &get_lief() const;
             const record::llama::Llama &get_llama() const;
             const record::decompiler::Decompiler &get_decompiler();

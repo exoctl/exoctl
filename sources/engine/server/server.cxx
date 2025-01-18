@@ -1,36 +1,36 @@
-#include <engine/server/server.hxx>
 #include <engine/server/exception.hxx>
+#include <engine/server/server.hxx>
 
 namespace engine
 {
     namespace server
     {
         Server::Server(configuration::Configuration &p_config,
-                         logging::Logging &p_log)
-            : m_config(p_config), m_log(p_log)
+                       logging::Logging &p_log)
+            : m_config(p_config), m_log(p_log),
+              concurrency(m_config.get_server().threads),
+              bindaddr(m_config.get_server().bindaddr),
+              port(m_config.get_server().port),
+              ssl_certificate_path(
+                  m_config.get_server().ssl_certificate_path)
         {
         }
 
         void Server::run()
         {
             m_app
-                .bindaddr(m_config.get().bindaddr)
+                .bindaddr(bindaddr)
 #if CROW_OPENSSL
-                .ssl_file(m_config.get().ssl_certificate_path)
+                .ssl_file(ssl_certificate_path)
 #endif
-                .port(m_config.get().port)
-                .concurrency(m_config.get().threads)
+                .port(port)
+                .concurrency(concurrency)
                 .run();
         }
 
         void Server::stop()
         {
             m_app.stop();
-        }
-
-        const uint16_t Server::get_concurrency()
-        {
-            return m_config.get().threads;
         }
 
         configuration::Configuration &Server::get_config()
@@ -46,16 +46,6 @@ namespace engine
         logging::Logging &Server::get_log()
         {
             return m_log;
-        }
-
-        const std::string &Server::get_bindaddr()
-        {
-            return m_config.get().bindaddr;
-        }
-
-        const uint16_t &Server::get_port()
-        {
-            return m_config.get().port;
         }
     }; // namespace server
 } // namespace engine

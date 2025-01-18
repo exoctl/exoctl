@@ -11,8 +11,16 @@ namespace engine
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
-          m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log), is_running(false)
+          m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
+          is_running(false)
     {
+        // register class server
+        plugins::Plugins::register_class("server", &m_server);
+        plugins::Plugins::register_class_member(
+            "server", "port", m_server.port);
+        plugins::Plugins::register_class_member(
+            "server", "bindaddr", m_server.bindaddr);
+
     }
 
     Engine::~Engine()
@@ -26,21 +34,6 @@ namespace engine
         is_running = false;
         m_server.stop();
         m_plugins.finalize();
-    }
-
-    const std::string &Engine::get_bindaddr()
-    {
-        return m_server.get_bindaddr();
-    }
-
-    const uint16_t &Engine::get_port()
-    {
-        return m_server.get_port();
-    }
-
-    const uint16_t Engine::get_concurrency()
-    {
-        return m_server.get_concurrency();
     }
 
     void Engine::run(const std::function<void()> &p_callback)

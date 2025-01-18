@@ -31,6 +31,36 @@ namespace engine
         }
 
         template <>
+        void Plugins::register_class_member<unsigned short>(
+            const std::string &p_class_name,
+            const std::string &p_member_name,
+            unsigned short &p_member)
+        {
+            lua::Lua::register_class_member(
+                p_class_name, p_member_name, p_member);
+        }
+
+        template <>
+        void Plugins::register_class_member<std::string>(
+            const std::string &p_class_name,
+            const std::string &p_member_name,
+            std::string &p_member)
+        {
+            lua::Lua::register_class_member(
+                p_class_name, p_member_name, p_member);
+        }
+
+        template <>
+        void Plugins::register_class_member<int>(
+            const std::string &p_class_name,
+            const std::string &p_member_name,
+            int &p_member)
+        {
+            lua::Lua::register_class_member(
+                p_class_name, p_member_name, p_member);
+        }
+
+        template <>
         void Plugins::register_t_global<int>(const std::string &p_name,
                                              int &p_value)
         {
@@ -58,6 +88,7 @@ namespace engine
         void Plugins::load_plugin_file(const std::filesystem::path &p_path)
         {
             if (p_path.extension() == ".lua") {
+                LOG(m_log, info, "Loading plugin lua '{}'", p_path.c_str());
                 m_lua.load_script_file(p_path.filename(), p_path);
             }
         }
@@ -99,7 +130,6 @@ namespace engine
                     Plugins::load_plugins_folder(full_path);
                 }
 
-                LOG(m_log, info, "Loading plugin '{}'", entry_name.c_str());
                 Plugins::load_plugin_file(full_path);
             }
             closedir(dir);
