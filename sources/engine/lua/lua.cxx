@@ -25,6 +25,11 @@ namespace engine
             }
         }
 
+        const std::unordered_map<std::string, std::string> &Lua::get_scripts()
+        {
+            return m_scripts;
+        }
+
         bool Lua::load_script_file(const std::string &p_script_name,
                                    const std::string &p_script_path)
         {
@@ -41,10 +46,15 @@ namespace engine
             return true;
         }
 
-        bool Lua::call_function(const std::string &p_function_name,
-                                int p_arg_count,
-                                int p_ret_count)
+        const bool Lua::call_function(const std::string &p_script_name,
+                                      const std::string &p_function_name,
+                                      int p_arg_count,
+                                      int p_ret_count)
         {
+            if (m_scripts.find(p_script_name) == m_scripts.end()) {
+                return false;
+            }
+
             lua_getglobal(m_state, p_function_name.c_str());
             if (!lua_isfunction(m_state, -1)) {
                 lua_pop(m_state, 1);
@@ -55,10 +65,11 @@ namespace engine
                 lua_pop(m_state, 1);
                 return false;
             }
+
             return true;
         }
 
-        void Lua::run_all_scripts()
+        void Lua::run()
         {
             for (const auto &[script_name, script_path] : m_scripts) {
                 if (luaL_dofile(m_state, script_path.c_str()) != LUA_OK) {
@@ -158,9 +169,10 @@ namespace engine
         }
 
         template <>
-        void Lua::register_class_member<unsigned short>(const std::string &class_name,
-                                             const std::string &member_name,
-                                             unsigned short &member)
+        void Lua::register_class_member<unsigned short>(
+            const std::string &class_name,
+            const std::string &member_name,
+            unsigned short &member)
         {
             luaL_getmetatable(m_state, class_name.c_str());
             if (lua_isnil(m_state, -1)) {

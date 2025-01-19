@@ -102,13 +102,16 @@ namespace engine
 
         void Plugins::finalize()
         {
+            for (const auto &[script_name, script_path] : m_lua.get_scripts()) {
+                m_lua.call_function(script_name, "_finalize");
+            }
         }
 
         void Plugins::run()
         {
             if (m_config.get_plugins().enable) {
                 LOG(m_log, info, "Running all plugins ...");
-                m_lua.run_all_scripts();
+                m_lua.run();
             }
         }
 

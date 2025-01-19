@@ -21,9 +21,12 @@ namespace engine
 
             bool load_script_file(const std::string &, const std::string &);
 
-            void run_all_scripts();
+            void run();
 
-            bool call_function(const std::string &, int = 0, int = 0);
+            const bool call_function(const std::string &,
+                                     const std::string &,
+                                     int = 0,
+                                     int = 0);
 
             template <typename T>
             static void register_global(const std::string &, T &);
@@ -51,16 +54,13 @@ namespace engine
                 luaL_newmetatable(m_state, name.c_str());
 
                 lua_pushstring(m_state, "__index");
-                lua_pushlightuserdata(
-                    m_state,
-                    static_cast<void *>(obj.get()));
+                lua_pushlightuserdata(m_state, static_cast<void *>(obj.get()));
                 lua_settable(m_state, -3);
 
                 lua_pushstring(m_state, "__gc");
                 lua_pushcfunction(m_state, [](lua_State *L) -> int {
                     std::unique_ptr<T> *obj_ptr =
-                        static_cast<std::unique_ptr<T> *>(
-                            lua_touserdata(L, 1));
+                        static_cast<std::unique_ptr<T> *>(lua_touserdata(L, 1));
                     obj_ptr->reset();
                     return 0;
                 });
@@ -71,10 +71,11 @@ namespace engine
 
             template <typename T>
             static void register_class_member(const std::string &,
-                                       const std::string &,
-                                       T &);
+                                              const std::string &,
+                                              T &);
 
             lua_State *get_state() const;
+            const std::unordered_map<std::string, std::string> &get_scripts();
 
           private:
             static lua_State *m_state;
