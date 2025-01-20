@@ -39,7 +39,7 @@ namespace engine
             record::yara::Yara m_yara;
             record::logging::Logging m_logging;
             record::sig::Sig m_sig;
-            record::server::Server SERVER_INSTANCE;
+            record::server::Server m_server;
             record::decompiler::Decompiler m_decompiler;
             record::plugins::Plugins m_plugins;
 

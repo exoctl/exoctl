@@ -11,6 +11,8 @@ if (!_plugins_server_class) {
         "server", "port", SERVER_INSTANCE.port);
     plugins::Plugins::register_class_member(
         "server", "bindaddr", SERVER_INSTANCE.bindaddr);
+    plugins::Plugins::register_class_member(
+        "server", "concurrency", SERVER_INSTANCE.concurrency);
     _plugins_server_class = true;
 }
 

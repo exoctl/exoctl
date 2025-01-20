@@ -71,7 +71,7 @@ namespace engine
 
         const record::server::Server &Configuration::get_server() const
         {
-            return SERVER_INSTANCE;
+            return m_server;
         }
 
         const record::lief::Lief &Configuration::get_lief() const
@@ -164,7 +164,7 @@ namespace engine
 
         void Configuration::load_server()
         {
-            SERVER_INSTANCE = (record::server::Server) {
+            m_server = (record::server::Server) {
                 .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
                                      .value<int>()
                                      .value(),
@@ -175,10 +175,10 @@ namespace engine
                                 .value<std::string>()
                                 .value(),
                 .port = m_toml.get_tbl()["server"]["port"]
-                            .value<std::uint16_t>()
+                            .value<unsigned short>()
                             .value(),
                 .threads = m_toml.get_tbl()["server"]["threads"]
-                               .value<std::uint16_t>()
+                               .value<unsigned short>()
                                .value(),
                 .ssl_certificate_path =
                     m_toml.get_tbl()["server"]["ssl_certificate_path"]

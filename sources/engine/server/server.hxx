@@ -32,7 +32,7 @@ namespace engine
             App &get();
             configuration::Configuration &get_config();
             logging::Logging &get_log();
-            uint16_t concurrency;
+            unsigned short concurrency;
             std::string bindaddr;
             unsigned short port;
             const std::string &ssl_certificate_path;
