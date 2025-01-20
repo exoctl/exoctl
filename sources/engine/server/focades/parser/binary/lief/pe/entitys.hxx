@@ -10,4 +10,4 @@ namespace engine::focades::parser::binary::pe
             std::unique_ptr<const LIEF::PE::Binary> *pe;
         } DTO;
     } // namespace record
-} // namespace engine::focades::parser::binary::elf
+} // namespace engine::focades::parser::binary::pe

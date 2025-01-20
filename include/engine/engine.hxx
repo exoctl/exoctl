@@ -11,7 +11,6 @@
 #include <engine/server/server.hxx>
 #include <functional>
 
-
 #define SERVER_INSTANCE m_server
 
 namespace engine

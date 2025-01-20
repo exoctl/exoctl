@@ -1,7 +1,7 @@
 #pragma once
 
-#include <engine/server/server.hxx>
 #include <engine/interfaces/iresponse.hxx>
+#include <engine/server/server.hxx>
 
 namespace engine::server::bridge::gateway::websocket::responses
 {

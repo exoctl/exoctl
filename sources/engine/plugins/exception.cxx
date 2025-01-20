@@ -6,7 +6,8 @@ namespace engine
     {
         namespace exception
         {
-            LoadPlugin::LoadPlugin(const std::string &p_message) : m_error_message(p_message)
+            LoadPlugin::LoadPlugin(const std::string &p_message)
+                : m_error_message(p_message)
             {
             }
 

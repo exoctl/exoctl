@@ -11,7 +11,7 @@ if (!_plugins_server_class) {
         "server", "port", SERVER_INSTANCE.port);
     plugins::Plugins::register_class_member(
         "server", "bindaddr", SERVER_INSTANCE.bindaddr);
-        _plugins_server_class = true;
+    _plugins_server_class = true;
 }
 
 #endif // _PLUGINS_ENGINE

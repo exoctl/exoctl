@@ -1,8 +1,8 @@
 #pragma once
 
-#include <engine/server/focades/rev/disassembly/capstone/entitys.hxx>
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/parser/json.hxx>
+#include <engine/server/focades/rev/disassembly/capstone/entitys.hxx>
 
 namespace engine
 {

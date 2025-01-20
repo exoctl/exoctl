@@ -10,4 +10,4 @@ namespace engine::focades::parser::binary::art
             std::unique_ptr<const LIEF::ART::File> *art;
         } DTO;
     } // namespace record
-} // namespace engine::focades::parser::binary::elf
+} // namespace engine::focades::parser::binary::art

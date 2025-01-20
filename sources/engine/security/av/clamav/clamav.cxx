@@ -1,12 +1,11 @@
 #include <engine/memory/memory.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
 #include <engine/security/av/clamav/exception.hxx>
+#include <fcntl.h>
 #include <fmt/core.h>
 #include <include/engine/memory/exception.hxx>
 #include <memory.h>
-#include <fcntl.h>
 #include <unistd.h>
-
 
 namespace engine
 {
@@ -67,23 +66,22 @@ namespace engine
                     throw clamav::exception::Scan(
                         "scan_fast_bytes() : Scan falied, error : " +
                         std::string(e.what()));
-                })CATCH(memory::exception::Ftruncate, {
+                })
+                CATCH(memory::exception::Ftruncate, {
                     throw clamav::exception::Scan(
                         "scan_fast_bytes() : Scan falied, error : " +
                         std::string(e.what()));
-
                 })
-                
+
                 data->virname = nullptr;
                 struct cl_scan_options scanopts =
-                    (cl_scan_options){.general = p_options.dev,
-                                      .parse = p_options.parse,
-                                      .heuristic = p_options.heuristic,
-                                      .mail = p_options.mail,
-                                      .dev = p_options.dev};
+                    (cl_scan_options) {.general = p_options.dev,
+                                       .parse = p_options.parse,
+                                       .heuristic = p_options.heuristic,
+                                       .mail = p_options.mail,
+                                       .dev = p_options.dev};
                 const cl_error_t ret = cl_scandesc(
                     fd, "tmp_", &data->virname, nullptr, m_engine, &scanopts);
-                
 
                 data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
                 data->math_status = [ret]() {
@@ -100,7 +98,7 @@ namespace engine
                 if (!IS_NULL(p_callback)) {
                     p_callback(data);
                 }
-                
+
                 memory::Memory::close(fd);
             }
 

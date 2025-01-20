@@ -1,11 +1,11 @@
 #pragma once
 
+#include <engine/interfaces/igateway.hxx>
 #include <engine/server/bridge/gateway/map/map.hxx>
 #include <engine/server/bridge/gateway/websocket/websocket.hxx>
-#include <engine/server/server.hxx>
 #include <engine/server/focades/analysis/scan/av/clamav/clamav.hxx>
 #include <engine/server/focades/analysis/scan/yara/yara.hxx>
-#include <engine/interfaces/igateway.hxx>
+#include <engine/server/server.hxx>
 #include <memory>
 
 #define BASE_ANALYSIS API_PREFIX "/analysis"

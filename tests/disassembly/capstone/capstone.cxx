@@ -7,7 +7,8 @@ TEST_F(CapstoneTest, CapstoneDisassembly)
     EXPECT_NO_THROW(capstone->disassembly(
         reinterpret_cast<const uint8_t *>(opcode.data()),
         opcode.size(),
-        [&](const engine::disassembly::capstone::record::Data *p_data, size_t index) {
+        [&](const engine::disassembly::capstone::record::Data *p_data,
+            size_t index) {
             ASSERT_EQ("ret", std::string(p_data->insn[index].mnemonic));
             ASSERT_EQ(1, p_data->insn[index].size);
             ASSERT_GE(p_data->insn[index].address, 0x0);

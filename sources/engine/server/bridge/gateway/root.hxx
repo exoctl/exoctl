@@ -1,12 +1,12 @@
 #pragma once
 
+#include <engine/interfaces/igateway.hxx>
 #include <engine/server/bridge/gateway/map/map.hxx>
 #include <engine/server/bridge/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
-#include <engine/interfaces/igateway.hxx>
 #include <memory>
 
-#define BASE_ROOT   "/"
+#define BASE_ROOT "/"
 
 namespace engine
 {
@@ -27,7 +27,7 @@ namespace engine
                 mutable gateway::Map m_map;
 
                 std::unique_ptr<gateway::Web<>> m_web_root;
-                
+
                 void prepare();
                 void root();
             };

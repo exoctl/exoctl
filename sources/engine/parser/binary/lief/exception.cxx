@@ -10,4 +10,4 @@ namespace engine::parser::binary::lief::exception
     {
         return m_error_message.c_str();
     }
-} // namespace engine::parser::binary
+} // namespace engine::parser::binary::lief::exception

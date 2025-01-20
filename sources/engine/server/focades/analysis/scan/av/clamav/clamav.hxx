@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/server/focades/analysis/scan/av/clamav/entitys.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
+#include <engine/server/focades/analysis/scan/av/clamav/entitys.hxx>
 
 namespace engine::focades::analysis::scan::av
 {

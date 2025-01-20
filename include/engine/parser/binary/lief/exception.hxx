@@ -13,4 +13,4 @@ namespace engine::parser::binary::lief::exception
         explicit Parser(const std::string &);
         const char *what() const noexcept override;
     };
-} // namespace engine::parser::binary
+} // namespace engine::parser::binary::lief::exception

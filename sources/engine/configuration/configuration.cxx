@@ -107,14 +107,13 @@ namespace engine
 
         void Configuration::load_plugins()
         {
-            m_plugins = (record::plugins::Plugins)
-            {
+            m_plugins = (record::plugins::Plugins) {
                 .path = m_toml.get_tbl()["plugins"]["path"]
                             .value<std::string>()
                             .value(),
-                .enable =
-                    m_toml.get_tbl()["plugins"]["enable"].value<bool>().value()
-            };
+                .enable = m_toml.get_tbl()["plugins"]["enable"]
+                              .value<bool>()
+                              .value()};
         }
 
         void Configuration::load_av_clamav()

@@ -30,7 +30,6 @@ namespace engine
                             crow::websocket::connection &p_conn,
                             const std::string &p_data,
                             bool p_is_binary) {
-
                             m_data_metadata->parse(
                                 p_data,
                                 [&](focades::data::metadata::record::DTO

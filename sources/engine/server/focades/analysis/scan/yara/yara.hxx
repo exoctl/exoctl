@@ -2,9 +2,9 @@
 
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
-#include <engine/server/focades/analysis/scan/yara/entitys.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/yara/yara.hxx>
+#include <engine/server/focades/analysis/scan/yara/entitys.hxx>
 #include <string>
 
 namespace engine

@@ -11,8 +11,7 @@ namespace engine
               concurrency(m_config.get_server().threads),
               bindaddr(m_config.get_server().bindaddr),
               port(m_config.get_server().port),
-              ssl_certificate_path(
-                  m_config.get_server().ssl_certificate_path)
+              ssl_certificate_path(m_config.get_server().ssl_certificate_path)
         {
         }
 

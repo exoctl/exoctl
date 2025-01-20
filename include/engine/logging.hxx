@@ -52,7 +52,7 @@ namespace engine
             std::shared_ptr<spdlog::logger> create_logger(const std::string &,
                                                           const std::string &);
 
-           static  std::shared_ptr<spdlog::logger> get_logger(
+            static std::shared_ptr<spdlog::logger> get_logger(
                 const std::string &);
 
           private:

@@ -1,5 +1,5 @@
-#include <server/focades/data/metadata.hxx>
 #include <fmt/core.h>
+#include <server/focades/data/metadata.hxx>
 
 BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
 {
@@ -8,10 +8,11 @@ BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
     for (auto _ : state) {
         benchmark::DoNotOptimize(test_string);
 
-        metadata->parse(test_string,
-                        [&](engine::focades::data::metadata::record::DTO *p_dto) {
-                            benchmark::DoNotOptimize(p_dto);
-                        });
+        metadata->parse(
+            test_string,
+            [&](engine::focades::data::metadata::record::DTO *p_dto) {
+                benchmark::DoNotOptimize(p_dto);
+            });
     }
 
     state.SetBytesProcessed(static_cast<int64_t>(state.iterations()) *

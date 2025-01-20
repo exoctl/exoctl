@@ -19,9 +19,10 @@ namespace engine
                                      on_open_callback on_open,
                                      on_close_callback on_close)
                     : SERVER_INSTANCE(p_server), m_url(p_url),
-                      m_context(p_server.get_config()), m_on_message(on_message),
-                      m_on_error(on_error), m_on_accept(on_accept),
-                      m_on_open(on_open), m_on_close(on_close)
+                      m_context(p_server.get_config()),
+                      m_on_message(on_message), m_on_error(on_error),
+                      m_on_accept(on_accept), m_on_open(on_open),
+                      m_on_close(on_close)
                 {
                     LOG(SERVER_INSTANCE.get_log(),
                         info,
@@ -101,9 +102,11 @@ namespace engine
 
                     LOG(SERVER_INSTANCE.get_log(),
                         info,
-                        "Connection opened {} from IP: '{}',  SubProtocol : '{}'",
+                        "Connection opened {} from IP: '{}',  SubProtocol : "
+                        "'{}'",
                         m_url,
-                        m_context.get_remote_ip(p_conn), m_context.get_subprotocol(p_conn));
+                        m_context.get_remote_ip(p_conn),
+                        m_context.get_subprotocol(p_conn));
                 }
 
                 bool WebSocket::def_accept_connection(

@@ -7,7 +7,8 @@ namespace engine
     {
         namespace bridge
         {
-            Rev::Rev(Server &p_server) : SERVER_INSTANCE(p_server), m_map(BASE_REV)
+            Rev::Rev(Server &p_server)
+                : SERVER_INSTANCE(p_server), m_map(BASE_REV)
             {
                 Rev::prepare();
 
@@ -67,8 +68,8 @@ namespace engine
                                     p_context.broadcast_text(
                                         &p_conn,
                                         gateway::websocket::responses::
-                                            UnsupportedData::to_json().
-                                                to_string());
+                                            UnsupportedData::to_json()
+                                                .to_string());
                                 }
                             });
                 });
@@ -77,31 +78,32 @@ namespace engine
             void Rev::capstone_arm64()
             {
                 m_map.add_route("/disassembly/capstone/arm64", [&]() {
-                    m_socket_capstone_arm64 = std::make_unique<
-                        gateway::WebSocket>(
-                        SERVER_INSTANCE,
-                        BASE_REV "/disassembly/capstone/arm64",
-                        UINT64_MAX,
-                        [&](gateway::websocket::Context &p_context,
-                            crow::websocket::connection &p_conn,
-                            const std::string &p_data,
-                            bool p_is_binary) {
-                            if (p_is_binary) {
-                                m_capstone_arm64->disassembly(
-                                    p_data,
-                                    [&](focades::rev::disassembly::capstone::
-                                            record::DTO *p_dto) {
-                                        p_context.broadcast_text(
-                                            &p_conn,
-                                            m_capstone_arm64->dto_json(p_dto)
-                                                .to_string());
-                                    });
-                            } else {
-                                 p_context.broadcast_text(
+                    m_socket_capstone_arm64 =
+                        std::make_unique<gateway::WebSocket>(
+                            SERVER_INSTANCE,
+                            BASE_REV "/disassembly/capstone/arm64",
+                            UINT64_MAX,
+                            [&](gateway::websocket::Context &p_context,
+                                crow::websocket::connection &p_conn,
+                                const std::string &p_data,
+                                bool p_is_binary) {
+                                if (p_is_binary) {
+                                    m_capstone_arm64->disassembly(
+                                        p_data,
+                                        [&](focades::rev::disassembly::
+                                                capstone::record::DTO *p_dto) {
+                                            p_context.broadcast_text(
+                                                &p_conn,
+                                                m_capstone_arm64
+                                                    ->dto_json(p_dto)
+                                                    .to_string());
+                                        });
+                                } else {
+                                    p_context.broadcast_text(
                                         &p_conn,
                                         gateway::websocket::responses::
-                                            UnsupportedData::to_json().
-                                                to_string());
+                                            UnsupportedData::to_json()
+                                                .to_string());
                                 }
                             });
                 });

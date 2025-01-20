@@ -23,7 +23,8 @@ namespace engine
                     Web(Server &p_server,
                         const std::string &p_url,
                         on_request_callback on_request)
-                        : SERVER_INSTANCE(p_server), m_url(p_url), m_on_request(on_request)
+                        : SERVER_INSTANCE(p_server), m_url(p_url),
+                          m_on_request(on_request)
                     {
                         LOG(SERVER_INSTANCE.get_log(),
                             info,

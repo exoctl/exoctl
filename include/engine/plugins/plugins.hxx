@@ -1,8 +1,8 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/lua/lua.hxx>
 #include <engine/logging.hxx>
+#include <engine/lua/lua.hxx>
 #include <engine/plugins/exception.hxx>
 #include <filesystem>
 #include <memory>

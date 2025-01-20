@@ -10,4 +10,4 @@ namespace engine::focades::parser::binary::dex
             std::unique_ptr<const LIEF::DEX::File> *dex;
         } DTO;
     } // namespace record
-} // namespace engine::focades::parser::binary::elf
+} // namespace engine::focades::parser::binary::dex

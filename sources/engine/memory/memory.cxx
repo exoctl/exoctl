@@ -34,7 +34,7 @@ namespace engine::memory
         const int ret = ::ftruncate(p_fd, p_size);
         if (ret < 0) {
             throw exception::Ftruncate("ftruncate() failed: " +
-                                std::string(strerror(errno)));
+                                       std::string(strerror(errno)));
         }
     }
 

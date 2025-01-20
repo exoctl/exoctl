@@ -141,7 +141,9 @@ namespace engine
                         p_total_rules);
                 });
 
-                LOG(SERVER_INSTANCE.get_log(), info, "Loading rules clamav ...");
+                LOG(SERVER_INSTANCE.get_log(),
+                    info,
+                    "Loading rules clamav ...");
                 m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
                     LOG(SERVER_INSTANCE.get_log(),
                         info,

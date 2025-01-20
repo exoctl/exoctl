@@ -1,9 +1,9 @@
 #include <cstdint>
-#include <engine/server/bridge/bridge.hxx>
-#include <engine/server/exception.hxx>
 #include <engine/disassembly/capstone/exception.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/server/bridge/bridge.hxx>
+#include <engine/server/exception.hxx>
 
 namespace engine
 {

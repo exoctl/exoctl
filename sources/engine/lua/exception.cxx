@@ -6,7 +6,8 @@ namespace engine
     {
         namespace exception
         {
-            RegisterClassMember::RegisterClassMember(const std::string &p_message)
+            RegisterClassMember::RegisterClassMember(
+                const std::string &p_message)
                 : m_error_message(p_message)
             {
             }

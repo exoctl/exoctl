@@ -10,7 +10,7 @@ directories=("sources" "include" "tests" "benchmark")
 # Run clang-format for each directory
 for dir in "${directories[@]}"; do
   echo -e "[${GREEN}*${NC}] Formatting files in ${dir}..."
-  find "$dir" -name "*.cxx" -o -name "*.hxx" | xargs clang-format --verbose -i
+  find "$dir" -type f \( -name "*.cxx" -o -name "*.hxx" -o -name "*.inc" \) | xargs clang-format --verbose -i
 done
 
 echo -e "${GREEN}Formatting completed.${NC}"

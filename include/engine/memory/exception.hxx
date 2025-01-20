@@ -34,7 +34,6 @@ namespace engine::memory::exception
         const char *what() const noexcept override;
     };
 
-
     class Write : public interface::IException
     {
       private:

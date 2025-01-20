@@ -1,8 +1,8 @@
 #pragma once
 
 #include <engine/decompiler/llama/entitys.hxx>
-#include <functional>
 #include <engine/llama/llama.hxx>
+#include <functional>
 
 #define PROMPT_DECOMPILER_C ""
 

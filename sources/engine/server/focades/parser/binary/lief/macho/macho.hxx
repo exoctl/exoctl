@@ -1,8 +1,8 @@
 #pragma once
 
-#include <engine/server/focades/parser/binary/lief/macho/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json.hxx>
+#include <engine/server/focades/parser/binary/lief/macho/entitys.hxx>
 
 namespace engine::focades::parser::binary
 {

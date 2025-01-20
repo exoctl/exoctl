@@ -1,6 +1,6 @@
-#include <engine/server/focades/parser/binary/lief/art/art.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json.hxx>
+#include <engine/server/focades/parser/binary/lief/art/art.hxx>
 
 namespace engine
 {

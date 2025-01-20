@@ -1,6 +1,6 @@
-#include <engine/server/focades/analysis/scan/yara/yara.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/server/focades/analysis/scan/yara/yara.hxx>
 #include <string>
 
 namespace engine

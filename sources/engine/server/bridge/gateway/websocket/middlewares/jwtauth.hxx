@@ -14,7 +14,6 @@ namespace engine::server::middleware::websocket
                            crow::response &res,
                            context &ctx)
         {
-
         }
 
         void after_handle(crow::request &, crow::response &, context &)

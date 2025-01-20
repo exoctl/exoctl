@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/interfaces/igateway.hxx>
 #include <engine/server/bridge/gateway/map/map.hxx>
 #include <engine/server/bridge/gateway/websocket/websocket.hxx>
 #include <engine/server/focades/parser/binary/lief/art/art.hxx>
@@ -7,7 +8,6 @@
 #include <engine/server/focades/parser/binary/lief/elf/elf.hxx>
 #include <engine/server/focades/parser/binary/lief/macho/macho.hxx>
 #include <engine/server/focades/parser/binary/lief/pe/pe.hxx>
-#include <engine/interfaces/igateway.hxx>
 
 #define BASE_PARSER API_PREFIX "/parser"
 

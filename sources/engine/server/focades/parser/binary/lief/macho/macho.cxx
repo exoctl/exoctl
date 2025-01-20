@@ -1,7 +1,7 @@
 #include <engine/memory/memory.hxx>
+#include <engine/parser/binary/lief/exception.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/server/focades/parser/binary/lief/macho/macho.hxx>
-#include <engine/parser/binary/lief/exception.hxx>
 
 namespace engine
 {
