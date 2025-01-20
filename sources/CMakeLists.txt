@@ -67,6 +67,7 @@ if(FLAGS_OPTIMIZATIONS)
         -fmodules-ts
         -ftree-vectorize
         -mavx
+        -fuse-ld=gold
         -ldl
         -fmodules-ts
         -fno-stack-protector
@@ -80,6 +81,7 @@ elseif(FLAGS_DEBUG)
     target_compile_options(engine PRIVATE
         -ggdb3
         -ldl
+        -fuse-ld=gold
         -fmodules-ts
         -fms-extensions
         --all-warnings
