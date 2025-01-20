@@ -3,6 +3,7 @@ if engine.is_running() then
     -- Log the server's bind address and port
     print("[_example] - server.bindaddr = " .. server.bindaddr())
     print("[_example] - server.port = " .. tostring(server.port()))
+    print("[_example] - server.concurrency = " .. tostring(server.concurrency()))
 else
     print("[_example] - The engine is not running.")
 end
