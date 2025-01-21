@@ -8,7 +8,7 @@ namespace engine
         namespace bridge
         {
             Root::Root(Server &p_server)
-                : SERVER_INSTANCE(p_server), m_map(BASE_ROOT)
+                : m_server(p_server), m_map(BASE_ROOT)
             {
                 Root::prepare();
 
@@ -29,7 +29,7 @@ namespace engine
 
             void Root::prepare()
             {
-                LOG(SERVER_INSTANCE.get_log(),
+                LOG(m_server.get_log(),
                     info,
                     "Preparing gateway root routes ...");
             }
@@ -39,7 +39,7 @@ namespace engine
                 m_map.add_route(BASE_ROOT, [&]() {
                     m_web_root = std::make_unique<
                         engine::server::bridge::gateway::Web<>>(
-                        SERVER_INSTANCE,
+                        m_server,
                         BASE_ROOT,
                         [](const crow::request &req) -> crow::response {
                             return crow::response(200, "The best engine !");

@@ -25,7 +25,7 @@ namespace engine
                 void load() const override;
 
               private:
-                Server &SERVER_INSTANCE;
+                Server &m_server;
                 mutable gateway::Map m_map;
 
                 std::unique_ptr<gateway::WebSocket> m_socket_scan_yara;

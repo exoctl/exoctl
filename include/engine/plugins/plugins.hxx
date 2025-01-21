@@ -31,9 +31,13 @@ namespace engine
                                               void (T::*)());
 
             template <typename T>
-            static void register_class_member(const std::string &,
-                                              const std::string &,
-                                              T &);
+            static void register_class_member(const std::string &p_class,
+                                              const std::string &p_member_name,
+                                              T &p_member)
+            {
+                lua::Lua::register_class_member(
+                    p_class, p_member_name, p_member);
+            }
 
             template <typename T>
             static void register_class(const std::string &p_class, T *p_ptr)

@@ -23,26 +23,26 @@ namespace engine
                     Web(Server &p_server,
                         const std::string &p_url,
                         on_request_callback on_request)
-                        : SERVER_INSTANCE(p_server), m_url(p_url),
+                        : m_server(p_server), m_url(p_url),
                           m_on_request(on_request)
                     {
-                        LOG(SERVER_INSTANCE.get_log(),
+                        LOG(m_server.get_log(),
                             info,
                             "Creating HTTP route for URL: '{}'",
                             m_url);
 
-                        SERVER_INSTANCE.get()
+                        m_server.get()
                             .route_dynamic(m_url)
                             .middlewares<crow::App<middleware::web::JWTAuth>,
                                          middleware::web::JWTAuth>()(
                                 m_on_request);
-                        SERVER_INSTANCE.get().validate();
+                        m_server.get().validate();
                     }
 
                     ~Web() = default;
 
                   private:
-                    Server &SERVER_INSTANCE;
+                    Server &m_server;
                     std::string m_url;
                     on_request_callback m_on_request;
                 };

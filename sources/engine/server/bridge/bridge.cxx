@@ -9,22 +9,18 @@ namespace engine
 {
     namespace server
     {
-        Bridge::Bridge(Server &p_server) : SERVER_INSTANCE(p_server)
+        Bridge::Bridge(Server &p_server) : m_server(p_server)
         {
-            m_analysis = std::make_unique<bridge::Analysis>(SERVER_INSTANCE);
-            m_data = std::make_unique<bridge::Data>(SERVER_INSTANCE);
-            m_rev = std::make_unique<bridge::Rev>(SERVER_INSTANCE);
-            m_parser = std::make_unique<bridge::Parser>(SERVER_INSTANCE);
-            m_root = std::make_unique<bridge::Root>(SERVER_INSTANCE);
-        }
-
-        Bridge::~Bridge()
-        {
+            m_analysis = std::make_unique<bridge::Analysis>(m_server);
+            m_data = std::make_unique<bridge::Data>(m_server);
+            m_rev = std::make_unique<bridge::Rev>(m_server);
+            m_parser = std::make_unique<bridge::Parser>(m_server);
+            m_root = std::make_unique<bridge::Root>(m_server);
         }
 
         void Bridge::load()
         {
-            LOG(SERVER_INSTANCE.get_log(), info, "Loading Gateways ... ");
+            LOG(m_server.get_log(), info, "Loading Gateways ... ");
 
             TRY_BEGIN()
 
@@ -36,15 +32,15 @@ namespace engine
 
             TRY_END()
             CATCH(std::bad_alloc, {
-                LOG(SERVER_INSTANCE.get_log(), error, "{}", e.what());
+                LOG(m_server.get_log(), error, "{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::runtime_error, {
-                LOG(SERVER_INSTANCE.get_log(), error, "{}", e.what());
+                LOG(m_server.get_log(), error, "{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::exception, {
-                LOG(SERVER_INSTANCE.get_log(), warn, "{}", e.what());
+                LOG(m_server.get_log(), warn, "{}", e.what());
                 throw exception::ParcialAbort(e.what());
             })
         }

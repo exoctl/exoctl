@@ -51,7 +51,7 @@ namespace engine
                     const std::size_t size_connections() const;
 
                   private:
-                    Server &SERVER_INSTANCE;
+                    Server &m_server;
                     std::string m_url;
                     websocket::Context m_context;
                     std::mutex m_mtx;

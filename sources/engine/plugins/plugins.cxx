@@ -21,46 +21,6 @@ namespace engine
         }
 
         template <>
-        void Plugins::register_class_member<bool>(
-            const std::string &p_class_name,
-            const std::string &p_member_name,
-            bool &p_member)
-        {
-            lua::Lua::register_class_member(
-                p_class_name, p_member_name, p_member);
-        }
-
-        template <>
-        void Plugins::register_class_member<unsigned short>(
-            const std::string &p_class_name,
-            const std::string &p_member_name,
-            unsigned short &p_member)
-        {
-            lua::Lua::register_class_member(
-                p_class_name, p_member_name, p_member);
-        }
-
-        template <>
-        void Plugins::register_class_member<std::string>(
-            const std::string &p_class_name,
-            const std::string &p_member_name,
-            std::string &p_member)
-        {
-            lua::Lua::register_class_member(
-                p_class_name, p_member_name, p_member);
-        }
-
-        template <>
-        void Plugins::register_class_member<int>(
-            const std::string &p_class_name,
-            const std::string &p_member_name,
-            int &p_member)
-        {
-            lua::Lua::register_class_member(
-                p_class_name, p_member_name, p_member);
-        }
-
-        template <>
         void Plugins::register_t_global<int>(const std::string &p_name,
                                              int &p_value)
         {

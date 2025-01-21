@@ -20,12 +20,12 @@ namespace engine
         {
           public:
             Bridge(Server &);
-            ~Bridge();
+            ~Bridge() = default;
 
             void load();
 
           private:
-            Server &SERVER_INSTANCE;
+            Server &m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::Analysis> m_analysis;
