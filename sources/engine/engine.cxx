@@ -2,7 +2,6 @@
 #include <engine/exception.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/server/exception.hxx>
-#include <iostream>
 
 namespace engine
 {
@@ -33,8 +32,6 @@ namespace engine
 
     void Engine::run(const std::function<void()> &p_callback)
     {
-        std::cout << m_server.port;
-
         is_running = true;
 
         TRY_BEGIN()
