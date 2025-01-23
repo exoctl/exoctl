@@ -3,15 +3,14 @@
 #include <engine/configuration/configuration.hxx>
 #include <engine/logging.hxx>
 #include <engine/lua/lua.hxx>
-#include <engine/plugins/exception.hxx>
 #include <filesystem>
 #include <memory>
+#include <thread>
 
 namespace engine
 {
     namespace plugins
     {
-        // TODO: improve the plugin manager so it becomes async
         class Plugins
         {
           public:
@@ -59,8 +58,9 @@ namespace engine
           private:
             configuration::Configuration &m_config;
             logging::Logging &m_log;
-
             lua::Lua m_lua;
+
+            void run_plugins_thread();
         };
     } // namespace plugins
 } // namespace engine

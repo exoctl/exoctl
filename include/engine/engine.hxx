@@ -29,6 +29,7 @@ namespace engine
         parser::binary::lief::_::Log m_lief_log;
 
         plugins::Plugins m_plugins;
+        void finalize();
 
       public:
         bool is_running;

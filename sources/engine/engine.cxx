@@ -8,8 +8,7 @@ namespace engine
     Engine::Engine(configuration::Configuration &p_configuration,
                    logging::Logging &p_log)
         : m_configuration(p_configuration), m_log(p_log),
-          SERVER_INSTANCE(p_configuration, p_log),
-          m_server_bridge(m_server),
+          SERVER_INSTANCE(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
           m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
@@ -20,14 +19,18 @@ namespace engine
 
     Engine::~Engine()
     {
-        is_running = false;
-        m_plugins.finalize();
     }
 
     void Engine::stop()
     {
-        is_running = false;
         SERVER_INSTANCE.stop();
+        Engine::finalize();
+    }
+
+    void Engine::finalize()
+    {
+        is_running = false;
+        m_plugins.finalize();
     }
 
     void Engine::run(const std::function<void()> &p_callback)
@@ -39,10 +42,11 @@ namespace engine
         m_server_bridge.load();
         m_plugins.load();
 
-        (!IS_NULL(p_callback)) ? p_callback() : (void) 0;
+        if (p_callback) {
+            p_callback();
+        }
 
         m_plugins.run();
-
         SERVER_INSTANCE.run();
 
         TRY_END()
@@ -57,5 +61,7 @@ namespace engine
         })
         CATCH(server::exception::ParcialAbort,
               { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
+
+        Engine::finalize();
     }
 } // namespace engine

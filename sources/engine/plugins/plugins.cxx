@@ -1,8 +1,10 @@
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <fmt/core.h>
 #include <sys/types.h>
+#include <thread>
 
 namespace engine
 {
@@ -69,10 +71,19 @@ namespace engine
 
         void Plugins::run()
         {
-            if (m_config.get_plugins().enable) {
-                LOG(m_log, info, "Running all plugins ...");
-                m_lua.run();
+            if (!m_config.get_plugins().enable) {
+                LOG(m_log, warn, "Plugins are not enabled");
+                return;
             }
+
+            LOG(m_log, info, "Launching plugins threads...");
+
+            std::thread(&Plugins::run_plugins_thread, this).detach();
+        }
+
+        void Plugins::run_plugins_thread()
+        {
+            m_lua.run();
         }
 
         void Plugins::load_plugins_folder(const std::string &p_path)
