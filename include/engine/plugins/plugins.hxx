@@ -5,7 +5,6 @@
 #include <engine/lua/lua.hxx>
 #include <filesystem>
 #include <memory>
-#include <thread>
 
 namespace engine
 {
@@ -15,7 +14,7 @@ namespace engine
         {
           public:
             Plugins(configuration::Configuration &, logging::Logging &);
-            ~Plugins();
+            ~Plugins() = default;
 
             void load_plugin_buff(const std::string &);
             void load_plugin_file(const std::filesystem::path &);

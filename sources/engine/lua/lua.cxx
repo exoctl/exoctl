@@ -1,8 +1,11 @@
 #include <engine/lua/exception.hxx>
 #include <engine/lua/lua.hxx>
+#include <iostream>
 #include <string>
+#include <thread>
 #include <type_traits>
 #include <unordered_map>
+#include <vector>
 
 namespace engine
 {
@@ -71,9 +74,20 @@ namespace engine
 
         void Lua::run()
         {
+            std::vector<std::thread> threads;
+
             for (const auto &[script_name, script_path] : m_scripts) {
-                if (luaL_dofile(m_state, script_path.c_str()) != LUA_OK) {
-                    lua_pop(m_state, 1);
+                threads.push_back(std::thread([this, script_path]() {
+                    lua_State *L_thread = lua_newthread(m_state);
+
+                    if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK)
+                        lua_pop(L_thread, 1);
+                }));
+            }
+
+            for (auto &t : threads) {
+                if (t.joinable()) {
+                    t.join();
                 }
             }
         }
@@ -159,175 +173,5 @@ namespace engine
             lua_settable(m_state, -3);
         }
 
-        template <typename T>
-        void Lua::register_class_member(const std::string &class_name,
-                                        const std::string &member_name,
-                                        T &member)
-        {
-            static_assert(sizeof(T) == 0,
-                          "Unsupported type for register_class_member.");
-        }
-
-        template <>
-        void Lua::register_class_member<unsigned short>(
-            const std::string &class_name,
-            const std::string &member_name,
-            unsigned short &member)
-        {
-            luaL_getmetatable(m_state, class_name.c_str());
-            if (lua_isnil(m_state, -1)) {
-                lua_pop(m_state, 1);
-                throw lua::exception::RegisterClassMember(
-                    "Class not registered: " + class_name);
-            }
-
-            lua_pushstring(m_state, member_name.c_str());
-            lua_pushlightuserdata(m_state, &member);
-            lua_pushcclosure(
-                m_state,
-                [](lua_State *L) -> int {
-                    unsigned short *ptr = static_cast<unsigned short *>(
-                        lua_touserdata(L, lua_upvalueindex(1)));
-                    if (lua_gettop(L) == 0) { // Getter
-                        lua_pushinteger(L, *ptr);
-                    } else { // Setter
-                        *ptr = luaL_checkinteger(L, 1);
-                    }
-                    return 1;
-                },
-                1);
-            lua_settable(m_state, -3);
-            lua_pop(m_state, 1);
-        }
-
-        template <>
-        void Lua::register_class_member<int>(const std::string &class_name,
-                                             const std::string &member_name,
-                                             int &member)
-        {
-            luaL_getmetatable(m_state, class_name.c_str());
-            if (lua_isnil(m_state, -1)) {
-                lua_pop(m_state, 1);
-                throw lua::exception::RegisterClassMember(
-                    "Class not registered: " + class_name);
-            }
-
-            lua_pushstring(m_state, member_name.c_str());
-            lua_pushlightuserdata(m_state, &member);
-            lua_pushcclosure(
-                m_state,
-                [](lua_State *L) -> int {
-                    int *ptr = static_cast<int *>(
-                        lua_touserdata(L, lua_upvalueindex(1)));
-                    if (lua_gettop(L) == 0) { // Getter
-                        lua_pushinteger(L, *ptr);
-                    } else { // Setter
-                        *ptr = luaL_checkinteger(L, 1);
-                    }
-                    return 1;
-                },
-                1);
-            lua_settable(m_state, -3);
-            lua_pop(m_state, 1);
-        }
-
-        template <>
-        void Lua::register_class_member<std::string>(
-            const std::string &class_name,
-            const std::string &member_name,
-            std::string &member)
-        {
-            luaL_getmetatable(m_state, class_name.c_str());
-            if (lua_isnil(m_state, -1)) {
-                lua_pop(m_state, 1);
-                throw lua::exception::RegisterClassMember(
-                    "Class not registered: " + class_name);
-            }
-
-            lua_pushstring(m_state, member_name.c_str());
-            lua_pushlightuserdata(m_state, &member);
-            lua_pushcclosure(
-                m_state,
-                [](lua_State *L) -> int {
-                    std::string *ptr = static_cast<std::string *>(
-                        lua_touserdata(L, lua_upvalueindex(1)));
-                    if (lua_gettop(L) == 0) { // Getter
-                        lua_pushstring(L, ptr->c_str());
-                    } else { // Setter
-                        *ptr = luaL_checkstring(L, 1);
-                    }
-                    return 1;
-                },
-                1);
-            lua_settable(m_state, -3);
-            lua_pop(m_state, 1);
-        }
-
-        // Especialização para `bool`
-        template <>
-        void Lua::register_class_member<bool>(const std::string &class_name,
-                                              const std::string &member_name,
-                                              bool &member)
-        {
-            luaL_getmetatable(m_state, class_name.c_str());
-            if (lua_isnil(m_state, -1)) {
-                lua_pop(m_state, 1);
-                throw std::runtime_error("Class not registered: " + class_name);
-            }
-
-            lua_pushstring(m_state, member_name.c_str());
-            lua_pushlightuserdata(m_state, &member);
-            lua_pushcclosure(
-                m_state,
-                [](lua_State *L) -> int {
-                    bool *ptr = static_cast<bool *>(
-                        lua_touserdata(L, lua_upvalueindex(1)));
-                    if (lua_gettop(L) == 0) { // Getter
-                        lua_pushboolean(L, *ptr);
-                    } else { // Setter
-                        *ptr = lua_toboolean(L, 1);
-                    }
-                    return 1;
-                },
-                1);
-            lua_settable(m_state, -3);
-            lua_pop(m_state, 1);
-        }
-
-        template <>
-        void Lua::register_class_member<double>(const std::string &class_name,
-                                                const std::string &member_name,
-                                                double &member)
-        {
-            luaL_getmetatable(m_state, class_name.c_str());
-            if (lua_isnil(m_state, -1)) {
-                lua_pop(m_state, 1);
-                throw lua::exception::RegisterClassMember(
-                    "Class not registered: " + class_name);
-            }
-
-            lua_pushstring(m_state, member_name.c_str());
-            lua_pushlightuserdata(m_state, &member);
-            lua_pushcclosure(
-                m_state,
-                [](lua_State *L) -> int {
-                    double *ptr = static_cast<double *>(
-                        lua_touserdata(L, lua_upvalueindex(1)));
-                    if (lua_gettop(L) == 0) { // Getter
-                        lua_pushnumber(L, *ptr);
-                    } else { // Setter
-                        *ptr = luaL_checknumber(L, 1);
-                    }
-                    return 1;
-                },
-                1);
-            lua_settable(m_state, -3);
-            lua_pop(m_state, 1);
-        }
-
-        lua_State *Lua::get_state() const
-        {
-            return m_state;
-        }
     } // namespace lua
 } // namespace engine

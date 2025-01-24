@@ -18,10 +18,6 @@ namespace engine
                 LOG(m_log, warn, "Plugins not enabled");
         }
 
-        Plugins::~Plugins()
-        {
-        }
-
         template <>
         void Plugins::register_t_global<int>(const std::string &p_name,
                                              int &p_value)
