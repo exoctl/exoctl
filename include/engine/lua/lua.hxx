@@ -8,10 +8,11 @@ extern "C" {
 #include <atomic>
 #include <engine/lua/exception.hxx>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
 namespace engine
 {
@@ -38,6 +39,8 @@ namespace engine
             template <typename T>
             static void register_class(const std::string &name, T *obj)
             {
+                std::lock_guard<std::mutex> lock(m_state_mutex);
+
                 luaL_newmetatable(m_state, name.c_str());
                 lua_pushstring(m_state, "__index");
                 lua_pushlightuserdata(m_state, obj);
@@ -55,6 +58,8 @@ namespace engine
             static void register_class(const std::string &name,
                                        std::unique_ptr<T> &obj)
             {
+                std::lock_guard<std::mutex> lock(m_state_mutex);
+
                 luaL_newmetatable(m_state, name.c_str());
 
                 lua_pushstring(m_state, "__index");
@@ -78,6 +83,8 @@ namespace engine
                                               const std::string &member_name,
                                               T &value)
             {
+                std::lock_guard<std::mutex> lock(m_state_mutex);
+
                 luaL_getmetatable(m_state, class_name.c_str());
                 if (lua_isnil(m_state, -1)) {
                     lua_pop(m_state, 1);
@@ -126,6 +133,7 @@ namespace engine
             const std::unordered_map<std::string, std::string> &get_scripts();
 
           private:
+            static std::mutex m_state_mutex;
             static lua_State *m_state;
             std::unordered_map<std::string, std::string> m_scripts;
             std::vector<std::thread> m_threads_scripts;

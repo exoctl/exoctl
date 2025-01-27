@@ -1,6 +1,7 @@
 #include <engine/lua/exception.hxx>
 #include <engine/lua/lua.hxx>
 #include <iostream>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <type_traits>
@@ -12,9 +13,11 @@ namespace engine
     namespace lua
     {
         lua_State *Lua::m_state = nullptr;
+        std::mutex Lua::m_state_mutex;
 
         Lua::Lua()
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             if (!m_state) {
                 m_state = luaL_newstate();
                 luaL_openlibs(m_state);
@@ -29,8 +32,10 @@ namespace engine
                 }
             }
 
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             if (m_state) {
                 lua_close(m_state);
+                m_state = nullptr;
             }
         }
 
@@ -42,6 +47,7 @@ namespace engine
         bool Lua::load_script_file(const std::string &p_script_name,
                                    const std::string &p_script_path)
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             if (m_scripts.find(p_script_name) != m_scripts.end()) {
                 return false;
             }
@@ -60,6 +66,7 @@ namespace engine
                                       int p_arg_count,
                                       int p_ret_count)
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             if (m_scripts.find(p_script_name) == m_scripts.end()) {
                 return false;
             }
@@ -80,14 +87,16 @@ namespace engine
 
         void Lua::run()
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             m_threads_scripts.reserve(m_scripts.size());
 
             for (const auto &[script_name, script_path] : m_scripts) {
                 m_threads_scripts.push_back(std::thread([this, script_path]() {
                     lua_State *L_thread = lua_newthread(m_state);
 
-                    if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK)
+                    if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK) {
                         lua_pop(L_thread, 1);
+                    }
                 }));
             }
         }
@@ -95,6 +104,7 @@ namespace engine
         template <>
         void Lua::register_global<int>(const std::string &name, int &value)
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             lua_pushlightuserdata(m_state, &value);
             lua_pushcclosure(
                 m_state,
@@ -115,6 +125,7 @@ namespace engine
         template <>
         void Lua::register_global<bool>(const std::string &name, bool &value)
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             lua_pushlightuserdata(m_state, &value);
             lua_pushcclosure(
                 m_state,
@@ -136,6 +147,7 @@ namespace engine
         void Lua::register_global<std::string>(const std::string &name,
                                                std::string &value)
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             lua_pushlightuserdata(m_state, &value);
             lua_pushcclosure(
                 m_state,
@@ -158,6 +170,7 @@ namespace engine
                                         const std::string &method_name,
                                         void (T::*method)())
         {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
             lua_getglobal(m_state, class_name.c_str());
             lua_pushstring(m_state, method_name.c_str());
             lua_pushlightuserdata(m_state, method);
