@@ -5,6 +5,9 @@
 #include <fmt/core.h>
 #include <sys/types.h>
 #include <thread>
+#include <time.h>
+
+#define _SLEEP(time) sleep(time)
 
 namespace engine
 {
@@ -60,21 +63,24 @@ namespace engine
 
         void Plugins::finalize()
         {
-            for (const auto &[script_name, script_path] : m_lua.get_scripts()) {
-                m_lua.call_function(script_name, "_finalize");
+            if (m_config.get_plugins().enable) {
+                for (const auto &[script_name, script_path] :
+                     m_lua.get_scripts()) {
+                    m_lua.call_function(script_name, "_finalize");
+                }
             }
+
+            _SLEEP(1);
         }
 
         void Plugins::run()
         {
-            if (!m_config.get_plugins().enable) {
-                LOG(m_log, warn, "Plugins are not enabled");
-                return;
+            if (m_config.get_plugins().enable) {
+                LOG(m_log, info, "Launching plugins threads...");
+                std::thread(&Plugins::run_plugins_thread, this).detach();
             }
 
-            LOG(m_log, info, "Launching plugins threads...");
-
-            std::thread(&Plugins::run_plugins_thread, this).detach();
+            _SLEEP(1);
         }
 
         void Plugins::run_plugins_thread()

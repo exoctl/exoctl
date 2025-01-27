@@ -47,6 +47,12 @@ namespace application
             "Debug");
 #endif
 
+#ifndef ENGINE_PRO
+    fmt::print("Engine is pro");
+#else
+    fmt::print("Engine is not pro");
+#endif
+
         LOG(m_log,
             info,
             "Running engine with configuration from '{}'...",

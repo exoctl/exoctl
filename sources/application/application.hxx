@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 
+
 #define ENGINE_INSTANCE m_engine
 
 namespace application

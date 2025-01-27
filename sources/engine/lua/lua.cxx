@@ -75,6 +75,7 @@ namespace engine
         void Lua::run()
         {
             std::vector<std::thread> threads;
+            threads.reserve(m_scripts.size());
 
             for (const auto &[script_name, script_path] : m_scripts) {
                 threads.push_back(std::thread([this, script_path]() {

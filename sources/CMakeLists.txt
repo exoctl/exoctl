@@ -1,6 +1,7 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
+set(ENGINE_PRO ON CACHE BOOL "Enable Skull Pro flags")
 
 # Include directories
 include_directories(
@@ -59,7 +60,12 @@ target_link_libraries(engine PRIVATE
     crypto
 )
 
-# Compiler flags for optimizations and debugging
+if(ENGINE_PRO)
+    message(STATUS "Building with ENGINE_PRO enabled")
+    target_compile_definitions(engine PRIVATE -DENGINE_PRO)
+endif()
+
+# Compiler flags for optimizations, debugging, and Skull Pro
 if(FLAGS_OPTIMIZATIONS)
     message(STATUS "Building with optimizations enabled")
     target_compile_options(engine PRIVATE
