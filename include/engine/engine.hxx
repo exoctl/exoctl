@@ -35,7 +35,7 @@ namespace engine
         bool is_running;
 
         Engine(configuration::Configuration &, logging::Logging &);
-        ~Engine();
+        ~Engine() = default;
 
         void stop();
         void run(const std::function<void()> & = nullptr);

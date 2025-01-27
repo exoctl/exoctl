@@ -16,11 +16,7 @@ namespace engine
     {
 #include <engine/_plugins.inc>
     }
-
-    Engine::~Engine()
-    {
-    }
-
+    
     void Engine::stop()
     {
         SERVER_INSTANCE.stop();
