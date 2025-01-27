@@ -34,11 +34,10 @@ namespace engine
 
             std::lock_guard<std::mutex> lock(m_state_mutex);
             if (m_state) {
-                for (const auto & _ : m_threads) {
+                for (const auto &_ : m_threads) {
                     luaL_unref(m_state,
                                LUA_REGISTRYINDEX,
                                luaL_ref(m_state, LUA_REGISTRYINDEX));
-                
                 }
                 m_threads.clear();
 
@@ -95,7 +94,6 @@ namespace engine
 
         void Lua::run()
         {
-            std::lock_guard<std::mutex> lock(m_state_mutex);
             m_threads_scripts.reserve(m_scripts.size());
 
             for (const auto &[script_name, script_path] : m_scripts) {
@@ -107,8 +105,6 @@ namespace engine
                     m_threads.push_back(L_thread);
 
                     if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK) {
-                        std::cerr << "Erro ao executar o script: "
-                                  << lua_tostring(L_thread, -1) << std::endl;
                         lua_pop(L_thread, 1);
                     }
 
