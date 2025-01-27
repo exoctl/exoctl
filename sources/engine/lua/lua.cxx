@@ -14,6 +14,7 @@ namespace engine
     {
         lua_State *Lua::m_state = nullptr;
         std::mutex Lua::m_state_mutex;
+        std::vector<lua_State *> Lua::m_threads;
 
         Lua::Lua()
         {
@@ -34,6 +35,14 @@ namespace engine
 
             std::lock_guard<std::mutex> lock(m_state_mutex);
             if (m_state) {
+                for (const auto & _ : m_threads) {
+                    luaL_unref(m_state,
+                               LUA_REGISTRYINDEX,
+                               luaL_ref(m_state, LUA_REGISTRYINDEX));
+                
+                }
+                m_threads.clear();
+
                 lua_close(m_state);
                 m_state = nullptr;
             }
@@ -94,9 +103,17 @@ namespace engine
                 m_threads_scripts.push_back(std::thread([this, script_path]() {
                     lua_State *L_thread = lua_newthread(m_state);
 
+                    lua_pushthread(L_thread);
+                    int ref = luaL_ref(m_state, LUA_REGISTRYINDEX);
+                    m_threads.push_back(L_thread);
+
                     if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK) {
+                        std::cerr << "Erro ao executar o script: "
+                                  << lua_tostring(L_thread, -1) << std::endl;
                         lua_pop(L_thread, 1);
                     }
+
+                    luaL_unref(m_state, LUA_REGISTRYINDEX, ref);
                 }));
             }
         }

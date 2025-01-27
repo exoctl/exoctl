@@ -6,7 +6,6 @@ if engine.is_running() then
     print("[_example] - server.concurrency = " .. tostring(server.concurrency()))
 
     while engine.is_running() do
-    
     end
   
 else

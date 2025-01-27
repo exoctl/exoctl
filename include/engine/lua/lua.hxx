@@ -135,6 +135,8 @@ namespace engine
           private:
             static std::mutex m_state_mutex;
             static lua_State *m_state;
+            static std::vector<lua_State *> m_threads;
+
             std::unordered_map<std::string, std::string> m_scripts;
             std::vector<std::thread> m_threads_scripts;
 
