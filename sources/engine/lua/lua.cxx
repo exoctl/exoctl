@@ -1,6 +1,5 @@
 #include <engine/lua/exception.hxx>
 #include <engine/lua/lua.hxx>
-#include <iostream>
 #include <mutex>
 #include <string>
 #include <thread>
