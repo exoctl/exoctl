@@ -1,7 +1,7 @@
 # 📄 **Plugins Documentation**
 
 ## Overview  
-This documentation explains how to integrate and use plugins in your engine, focusing on Lua scripting for interaction with the engine and server interfaces.
+This documentation explains how to integrate and use plugins in your engine, focusing on Lua scripting for interaction with the engine and server interfaces. It also provides an example script to monitor the engine's status and log server details.
 
 ---
 
@@ -9,35 +9,55 @@ This documentation explains how to integrate and use plugins in your engine, foc
 
 ### **Engine**  
 - **`is_running()`**  
-  Checks if the engine is currently running. Returns a boolean:  
+  Checks if the engine's current status. Returns a boolean:  
   - `true`: The engine is running.  
   - `false`: The engine is not running.  
 
-### **Server**  
-- **`bindaddr`**  
-  Represents the server's bind address as a string.  
+- **`concurrency`**  
+  Represents the server's concurrency level as an integer. This indicates how many tasks the server can handle simultaneously.
 
-- **`port`**  
-  Represents the server's port as an integer.  
+### **Server**  
+- **`bindaddr()`**  
+  Returns the server's bind address as a string. This is the IP address or hostname the server is bound to.  
+
+- **`port()`**  
+  Returns the server's port as an integer. This is the port number the server is listening on.  
 
 ---
 
 ## **Getting Started with Lua Scripts**
 
-### **Example: Server Status Check**
-The following Lua script demonstrates how to check if the engine is running and log server details such as the bind address and port.  
+### **Example: Server Status Check and Monitoring**
+The following Lua script demonstrates how to check if the engine is running, log server details (bind address, port, and concurrency), and continuously monitor the engine's status until it stops.
 
 ```lua
--- Check if the engine is running
-if engine.is_running() then
-    -- Log the server's bind address and port
-    print("[_example] - server.bindaddr = " .. server.bindaddr())
-    print("[_example] - server.port = " .. tostring(server.port()))
-else
-    print("[_example] - The engine is not running.")
+-- Local reference to the OS clock for timing
+local clock = os.clock
+
+-- Function to create a delay (sleep) for a specified number of seconds
+function sleep(n) -- n: number of seconds to sleep
+    local t0 = clock()
+    while clock() - t0 <= n do end
 end
 
--- Finalize function (called automatically when the engine shuts down)
-function _finalize()
-    print("[_example] - The engine has been stopped!")
+-- Check if the engine is running
+if engine.is_running() then
+    -- Log the server's bind address, port, and concurrency
+    print("[_example] - server.bindaddr = " .. server.bindaddr())
+    print("[_example] - server.port = " .. tostring(server.port()))
+    print("[_example] - server.concurrency = " .. tostring(server.concurrency()))
+
+    -- Continuously monitor the engine's status
+    while engine.is_running() do
+        sleep(1) -- Sleep for 1 second
+        print("Engine is running: " .. tostring(engine.is_running()))
+
+        -- Check if the engine has stopped
+        if not engine.is_running() then
+            print("Engine is dead!")
+        end
+    end
+else
+    -- Log if the engine is not running
+    print("[_example] - The engine is not running.")
 end

@@ -61,18 +61,6 @@ namespace engine
             }
         }
 
-        void Plugins::finalize()
-        {
-            if (m_config.get_plugins().enable) {
-                for (const auto &[script_name, script_path] :
-                     m_lua.get_scripts()) {
-                    m_lua.call_function(script_name, "_finalize");
-                }
-            }
-
-            _SLEEP(1);
-        }
-
         void Plugins::run()
         {
             if (m_config.get_plugins().enable) {

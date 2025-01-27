@@ -28,10 +28,7 @@ namespace engine
 
             void run();
 
-            const bool call_function(const std::string &,
-                                     const std::string &,
-                                     int = 0,
-                                     int = 0);
+            const bool call_function(const std::string &, int = 0, int = 0);
 
             template <typename T>
             static void register_global(const std::string &, T &);

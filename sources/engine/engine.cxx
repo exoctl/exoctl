@@ -30,7 +30,6 @@ namespace engine
     void Engine::finalize()
     {
         is_running = false;
-        m_plugins.finalize();
     }
 
     void Engine::run(const std::function<void()> &p_callback)

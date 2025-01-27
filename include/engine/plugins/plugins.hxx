@@ -50,7 +50,6 @@ namespace engine
                 lua::Lua::register_class(p_class, p_ptr);
             }
 
-            void finalize();
             void load();
             void run();
 

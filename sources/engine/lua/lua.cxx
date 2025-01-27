@@ -68,16 +68,10 @@ namespace engine
             return true;
         }
 
-        const bool Lua::call_function(const std::string &p_script_name,
-                                      const std::string &p_function_name,
+        const bool Lua::call_function(const std::string &p_function_name,
                                       int p_arg_count,
                                       int p_ret_count)
         {
-            std::lock_guard<std::mutex> lock(m_state_mutex);
-            if (m_scripts.find(p_script_name) == m_scripts.end()) {
-                return false;
-            }
-
             lua_getglobal(m_state, p_function_name.c_str());
             if (!lua_isfunction(m_state, -1)) {
                 lua_pop(m_state, 1);
