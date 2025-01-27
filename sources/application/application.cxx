@@ -18,7 +18,11 @@ namespace application
             RETHROW();
         })
 
-        LOG(m_log, info, "Starting engine ...");
+#ifndef ENGINE_PRO
+        LOG(m_log, info, "Starting Skull PRO");
+#else
+        LOG(m_log, info, "Starting Skull");
+#endif
         ENGINE_INSTANCE = std::make_unique<engine::Engine>(m_config, m_log);
 
 #include <application/_plugins.inc>
@@ -45,12 +49,6 @@ namespace application
             "Release");
 #else
             "Debug");
-#endif
-
-#ifndef ENGINE_PRO
-    fmt::print("Engine is pro");
-#else
-    fmt::print("Engine is not pro");
 #endif
 
         LOG(m_log,

@@ -23,6 +23,12 @@ namespace engine
 
         Lua::~Lua()
         {
+            for (auto &t : m_threads_scripts) {
+                if (t.joinable()) {
+                    t.join();
+                }
+            }
+
             if (m_state) {
                 lua_close(m_state);
             }
@@ -74,22 +80,15 @@ namespace engine
 
         void Lua::run()
         {
-            std::vector<std::thread> threads;
-            threads.reserve(m_scripts.size());
+            m_threads_scripts.reserve(m_scripts.size());
 
             for (const auto &[script_name, script_path] : m_scripts) {
-                threads.push_back(std::thread([this, script_path]() {
+                m_threads_scripts.push_back(std::thread([this, script_path]() {
                     lua_State *L_thread = lua_newthread(m_state);
 
                     if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK)
                         lua_pop(L_thread, 1);
                 }));
-            }
-
-            for (auto &t : threads) {
-                if (t.joinable()) {
-                    t.join();
-                }
             }
         }
 

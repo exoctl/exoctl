@@ -5,10 +5,13 @@ extern "C" {
 #include <lua.h>
 #include <lualib.h>
 }
+#include <atomic>
+#include <engine/lua/exception.hxx>
 #include <memory>
 #include <string>
+#include <thread>
+#include <vector>
 #include <unordered_map>
-#include <engine/lua/exception.hxx>
 
 namespace engine
 {
@@ -72,8 +75,8 @@ namespace engine
 
             template <typename T>
             static void register_class_member(const std::string &class_name,
-                                            const std::string &member_name,
-                                            T &value)
+                                              const std::string &member_name,
+                                              T &value)
             {
                 luaL_getmetatable(m_state, class_name.c_str());
                 if (lua_isnil(m_state, -1)) {
@@ -125,6 +128,7 @@ namespace engine
           private:
             static lua_State *m_state;
             std::unordered_map<std::string, std::string> m_scripts;
+            std::vector<std::thread> m_threads_scripts;
 
             Lua(const Lua &) = delete;
             Lua &operator=(const Lua &) = delete;
