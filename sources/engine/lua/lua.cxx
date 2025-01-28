@@ -170,27 +170,5 @@ namespace engine
                 1);
             lua_setglobal(m_state, name.c_str());
         }
-
-        template <typename T>
-        void Lua::register_class_method(const std::string &class_name,
-                                        const std::string &method_name,
-                                        void (T::*method)())
-        {
-            std::lock_guard<std::mutex> lock(m_state_mutex);
-            lua_getglobal(m_state, class_name.c_str());
-            lua_pushstring(m_state, method_name.c_str());
-            lua_pushlightuserdata(m_state, method);
-
-            lua_pushcfunction(m_state, [](lua_State *L) -> int {
-                T *obj = static_cast<T *>(lua_touserdata(L, 1));
-                auto method = reinterpret_cast<void (T::*)()>(
-                    lua_touserdata(L, lua_upvalueindex(1)));
-                (obj->*method)();
-                return 0;
-            });
-
-            lua_settable(m_state, -3);
-        }
-
     } // namespace lua
 } // namespace engine

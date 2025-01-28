@@ -16,11 +16,11 @@ namespace engine
     {
 #include <engine/_plugins.inc>
     }
-    
+
     void Engine::stop()
     {
-        SERVER_INSTANCE.stop();
         Engine::finalize();
+        SERVER_INSTANCE.stop();
     }
 
     void Engine::finalize()

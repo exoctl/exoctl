@@ -4,6 +4,7 @@
 #include <engine/logging.hxx>
 #include <engine/lua/lua.hxx>
 #include <filesystem>
+#include <functional>
 #include <memory>
 
 namespace engine
@@ -23,10 +24,15 @@ namespace engine
             template <typename T>
             static void register_t_global(const std::string &, T &);
 
-            template <typename T>
-            static void register_class_method(const std::string &,
-                                              const std::string &,
-                                              void (T::*)());
+            template <typename... Args>
+            static void register_class_method(
+                const std::string &class_name,
+                const std::string &method_name,
+                std::function<std::any(Args...)> method)
+            {
+                lua::Lua::register_class_method(
+                    class_name, method_name, method);
+            }
 
             template <typename T>
             static void register_class_member(const std::string &p_class,

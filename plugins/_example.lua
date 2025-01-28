@@ -1,3 +1,9 @@
+function print_table(tbl)
+    for key, value in pairs(tbl) do
+        print(key, value)
+    end
+end
+
 -- Local reference to the OS clock for timing
 local clock = os.clock
 
@@ -6,6 +12,9 @@ function sleep(n) -- n: number of seconds to sleep
     local t0 = clock()
     while clock() - t0 <= n do end
 end
+
+-- stop engine 
+-- engine:stop()
 
 -- Check if the engine is running
 if engine.is_running() then
@@ -23,6 +32,7 @@ if engine.is_running() then
         if not engine.is_running() then
             print("Engine is dead!")
         end
+        
     end
 else
     -- Log if the engine is not running

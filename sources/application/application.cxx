@@ -18,6 +18,7 @@ namespace application
             RETHROW();
         })
 
+
 #ifndef ENGINE_PRO
         LOG(m_log, info, "Starting Skull PRO");
 #else

@@ -17,6 +17,16 @@ namespace engine
                 explicit RegisterClassMember(const std::string &);
                 const char *what() const noexcept override;
             };
+
+            class RegisterClassMethod : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
+
+              public:
+                explicit RegisterClassMethod(const std::string &);
+                const char *what() const noexcept override;
+            };
         } // namespace exception
     } // namespace lua
 } // namespace engine

@@ -16,6 +16,17 @@ namespace engine
             {
                 return m_error_message.c_str();
             }
+
+            RegisterClassMethod::RegisterClassMethod(
+                const std::string &p_message)
+                : m_error_message(p_message)
+            {
+            }
+
+            const char *RegisterClassMethod::what() const noexcept
+            {
+                return m_error_message.c_str();
+            }
         } // namespace exception
     } // namespace lua
 } // namespace engine
