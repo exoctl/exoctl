@@ -2,10 +2,10 @@
 
 #include <engine/configuration/configuration.hxx>
 #include <engine/engine.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/logging.hxx>
 #include <memory>
 #include <string>
-
 
 #define ENGINE_INSTANCE m_engine
 
@@ -22,7 +22,7 @@ namespace application
             "config/engine/engine.conf";
     } // namespace config
 
-    class Application
+    class Application : public engine::interface::IPlugins
     {
       public:
         explicit Application(int argc = 0, const char **argv = nullptr);
@@ -31,6 +31,7 @@ namespace application
         [[nodiscard]] int run();
 
       protected:
+        void register_plugins() override;
         friend struct ProgramEntry;
 
         static void initialize_sections();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/binary/lief/_/log.hxx>
@@ -15,7 +16,7 @@
 
 namespace engine
 {
-    class Engine
+    class Engine : public interface::IPlugins
     {
       private:
         configuration::Configuration &m_configuration;
@@ -30,6 +31,9 @@ namespace engine
 
         plugins::Plugins m_plugins;
         void finalize();
+
+      protected:
+        void register_plugins() override;
 
       public:
         bool is_running;

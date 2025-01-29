@@ -14,7 +14,19 @@ namespace engine
           m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
           is_running(false)
     {
-#include <engine/_plugins.inc>
+        Engine::register_plugins();
+    }
+
+    void Engine::register_plugins()
+    {
+        // register class server
+        plugins::Plugins::register_class("server", &SERVER_INSTANCE);
+        plugins::Plugins::register_class_member(
+            "server", "port", SERVER_INSTANCE.port);
+        plugins::Plugins::register_class_member(
+            "server", "bindaddr", SERVER_INSTANCE.bindaddr);
+        plugins::Plugins::register_class_member(
+            "server", "concurrency", SERVER_INSTANCE.concurrency);
     }
 
     void Engine::stop()

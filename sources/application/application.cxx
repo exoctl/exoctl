@@ -2,6 +2,7 @@
 #include <engine/configuration/exception.hxx>
 #include <engine/exception.hxx>
 #include <engine/plugins/plugins.hxx>
+#include <engine/version.hxx>
 
 namespace application
 {
@@ -18,7 +19,6 @@ namespace application
             RETHROW();
         })
 
-
 #ifndef ENGINE_PRO
         LOG(m_log, info, "Starting Skull PRO");
 #else
@@ -26,7 +26,23 @@ namespace application
 #endif
         ENGINE_INSTANCE = std::make_unique<engine::Engine>(m_config, m_log);
 
-#include <application/_plugins.inc>
+        Application::register_plugins();
+    }
+
+    void Application::register_plugins()
+    {
+        int version = ENGINE_VERSION_CODE;
+        std::function<std::any()> stop = [&]() -> std::any {
+            ENGINE_INSTANCE.get()->stop();
+            return {};
+        };
+
+        engine::plugins::Plugins::register_class("engine", &ENGINE_INSTANCE);
+        engine::plugins::Plugins::register_class_member(
+            "engine", "version_code", version);
+        engine::plugins::Plugins::register_class_member(
+            "engine", "is_running", ENGINE_INSTANCE.get()->is_running);
+        engine::plugins::Plugins::register_class_method("engine", "stop", stop);
     }
 
     void Application::initialize_sections()

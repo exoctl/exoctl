@@ -32,7 +32,6 @@ if engine.is_running() then
         if not engine.is_running() then
             print("Engine is dead!")
         end
-        
     end
 else
     -- Log if the engine is not running
