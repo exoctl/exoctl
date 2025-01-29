@@ -2,22 +2,21 @@
 set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
 set(ENGINE_PRO ON CACHE BOOL "Enable Skull Pro flags")
-set(BUILD_AS_LIBRARY OFF CACHE BOOL "Build as library instead of executable ")
 
 # Include directories
 include_directories(
-    ../include
-    ../libraries
-    ../sources
-    ../
-    ../libraries/lua
-    ../libraries/tomlplusplus/include
-    ../libraries/rapidjson/include
-    ../libraries/lief/include
-    ../libraries/capstone-engine/include
-    ../libraries/signatures/include
-    ../libraries/llama/include
-    ../libraries/llama/ggml/include
+    ../../include
+    ../../libraries
+    ../../sources
+    ./
+    ../../libraries/lua
+    ../../libraries/tomlplusplus/include
+    ../../libraries/rapidjson/include
+    ../../libraries/lief/include
+    ../../libraries/capstone-engine/include
+    ../../libraries/signatures/include
+    ../../libraries/llama/include
+    ../../libraries/llama/ggml/include
 )
 
 # Source files
@@ -34,17 +33,11 @@ file(GLOB_RECURSE SOURCES
     *.cxx
 )
 
-# Check if building as a library or executable
-if(BUILD_AS_LIBRARY)
-    add_library(engine SHARED ${SOURCES})
-    message(STATUS "Building as a shared library")
-else()
-    add_executable(engine application/application.cxx)
-    message(STATUS "Building as an executable")
-endif()
+# Define the static library
+add_library(engine STATIC ${SOURCES})
 
-# Add source files to the target
-target_sources(engine PRIVATE ${SOURCES})
+# Export as a CMake package
+set_target_properties(engine PROPERTIES EXPORT_NAME engine)
 
 # Link libraries
 target_link_libraries(engine PRIVATE
@@ -66,7 +59,6 @@ target_link_libraries(engine PRIVATE
     crypto
 )
 
-# Add ENGINE_PRO flag if enabled
 if(ENGINE_PRO)
     message(STATUS "Building with ENGINE_PRO enabled")
     target_compile_definitions(engine PRIVATE -DENGINE_PRO)
@@ -86,6 +78,7 @@ if(FLAGS_OPTIMIZATIONS)
         -fno-stack-protector
         -march=native
         -DCROW_OPENSSL
+        -DENGINE_PRO
         -fdelete-null-pointer-checks
         -fdelete-dead-exceptions
     )
@@ -100,6 +93,7 @@ elseif(FLAGS_DEBUG)
         --all-warnings
         -fmodules-ts
         -DDEBUG
+        -DENGINE_PRO
         -g
         -Warray-bounds
         -Werror

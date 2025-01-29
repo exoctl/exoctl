@@ -22,7 +22,7 @@ namespace application
             "config/engine/engine.conf";
     } // namespace config
 
-    class Application : public engine::interface::IPlugins
+    class Application
     {
       public:
         explicit Application(int argc = 0, const char **argv = nullptr);
@@ -31,7 +31,6 @@ namespace application
         [[nodiscard]] int run();
 
       protected:
-        void register_plugins() override;
         friend struct ProgramEntry;
 
         static void initialize_sections();

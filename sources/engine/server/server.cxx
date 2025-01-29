@@ -15,6 +15,16 @@ namespace engine
         {
         }
 
+        void Server::register_plugins()
+        {
+            plugins::Plugins::register_class("server", this);
+            plugins::Plugins::register_class_member("server", "port", port);
+            plugins::Plugins::register_class_member(
+                "server", "bindaddr", bindaddr);
+            plugins::Plugins::register_class_member(
+                "server", "concurrency", concurrency);
+        }
+
         void Server::run()
         {
             m_app

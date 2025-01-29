@@ -7,7 +7,7 @@ namespace engine
     {
         class IPlugins
         {
-          protected:
+          public:
             virtual ~IPlugins() = default;
             virtual void register_plugins() = 0;
         };

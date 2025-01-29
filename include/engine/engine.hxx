@@ -12,8 +12,6 @@
 #include <engine/server/server.hxx>
 #include <functional>
 
-#define SERVER_INSTANCE m_server
-
 namespace engine
 {
     class Engine : public interface::IPlugins
@@ -22,7 +20,7 @@ namespace engine
         configuration::Configuration &m_configuration;
         logging::Logging &m_log;
 
-        server::Server SERVER_INSTANCE;
+        server::Server m_server;
         server::Bridge m_server_bridge;
         server::_::Log m_server_log;
 
@@ -32,8 +30,6 @@ namespace engine
         plugins::Plugins m_plugins;
         void finalize();
 
-      protected:
-        void register_plugins() override;
 
       public:
         bool is_running;
@@ -41,6 +37,7 @@ namespace engine
         Engine(configuration::Configuration &, logging::Logging &);
         ~Engine() = default;
 
+        void register_plugins() override;
         void stop();
         void run(const std::function<void()> & = nullptr);
     };

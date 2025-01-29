@@ -8,31 +8,36 @@ namespace engine
     Engine::Engine(configuration::Configuration &p_configuration,
                    logging::Logging &p_log)
         : m_configuration(p_configuration), m_log(p_log),
-          SERVER_INSTANCE(p_configuration, p_log), m_server_bridge(m_server),
+          m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
           m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
           is_running(false)
     {
         Engine::register_plugins();
+        m_server.register_plugins();
     }
 
     void Engine::register_plugins()
     {
-        // register class server
-        plugins::Plugins::register_class("server", &SERVER_INSTANCE);
-        plugins::Plugins::register_class_member(
-            "server", "port", SERVER_INSTANCE.port);
-        plugins::Plugins::register_class_member(
-            "server", "bindaddr", SERVER_INSTANCE.bindaddr);
-        plugins::Plugins::register_class_member(
-            "server", "concurrency", SERVER_INSTANCE.concurrency);
+        int version = ENGINE_VERSION_CODE;
+        std::function<std::any()> stop = [&]() -> std::any {
+            this->stop();
+            return {};
+        };
+
+        engine::plugins::Plugins::register_class("engine", this);
+        engine::plugins::Plugins::register_class_member(
+            "engine", "version_code", version);
+        engine::plugins::Plugins::register_class_member(
+            "engine", "is_running", is_running);
+        engine::plugins::Plugins::register_class_method("engine", "stop", stop);
     }
 
     void Engine::stop()
     {
         Engine::finalize();
-        SERVER_INSTANCE.stop();
+        m_server.stop();
     }
 
     void Engine::finalize()
@@ -54,7 +59,7 @@ namespace engine
         }
 
         m_plugins.run();
-        SERVER_INSTANCE.run();
+        m_server.run();
 
         TRY_END()
         CATCH(server::exception::Abort, {

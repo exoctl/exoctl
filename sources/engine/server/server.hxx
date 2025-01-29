@@ -10,15 +10,17 @@
 #include <crow.h>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/logging.hxx>
 #include <engine/parser/toml.hxx>
+#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
     namespace server
     {
         using App = crow::App<>;
-        class Server
+        class Server : public interface::IPlugins
         {
           private:
             App m_app;
@@ -36,6 +38,7 @@ namespace engine
             std::string bindaddr;
             unsigned short port;
             const std::string &ssl_certificate_path;
+            void register_plugins() override;
             void run();
             void stop();
         };
