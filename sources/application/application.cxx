@@ -57,6 +57,7 @@ namespace application
             m_config.get_path_config());
 
         TRY_BEGIN()
+        ENGINE_INSTANCE->register_plugins();
         ENGINE_INSTANCE->run();
         TRY_END()
         CATCH(engine::exception::Run, {

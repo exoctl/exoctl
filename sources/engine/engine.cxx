@@ -14,8 +14,6 @@ namespace engine
           m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
           is_running(false)
     {
-        Engine::register_plugins();
-        m_server.register_plugins();
     }
 
     void Engine::register_plugins()
@@ -23,15 +21,22 @@ namespace engine
         int version = ENGINE_VERSION_CODE;
         std::function<std::any()> stop = [&]() -> std::any {
             this->stop();
-            return {};
+            return {}; // return nil
         };
 
+        // register plugin engine
         engine::plugins::Plugins::register_class("engine", this);
         engine::plugins::Plugins::register_class_member(
             "engine", "version_code", version);
         engine::plugins::Plugins::register_class_member(
             "engine", "is_running", is_running);
         engine::plugins::Plugins::register_class_method("engine", "stop", stop);
+
+        // register plugin server
+        m_server.register_plugins();
+
+        // register plugin log
+        m_log.register_plugins();
     }
 
     void Engine::stop()

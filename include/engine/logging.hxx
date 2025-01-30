@@ -17,6 +17,7 @@ namespace engine
             Logging(configuration::Configuration &);
             ~Logging() = default;
 
+            void register_plugins();
             void load();
 
             template <typename... Args>
@@ -25,11 +26,15 @@ namespace engine
                 m_logger->warn(p_msg, std::forward<Args>(p_args)...);
             }
 
+            void warn(const std::string &p_msg);
+
             template <typename... Args>
             void info(fmt::format_string<Args...> p_msg, Args &&...p_args)
             {
                 m_logger->info(p_msg, std::forward<Args>(p_args)...);
             }
+
+            void info(const std::string &p_msg);
 
             template <typename... Args>
             void error(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -37,17 +42,23 @@ namespace engine
                 m_logger->error(p_msg, std::forward<Args>(p_args)...);
             }
 
+            void error(const std::string &p_msg);
+
             template <typename... Args>
             void debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
             {
                 m_logger->debug(p_msg, std::forward<Args>(p_args)...);
             }
 
+            void debug(const std::string &p_msg);
+
             template <typename... Args>
             void critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
             {
                 m_logger->critical(p_msg, std::forward<Args>(p_args)...);
             }
+
+            void critical(const std::string &p_msg);
 
             std::shared_ptr<spdlog::logger> create_logger(const std::string &,
                                                           const std::string &);

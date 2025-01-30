@@ -77,6 +77,8 @@ namespace engine
                         std::tuple<Args...> args;
 
                         if (lua_gettop(L) < static_cast<int>(sizeof...(Args))) {
+                            // Handle error: not enough arguments
+                            luaL_error(L, "Not enough arguments");
                         }
 
                         int index = 1;
@@ -96,7 +98,7 @@ namespace engine
                                 static_assert(sizeof(T) == 0,
                                               "Unsupported argument type");
                             }
-                            ++index;
+                            index++;
                         };
 
                         std::apply(

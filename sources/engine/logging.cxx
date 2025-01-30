@@ -1,4 +1,6 @@
 #include <engine/logging.hxx>
+#include <engine/plugins/plugins.hxx>
+#include <functional>
 #include <memory>
 #include <spdlog/async.h>
 #include <spdlog/logger.h>
@@ -6,6 +8,7 @@
 #include <spdlog/sinks/daily_file_sink.h>
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <stdio.h>
 #include <string>
 #include <vector>
 
@@ -80,6 +83,56 @@ namespace engine::logging
             static_cast<spdlog::level::level_enum>(logging_config.level));
 
         return logger;
+    }
+
+    void Logging::warn(const std::string &p_msg)
+    {
+        m_logger->warn(p_msg);
+    }
+
+    void Logging::info(const std::string &p_msg)
+    {
+        m_logger->info(p_msg);
+    }
+
+    void Logging::error(const std::string &p_msg)
+    {
+        m_logger->error(p_msg);
+    }
+
+    void Logging::debug(const std::string &p_msg)
+    {
+        m_logger->debug(p_msg);
+    }
+
+    void Logging::critical(const std::string &p_msg)
+    {
+        m_logger->critical(p_msg);
+    }
+
+    void Logging::register_plugins()
+    {
+        std::function<std::any(
+            void * /*wrong*/, int, std::string)>
+            log = [&](void * /*wrong*/,
+                      int type,
+                      std::string msg) -> std::any {
+            if (type == spdlog::level::level_enum::info)
+                info(msg);
+            else if (type == spdlog::level::level_enum::warn)
+                warn(msg);
+            else if (type == spdlog::level::level_enum::err)
+                error(msg);
+            else if (type == spdlog::level::level_enum::debug)
+                debug(msg);
+            else if (type == spdlog::level::level_enum::critical)
+                critical(msg);
+            
+            return {}; // return nil
+        };
+
+        engine::plugins::Plugins::register_class("logging", this);
+        engine::plugins::Plugins::register_class_method("logging", "log", log);
     }
 
 } // namespace engine::logging
