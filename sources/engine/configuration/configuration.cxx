@@ -25,7 +25,9 @@ namespace engine
             Configuration::load_lief();
             Configuration::load_llama();
             Configuration::load_decompiler();
+#ifdef ENGINE_PRO
             Configuration::load_plugins();
+#endif
             TRY_END()
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
@@ -89,20 +91,10 @@ namespace engine
             return m_decompiler;
         }
 
+#ifdef ENGINE_PRO
         const record::plugins::Plugins &Configuration::get_plugins()
         {
             return m_plugins;
-        }
-
-        void Configuration::load_cache()
-        {
-            m_cache = (record::cache::Cache) {
-                .type = m_toml.get_tbl()["cache"]["type"]
-                            .value<std::string>()
-                            .value(),
-                .path = m_toml.get_tbl()["cache"]["path"]
-                            .value<std::string>()
-                            .value()};
         }
 
         void Configuration::load_plugins()
@@ -114,6 +106,17 @@ namespace engine
                 .enable = m_toml.get_tbl()["plugins"]["enable"]
                               .value<bool>()
                               .value()};
+        }
+#endif
+        void Configuration::load_cache()
+        {
+            m_cache = (record::cache::Cache) {
+                .type = m_toml.get_tbl()["cache"]["type"]
+                            .value<std::string>()
+                            .value(),
+                .path = m_toml.get_tbl()["cache"]["path"]
+                            .value<std::string>()
+                            .value()};
         }
 
         void Configuration::load_av_clamav()

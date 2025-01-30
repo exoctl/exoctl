@@ -110,13 +110,11 @@ namespace engine::logging
         m_logger->critical(p_msg);
     }
 
+#ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        std::function<std::any(
-            void * /*wrong*/, int, std::string)>
-            log = [&](void * /*wrong*/,
-                      int type,
-                      std::string msg) -> std::any {
+        std::function<std::any(void * /*wrong*/, int, std::string)> log =
+            [&](void * /*wrong*/, int type, std::string msg) -> std::any {
             if (type == spdlog::level::level_enum::info)
                 info(msg);
             else if (type == spdlog::level::level_enum::warn)
@@ -127,12 +125,12 @@ namespace engine::logging
                 debug(msg);
             else if (type == spdlog::level::level_enum::critical)
                 critical(msg);
-            
+
             return {}; // return nil
         };
-
         engine::plugins::Plugins::register_class("logging", this);
         engine::plugins::Plugins::register_class_method("logging", "log", log);
     }
+#endif
 
 } // namespace engine::logging

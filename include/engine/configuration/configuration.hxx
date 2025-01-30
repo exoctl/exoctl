@@ -25,8 +25,9 @@ namespace engine
             const record::lief::Lief &get_lief() const;
             const record::llama::Llama &get_llama() const;
             const record::decompiler::Decompiler &get_decompiler();
+#ifdef ENGINE_PRO
             const record::plugins::Plugins &get_plugins();
-
+#endif
           private:
             const std::string m_path_config;
             parser::Toml m_toml;
@@ -41,8 +42,9 @@ namespace engine
             record::sig::Sig m_sig;
             record::server::Server m_server;
             record::decompiler::Decompiler m_decompiler;
+#ifdef ENGINE_PRO
             record::plugins::Plugins m_plugins;
-
+#endif
             void load_cache();
             void load_llama();
             void load_av_clamav();

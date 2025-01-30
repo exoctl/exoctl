@@ -14,7 +14,10 @@
 
 namespace engine
 {
-    class Engine : public interface::IPlugins
+    class Engine
+#ifdef ENGINE_PRO
+        : public interface::IPlugins
+#endif
     {
       private:
         configuration::Configuration &m_configuration;
@@ -26,10 +29,10 @@ namespace engine
 
         llama::_::Log m_llama_log;
         parser::binary::lief::_::Log m_lief_log;
-
+#ifdef ENGINE_PRO
         plugins::Plugins m_plugins;
+#endif
         void finalize();
-
 
       public:
         bool is_running;
@@ -37,7 +40,9 @@ namespace engine
         Engine(configuration::Configuration &, logging::Logging &);
         ~Engine() = default;
 
+#ifdef ENGINE_PRO
         void register_plugins() override;
+#endif
         void stop();
         void run(const std::function<void()> & = nullptr);
     };

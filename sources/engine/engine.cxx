@@ -11,11 +11,15 @@ namespace engine
           m_server(p_configuration, p_log), m_server_bridge(m_server),
           m_server_log(p_configuration, p_log),
           m_llama_log(p_configuration, p_log),
-          m_lief_log(p_configuration, p_log), m_plugins(p_configuration, p_log),
+          m_lief_log(p_configuration, p_log),
+#ifdef ENGINE_PRO
+          m_plugins(p_configuration, p_log),
+#endif
           is_running(false)
     {
     }
 
+#ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
         int version = ENGINE_VERSION_CODE;
@@ -38,6 +42,7 @@ namespace engine
         // register plugin log
         m_log.register_plugins();
     }
+#endif
 
     void Engine::stop()
     {
@@ -55,15 +60,16 @@ namespace engine
         is_running = true;
 
         TRY_BEGIN()
-
-        m_server_bridge.load();
-        m_plugins.load();
-
         if (p_callback) {
             p_callback();
         }
 
+        m_server_bridge.load();
+#ifdef ENGINE_PRO
+        m_plugins.load();
         m_plugins.run();
+#endif
+
         m_server.run();
 
         TRY_END()

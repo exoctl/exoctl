@@ -15,6 +15,7 @@ namespace engine
         {
         }
 
+#ifdef ENGINE_PRO
         void Server::register_plugins()
         {
             plugins::Plugins::register_class("server", this);
@@ -24,7 +25,7 @@ namespace engine
             plugins::Plugins::register_class_member(
                 "server", "concurrency", concurrency);
         }
-
+#endif
         void Server::run()
         {
             m_app

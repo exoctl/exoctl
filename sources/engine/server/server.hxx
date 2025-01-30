@@ -20,7 +20,10 @@ namespace engine
     namespace server
     {
         using App = crow::App<>;
-        class Server : public interface::IPlugins
+        class Server
+#ifdef ENGINE_PRO
+            : public interface::IPlugins
+#endif
         {
           private:
             App m_app;
@@ -38,7 +41,9 @@ namespace engine
             std::string bindaddr;
             unsigned short port;
             const std::string &ssl_certificate_path;
+#ifdef ENGINE_PRO
             void register_plugins() override;
+#endif
             void run();
             void stop();
         };

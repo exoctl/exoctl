@@ -16,8 +16,9 @@ namespace engine
           public:
             Logging(configuration::Configuration &);
             ~Logging() = default;
-
+#ifdef ENGINE_PRO
             void register_plugins();
+#endif
             void load();
 
             template <typename... Args>

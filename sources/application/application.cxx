@@ -19,13 +19,15 @@ namespace application
             RETHROW();
         })
 
-#ifndef ENGINE_PRO
+#ifdef ENGINE_PRO
+#pragma message("Compiling with ENGINE_PRO: Skull PRO version")
         LOG(m_log, info, "Starting Skull PRO");
 #else
-        LOG(m_log, info, "Starting Skull");
+#pragma message("Compiling without ENGINE_PRO: Skull FREE version")
+        LOG(m_log, info, "Starting Skull FREE");
 #endif
-        ENGINE_INSTANCE = std::make_unique<engine::Engine>(m_config, m_log);
 
+        m_engine = std::make_unique<engine::Engine>(m_config, m_log);
     }
 
     void Application::initialize_sections()
@@ -57,8 +59,10 @@ namespace application
             m_config.get_path_config());
 
         TRY_BEGIN()
-        ENGINE_INSTANCE->register_plugins();
-        ENGINE_INSTANCE->run();
+#ifdef ENGINE_PRO
+        m_engine->register_plugins();
+#endif
+        m_engine->run();
         TRY_END()
         CATCH(engine::exception::Run, {
             LOG(m_log, error, "Engine encountered an error: {}", e.what());
@@ -73,7 +77,6 @@ namespace application
 // section .init_array to implement DRM
 [[gnu::section(".init_array")]] application::sections::init_array init =
     &application::ProgramEntry::invoke;
-
 
 int main(int argc, char *argv[])
 {

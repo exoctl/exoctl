@@ -1,7 +1,7 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
-set(ENGINE_PRO ON CACHE BOOL "Enable Skull Pro flags")
+set(ENGINE_PRO OFF BOOL "Enable Skull Pro flags")
 set(BUILD_AS_LIBRARY OFF CACHE BOOL "Build as library instead of executable ")
 
 # Include directories
@@ -69,7 +69,7 @@ target_link_libraries(engine PRIVATE
 # Add ENGINE_PRO flag if enabled
 if(ENGINE_PRO)
     message(STATUS "Building with ENGINE_PRO enabled")
-    target_compile_definitions(engine PRIVATE -DENGINE_PRO)
+    #target_compile_definitions(engine PRIVATE -DENGINE_PRO)
 endif()
 
 # Compiler flags for optimizations, debugging, and Skull Pro

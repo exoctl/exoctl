@@ -7,8 +7,6 @@
 #include <memory>
 #include <string>
 
-#define ENGINE_INSTANCE m_engine
-
 namespace application
 {
     namespace sections
@@ -42,7 +40,7 @@ namespace application
         engine::configuration::Configuration m_config;
         engine::logging::Logging m_log;
 
-        std::unique_ptr<engine::Engine> ENGINE_INSTANCE;
+        std::unique_ptr<engine::Engine> m_engine;
     };
 
     struct ProgramEntry {
