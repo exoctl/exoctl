@@ -41,3 +41,6 @@
 [submodule "libraries/lua"]
 	path = libraries/lua
 	url = https://github.com/lua/lua.git
+[submodule "rules/rules-yara"]
+	path = rules/rules-yara
+	url = git@github.com:maldeclabs/rules-yara.git
