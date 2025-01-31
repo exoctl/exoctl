@@ -29,7 +29,7 @@ if engine.is_running() then
 
     -- Monitor engine status
     while engine.is_running() do
-        sleep(1)
+        
         log(LOG_LEVEL.DEBUG, "[@example] - Engine is running: " .. tostring(engine.is_running()))
 
         -- If engine stops, log at ERROR level

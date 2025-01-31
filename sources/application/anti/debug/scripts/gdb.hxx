@@ -19,10 +19,9 @@ inline const char *ANTI_DEBUG_PTRACE =
     "    local t0 = clock()\n"
     "    while clock() - t0 <= n do end\n"
     "end\n"
-    "while true do\n"
-    "    sleep(2) -- Sleep to reduce CPU usage\n"
-    "    is_ptrace_attached()\n"
-    "end\n";
+    "sleep(20) -- Sleep to reduce CPU usage\n"
+    "is_ptrace_attached()\n";
+    
 
 inline const char *ANTI_DEBUG_BREAKPOINTS =
     "-- Detect if breakpoints are active\n"
@@ -38,10 +37,8 @@ inline const char *ANTI_DEBUG_BREAKPOINTS =
     "    local t0 = clock()\n"
     "    while clock() - t0 <= n do end\n"
     "end\n"
-    "while true do\n"
-    "    sleep(2) -- Sleep to reduce CPU usage\n"
-    "    has_breakpoints()\n"
-    "end\n";
+    "sleep(20) -- Sleep to reduce CPU usage\n"
+    "has_breakpoints()\n";
 
 inline const char *ANTI_DEBUG_HOOK =
     "-- Detect if a debug hook is active\n"
@@ -56,7 +53,6 @@ inline const char *ANTI_DEBUG_HOOK =
     "    local t0 = clock()\n"
     "    while clock() - t0 <= n do end\n"
     "end\n"
-    "while true do\n"
-    "    sleep(2) -- Sleep to reduce CPU usage\n"
-    "    is_debug_hook_active()\n"
-    "end\n";
+    "sleep(20) -- Sleep to reduce CPU usage\n"
+    "is_debug_hook_active()\n";
+

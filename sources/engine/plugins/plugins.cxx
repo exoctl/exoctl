@@ -5,11 +5,8 @@
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <fmt/core.h>
+#include <future>
 #include <sys/types.h>
-#include <thread>
-#include <time.h>
-
-#define _SLEEP(time) sleep(time)
 
 namespace engine
 {
@@ -66,11 +63,10 @@ namespace engine
         void Plugins::run()
         {
             if (m_config.get_plugins().enable) {
-                LOG(m_log, info, "Launching plugins threads...");
-                std::thread(&Plugins::run_plugins_thread, this).detach();
+                LOG(m_log, info, "Launching plugins async...");
+                std::async(
+                    std::launch::async, &Plugins::run_plugins_thread, this).get();
             }
-
-            _SLEEP(1);
         }
 
         void Plugins::run_plugins_thread()
