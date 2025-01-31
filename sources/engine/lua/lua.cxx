@@ -1,10 +1,12 @@
 #include <engine/lua/exception.hxx>
 #include <engine/lua/lua.hxx>
+#include <fmt/core.h>
+#include <fstream>
 #include <mutex>
+#include <random>
 #include <string>
 #include <thread>
 #include <type_traits>
-#include <unordered_map>
 #include <vector>
 
 namespace engine
@@ -46,25 +48,51 @@ namespace engine
             }
         }
 
-        const std::unordered_map<std::string, std::string> &Lua::get_scripts()
+        const std::vector<record::plugin::Plugin> &Lua::get_scripts()
         {
             return m_scripts;
+        }
+
+        bool Lua::load_script_buff(const std::string &p_buff)
+        {
+            std::lock_guard<std::mutex> lock(m_state_mutex);
+
+            auto generate_random_name = []() {
+                std::random_device rd;
+                std::mt19937 gen(rd());
+                std::uniform_int_distribution<> dis(0, 25);
+
+                std::string random_name;
+                for (int i = 0; i < 8; ++i) {
+                    random_name += fmt::format("{}", char('a' + dis(gen)));
+                }
+                return random_name;
+            };
+
+            const std::string m_script_name = generate_random_name();
+
+            if (luaL_loadstring(m_state, p_buff.c_str()) != LUA_OK) {
+                lua_pop(m_state, 1);
+                return false;
+            }
+
+            m_scripts.push_back(
+                {m_script_name, p_buff, record::plugin::SCRIPT_BUFF});
+            return true;
         }
 
         bool Lua::load_script_file(const std::string &p_script_name,
                                    const std::string &p_script_path)
         {
             std::lock_guard<std::mutex> lock(m_state_mutex);
-            if (m_scripts.find(p_script_name) != m_scripts.end()) {
-                return false;
-            }
 
             if (luaL_loadfile(m_state, p_script_path.c_str()) != LUA_OK) {
                 lua_pop(m_state, 1);
                 return false;
             }
 
-            m_scripts[p_script_name] = p_script_path;
+            m_scripts.push_back(
+                {p_script_name, p_script_path, record::plugin::SCRIPT_FILE});
             return true;
         }
 
@@ -90,16 +118,24 @@ namespace engine
         {
             m_threads_scripts.reserve(m_scripts.size());
 
-            for (const auto &[script_name, script_path] : m_scripts) {
-                m_threads_scripts.push_back(std::thread([this, script_path]() {
+            for (const auto &plugin : m_scripts) {
+                m_threads_scripts.push_back(std::thread([this, plugin]() {
                     lua_State *L_thread = lua_newthread(m_state);
-
                     lua_pushthread(L_thread);
                     int ref = luaL_ref(m_state, LUA_REGISTRYINDEX);
                     m_threads.push_back(L_thread);
 
-                    if (luaL_dofile(L_thread, script_path.c_str()) != LUA_OK) {
-                        lua_pop(L_thread, 1);
+                    if (plugin.type == record::plugin::SCRIPT_FILE) {
+                        fmt::print("DOne");
+                        if (luaL_dofile(L_thread, plugin.script.c_str()) !=
+                            LUA_OK) {
+                            lua_pop(L_thread, 1);
+                        }
+                    } else {
+                        if (luaL_dostring(L_thread, plugin.script.c_str()) !=
+                            LUA_OK) {
+                            lua_pop(L_thread, 1);
+                        }
                     }
 
                     luaL_unref(m_state, LUA_REGISTRYINDEX, ref);

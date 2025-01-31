@@ -8,9 +8,10 @@ namespace application
 {
     Application::Application(int argc, const char **argv)
         : m_argc(argc), m_argv(argv), m_config(config::ENGINE_CONFIG_PATH),
-          m_log(m_config)
+          m_log(m_config), m_debug()
     {
         TRY_BEGIN()
+        m_debug.run();
         m_config.load();
         m_log.load();
         TRY_END()
@@ -26,12 +27,7 @@ namespace application
 #pragma message("Compiling without ENGINE_PRO: Skull FREE version")
         LOG(m_log, info, "Starting Skull FREE");
 #endif
-
         m_engine = std::make_unique<engine::Engine>(m_config, m_log);
-    }
-
-    void Application::initialize_sections()
-    {
     }
 
     int Application::run()
@@ -73,10 +69,6 @@ namespace application
         return EXIT_SUCCESS;
     }
 } // namespace application
-
-// section .init_array to implement DRM
-[[gnu::section(".init_array")]] application::sections::init_array init =
-    &application::ProgramEntry::invoke;
 
 int main(int argc, char *argv[])
 {

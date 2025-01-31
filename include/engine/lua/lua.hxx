@@ -7,6 +7,7 @@ extern "C" {
 }
 #include <any>
 #include <atomic>
+#include <engine/lua/entitys.hxx>
 #include <engine/lua/exception.hxx>
 #include <functional>
 #include <memory>
@@ -29,6 +30,7 @@ namespace engine
             ~Lua();
 
             bool load_script_file(const std::string &, const std::string &);
+            bool load_script_buff(const std::string &);
 
             void run();
 
@@ -215,14 +217,14 @@ namespace engine
                 lua_pop(m_state, 1);
             }
 
-            const std::unordered_map<std::string, std::string> &get_scripts();
+            const std::vector<record::plugin::Plugin> &get_scripts();
 
           private:
             static std::mutex m_state_mutex;
             static lua_State *m_state;
             static std::vector<lua_State *> m_threads;
 
-            std::unordered_map<std::string, std::string> m_scripts;
+            std::vector<record::plugin::Plugin> m_scripts;
             std::vector<std::thread> m_threads_scripts;
 
             Lua(const Lua &) = delete;

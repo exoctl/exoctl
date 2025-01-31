@@ -1,5 +1,6 @@
 #pragma once
 
+#include <application/anti/debug/debug.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/engine.hxx>
 #include <engine/interfaces/iplugins.hxx>
@@ -9,11 +10,6 @@
 
 namespace application
 {
-    namespace sections
-    {
-        using init_array = void (*)();
-    } // namespace sections
-
     namespace config
     {
         inline constexpr const char *ENGINE_CONFIG_PATH =
@@ -28,25 +24,14 @@ namespace application
 
         [[nodiscard]] int run();
 
-      protected:
-        friend struct ProgramEntry;
-
-        static void initialize_sections();
-
       private:
         int m_argc;
         const char **m_argv;
 
         engine::configuration::Configuration m_config;
         engine::logging::Logging m_log;
+        anti::debug::Debug m_debug;
 
         std::unique_ptr<engine::Engine> m_engine;
-    };
-
-    struct ProgramEntry {
-        static void invoke()
-        {
-            Application::initialize_sections();
-        }
     };
 } // namespace application

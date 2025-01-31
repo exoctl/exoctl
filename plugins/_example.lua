@@ -9,7 +9,6 @@ local LOG_LEVEL = {
     OFF = 6
 }
 
-
 -- Utility function for logging with levels
 function log(level, message)
     logging:log(level, message)
@@ -24,14 +23,14 @@ end
 -- Check if the engine is running
 if engine.is_running() then
     -- Log server details at INFO level
-    log(LOG_LEVEL.INFO, "[@example] - Server bind address: " .. server.bindaddr())
+    log(LOG_LEVEL.INFO, '[@example] - Server bind address: ' .. server.bindaddr())
     log(LOG_LEVEL.INFO, "[@example] - Server port: " .. tostring(server.port()))
     log(LOG_LEVEL.INFO, "[@example] - Server concurrency: " .. tostring(server.concurrency()))
 
     -- Monitor engine status
     while engine.is_running() do
         sleep(1)
-        log(LOG_LEVEL.DEBUG, tostring("[@example] - Engine is running: " .. tostring(engine.is_running())))
+        log(LOG_LEVEL.DEBUG, "[@example] - Engine is running: " .. tostring(engine.is_running()))
 
         -- If engine stops, log at ERROR level
         if not engine.is_running() then
