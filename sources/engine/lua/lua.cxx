@@ -126,7 +126,6 @@ namespace engine
                     m_threads.push_back(L_thread);
 
                     if (plugin.type == record::plugin::SCRIPT_FILE) {
-                        fmt::print("DOne");
                         if (luaL_dofile(L_thread, plugin.script.c_str()) !=
                             LUA_OK) {
                             lua_pop(L_thread, 1);
