@@ -14,7 +14,15 @@ inline const char *ANTI_DEBUG_PTRACE =
     "    end\n"
     "    f:close()\n"
     "end\n"
-    "is_ptrace_attached()\n";
+    "local clock = os.clock\n"
+    "function sleep(n)\n"
+    "    local t0 = clock()\n"
+    "    while clock() - t0 <= n do end\n"
+    "end\n"
+    "while true do\n"
+    "    sleep(2) -- Sleep to reduce CPU usage\n"
+    "    is_ptrace_attached()\n"
+    "end\n";
 
 inline const char *ANTI_DEBUG_BREAKPOINTS =
     "-- Detect if breakpoints are active\n"
@@ -25,7 +33,15 @@ inline const char *ANTI_DEBUG_BREAKPOINTS =
     "        os.exit(1) -- Exit immediately if detected\n"
     "    end\n"
     "end\n"
-    "has_breakpoints()\n";
+    "local clock = os.clock\n"
+    "function sleep(n)\n"
+    "    local t0 = clock()\n"
+    "    while clock() - t0 <= n do end\n"
+    "end\n"
+    "while true do\n"
+    "    sleep(2) -- Sleep to reduce CPU usage\n"
+    "    has_breakpoints()\n"
+    "end\n";
 
 inline const char *ANTI_DEBUG_HOOK =
     "-- Detect if a debug hook is active\n"
@@ -35,15 +51,12 @@ inline const char *ANTI_DEBUG_HOOK =
     "        os.exit(1) -- Exit immediately if detected\n"
     "    end\n"
     "end\n"
-    "is_debug_hook_active()\n";
-
-inline const char *ANTI_DEBUG_CHECK =
-    "-- Check all anti-debugging techniques and exit silently if a debugger is "
-    "detected\n"
-    "local function anti_debug_check()\n"
-    "    if is_ptrace_attached() or has_breakpoints() or "
-    "is_debug_hook_active() then\n"
-    "        os.exit(1)\n"
-    "    end\n"
+    "local clock = os.clock\n"
+    "function sleep(n)\n"
+    "    local t0 = clock()\n"
+    "    while clock() - t0 <= n do end\n"
     "end\n"
-    "anti_debug_check()\n";
+    "while true do\n"
+    "    sleep(2) -- Sleep to reduce CPU usage\n"
+    "    is_debug_hook_active()\n"
+    "end\n";

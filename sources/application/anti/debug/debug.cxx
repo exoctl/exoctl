@@ -1,14 +1,13 @@
 #include <application/anti/debug/debug.hxx>
 #include <engine/lua/lua.hxx>
-#include <thread>
 #include <iostream>
+#include <thread>
 
 namespace application::anti::debug
 {
     Debug::Debug() : m_lua()
     {
         m_lua.load_script_buff(ANTI_DEBUG_PTRACE);
-        m_lua.load_script_buff(ANTI_DEBUG_CHECK);
         m_lua.load_script_buff(ANTI_DEBUG_BREAKPOINTS);
         m_lua.load_script_buff(ANTI_DEBUG_HOOK);
     }
