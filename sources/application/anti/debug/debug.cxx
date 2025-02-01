@@ -17,6 +17,11 @@ namespace application::anti::debug
         m_lua.load_script_buff(ANTI_DEBUG_HOOK);
     }
 
+    Debug::~Debug()
+    {
+        m_lua.state.script("os.exit(0)");
+    }
+    
     void Debug::run()
     {
         std::thread(&Debug::run_plugins_thread, this).detach();

@@ -9,10 +9,8 @@ namespace application::anti::debug
     {
       public:
         Debug();
-        ~Debug()
-        {
-            m_lua.state.script("os.exit(0)");
-        }
+        ~Debug();
+       
 
         void run();
 
