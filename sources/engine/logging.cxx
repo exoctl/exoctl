@@ -113,24 +113,22 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        //luabridge::getGlobalNamespace(lua::Lua::state)
-        //    .beginClass<Logging>("Logging")
-        //    .addFunction("warn",
-        //                 static_cast<void (Logging::*)(const std::string &)>(
-        //                     &Logging::warn))
-        //    .addFunction("info",
-        //                 static_cast<void (Logging::*)(const std::string &)>(
-        //                     &Logging::info))
-        //    .addFunction("error",
-        //                 static_cast<void (Logging::*)(const std::string &)>(
-        //                     &Logging::error))
-        //    .addFunction("debug",
-        //                 static_cast<void (Logging::*)(const std::string &)>(
-        //                     &Logging::debug))
-        //    .addFunction("critical",
-        //                 static_cast<void (Logging::*)(const std::string &)>(
-        //                     &Logging::critical))
-        //    .endClass();
+        plugins::Plugins::lua.lua["logging"] = this;
+        plugins::Plugins::lua.lua.new_usertype<Logging>(
+            "Logging",
+            "info",
+            static_cast<void (Logging::*)(const std::string &)>(&Logging::info),
+            "warn",
+            static_cast<void (Logging::*)(const std::string &)>(&Logging::warn),
+            "critical",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::critical),
+            "debug",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::debug),
+            "error",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::error));
     }
 #endif
 

@@ -22,36 +22,22 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-        sol::table engine_ns = m_plugins.lua.lua.create_table();
+        plugins::Plugins::lua.lua["engine"] = this;
 
-        // Passando a instância do 'this' diretamente para o Lua
-        m_plugins.lua.lua["engine"] = this;
-
-        // Registrando a classe no Lua de uma maneira simplificada
-        m_plugins.lua.lua.new_usertype<Engine>(
+        plugins::Plugins::lua.lua.new_usertype<Engine>(
             "Engine",
-            // Registrar propriedades ou funções básicas como readonly
             "is_running",
             sol::readonly(&Engine::is_running),
             "stop",
-            &Engine::stop, // Por exemplo, o método stop, se necessário
+            &Engine::stop,
             "start",
-            &Engine::run); // Caso deseje adicionar mais alguma função
+            &Engine::run);
 
-        // luabridge::getGlobalNamespace(lua::Lua::state)
-        //     .beginNamespace("engine")
-        //     .addFunction("version_code",
-        //                  []() -> int { return ENGINE_VERSION_CODE; })
-        //     .beginClass<Engine>("Engine")
-        //     .addProperty("is_running", &Engine::is_running)
-        //     .addFunction("stop", &Engine::stop)
-        //     .endClass()
-        //     .endNamespace();
         //  register plugin server
-        //  m_server.register_plugins();
+        m_server.register_plugins();
         //
         //// register plugin log
-        // m_log.register_plugins();
+        m_log.register_plugins();
     }
 #endif
 

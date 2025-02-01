@@ -26,7 +26,7 @@ namespace engine
             void load();
             void run();
 
-            lua::Lua lua;
+            static lua::Lua lua;
 
           private:
             configuration::Configuration &m_config;

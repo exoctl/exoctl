@@ -12,9 +12,11 @@ namespace engine
 {
     namespace plugins
     {
+        lua::Lua Plugins::lua;
+
         Plugins::Plugins(configuration::Configuration &p_config,
                          logging::Logging &p_log)
-            : lua(), m_config(p_config), m_log(p_log)
+            : m_config(p_config), m_log(p_log)
         {
             if (!m_config.get_plugins().enable)
                 LOG(m_log, warn, "Plugins not enabled");
