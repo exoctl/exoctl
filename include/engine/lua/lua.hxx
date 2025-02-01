@@ -27,17 +27,21 @@ namespace engine
         class Lua
         {
           public:
-            Lua();
+            template <typename... Args> Lua(Args &&...args)
+            {
+                state.open_libraries(sol::lib::base,
+                                     sol::lib::package,
+                                     std::forward<Args>(args)...);
+            }
             ~Lua() = default;
 
             bool load_script_file(const std::string &, const std::string &);
             bool load_script_buff(const std::string &);
             void run();
             const std::vector<record::plugin::Plugin> &get_scripts();
-            sol::state lua;
+            sol::state state;
 
           private:
-
             std::vector<record::plugin::Plugin> m_scripts;
 
             Lua(const Lua &) = delete;

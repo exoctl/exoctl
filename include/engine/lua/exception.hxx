@@ -8,23 +8,13 @@ namespace engine
     {
         namespace exception
         {
-            class RegisterClassMember : public interface::IException
+            class Run : public interface::IException
             {
               private:
                 const std::string m_error_message;
 
               public:
-                explicit RegisterClassMember(const std::string &);
-                const char *what() const noexcept override;
-            };
-
-            class RegisterClassMethod : public interface::IException
-            {
-              private:
-                const std::string m_error_message;
-
-              public:
-                explicit RegisterClassMethod(const std::string &);
+                explicit Run(const std::string &);
                 const char *what() const noexcept override;
             };
         } // namespace exception

@@ -18,8 +18,8 @@ namespace engine
 #ifdef ENGINE_PRO
         void Server::register_plugins()
         {
-            plugins::Plugins::lua.lua["server"] = this;
-            plugins::Plugins::lua.lua.new_usertype<Server>(
+            plugins::Plugins::lua.state["server"] = this;
+            plugins::Plugins::lua.state.new_usertype<Server>(
                 "Engine",
                 "port",
                 sol::readonly(&Server::port),

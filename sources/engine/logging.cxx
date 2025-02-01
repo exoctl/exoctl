@@ -113,8 +113,8 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        plugins::Plugins::lua.lua["logging"] = this;
-        plugins::Plugins::lua.lua.new_usertype<Logging>(
+        plugins::Plugins::lua.state["logging"] = this;
+        plugins::Plugins::lua.state.new_usertype<Logging>(
             "Logging",
             "info",
             static_cast<void (Logging::*)(const std::string &)>(&Logging::info),

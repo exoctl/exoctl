@@ -22,9 +22,9 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-        plugins::Plugins::lua.lua["engine"] = this;
+        plugins::Plugins::lua.state["engine"] = this;
 
-        plugins::Plugins::lua.lua.new_usertype<Engine>(
+        plugins::Plugins::lua.state.new_usertype<Engine>(
             "Engine",
             "is_running",
             sol::readonly(&Engine::is_running),

@@ -12,11 +12,6 @@ namespace engine
 {
     namespace lua
     {
-        Lua::Lua()
-        {
-            lua.open_libraries(sol::lib::base, sol::lib::package);
-        }
-
         const std::vector<record::plugin::Plugin> &Lua::get_scripts()
         {
             return m_scripts;
@@ -38,7 +33,7 @@ namespace engine
 
             const std::string m_script_name = generate_random_name();
 
-            if (!lua.load(p_buff.c_str()).valid()) {
+            if (!state.load(p_buff.c_str()).valid()) {
                 return false;
             }
 
@@ -51,7 +46,7 @@ namespace engine
                                    const std::string &p_script_path)
         {
 
-            if (!lua.load_file(p_script_path.c_str()).valid()) {
+            if (!state.load_file(p_script_path.c_str()).valid()) {
                 return false;
             }
 
@@ -65,15 +60,21 @@ namespace engine
             for (const auto &plugin : m_scripts) {
                 try {
                     if (plugin.type == record::plugin::SCRIPT_FILE) {
-                        lua.script_file(plugin.script,
+                        state.safe_script_file(plugin.script,
+                                               sol::script_pass_on_error);
+                    } else if (plugin.type == record::plugin::SCRIPT_BUFF) {
+                        state.safe_script(plugin.script,
                                           sol::script_pass_on_error);
                     } else {
-                        lua.script(plugin.script, sol::script_pass_on_error);
+                        state.safe_script(plugin.script,
+                                          sol::script_pass_on_error);
                     }
+
                 } catch (const sol::error &e) {
-                    fmt::print("Lua runtime error: {}\n", e.what());
+                    throw exception::Run(e.what());
                 }
             }
         }
+
     } // namespace lua
 } // namespace engine
