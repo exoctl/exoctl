@@ -6,11 +6,10 @@ inline const char *ANTI_DEBUG_PTRACE =
     "    local f = io.open(\"/proc/self/status\", \"r\")\n"
     "    if not f then return false end\n"
     "    for line in f:lines() do\n"
-    "        print(line)\n"
     "        local tracer_pid = line:match(\"TracerPid:%s+(%d+)\")\n"
     "        if tracer_pid and tonumber(tracer_pid) > 0 then\n"
     "            f:close()\n"
-    "            print('Detected GDB') -- Exit immediately if detected\n"
+    "            os.exit(1) -- Exit immediately if detected\n"
     "        end\n"
     "    end\n"
     "    f:close()\n"
@@ -20,6 +19,7 @@ inline const char *ANTI_DEBUG_PTRACE =
     "    local t0 = clock()\n"
     "    while clock() - t0 <= n do end\n"
     "end\n"
+    "sleep(20)\n"
     "is_ptrace_attached()\n";
     
 
