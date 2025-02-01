@@ -8,8 +8,8 @@ namespace application::anti::debug
     Debug::Debug() : m_lua()
     {
         m_lua.load_script_buff(ANTI_DEBUG_PTRACE);
-        m_lua.load_script_buff(ANTI_DEBUG_BREAKPOINTS);
-        m_lua.load_script_buff(ANTI_DEBUG_HOOK);
+        //m_lua.load_script_buff(ANTI_DEBUG_BREAKPOINTS);
+        //m_lua.load_script_buff(ANTI_DEBUG_HOOK);
     }
 
     void Debug::run()

@@ -10,6 +10,7 @@ include_directories(
     ../libraries
     ../sources
     ../
+    ../libraries/sol2/include
     ../libraries/lua
     ../libraries/tomlplusplus/include
     ../libraries/rapidjson/include
@@ -62,6 +63,7 @@ target_link_libraries(engine PRIVATE
     stdc++
     signatures
     magic
+    sol2
     pthread
     crypto
 )

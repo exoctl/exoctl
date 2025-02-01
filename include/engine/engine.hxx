@@ -14,7 +14,7 @@
 
 namespace engine
 {
-    class Engine
+    struct Engine
 #ifdef ENGINE_PRO
         : public interface::IPlugins
 #endif

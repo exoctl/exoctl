@@ -22,25 +22,36 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-        int version = ENGINE_VERSION_CODE;
-        std::function<std::any()> stop = [&]() -> std::any {
-            this->stop();
-            return {}; // return nil
-        };
+        sol::table engine_ns = m_plugins.lua.lua.create_table();
 
-        // register plugin engine
-        engine::plugins::Plugins::register_class("engine", this);
-        engine::plugins::Plugins::register_class_member(
-            "engine", "version_code", version);
-        engine::plugins::Plugins::register_class_member(
-            "engine", "is_running", is_running);
-        engine::plugins::Plugins::register_class_method("engine", "stop", stop);
+        // Passando a instância do 'this' diretamente para o Lua
+        m_plugins.lua.lua["engine"] = this;
 
-        // register plugin server
-        m_server.register_plugins();
+        // Registrando a classe no Lua de uma maneira simplificada
+        m_plugins.lua.lua.new_usertype<Engine>(
+            "Engine",
+            // Registrar propriedades ou funções básicas como readonly
+            "is_running",
+            sol::readonly(&Engine::is_running),
+            "stop",
+            &Engine::stop, // Por exemplo, o método stop, se necessário
+            "start",
+            &Engine::run); // Caso deseje adicionar mais alguma função
 
-        // register plugin log
-        m_log.register_plugins();
+        // luabridge::getGlobalNamespace(lua::Lua::state)
+        //     .beginNamespace("engine")
+        //     .addFunction("version_code",
+        //                  []() -> int { return ENGINE_VERSION_CODE; })
+        //     .beginClass<Engine>("Engine")
+        //     .addProperty("is_running", &Engine::is_running)
+        //     .addFunction("stop", &Engine::stop)
+        //     .endClass()
+        //     .endNamespace();
+        //  register plugin server
+        //  m_server.register_plugins();
+        //
+        //// register plugin log
+        // m_log.register_plugins();
     }
 #endif
 

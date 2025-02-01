@@ -113,23 +113,24 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        std::function<std::any(void * /*wrong*/, int, std::string)> log =
-            [&](void * /*wrong*/, int type, std::string msg) -> std::any {
-            if (type == spdlog::level::level_enum::info)
-                info(msg);
-            else if (type == spdlog::level::level_enum::warn)
-                warn(msg);
-            else if (type == spdlog::level::level_enum::err)
-                error(msg);
-            else if (type == spdlog::level::level_enum::debug)
-                debug(msg);
-            else if (type == spdlog::level::level_enum::critical)
-                critical(msg);
-
-            return {}; // return nil
-        };
-        engine::plugins::Plugins::register_class("logging", this);
-        engine::plugins::Plugins::register_class_method("logging", "log", log);
+        //luabridge::getGlobalNamespace(lua::Lua::state)
+        //    .beginClass<Logging>("Logging")
+        //    .addFunction("warn",
+        //                 static_cast<void (Logging::*)(const std::string &)>(
+        //                     &Logging::warn))
+        //    .addFunction("info",
+        //                 static_cast<void (Logging::*)(const std::string &)>(
+        //                     &Logging::info))
+        //    .addFunction("error",
+        //                 static_cast<void (Logging::*)(const std::string &)>(
+        //                     &Logging::error))
+        //    .addFunction("debug",
+        //                 static_cast<void (Logging::*)(const std::string &)>(
+        //                     &Logging::debug))
+        //    .addFunction("critical",
+        //                 static_cast<void (Logging::*)(const std::string &)>(
+        //                     &Logging::critical))
+        //    .endClass();
     }
 #endif
 

@@ -18,12 +18,13 @@ namespace engine
 #ifdef ENGINE_PRO
         void Server::register_plugins()
         {
-            plugins::Plugins::register_class("server", this);
-            plugins::Plugins::register_class_member("server", "port", port);
-            plugins::Plugins::register_class_member(
-                "server", "bindaddr", bindaddr);
-            plugins::Plugins::register_class_member(
-                "server", "concurrency", concurrency);
+            //luabridge::getGlobalNamespace(lua::Lua::state)
+            //    .beginClass<Server>("Server")
+            //    .addProperty("port", &Server::port, &Server::port)
+            //    .addProperty("bindaddr", &Server::bindaddr, &Server::bindaddr)
+            //    .addProperty(
+            //        "concurrency", &Server::concurrency, &Server::concurrency)
+            //    .endClass();
         }
 #endif
         void Server::run()

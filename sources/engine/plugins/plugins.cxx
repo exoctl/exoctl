@@ -14,31 +14,10 @@ namespace engine
     {
         Plugins::Plugins(configuration::Configuration &p_config,
                          logging::Logging &p_log)
-            : m_config(p_config), m_log(p_log), m_lua()
+            : lua(), m_config(p_config), m_log(p_log)
         {
             if (!m_config.get_plugins().enable)
                 LOG(m_log, warn, "Plugins not enabled");
-        }
-
-        template <>
-        void Plugins::register_t_global<int>(const std::string &p_name,
-                                             int &p_value)
-        {
-            lua::Lua::register_global(p_name, p_value);
-        }
-
-        template <>
-        void Plugins::register_t_global<std::string>(const std::string &p_name,
-                                                     std::string &p_value)
-        {
-            lua::Lua::register_global(p_name, p_value);
-        }
-
-        template <>
-        void Plugins::register_t_global<bool>(const std::string &p_name,
-                                              bool &p_value)
-        {
-            lua::Lua::register_global(p_name, p_value);
         }
 
         void Plugins::load_plugin_buff(const std::string &)
@@ -49,7 +28,7 @@ namespace engine
         {
             if (p_path.extension() == ".lua") {
                 LOG(m_log, info, "Loading plugin lua '{}'", p_path.c_str());
-                m_lua.load_script_file(p_path.filename(), p_path);
+                lua.load_script_file(p_path.filename(), p_path);
             }
         }
 
@@ -65,13 +44,14 @@ namespace engine
             if (m_config.get_plugins().enable) {
                 LOG(m_log, info, "Launching plugins async...");
                 std::async(
-                    std::launch::async, &Plugins::run_plugins_thread, this).get();
+                    std::launch::async, &Plugins::run_plugins_thread, this)
+                    .get();
             }
         }
 
         void Plugins::run_plugins_thread()
         {
-            m_lua.run();
+            lua.run();
         }
 
         void Plugins::load_plugins_folder(const std::string &p_path)

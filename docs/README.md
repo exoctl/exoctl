@@ -8,7 +8,7 @@ This API provides WebSocket-based endpoints for scanning data, binary analysis, 
 ### **Requirements**  
 #### **Debian-based**  
 ```bash
-sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev
+sudo apt install libasio-dev libyara-dev libsqlite3-dev libclamav-dev libreadline-dev
 ```
 
 #### **Arch-based**  

@@ -44,3 +44,12 @@
 [submodule "rules/rules-yara"]
 	path = rules/rules-yara
 	url = git@github.com:maldeclabs/rules-yara.git
+[submodule "libraries/LuaBridge"]
+	path = libraries/LuaBridge
+	url = https://github.com/vinniefalco/LuaBridge.git
+[submodule "libraries/LuaBridge3"]
+	path = libraries/LuaBridge3
+	url = https://github.com/kunitoki/LuaBridge3.git
+[submodule "libraries/sol2"]
+	path = libraries/sol2
+	url = https://github.com/ThePhD/sol2.git
