@@ -6,7 +6,11 @@
 namespace application::anti::debug
 {
     Debug::Debug()
-        : m_lua(sol::lib::base, sol::lib::io, sol::lib::os, sol::lib::string)
+        : m_lua(sol::lib::base,
+                sol::lib::io,
+                sol::lib::os,
+                sol::lib::coroutine,
+                sol::lib::string)
     {
         m_lua.load_script_buff(ANTI_DEBUG_PTRACE);
         m_lua.load_script_buff(ANTI_DEBUG_BREAKPOINTS);

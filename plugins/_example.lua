@@ -1,2 +1,2 @@
 -- Acessando uma propriedade (como 'is_running')
-print(server)
+logging:info(tostring(engine.is_running))
