@@ -25,6 +25,10 @@ namespace engine
             {
             }
 
+            void Analysis::register_plugins()
+            {
+            }
+
             void Analysis::scan()
             {
                 m_map.add_route("/scan", [&]() {
@@ -141,9 +145,7 @@ namespace engine
                         p_total_rules);
                 });
 
-                LOG(m_server.get_log(),
-                    info,
-                    "Loading rules clamav ...");
+                LOG(m_server.get_log(), info, "Loading rules clamav ...");
                 m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
                     LOG(m_server.get_log(),
                         info,

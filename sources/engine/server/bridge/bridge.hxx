@@ -16,13 +16,14 @@ namespace engine
 {
     namespace server
     {
-        class Bridge
+        class Bridge : public interface::IPlugins
         {
           public:
             Bridge(Server &);
             ~Bridge() = default;
 
             void load();
+            void register_plugins() override;
 
           private:
             Server &m_server;

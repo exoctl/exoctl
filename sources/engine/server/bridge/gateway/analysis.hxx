@@ -16,13 +16,15 @@ namespace engine
     {
         namespace bridge
         {
-            class Analysis : public interface::IGateway
+            class Analysis : public interface::IGateway,
+                             public interface::IPlugins
             {
               public:
                 Analysis(Server &);
                 ~Analysis();
 
                 void load() const override;
+                void register_plugins() override;
 
               private:
                 Server &m_server;

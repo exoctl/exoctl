@@ -11,9 +11,6 @@ namespace engine
         {
             namespace scan
             {
-                Yara::~Yara()
-                {
-                }
                 Yara::Yara(configuration::Configuration &p_config)
                     : m_config(p_config)
                 {

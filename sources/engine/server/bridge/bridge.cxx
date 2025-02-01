@@ -18,6 +18,10 @@ namespace engine
             m_root = std::make_unique<bridge::Root>(m_server);
         }
 
+        void Bridge::register_plugins()
+        {
+        }
+
         void Bridge::load()
         {
             LOG(m_server.get_log(), info, "Loading Gateways ... ");

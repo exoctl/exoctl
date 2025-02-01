@@ -1,6 +1,6 @@
-#include <alloca.h>
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <fcntl.h>
@@ -28,6 +28,8 @@ namespace engine
                 throw yara::exception::Initialize(
                     "yr_compiler_create() error initialize compiler yara");
             }
+
+            Yara::register_plugins();
         }
 
         Yara::~Yara()
@@ -45,6 +47,32 @@ namespace engine
                         "yr_rules_destroy() failed destroy rules");
                 }
             }
+        }
+
+        void Yara::register_plugins()
+        {
+            plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
+                "Yara",
+                sol::constructors<engine::security::Yara()>(),
+                "load_rules_folder",
+                &engine::security::Yara::load_rules_folder,
+                "load_rules",
+                &engine::security::Yara::load_rules,
+                "scan_bytes",
+                &engine::security::Yara::scan_bytes,
+                "scan_fast_bytes",
+                [](engine::security::Yara &self,
+                   const std::string &buffer,
+                   sol::function lua_callback) {
+                    lua_callback(1, "data->rule", "data->ns");
+                    
+                },
+                "get_rules_loaded_count",
+                &engine::security::Yara::get_rules_loaded_count,
+                "yara_set_signature_rule_fd",
+                &engine::security::Yara::yara_set_signature_rule_fd,
+                "set_signature_rule_mem",
+                &engine::security::Yara::set_signature_rule_mem);
         }
 
         const int Yara::yara_set_signature_rule_fd(
@@ -144,9 +172,7 @@ namespace engine
             const std::string p_buffer,
             const std::function<void(yara::record::Data *)> &p_callback) const
         {
-            struct yara::record::Data *data =
-                static_cast<struct yara::record::Data *>(
-                    alloca(sizeof(struct yara::record::Data)));
+            struct yara::record::Data *data = new struct yara::record::Data;
 
             data->match_status = yara::type::Scan::none;
 
@@ -157,6 +183,7 @@ namespace engine
                              SCAN_FLAGS_FAST_MODE);
 
             p_callback(data);
+            delete data;
         }
 
         YR_CALLBACK_FUNC

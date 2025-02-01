@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/security/yara/entitys.hxx>
 #include <filesystem>
 #include <functional>
@@ -11,11 +12,13 @@ namespace engine
 {
     namespace security
     {
-        class Yara
+        class Yara : public interface::IPlugins
         {
           public:
             Yara();
             ~Yara();
+
+            void register_plugins() override;
 
             /**
              * @brief this function realize fast scan using flag

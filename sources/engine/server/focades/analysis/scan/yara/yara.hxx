@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/server/focades/analysis/scan/yara/entitys.hxx>
@@ -20,7 +21,7 @@ namespace engine
                   public:
                     Yara();
                     Yara(configuration::Configuration &);
-                    ~Yara();
+                    ~Yara() = default;
 
                     void scan_fast_bytes(
                         const std::string,
