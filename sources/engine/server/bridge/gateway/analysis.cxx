@@ -27,6 +27,7 @@ namespace engine
 
             void Analysis::register_plugins()
             {
+                m_scan_yara->register_plugins();
             }
 
             void Analysis::scan()

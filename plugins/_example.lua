@@ -6,7 +6,7 @@ local yara_instance = Yara.new()
 
 -- Carregar regras do diretório
 yara_instance:load_rules(function ()
-    yara_instance:load_rules_folder("rules/rules-yara")    
+    yara_instance:load_rules_folder("rules/")    
 end)
 
 

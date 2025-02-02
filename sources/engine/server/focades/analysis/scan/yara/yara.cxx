@@ -16,6 +16,11 @@ namespace engine
                 {
                 }
 
+                void Yara::register_plugins()
+                {
+                    m_yara.register_plugins();
+                }
+
                 void Yara::load_rules(
                     const std::function<void(uint64_t)> &p_callback) const
                 {

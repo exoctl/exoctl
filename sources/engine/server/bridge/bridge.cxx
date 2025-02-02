@@ -20,6 +20,7 @@ namespace engine
 
         void Bridge::register_plugins()
         {
+            m_analysis->register_plugins();
         }
 
         void Bridge::load()

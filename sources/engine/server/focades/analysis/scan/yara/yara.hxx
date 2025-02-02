@@ -16,12 +16,14 @@ namespace engine
         {
             namespace scan
             {
-                class Yara
+                class Yara : public interface::IPlugins
                 {
                   public:
                     Yara();
                     Yara(configuration::Configuration &);
                     ~Yara() = default;
+
+                    void register_plugins() override;
 
                     void scan_fast_bytes(
                         const std::string,

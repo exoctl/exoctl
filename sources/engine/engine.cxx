@@ -35,8 +35,11 @@ namespace engine
 
         //  register plugin server
         m_server.register_plugins();
-        //
-        //// register plugin log
+        
+        // register plugin bridge
+        m_server_bridge.register_plugins();
+       
+        // register plugin log
         m_log.register_plugins();
     }
 #endif
