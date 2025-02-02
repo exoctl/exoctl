@@ -17,12 +17,12 @@ namespace engine
             m_parser = std::make_unique<bridge::Parser>(m_server);
             m_root = std::make_unique<bridge::Root>(m_server);
         }
-
+#ifdef ENGINE_PRO
         void Bridge::register_plugins()
         {
             m_analysis->register_plugins();
         }
-
+#endif
         void Bridge::load()
         {
             LOG(m_server.get_log(), info, "Loading Gateways ... ");

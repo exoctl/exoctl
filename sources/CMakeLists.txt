@@ -3,7 +3,7 @@ set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
 set(ENGINE_PRO ON BOOL "Enable Skull Pro flags")
 set(BUILD_AS_LIBRARY OFF CACHE BOOL "Build as library instead of executable ")
-set(PROTECT_ANTI_DEBUG OFF CACHE BOOL "Protect Anti-Debug")
+set(PROTECT_ANTI_DEBUG ON CACHE BOOL "Protect Anti-Debug")
 
 # Include directories
 include_directories(

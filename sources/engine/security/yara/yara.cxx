@@ -28,8 +28,6 @@ namespace engine
                 throw yara::exception::Initialize(
                     "yr_compiler_create() error initialize compiler yara");
             }
-
-            Yara::register_plugins();
         }
 
         Yara::~Yara()
@@ -48,7 +46,7 @@ namespace engine
                 }
             }
         }
-
+#ifdef ENGINE_PRO
         void Yara::register_plugins()
         {
             plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
@@ -81,7 +79,7 @@ namespace engine
                 "set_signature_rule_mem",
                 &engine::security::Yara::set_signature_rule_mem);
         }
-
+#endif
         const int Yara::yara_set_signature_rule_fd(
             const std::string &p_path,
             const std::string &p_yrname,

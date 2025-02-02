@@ -16,15 +16,19 @@ namespace engine
 {
     namespace server
     {
-        class Bridge : public interface::IPlugins
+        class Bridge
+#ifdef ENGINE_PRO
+            : public interface::IPlugins
+#endif
         {
           public:
             Bridge(Server &);
             ~Bridge() = default;
 
             void load();
+#ifdef ENGINE_PRO
             void register_plugins() override;
-
+#endif
           private:
             Server &m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
