@@ -64,9 +64,16 @@ namespace engine
                 [](engine::security::Yara &self,
                    const std::string &buffer,
                    sol::function lua_callback) {
-                    lua_callback(1, "data->rule", "data->ns");
-                    
+                    self.scan_fast_bytes(buffer, [&](yara::record::Data *data) {
+                        if (lua_callback.valid()) {
+                            lua_callback(data->match_status,
+                                         std::string(data->rule),
+                                         std::string(data->ns));
+                        }
+                    });
                 },
+                "scan_fast_callback",
+                &engine::security::Yara::scan_fast_callback,
                 "get_rules_loaded_count",
                 &engine::security::Yara::get_rules_loaded_count,
                 "yara_set_signature_rule_fd",
@@ -155,16 +162,18 @@ namespace engine
                               void *p_data,
                               int p_flags) const
         {
-            if (yr_rules_scan_mem(
-                    m_yara_rules,
-                    reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
-                    p_buffer.size(),
-                    p_flags,
-                    p_callback,
-                    p_data,
-                    0) == ERROR_INTERNAL_FATAL_ERROR) {
-                throw yara::exception::Scan(
-                    "yr_rules_scan_mem() falied scan buffer, internal error");
+            if (m_yara_compiler != nullptr && m_yara_rules != nullptr) {
+                if (yr_rules_scan_mem(
+                        m_yara_rules,
+                        reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
+                        p_buffer.size(),
+                        p_flags,
+                        p_callback,
+                        p_data,
+                        0) == ERROR_INTERNAL_FATAL_ERROR) {
+                    throw yara::exception::Scan("yr_rules_scan_mem() falied "
+                                                "scan buffer, internal error");
+                }
             }
         }
 

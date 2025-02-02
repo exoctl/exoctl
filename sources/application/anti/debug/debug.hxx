@@ -1,3 +1,5 @@
+#ifdef PROTECT_ANTI_DEBUG
+
 #pragma once
 
 #include <application/anti/debug/scripts/gdb.hxx>
@@ -10,7 +12,6 @@ namespace application::anti::debug
       public:
         Debug();
         ~Debug();
-       
 
         void run();
 
@@ -19,3 +20,5 @@ namespace application::anti::debug
         void run_plugins_thread();
     };
 } // namespace application::anti::debug
+
+#endif

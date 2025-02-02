@@ -1,6 +1,7 @@
+#ifdef PROTECT_ANTI_DEBUG
+
 #include <application/anti/debug/debug.hxx>
 #include <engine/lua/lua.hxx>
-#include <iostream>
 #include <thread>
 
 namespace application::anti::debug
@@ -21,7 +22,7 @@ namespace application::anti::debug
     {
         m_lua.state.script("os.exit(0)");
     }
-    
+
     void Debug::run()
     {
         std::thread(&Debug::run_plugins_thread, this).detach();
@@ -32,3 +33,5 @@ namespace application::anti::debug
         m_lua.run();
     }
 } // namespace application::anti::debug
+
+#endif

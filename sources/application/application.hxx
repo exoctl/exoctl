@@ -30,8 +30,9 @@ namespace application
 
         engine::configuration::Configuration m_config;
         engine::logging::Logging m_log;
+#ifdef PROTECT_ANTI_DEBUG
         anti::debug::Debug m_debug;
-
+#endif
         std::unique_ptr<engine::Engine> m_engine;
     };
 } // namespace application

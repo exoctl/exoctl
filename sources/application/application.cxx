@@ -8,10 +8,16 @@ namespace application
 {
     Application::Application(int argc, const char **argv)
         : m_argc(argc), m_argv(argv), m_config(config::ENGINE_CONFIG_PATH),
-          m_log(m_config), m_debug()
+          m_log(m_config)
+#ifdef PROTECT_ANTI_DEBUG
+          ,
+          m_debug()
+#endif
     {
         TRY_BEGIN()
+#ifdef PROTECT_ANTI_DEBUG
         m_debug.run();
+#endif
         m_config.load();
         m_log.load();
         TRY_END()

@@ -1,3 +1,5 @@
+#ifdef PROTECT_ANTI_DEBUG
+
 #pragma once
 
 inline const char *ANTI_DEBUG_PTRACE =
@@ -64,3 +66,5 @@ inline const char *ANTI_DEBUG_HOOK =
     "while true do\n"
     "    coroutine.resume(co)\n"
     "end\n";
+
+#endif
