@@ -1,6 +1,5 @@
 #include <engine/crypto/sha.hxx>
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include <engine/plugins/plugins.hxx>
 #include <iomanip>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
@@ -17,7 +16,28 @@ namespace engine
         {
             EVP_MD_CTX_free(m_ctx);
         }
-
+#ifdef ENGINE_PRO
+        void Sha::register_plugins()
+        {
+            plugins::Plugins::lua.state.new_usertype<engine::crypto::Sha>(
+                "Sha",
+                sol::constructors<engine::crypto::Sha()>(),
+                "gen_sha1_hash",
+                &Sha::gen_sha1_hash,
+                "gen_sha256_hash",
+                &Sha::gen_sha256_hash,
+                "gen_sha512_hash",
+                &Sha::gen_sha512_hash,
+                "gen_sha224_hash",
+                &Sha::gen_sha224_hash,
+                "gen_sha384_hash",
+                &Sha::gen_sha384_hash,
+                "gen_sha3_256_hash",
+                &Sha::gen_sha3_256_hash,
+                "gen_sha3_512_hash",
+                &Sha::gen_sha3_512_hash);
+        }
+#endif
         const std::string Sha::gen_sha1_hash(const std::string &p_str)
         {
             unsigned char hash[SHA_DIGEST_LENGTH];

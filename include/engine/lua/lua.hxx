@@ -34,12 +34,12 @@ namespace engine
                                      std::forward<Args>(args)...);
             }
             ~Lua() = default;
-
-            bool load_script_file(const std::string &, const std::string &);
-            bool load_script_buff(const std::string &);
-            void run();
-            const std::vector<record::plugin::Plugin> &get_scripts();
             sol::state state;
+
+            [[nodiscard]] bool load_script_file(const std::string &, const std::string &);
+            [[nodiscard]] bool load_script_buff(const std::string &);
+            [[nodiscard]] const std::vector<record::plugin::Plugin> &get_scripts();
+            void run();
 
           private:
             std::vector<record::plugin::Plugin> m_scripts;

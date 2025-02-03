@@ -58,21 +58,17 @@ namespace engine
         void Lua::run()
         {
             for (const auto &plugin : m_scripts) {
-                try {
-                    if (plugin.type == record::plugin::SCRIPT_FILE) {
-                        state.safe_script_file(plugin.script,
-                                               sol::script_pass_on_error);
-                    } else if (plugin.type == record::plugin::SCRIPT_BUFF) {
-                        state.safe_script(plugin.script,
-                                          sol::script_pass_on_error);
-                    } else {
-                        state.safe_script(plugin.script,
-                                          sol::script_pass_on_error);
-                    }
-
-                } catch (const sol::error &e) {
-                    throw exception::Run(e.what());
+                TRY_BEGIN()
+                if (plugin.type == record::plugin::SCRIPT_FILE) {
+                    state.safe_script_file(plugin.script,
+                                           sol::script_pass_on_error);
+                } else if (plugin.type == record::plugin::SCRIPT_BUFF) {
+                    state.safe_script(plugin.script, sol::script_pass_on_error);
+                } else {
+                    state.safe_script(plugin.script, sol::script_pass_on_error);
                 }
+                TRY_END()
+                CATCH(sol::error, { throw exception::Run(e.what()); })
             }
         }
 

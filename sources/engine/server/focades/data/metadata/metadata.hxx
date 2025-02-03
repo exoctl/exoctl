@@ -2,35 +2,31 @@
 
 #include <ctime>
 #include <engine/crypto/sha.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/magic/magic.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/server/focades/data/metadata/entitys.hxx>
 #include <functional>
 
-namespace engine
+namespace engine::focades::data
 {
-    namespace focades
+    class Metadata : public interface::IPlugins
     {
-        namespace data
-        {
-            class Metadata
-            {
-              public:
-                Metadata();
-                ~Metadata();
+      public:
+        Metadata();
+        ~Metadata() = default;
 
-                void parse(
-                    const std::string &,
-                    const std::function<void(metadata::record::DTO *)> &);
+        void register_plugins() override;
 
-                [[nodiscard]] const engine::parser::Json dto_json(
-                    const metadata::record::DTO *);
+        void parse(const std::string &,
+                   const std::function<void(metadata::record::DTO *)> &);
 
-              private:
-                [[nodiscard]] const double compute_entropy(const std::string &);
-                magic::Magic m_magic;
-                crypto::Sha m_sha;
-            };
-        } // namespace data
-    } // namespace focades
-} // namespace engine
+        [[nodiscard]] const engine::parser::Json dto_json(
+            const metadata::record::DTO *);
+
+      private:
+        [[nodiscard]] const double compute_entropy(const std::string &);
+        magic::Magic m_magic;
+        crypto::Sha m_sha;
+    };
+} // namespace engine::focades::data

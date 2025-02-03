@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/igateway.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/server/bridge/gateway/map/map.hxx>
 #include <engine/server/bridge/gateway/websocket/websocket.hxx>
 #include <engine/server/focades/data/metadata/metadata.hxx>
@@ -16,11 +17,16 @@ namespace engine
         namespace bridge
         {
             class Data : public interface::IGateway
+#ifdef ENGINE_PRO
+                ,
+                         public interface::IPlugins
+#endif
             {
               public:
                 Data(Server &);
-                ~Data();
+                ~Data() = default;
 
+                void register_plugins() override;
                 void load() const override;
 
               private:

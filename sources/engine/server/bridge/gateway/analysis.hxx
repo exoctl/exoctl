@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/igateway.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/server/bridge/gateway/map/map.hxx>
 #include <engine/server/bridge/gateway/websocket/websocket.hxx>
 #include <engine/server/focades/analysis/scan/av/clamav/clamav.hxx>
@@ -16,8 +17,11 @@ namespace engine
     {
         namespace bridge
         {
-            class Analysis : public interface::IGateway,
+            class Analysis : public interface::IGateway
+#ifdef ENGINE_PRO
+                ,
                              public interface::IPlugins
+#endif
             {
               public:
                 Analysis(Server &);

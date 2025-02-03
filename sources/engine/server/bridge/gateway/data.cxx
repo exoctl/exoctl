@@ -6,8 +6,7 @@ namespace engine
     {
         namespace bridge
         {
-            Data::Data(Server &p_server)
-                : m_server(p_server), m_map(BASE_DATA)
+            Data::Data(Server &p_server) : m_server(p_server), m_map(BASE_DATA)
             {
                 Data::prepare();
 
@@ -15,8 +14,9 @@ namespace engine
                 Data::data_metadata();
             }
 
-            Data::~Data()
+            void Data::register_plugins()
             {
+                m_data_metadata->register_plugins();
             }
 
             void Data::data_metadata()

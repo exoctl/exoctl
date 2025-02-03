@@ -13,8 +13,9 @@ namespace engine
             {
             }
 
-            Metadata::~Metadata()
+            void Metadata::register_plugins()
             {
+                m_sha.register_plugins();
             }
 
             void Metadata::parse(

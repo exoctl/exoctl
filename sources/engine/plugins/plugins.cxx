@@ -30,7 +30,12 @@ namespace engine
         {
             if (p_path.extension() == ".lua") {
                 LOG(m_log, info, "Loading plugin lua '{}'", p_path.c_str());
-                lua.load_script_file(p_path.filename(), p_path);
+                if (!lua.load_script_file(p_path.filename(), p_path)) {
+                    LOG(m_log,
+                        error,
+                        "Falied to load plugin '{}'",
+                        p_path.c_str());
+                }
             }
         }
 
