@@ -31,7 +31,7 @@ namespace engine
             void register_plugins() override;
 #endif
           private:
-            Server m_server;
+            Server *m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::Analysis> m_analysis;

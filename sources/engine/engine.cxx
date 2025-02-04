@@ -5,16 +5,6 @@
 
 namespace engine
 {
-    // Engine::Engine(configuration::Configuration &p_configuration,
-    //                logging::Logging &p_log)
-    //     : m_server(p_configuration, p_log), m_server_bridge(m_server),
-    //       m_server_log(p_configuration, p_log),
-    //       m_llama_log(p_configuration, p_log),
-    //       m_lief_log(p_configuration, p_log),
-    // is_running(false)
-    //{
-    //}
-
     Engine::Engine() : is_running(false)
     {
     }
@@ -31,6 +21,8 @@ namespace engine
         m_server.setup(m_configuration, m_log);
         m_server_log.setup(m_configuration, m_log);
         m_server_bridge.setup(m_server);
+        m_llama_log.setup(m_configuration, m_log);
+        m_lief_log.setup(m_configuration, m_log);
     }
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
@@ -95,7 +87,7 @@ namespace engine
             p_callback();
         }
 
-        // m_server_bridge.load();
+        m_server_bridge.load();
 #ifdef ENGINE_PRO
         m_plugins.load();
         m_plugins.run();

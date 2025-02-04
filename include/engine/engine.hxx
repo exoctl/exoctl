@@ -24,13 +24,15 @@ namespace engine
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_log;
-        server::Server m_server;
+        
         plugins::Plugins m_plugins;
+        
+        server::Server m_server;
         server::Bridge m_server_bridge;
-        server::_::Log m_server_log;
 
-        // llama::_::Log m_llama_log;
-        // parser::binary::lief::_::Log m_lief_log;
+        server::_::Log m_server_log;
+        llama::_::Log m_llama_log;
+        parser::binary::lief::_::Log m_lief_log;
         void finalize();
 
       public:

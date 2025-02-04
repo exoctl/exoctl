@@ -2,9 +2,13 @@
 
 namespace engine::parser::binary::lief::_
 {
-    Log::Log(configuration::Configuration &p_config, logging::Logging &p_log)
-        : m_config(p_config), m_log(p_log)
+    void Log::setup(configuration::Configuration &p_config,
+                    logging::Logging &p_log)
+
     {
+        m_config = p_config;
+        m_log = p_log;
+        
         LIEF::logging::logger::setHandler(
             this); // define global logger for LIEF
 
@@ -13,10 +17,6 @@ namespace engine::parser::binary::lief::_
 
         Log::active_level(
             static_cast<LIEF::logging::LEVEL>(m_config.get_lief().log.level));
-    }
-
-    Log::~Log()
-    {
     }
 
     void Log::log(std::string p_message, ::LIEF::logging::LEVEL p_level)

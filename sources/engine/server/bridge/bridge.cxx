@@ -11,12 +11,12 @@ namespace engine
     {
         void Bridge::setup(Server &p_server)
         {
-            m_server = p_server;
-            m_analysis = std::make_unique<bridge::Analysis>(m_server);
-            m_data = std::make_unique<bridge::Data>(m_server);
-            m_rev = std::make_unique<bridge::Rev>(m_server);
-            m_parser = std::make_unique<bridge::Parser>(m_server);
-            m_root = std::make_unique<bridge::Root>(m_server);
+            m_server = &p_server;
+            m_analysis = std::make_unique<bridge::Analysis>(*m_server);
+            m_data = std::make_unique<bridge::Data>(*m_server);
+            m_rev = std::make_unique<bridge::Rev>(*m_server);
+            m_parser = std::make_unique<bridge::Parser>(*m_server);
+            m_root = std::make_unique<bridge::Root>(*m_server);
         }
 #ifdef ENGINE_PRO
         void Bridge::register_plugins()
@@ -27,7 +27,7 @@ namespace engine
 #endif
         void Bridge::load()
         {
-            LOG(m_server.get_log(), info, "Loading Gateways ... ");
+            LOG(m_server->get_log(), info, "Loading Gateways ... ");
 
             TRY_BEGIN()
 
@@ -39,15 +39,15 @@ namespace engine
 
             TRY_END()
             CATCH(std::bad_alloc, {
-                LOG(m_server.get_log(), error, "{}", e.what());
+                LOG(m_server->get_log(), error, "{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::runtime_error, {
-                LOG(m_server.get_log(), error, "{}", e.what());
+                LOG(m_server->get_log(), error, "{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::exception, {
-                LOG(m_server.get_log(), warn, "{}", e.what());
+                LOG(m_server->get_log(), warn, "{}", e.what());
                 throw exception::ParcialAbort(e.what());
             })
         }

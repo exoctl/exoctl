@@ -2,17 +2,17 @@
 
 namespace engine::llama::_
 {
-    Log::Log(configuration::Configuration &p_config, logging::Logging &p_log)
-        : m_config(p_config), m_log(p_log)
+    void Log::setup(configuration::Configuration &p_config,
+                    logging::Logging &p_log)
+
     {
+        m_config = p_config;
+        m_log = p_log;
+        
         m_log.create_logger(m_config.get_logging().type,
                             m_config.get_llama().log.name);
 
         llama_log_set(&Log::log, this);
-    }
-
-    Log::~Log()
-    {
     }
 
     void Log::log(ggml_log_level p_level,
