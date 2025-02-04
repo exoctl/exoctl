@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/parser/toml.hxx>
+#include <engine/interfaces/ibind.hxx>
 #include <spdlog/spdlog.h>
 #include <stdint.h>
 
@@ -11,13 +11,14 @@ namespace engine
 {
     namespace logging
     {
-        class Logging
+        class Logging : public interface::IBind
         {
           public:
-            Logging(configuration::Configuration &);
-            Logging();
+            Logging() = default;
             ~Logging() = default;
             Logging &operator=(const Logging &);
+            void bind_to_lua(sol::state_view &) override;
+            configuration::Configuration config;
 
 #ifdef ENGINE_PRO
             void register_plugins();
@@ -71,7 +72,6 @@ namespace engine
                 const std::string &);
 
           private:
-            configuration::Configuration m_config;
             std::shared_ptr<spdlog::logger> m_logger;
 
           protected:

@@ -1,22 +1,23 @@
 #pragma once
 
 #include <engine/configuration/entitys.hxx>
+#include <engine/interfaces/ibind.hxx>
 #include <engine/parser/toml.hxx>
 
 namespace engine
 {
     namespace configuration
     {
-        class Configuration
+        class Configuration : public interface::IBind
         {
           public:
-            Configuration(std::string &);
-            Configuration();
+            Configuration() = default;
             ~Configuration() = default;
             Configuration &operator=(const Configuration &);
 
+            void set_path(const std::string &);
+            void bind_to_lua(sol::state_view &) override;
             void load();
-            const std::string &get_path_config() const;
             const record::cache::Cache &get_cache() const;
             const record::av::clamav::Clamav &get_av_clamav() const;
             const record::Project &get_project() const;
@@ -30,8 +31,9 @@ namespace engine
 #ifdef ENGINE_PRO
             const record::plugins::Plugins &get_plugins();
 #endif
+            std::string path;
+
           private:
-            std::string m_path_config;
             parser::Toml m_toml;
 
             record::cache::Cache m_cache;

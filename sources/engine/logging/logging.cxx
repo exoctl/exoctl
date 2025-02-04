@@ -14,26 +14,29 @@
 
 namespace engine::logging
 {
-    Logging::Logging(configuration::Configuration &config) : m_config(config)
-    {
-    }
-
-    Logging::Logging()
-    {
-    }
-
     Logging &Logging::operator=(const Logging &p_log)
     {
         if (this != &p_log) {
-            m_config = p_log.m_config;
+            config = p_log.config;
             m_logger = p_log.m_logger;
         }
         return *this;
     }
 
+    void Logging::bind_to_lua(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<logging::Logging>(
+            "Logging",
+            sol::constructors<logging::Logging()>(),
+            "load",
+            &Logging::load,
+            "config",
+            &Logging::config);
+    }
+
     void Logging::load()
     {
-        const auto &logging_config = m_config.get_logging();
+        const auto &logging_config = config.get_logging();
         active_instance(logging_config.type, logging_config.name);
     }
 
@@ -53,7 +56,7 @@ namespace engine::logging
         const std::string &p_type, const std::string &p_name)
     {
         std::vector<spdlog::sink_ptr> sinks;
-        const auto &logging_config = m_config.get_logging();
+        const auto &logging_config = config.get_logging();
 
         if (p_type == "daily") {
             sinks.emplace_back(

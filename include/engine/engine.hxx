@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/interfaces/iplugins.hxx>
+#include <engine/interfaces/ibind.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/lua/lua.hxx>
@@ -15,7 +15,7 @@
 
 namespace engine
 {
-    struct Engine {
+    struct Engine : public interface::IBind {
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_log;
@@ -33,9 +33,9 @@ namespace engine
         ~Engine() = default;
         Engine();
 
-        void setup(logging::Logging &, configuration::Configuration &);
+        void setup(configuration::Configuration &, logging::Logging &);
 
-        void bind_to_lua(sol::state_view &);
+        void bind_to_lua(sol::state_view &) override;
         void stop();
         void run(const std::function<void()> & = nullptr);
     };

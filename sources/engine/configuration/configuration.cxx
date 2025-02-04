@@ -6,19 +6,21 @@ namespace engine
 {
     namespace configuration
     {
-        Configuration::Configuration(std::string &p_config)
-            : m_path_config(p_config)
+        void Configuration::bind_to_lua(sol::state_view &p_lua)
         {
-            m_toml.parse_file(m_path_config);
-        }
-
-        Configuration::Configuration() : m_path_config("")
-        {
+            p_lua.new_usertype<configuration::Configuration>(
+                "Configuration",
+                sol::constructors<configuration::Configuration()>(),
+                "load",
+                &Configuration::load,
+                "path",
+                &Configuration::path);
         }
 
         void Configuration::load()
         {
             TRY_BEGIN()
+            m_toml.parse_file(path);
             Configuration::load_project();
             Configuration::load_server();
             Configuration::load_yara();
@@ -39,7 +41,7 @@ namespace engine
         Configuration &Configuration::operator=(const Configuration &p_config)
         {
             if (this != &p_config) {
-                m_path_config = p_config.m_path_config;
+                path = path;
 
                 m_toml = p_config.m_toml;
                 m_cache = p_config.m_cache;
@@ -58,11 +60,6 @@ namespace engine
 #endif
             }
             return *this;
-        }
-
-        const std::string &Configuration::get_path_config() const
-        {
-            return m_path_config;
         }
 
         const record::cache::Cache &Configuration::get_cache() const

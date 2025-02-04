@@ -19,8 +19,8 @@ namespace engine
     {
     }
 
-    void Engine::setup(logging::Logging &p_log,
-                       configuration::Configuration &p_config)
+    void Engine::setup(configuration::Configuration &p_config,
+                       logging::Logging &p_log)
     {
         m_log = p_log;
         m_configuration = p_config;
