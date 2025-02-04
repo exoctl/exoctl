@@ -8,6 +8,7 @@
 #endif
 
 #include <crow.h>
+#include <memory>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/iplugins.hxx>
@@ -26,15 +27,16 @@ namespace engine
 #endif
         {
           private:
-            App m_app;
+            std::shared_ptr<App> m_app;
             configuration::Configuration m_config;
             logging::Logging m_log;
 
           public:
-            Server() = default;
+            Server() : m_app(std::make_shared<App>()) {}
             ~Server() = default;
+            Server &operator=(const Server &);
 
-            void setup(configuration::Configuration&, logging::Logging&);
+            void setup(configuration::Configuration &, logging::Logging &);
 
             App &get();
             configuration::Configuration &get_config();

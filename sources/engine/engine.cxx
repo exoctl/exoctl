@@ -26,14 +26,36 @@ namespace engine
         m_configuration = p_config;
 
 #ifdef ENGINE_PRO
-        //// m_plugins(m_config, m_log);
+        m_plugins.setup(m_configuration, m_log);
 #endif
         m_server.setup(m_configuration, m_log);
+        m_server_log.setup(m_configuration, m_log);
+        m_server_bridge.setup(m_server);
     }
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
     {
         p_lua.new_usertype<engine::Engine>(
+            "Engine",
+            sol::constructors<engine::Engine()>(),
+            "is_running",
+            sol::readonly(&Engine::is_running),
+            "stop",
+            &Engine::stop,
+            "register_plugins",
+            &Engine::register_plugins,
+            "setup",
+            &Engine::setup,
+            "run",
+            &Engine::run);
+    }
+
+#ifdef ENGINE_PRO
+    void Engine::register_plugins()
+    {
+        plugins::Plugins::lua.state["engine"] = this;
+
+        plugins::Plugins::lua.state.new_usertype<engine::Engine>(
             "Engine",
             sol::constructors<engine::Engine()>(),
             "is_running",
@@ -49,11 +71,9 @@ namespace engine
         m_server.register_plugins();
 
         // register plugin bridge
-        // m_server_bridge.register_plugins();
-
-        // register plugin log
-        m_log.register_plugins();
+        m_server_bridge.register_plugins();
     }
+#endif
 
     void Engine::stop()
     {
@@ -77,8 +97,8 @@ namespace engine
 
         // m_server_bridge.load();
 #ifdef ENGINE_PRO
-        // m_plugins.load();
-        // m_plugins.run();
+        m_plugins.load();
+        m_plugins.run();
 #endif
 
         m_server.run();

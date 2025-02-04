@@ -18,7 +18,6 @@ namespace engine
             void set_path(const std::string &);
             void bind_to_lua(sol::state_view &) override;
             void load();
-            const record::cache::Cache &get_cache() const;
             const record::av::clamav::Clamav &get_av_clamav() const;
             const record::Project &get_project() const;
             const record::yara::Yara &get_yara() const;

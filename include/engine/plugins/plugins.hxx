@@ -16,9 +16,10 @@ namespace engine
         class Plugins
         {
           public:
-            Plugins(configuration::Configuration &, logging::Logging &);
+            Plugins() = default;
             ~Plugins() = default;
 
+            void setup(configuration::Configuration &, logging::Logging &);
             void load_plugin_buff(const std::string &);
             void load_plugin_file(const std::filesystem::path &);
             void load_plugins_folder(const std::string &);
@@ -29,8 +30,8 @@ namespace engine
             static lua::Lua lua;
 
           private:
-            configuration::Configuration &m_config;
-            logging::Logging &m_log;
+            configuration::Configuration m_config;
+            logging::Logging m_log;
 
             void run_plugins_thread();
         };

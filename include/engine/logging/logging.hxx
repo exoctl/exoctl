@@ -2,6 +2,7 @@
 
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/ibind.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <spdlog/spdlog.h>
 #include <stdint.h>
 
@@ -12,6 +13,10 @@ namespace engine
     namespace logging
     {
         class Logging : public interface::IBind
+#ifdef ENGINE_PRO
+            ,
+                        public interface::IPlugins
+#endif
         {
           public:
             Logging() = default;
@@ -21,7 +26,7 @@ namespace engine
             configuration::Configuration config;
 
 #ifdef ENGINE_PRO
-            void register_plugins();
+            void register_plugins() override;
 #endif
             void load();
 

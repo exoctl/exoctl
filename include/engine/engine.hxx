@@ -15,13 +15,19 @@
 
 namespace engine
 {
-    struct Engine : public interface::IBind {
+    struct Engine : public interface::IBind
+#ifdef ENGINE_PRO
+        ,
+                    public interface::IPlugins
+#endif
+    {
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_log;
         server::Server m_server;
-        // server::Bridge m_server_bridge;
-        // server::_::Log m_server_log;
+        plugins::Plugins m_plugins;
+        server::Bridge m_server_bridge;
+        server::_::Log m_server_log;
 
         // llama::_::Log m_llama_log;
         // parser::binary::lief::_::Log m_lief_log;
@@ -34,7 +40,9 @@ namespace engine
         Engine();
 
         void setup(configuration::Configuration &, logging::Logging &);
-
+#ifdef ENGINE_PRO
+        void register_plugins() override;
+#endif
         void bind_to_lua(sol::state_view &) override;
         void stop();
         void run(const std::function<void()> & = nullptr);

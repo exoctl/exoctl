@@ -25,7 +25,6 @@ namespace engine
             Configuration::load_server();
             Configuration::load_yara();
             Configuration::load_sig();
-            Configuration::load_cache();
             Configuration::load_logging();
             Configuration::load_av_clamav();
             Configuration::load_lief();
@@ -60,11 +59,6 @@ namespace engine
 #endif
             }
             return *this;
-        }
-
-        const record::cache::Cache &Configuration::get_cache() const
-        {
-            return m_cache;
         }
 
         const record::av::clamav::Clamav &Configuration::get_av_clamav() const
@@ -129,17 +123,6 @@ namespace engine
                               .value()};
         }
 #endif
-        void Configuration::load_cache()
-        {
-            m_cache = (record::cache::Cache) {
-                .type = m_toml.get_tbl()["cache"]["type"]
-                            .value<std::string>()
-                            .value(),
-                .path = m_toml.get_tbl()["cache"]["path"]
-                            .value<std::string>()
-                            .value()};
-        }
-
         void Configuration::load_av_clamav()
         {
             m_av_clamav = (record::av::clamav::Clamav) {

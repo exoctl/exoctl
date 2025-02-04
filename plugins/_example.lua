@@ -1,9 +1,7 @@
-logging:info("engine.is_running = " .. tostring(engine.is_running))
-
 local yara_instance = Yara.new()
 
 yara_instance:load_rules(function ()
-    yara_instance:load_rules_folder("rules/")
+    yara_instance:load_rules_folder("./rules/")
 end)
 
 local sha = Sha.new()

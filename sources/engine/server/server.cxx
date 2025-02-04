@@ -22,7 +22,7 @@ namespace engine
         {
             plugins::Plugins::lua.state["server"] = this;
             plugins::Plugins::lua.state.new_usertype<Server>(
-                "Engine",
+                "Server",
                 "port",
                 sol::readonly(&Server::port),
                 "bindaddr",
@@ -30,12 +30,12 @@ namespace engine
                 "concurrency",
                 sol::readonly(&Server::concurrency));
         }
-
 #endif
+
         void Server::run()
         {
             m_app
-                .bindaddr(bindaddr)
+                ->bindaddr(bindaddr)
 #if CROW_OPENSSL
                 .ssl_file(ssl_certificate_path)
 #endif
@@ -44,9 +44,25 @@ namespace engine
                 .run();
         }
 
+        Server &Server::operator=(const Server &p_server)
+        {
+            if (this != &p_server) {
+                m_config = p_server.m_config;
+                m_log = p_server.m_log;
+                m_app = std::make_shared<App>(*p_server.m_app);
+
+                concurrency = p_server.m_config.get_server().threads;
+                bindaddr = p_server.m_config.get_server().bindaddr;
+                port = p_server.m_config.get_server().port;
+                ssl_certificate_path =
+                    p_server.m_config.get_server().ssl_certificate_path;
+            }
+            return *this;
+        }
+
         void Server::stop()
         {
-            m_app.stop();
+            m_app->stop();
         }
 
         configuration::Configuration &Server::get_config()
@@ -56,12 +72,12 @@ namespace engine
 
         App &Server::get()
         {
-            return m_app;
+            return *m_app;
         }
 
         logging::Logging &Server::get_log()
         {
             return m_log;
         }
-    }; // namespace server
+    } // namespace server
 } // namespace engine

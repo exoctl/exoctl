@@ -6,10 +6,12 @@ namespace engine
     {
         namespace _
         {
-            Log::Log(configuration::Configuration &p_config,
-                     logging::Logging &p_log)
-                : m_config(p_config), m_log(p_log)
+            void Log::setup(configuration::Configuration &p_config,
+                            logging::Logging &p_log)
             {
+                m_config = p_config;
+                m_log = p_log;
+
                 crow::logger::setHandler(
                     this); // define global logger for Server
 
@@ -18,10 +20,6 @@ namespace engine
 
                 Log::active_level(static_cast<crow::LogLevel>(
                     m_config.get_server().log.level));
-            }
-
-            Log::~Log()
-            {
             }
 
             void Log::log(std::string p_message, crow::LogLevel p_level)

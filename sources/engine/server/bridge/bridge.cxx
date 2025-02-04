@@ -9,8 +9,9 @@ namespace engine
 {
     namespace server
     {
-        Bridge::Bridge(Server &p_server) : m_server(p_server)
+        void Bridge::setup(Server &p_server)
         {
+            m_server = p_server;
             m_analysis = std::make_unique<bridge::Analysis>(m_server);
             m_data = std::make_unique<bridge::Data>(m_server);
             m_rev = std::make_unique<bridge::Rev>(m_server);

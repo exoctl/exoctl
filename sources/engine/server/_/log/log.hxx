@@ -13,14 +13,16 @@ namespace engine
             class Log : public crow::ILogHandler
             {
               public:
-                Log(configuration::Configuration &, logging::Logging &);
-                ~Log();
+                Log() = default;
+                ~Log() = default;
+
+                void setup(configuration::Configuration &, logging::Logging &);
 
                 void log(std::string, crow::LogLevel) override;
 
               private:
-                configuration::Configuration &m_config;
-                logging::Logging &m_log;
+                configuration::Configuration m_config;
+                logging::Logging m_log;
 
               protected:
                 void active_level(crow::LogLevel);

@@ -30,6 +30,8 @@ namespace engine::logging
             sol::constructors<logging::Logging()>(),
             "load",
             &Logging::load,
+            "register_plugins",
+            &Logging::register_plugins,
             "config",
             &Logging::config);
     }
@@ -129,6 +131,7 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
+        plugins::Plugins::lua.state["logging"] = this;
         plugins::Plugins::lua.state.new_usertype<Logging>(
             "Logging",
             "info",

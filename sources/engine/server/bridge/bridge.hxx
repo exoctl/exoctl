@@ -22,15 +22,16 @@ namespace engine
 #endif
         {
           public:
-            Bridge(Server &);
+            Bridge() = default;
             ~Bridge() = default;
 
             void load();
+            void setup(Server &);
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif
           private:
-            Server &m_server;
+            Server m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::Analysis> m_analysis;
