@@ -1,6 +1,7 @@
-#include "engine/configuration/entitys.hxx"
 #include <engine/configuration/configuration.hxx>
+#include <engine/configuration/entitys.hxx>
 #include <engine/configuration/exception.hxx>
+#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
@@ -13,6 +14,26 @@ namespace engine
                 sol::constructors<configuration::Configuration()>(),
                 "load",
                 &Configuration::load,
+                "register_plugins",
+                &Configuration::register_plugins,
+                "lief",
+                sol::readonly(&Configuration::lief),
+                "llama",
+                sol::readonly(&Configuration::llama),
+                "av_clamav",
+                sol::readonly(&Configuration::av_clamav),
+                "project",
+                sol::readonly(&Configuration::project),
+                "yara",
+                sol::readonly(&Configuration::yara),
+                "logging",
+                sol::readonly(&Configuration::logging),
+                "server",
+                sol::readonly(&Configuration::server),
+                "decompiler",
+                sol::readonly(&Configuration::decompiler),
+                "plugins",
+                sol::readonly(&Configuration::plugins),
                 "path",
                 &Configuration::path);
         }
@@ -36,6 +57,39 @@ namespace engine
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
 
+#ifdef ENGINE_PRO
+        void Configuration::register_plugins()
+        {
+            plugins::Plugins::lua.state["configuration"] = this;
+
+            plugins::Plugins::lua.state
+                .new_usertype<configuration::Configuration>(
+                    "Configuration",
+                    "path",
+                    &Configuration::path,
+                    "lief",
+                    sol::readonly(&Configuration::lief),
+                    "llama",
+                    sol::readonly(&Configuration::llama),
+                    "av_clamav",
+                    sol::readonly(&Configuration::av_clamav),
+                    "project",
+                    sol::readonly(&Configuration::project),
+                    "yara",
+                    sol::readonly(&Configuration::yara),
+                    "logging",
+                    sol::readonly(&Configuration::logging),
+                    "server",
+                    sol::readonly(&Configuration::server),
+                    "decompiler",
+                    sol::readonly(&Configuration::decompiler),
+                    "plugins",
+                    sol::readonly(&Configuration::plugins),
+                    "load",
+                    &Configuration::load);
+        }
+#endif
+
         Configuration &Configuration::operator=(const Configuration &p_config)
         {
             if (this != &p_config) {
@@ -57,7 +111,7 @@ namespace engine
             }
             return *this;
         }
-        
+
 #ifdef ENGINE_PRO
         void Configuration::load_plugins()
         {
@@ -106,7 +160,6 @@ namespace engine
                                  .value<std::string>()
                                  .value()};
         }
-
 
         void Configuration::load_server()
         {

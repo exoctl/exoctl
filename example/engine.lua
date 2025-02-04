@@ -8,6 +8,7 @@ engine = Engine.new()
 
 config.path = "config/engine/engine.conf"
 config:load()
+config:register_plugins()
 
 logging.config = config
 logging:load()

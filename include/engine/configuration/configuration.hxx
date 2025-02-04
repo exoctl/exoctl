@@ -2,6 +2,7 @@
 
 #include <engine/configuration/entitys.hxx>
 #include <engine/interfaces/ibind.hxx>
+#include <engine/interfaces/iplugins.hxx>
 #include <engine/parser/toml.hxx>
 
 namespace engine
@@ -9,6 +10,10 @@ namespace engine
     namespace configuration
     {
         class Configuration : public interface::IBind
+#ifdef ENGINE_PRO
+            ,
+                              public interface::IPlugins
+#endif
         {
           public:
             Configuration() = default;
@@ -17,7 +22,10 @@ namespace engine
 
             void bind_to_lua(sol::state_view &) override;
             void load();
-
+            
+#ifdef ENGINE_PRO
+            void register_plugins() override;
+#endif
             std::string path;
             record::lief::Lief lief;
             record::llama::Llama llama;
