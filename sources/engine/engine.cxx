@@ -5,44 +5,55 @@
 
 namespace engine
 {
-    Engine::Engine(configuration::Configuration &p_configuration,
-                   logging::Logging &p_log)
-        : m_configuration(p_configuration), m_log(p_log),
-          m_server(p_configuration, p_log), m_server_bridge(m_server),
-          m_server_log(p_configuration, p_log),
-          m_llama_log(p_configuration, p_log),
-          m_lief_log(p_configuration, p_log),
-#ifdef ENGINE_PRO
-          m_plugins(p_configuration, p_log),
-#endif
-          is_running(false)
+    // Engine::Engine(configuration::Configuration &p_configuration,
+    //                logging::Logging &p_log)
+    //     : m_server(p_configuration, p_log), m_server_bridge(m_server),
+    //       m_server_log(p_configuration, p_log),
+    //       m_llama_log(p_configuration, p_log),
+    //       m_lief_log(p_configuration, p_log),
+    // is_running(false)
+    //{
+    //}
+
+    Engine::Engine() : is_running(false)
     {
     }
 
-#ifdef ENGINE_PRO
-    void Engine::register_plugins()
+    void Engine::setup(logging::Logging &p_log,
+                       configuration::Configuration &p_config)
     {
-        plugins::Plugins::lua.state["engine"] = this;
+        m_log = p_log;
+        m_configuration = p_config;
 
-        plugins::Plugins::lua.state.new_usertype<Engine>(
+#ifdef ENGINE_PRO
+        //// m_plugins(m_config, m_log);
+#endif
+        m_server.setup(m_configuration, m_log);
+    }
+
+    void Engine::bind_to_lua(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<engine::Engine>(
             "Engine",
+            sol::constructors<engine::Engine()>(),
             "is_running",
             sol::readonly(&Engine::is_running),
             "stop",
             &Engine::stop,
-            "start",
+            "setup",
+            &Engine::setup,
+            "run",
             &Engine::run);
 
         //  register plugin server
         m_server.register_plugins();
-        
+
         // register plugin bridge
-        m_server_bridge.register_plugins();
-       
+        // m_server_bridge.register_plugins();
+
         // register plugin log
         m_log.register_plugins();
     }
-#endif
 
     void Engine::stop()
     {
@@ -64,10 +75,10 @@ namespace engine
             p_callback();
         }
 
-        m_server_bridge.load();
+        // m_server_bridge.load();
 #ifdef ENGINE_PRO
-        m_plugins.load();
-        m_plugins.run();
+        // m_plugins.load();
+        // m_plugins.run();
 #endif
 
         m_server.run();

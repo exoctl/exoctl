@@ -1,4 +1,4 @@
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <functional>
 #include <memory>
@@ -16,6 +16,19 @@ namespace engine::logging
 {
     Logging::Logging(configuration::Configuration &config) : m_config(config)
     {
+    }
+
+    Logging::Logging()
+    {
+    }
+
+    Logging &Logging::operator=(const Logging &p_log)
+    {
+        if (this != &p_log) {
+            m_config = p_log.m_config;
+            m_logger = p_log.m_logger;
+        }
+        return *this;
     }
 
     void Logging::load()
@@ -113,7 +126,6 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        plugins::Plugins::lua.state["logging"] = this;
         plugins::Plugins::lua.state.new_usertype<Logging>(
             "Logging",
             "info",

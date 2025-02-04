@@ -3,7 +3,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 #include <engine/lua/lua.hxx>
 #include <filesystem>
 #include <functional>

@@ -2,8 +2,6 @@
 set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
 set(ENGINE_PRO ON BOOL "Enable Skull Pro flags")
-set(BUILD_AS_LIBRARY OFF CACHE BOOL "Build as library instead of executable ")
-set(PROTECT_ANTI_DEBUG ON CACHE BOOL "Protect Anti-Debug")
 
 # Include directories
 include_directories(
@@ -36,14 +34,7 @@ file(GLOB_RECURSE SOURCES
     *.cxx
 )
 
-# Check if building as a library or executable
-if(BUILD_AS_LIBRARY)
-    add_library(engine SHARED ${SOURCES})
-    message(STATUS "Building as a shared library")
-else()
-    add_executable(engine application/application.cxx)
-    message(STATUS "Building as an executable")
-endif()
+add_library(engine SHARED ${SOURCES})
 
 # Add source files to the target
 target_sources(engine PRIVATE ${SOURCES})
@@ -90,7 +81,9 @@ if(FLAGS_OPTIMIZATIONS)
         -mavx
         -fuse-ld=gold
         -ldl
+        -fPIC
         -fmodules-ts
+        -shared
         -fno-stack-protector
         -march=native
         -DCROW_OPENSSL
@@ -102,7 +95,9 @@ elseif(FLAGS_DEBUG)
     target_compile_options(engine PRIVATE
         -ggdb3
         -ldl
+        -fPIC
         -fuse-ld=gold
+        -shared
         -fmodules-ts
         -fms-extensions
         --all-warnings

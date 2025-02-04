@@ -2,7 +2,7 @@
 
 #include <engine/configuration/configuration.hxx>
 #include <engine/llama/llama.hxx>
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 
 namespace engine
 {

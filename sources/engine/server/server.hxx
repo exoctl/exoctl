@@ -11,7 +11,7 @@
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 #include <engine/parser/toml.hxx>
 #include <engine/plugins/plugins.hxx>
 
@@ -27,12 +27,14 @@ namespace engine
         {
           private:
             App m_app;
-            configuration::Configuration &m_config;
-            logging::Logging &m_log;
+            configuration::Configuration m_config;
+            logging::Logging m_log;
 
           public:
-            Server(configuration::Configuration &, logging::Logging &);
+            Server() = default;
             ~Server() = default;
+
+            void setup(configuration::Configuration&, logging::Logging&);
 
             App &get();
             configuration::Configuration &get_config();
@@ -40,7 +42,7 @@ namespace engine
             unsigned short concurrency;
             std::string bindaddr;
             unsigned short port;
-            const std::string &ssl_certificate_path;
+            std::string ssl_certificate_path;
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif

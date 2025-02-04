@@ -10,8 +10,10 @@ namespace engine
         class Configuration
         {
           public:
-            Configuration(const std::string);
-            ~Configuration();
+            Configuration(std::string &);
+            Configuration();
+            ~Configuration() = default;
+            Configuration &operator=(const Configuration &);
 
             void load();
             const std::string &get_path_config() const;
@@ -29,7 +31,7 @@ namespace engine
             const record::plugins::Plugins &get_plugins();
 #endif
           private:
-            const std::string m_path_config;
+            std::string m_path_config;
             parser::Toml m_toml;
 
             record::cache::Cache m_cache;

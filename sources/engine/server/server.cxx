@@ -5,14 +5,16 @@ namespace engine
 {
     namespace server
     {
-        Server::Server(configuration::Configuration &p_config,
-                       logging::Logging &p_log)
-            : m_config(p_config), m_log(p_log),
-              concurrency(m_config.get_server().threads),
-              bindaddr(m_config.get_server().bindaddr),
-              port(m_config.get_server().port),
-              ssl_certificate_path(m_config.get_server().ssl_certificate_path)
+        void Server::setup(configuration::Configuration &p_config,
+                           logging::Logging &p_log)
         {
+            m_config = p_config;
+            m_log = p_log;
+
+            concurrency = m_config.get_server().threads;
+            bindaddr = m_config.get_server().bindaddr;
+            port = m_config.get_server().port;
+            ssl_certificate_path = m_config.get_server().ssl_certificate_path;
         }
 
 #ifdef ENGINE_PRO

@@ -15,7 +15,10 @@ namespace engine
         {
           public:
             Logging(configuration::Configuration &);
+            Logging();
             ~Logging() = default;
+            Logging &operator=(const Logging &);
+
 #ifdef ENGINE_PRO
             void register_plugins();
 #endif
@@ -68,7 +71,7 @@ namespace engine
                 const std::string &);
 
           private:
-            configuration::Configuration &m_config;
+            configuration::Configuration m_config;
             std::shared_ptr<spdlog::logger> m_logger;
 
           protected:

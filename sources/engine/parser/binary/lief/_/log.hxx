@@ -3,7 +3,7 @@
 #include <LIEF/LIEF.hpp>
 #include <LIEF/logging.hpp>
 #include <engine/configuration/configuration.hxx>
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 
 namespace engine::parser::binary::lief::_
 {

@@ -6,10 +6,14 @@ namespace engine
 {
     namespace configuration
     {
-        Configuration::Configuration(const std::string p_config)
+        Configuration::Configuration(std::string &p_config)
             : m_path_config(p_config)
         {
             m_toml.parse_file(m_path_config);
+        }
+
+        Configuration::Configuration() : m_path_config("")
+        {
         }
 
         void Configuration::load()
@@ -32,8 +36,28 @@ namespace engine
             CATCH(std::exception, { throw exception::Load(e.what()); });
         }
 
-        Configuration::~Configuration()
+        Configuration &Configuration::operator=(const Configuration &p_config)
         {
+            if (this != &p_config) {
+                m_path_config = p_config.m_path_config;
+
+                m_toml = p_config.m_toml;
+                m_cache = p_config.m_cache;
+                m_lief = p_config.m_lief;
+                m_llama = p_config.m_llama;
+                m_av_clamav = p_config.m_av_clamav;
+                m_project = p_config.m_project;
+                m_yara = p_config.m_yara;
+                m_logging = p_config.m_logging;
+                m_sig = p_config.m_sig;
+                m_server = p_config.m_server;
+                m_decompiler = p_config.m_decompiler;
+
+#ifdef ENGINE_PRO
+                m_plugins = p_config.m_plugins;
+#endif
+            }
+            return *this;
         }
 
         const std::string &Configuration::get_path_config() const

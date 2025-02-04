@@ -2,7 +2,7 @@
 
 #include <crow.h>
 #include <engine/configuration/configuration.hxx>
-#include <engine/logging.hxx>
+#include <engine/logging/logging.hxx>
 
 namespace engine
 {
