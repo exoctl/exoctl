@@ -38,7 +38,7 @@ namespace engine::logging
 
     void Logging::load()
     {
-        const auto &logging_config = config.get_logging();
+        const auto &logging_config = config.logging;
         active_instance(logging_config.type, logging_config.name);
     }
 
@@ -58,7 +58,7 @@ namespace engine::logging
         const std::string &p_type, const std::string &p_name)
     {
         std::vector<spdlog::sink_ptr> sinks;
-        const auto &logging_config = config.get_logging();
+        const auto &logging_config = config.logging;
 
         if (p_type == "daily") {
             sinks.emplace_back(

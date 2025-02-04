@@ -20,7 +20,7 @@ namespace engine
             m_config = p_config;
             m_log = p_log;
 
-            if (!m_config.get_plugins().enable)
+            if (!m_config.plugins.enable)
                 LOG(m_log, warn, "Plugins not enabled");
         }
 
@@ -43,14 +43,14 @@ namespace engine
 
         void Plugins::load()
         {
-            if (m_config.get_plugins().enable) {
-                Plugins::load_plugins_folder(m_config.get_plugins().path);
+            if (m_config.plugins.enable) {
+                Plugins::load_plugins_folder(m_config.plugins.path);
             }
         }
 
         void Plugins::run()
         {
-            if (m_config.get_plugins().enable) {
+            if (m_config.plugins.enable) {
                 LOG(m_log, info, "Launching plugins async...");
                 std::async(
                     std::launch::async, &Plugins::run_plugins_thread, this)

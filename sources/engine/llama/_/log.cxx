@@ -9,8 +9,8 @@ namespace engine::llama::_
         m_config = p_config;
         m_log = p_log;
         
-        m_log.create_logger(m_config.get_logging().type,
-                            m_config.get_llama().log.name);
+        m_log.create_logger(m_config.logging.type,
+                            m_config.llama.log.name);
 
         llama_log_set(&Log::log, this);
     }
@@ -29,25 +29,25 @@ namespace engine::llama::_
                 case GGML_LOG_LEVEL_DEBUG:
                     logger_instance->m_log
                         .get_logger(
-                            logger_instance->m_config.get_llama().log.name)
+                            logger_instance->m_config.llama.log.name)
                         ->debug("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_INFO:
                     logger_instance->m_log
                         .get_logger(
-                            logger_instance->m_config.get_llama().log.name)
+                            logger_instance->m_config.llama.log.name)
                         ->info("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_WARN:
                     logger_instance->m_log
                         .get_logger(
-                            logger_instance->m_config.get_llama().log.name)
+                            logger_instance->m_config.llama.log.name)
                         ->warn("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_ERROR:
                     logger_instance->m_log
                         .get_logger(
-                            logger_instance->m_config.get_llama().log.name)
+                            logger_instance->m_config.llama.log.name)
                         ->error("{}", p_message);
                     break;
             }

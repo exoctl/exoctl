@@ -11,10 +11,10 @@ namespace engine
             m_config = p_config;
             m_log = p_log;
 
-            concurrency = m_config.get_server().threads;
-            bindaddr = m_config.get_server().bindaddr;
-            port = m_config.get_server().port;
-            ssl_certificate_path = m_config.get_server().ssl_certificate_path;
+            concurrency = m_config.server.threads;
+            bindaddr = m_config.server.bindaddr;
+            port = m_config.server.port;
+            ssl_certificate_path = m_config.server.ssl_certificate_path;
         }
 
 #ifdef ENGINE_PRO
@@ -51,11 +51,11 @@ namespace engine
                 m_log = p_server.m_log;
                 m_app = std::make_shared<App>(*p_server.m_app);
 
-                concurrency = p_server.m_config.get_server().threads;
-                bindaddr = p_server.m_config.get_server().bindaddr;
-                port = p_server.m_config.get_server().port;
+                concurrency = p_server.m_config.server.threads;
+                bindaddr = p_server.m_config.server.bindaddr;
+                port = p_server.m_config.server.port;
                 ssl_certificate_path =
-                    p_server.m_config.get_server().ssl_certificate_path;
+                    p_server.m_config.server.ssl_certificate_path;
             }
             return *this;
         }

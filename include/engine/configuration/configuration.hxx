@@ -15,40 +15,24 @@ namespace engine
             ~Configuration() = default;
             Configuration &operator=(const Configuration &);
 
-            void set_path(const std::string &);
             void bind_to_lua(sol::state_view &) override;
             void load();
-            const record::av::clamav::Clamav &get_av_clamav() const;
-            const record::Project &get_project() const;
-            const record::yara::Yara &get_yara() const;
-            const record::logging::Logging &get_logging() const;
-            const record::sig::Sig &get_sig() const;
-            const record::server::Server &get_server() const;
-            const record::lief::Lief &get_lief() const;
-            const record::llama::Llama &get_llama() const;
-            const record::decompiler::Decompiler &get_decompiler();
-#ifdef ENGINE_PRO
-            const record::plugins::Plugins &get_plugins();
-#endif
-            std::string path;
 
+            std::string path;
+            record::lief::Lief lief;
+            record::llama::Llama llama;
+            record::av::clamav::Clamav av_clamav;
+            record::Project project;
+            record::yara::Yara yara;
+            record::logging::Logging logging;
+            record::server::Server server;
+            record::decompiler::Decompiler decompiler;
+#ifdef ENGINE_PRO
+            record::plugins::Plugins plugins;
+#endif
           private:
             parser::Toml m_toml;
 
-            record::cache::Cache m_cache;
-            record::lief::Lief m_lief;
-            record::llama::Llama m_llama;
-            record::av::clamav::Clamav m_av_clamav;
-            record::Project m_project;
-            record::yara::Yara m_yara;
-            record::logging::Logging m_logging;
-            record::sig::Sig m_sig;
-            record::server::Server m_server;
-            record::decompiler::Decompiler m_decompiler;
-#ifdef ENGINE_PRO
-            record::plugins::Plugins m_plugins;
-#endif
-            void load_cache();
             void load_llama();
             void load_av_clamav();
             void load_project();

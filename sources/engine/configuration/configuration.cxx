@@ -24,7 +24,6 @@ namespace engine
             Configuration::load_project();
             Configuration::load_server();
             Configuration::load_yara();
-            Configuration::load_sig();
             Configuration::load_logging();
             Configuration::load_av_clamav();
             Configuration::load_lief();
@@ -43,78 +42,26 @@ namespace engine
                 path = path;
 
                 m_toml = p_config.m_toml;
-                m_cache = p_config.m_cache;
-                m_lief = p_config.m_lief;
-                m_llama = p_config.m_llama;
-                m_av_clamav = p_config.m_av_clamav;
-                m_project = p_config.m_project;
-                m_yara = p_config.m_yara;
-                m_logging = p_config.m_logging;
-                m_sig = p_config.m_sig;
-                m_server = p_config.m_server;
-                m_decompiler = p_config.m_decompiler;
+                lief = p_config.lief;
+                llama = p_config.llama;
+                av_clamav = p_config.av_clamav;
+                project = p_config.project;
+                yara = p_config.yara;
+                logging = p_config.logging;
+                server = p_config.server;
+                decompiler = p_config.decompiler;
 
 #ifdef ENGINE_PRO
-                m_plugins = p_config.m_plugins;
+                plugins = p_config.plugins;
 #endif
             }
             return *this;
         }
-
-        const record::av::clamav::Clamav &Configuration::get_av_clamav() const
-        {
-            return m_av_clamav;
-        }
-
-        const record::Project &Configuration::get_project() const
-        {
-            return m_project;
-        }
-
-        const record::yara::Yara &Configuration::get_yara() const
-        {
-            return m_yara;
-        }
-
-        const record::logging::Logging &Configuration::get_logging() const
-        {
-            return m_logging;
-        }
-
-        const record::sig::Sig &Configuration::get_sig() const
-        {
-            return m_sig;
-        }
-
-        const record::server::Server &Configuration::get_server() const
-        {
-            return m_server;
-        }
-
-        const record::lief::Lief &Configuration::get_lief() const
-        {
-            return m_lief;
-        }
-
-        const record::llama::Llama &Configuration::get_llama() const
-        {
-            return m_llama;
-        }
-
-        const record::decompiler::Decompiler &Configuration::get_decompiler()
-        {
-            return m_decompiler;
-        }
-
+        
 #ifdef ENGINE_PRO
-        const record::plugins::Plugins &Configuration::get_plugins()
-        {
-            return m_plugins;
-        }
-
         void Configuration::load_plugins()
         {
-            m_plugins = (record::plugins::Plugins) {
+            plugins = (record::plugins::Plugins) {
                 .path = m_toml.get_tbl()["plugins"]["path"]
                             .value<std::string>()
                             .value(),
@@ -125,7 +72,7 @@ namespace engine
 #endif
         void Configuration::load_av_clamav()
         {
-            m_av_clamav = (record::av::clamav::Clamav) {
+            av_clamav = (record::av::clamav::Clamav) {
                 .database = {.default_path =
                                  m_toml
                                      .get_tbl()["av"]["clamav"]["database"]
@@ -136,7 +83,7 @@ namespace engine
 
         void Configuration::load_decompiler()
         {
-            m_decompiler = (record::decompiler::Decompiler) {
+            decompiler = (record::decompiler::Decompiler) {
                 .llama = {.model =
                               m_toml.get_tbl()["decompiler"]["llama"]["model"]
                                   .value<std::string>()
@@ -145,7 +92,7 @@ namespace engine
 
         void Configuration::load_project()
         {
-            m_project = (record::Project) {
+            project = (record::Project) {
                 .name = m_toml.get_tbl()["project"]["name"]
                             .value<std::string>()
                             .value(),
@@ -160,18 +107,10 @@ namespace engine
                                  .value()};
         }
 
-        void Configuration::load_sig()
-        {
-            m_sig = (record::sig::Sig) {
-                .rules = {.packed_path =
-                              m_toml.get_tbl()["sig"]["rules"]["packed_path"]
-                                  .value<std::string>()
-                                  .value()}};
-        }
 
         void Configuration::load_server()
         {
-            m_server = (record::server::Server) {
+            server = (record::server::Server) {
                 .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
                                      .value<int>()
                                      .value(),
@@ -196,7 +135,7 @@ namespace engine
 
         void Configuration::load_yara()
         {
-            m_yara = (record::yara::Yara) {
+            yara = (record::yara::Yara) {
                 .rules = {.malware_path =
                               m_toml.get_tbl()["yara"]["rules"]["malware_path"]
                                   .value<std::string>()
@@ -213,7 +152,7 @@ namespace engine
 
         void Configuration::load_logging()
         {
-            m_logging = (record::logging::Logging) {
+            logging = (record::logging::Logging) {
                 .filepath = m_toml.get_tbl()["logging"]["filepath"]
                                 .value<std::string>()
                                 .value(),
@@ -261,7 +200,7 @@ namespace engine
 
         void Configuration::load_lief()
         {
-            m_lief = (record::lief::Lief) {
+            lief = (record::lief::Lief) {
                 .log{.level = m_toml.get_tbl()["lief"]["_"]["log"]["level"]
                                   .value<int>()
                                   .value(),
@@ -272,7 +211,7 @@ namespace engine
 
         void Configuration::load_llama()
         {
-            m_llama = (record::llama::Llama) {
+            llama = (record::llama::Llama) {
                 .log{.level = m_toml.get_tbl()["llama"]["_"]["log"]["level"]
                                   .value<int>()
                                   .value(),

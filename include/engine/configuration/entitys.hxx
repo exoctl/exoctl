@@ -104,19 +104,6 @@ namespace engine
                 } // namespace clamav
             } // namespace av
 
-            namespace sig
-            {
-                namespace rules
-                {
-                    struct Rules {
-                        std::string packed_path;
-                    };
-                } // namespace rules
-                typedef struct Sig {
-                    rules::Rules rules; // Seção de regras
-                } Sig;
-            } // namespace sig
-
             namespace logging
             {
                 namespace daily

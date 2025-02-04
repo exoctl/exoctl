@@ -26,13 +26,13 @@ namespace engine
                 {
                     m_yara.load_rules([&]() {
                         m_yara.load_rules_folder(
-                            m_config.get_yara()
+                            m_config.yara
                                 .rules.cve_path); // rules for cve
                         m_yara.load_rules_folder(
-                            m_config.get_yara()
+                            m_config.yara
                                 .rules.malware_path); // rules for malwares
                         m_yara.load_rules_folder(
-                            m_config.get_yara()
+                            m_config.yara
                                 .rules.packed_path); // rules for packeds
                         /* implement based demand */
                     });
