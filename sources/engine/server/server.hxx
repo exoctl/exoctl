@@ -8,13 +8,13 @@
 #endif
 
 #include <crow.h>
-#include <memory>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/parser/toml.hxx>
 #include <engine/plugins/plugins.hxx>
+#include <memory>
 
 namespace engine
 {
@@ -28,11 +28,13 @@ namespace engine
         {
           private:
             std::shared_ptr<App> m_app;
-            configuration::Configuration m_config;
-            logging::Logging m_log;
+            configuration::Configuration *m_config;
+            logging::Logging *m_log;
 
           public:
-            Server() : m_app(std::make_shared<App>()) {}
+            Server() : m_app(std::make_shared<App>())
+            {
+            }
             ~Server() = default;
             Server &operator=(const Server &);
 
@@ -43,6 +45,7 @@ namespace engine
             logging::Logging &get_log();
             unsigned short concurrency;
             std::string bindaddr;
+            std::string name;
             unsigned short port;
             std::string ssl_certificate_path;
 #ifdef ENGINE_PRO

@@ -18,11 +18,13 @@ namespace engine
 #ifdef ENGINE_PRO
         m_plugins.setup(m_configuration, m_log);
 #endif
-        m_server.setup(m_configuration, m_log);
-        m_server_log.setup(m_configuration, m_log);
-        m_server_bridge.setup(m_server);
+        m_clamav_log.setup(m_configuration, m_log);
         m_llama_log.setup(m_configuration, m_log);
         m_lief_log.setup(m_configuration, m_log);
+        m_server_log.setup(m_configuration, m_log);
+
+        m_server.setup(m_configuration, m_log);
+        m_server_bridge.setup(m_server);
     }
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
@@ -34,8 +36,10 @@ namespace engine
             sol::readonly(&Engine::is_running),
             "stop",
             &Engine::stop,
+#ifdef ENGINE_PRO
             "register_plugins",
             &Engine::register_plugins,
+#endif
             "setup",
             &Engine::setup,
             "run",

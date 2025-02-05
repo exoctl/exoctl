@@ -25,16 +25,7 @@ namespace engine
                     const std::function<void(uint64_t)> &p_callback) const
                 {
                     m_yara.load_rules([&]() {
-                        m_yara.load_rules_folder(
-                            m_config.yara
-                                .rules.cve_path); // rules for cve
-                        m_yara.load_rules_folder(
-                            m_config.yara
-                                .rules.malware_path); // rules for malwares
-                        m_yara.load_rules_folder(
-                            m_config.yara
-                                .rules.packed_path); // rules for packeds
-                        /* implement based demand */
+                        m_yara.load_rules_folder(m_config.yara.rules.path);
                     });
 
                     if (!IS_NULL(p_callback)) {

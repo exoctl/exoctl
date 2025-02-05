@@ -8,13 +8,14 @@ namespace engine
         void Server::setup(configuration::Configuration &p_config,
                            logging::Logging &p_log)
         {
-            m_config = p_config;
-            m_log = p_log;
+            m_config = &p_config;
+            m_log = &p_log;
 
-            concurrency = m_config.server.threads;
-            bindaddr = m_config.server.bindaddr;
-            port = m_config.server.port;
-            ssl_certificate_path = m_config.server.ssl_certificate_path;
+            name.assign(m_config->server.name);
+            bindaddr.assign(m_config->server.bindaddr);
+            ssl_certificate_path.assign(m_config->server.ssl_certificate_path);
+            concurrency = m_config->server.threads;
+            port = m_config->server.port;
         }
 
 #ifdef ENGINE_PRO
@@ -41,6 +42,7 @@ namespace engine
 #endif
                 .port(port)
                 .concurrency(concurrency)
+                .server_name(name)
                 .run();
         }
 
@@ -51,11 +53,11 @@ namespace engine
                 m_log = p_server.m_log;
                 m_app = std::make_shared<App>(*p_server.m_app);
 
-                concurrency = p_server.m_config.server.threads;
-                bindaddr = p_server.m_config.server.bindaddr;
-                port = p_server.m_config.server.port;
+                concurrency = p_server.m_config->server.threads;
+                bindaddr = p_server.m_config->server.bindaddr;
+                port = p_server.m_config->server.port;
                 ssl_certificate_path =
-                    p_server.m_config.server.ssl_certificate_path;
+                    p_server.m_config->server.ssl_certificate_path;
             }
             return *this;
         }
@@ -67,7 +69,7 @@ namespace engine
 
         configuration::Configuration &Server::get_config()
         {
-            return m_config;
+            return *m_config;
         }
 
         App &Server::get()
@@ -77,7 +79,7 @@ namespace engine
 
         logging::Logging &Server::get_log()
         {
-            return m_log;
+            return *m_log;
         }
     } // namespace server
 } // namespace engine

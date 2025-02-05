@@ -14,8 +14,10 @@ namespace engine
                 sol::constructors<configuration::Configuration()>(),
                 "load",
                 &Configuration::load,
+#ifdef ENGINE_PRO
                 "register_plugins",
                 &Configuration::register_plugins,
+#endif
                 "lief",
                 sol::readonly(&Configuration::lief),
                 "llama",
@@ -147,7 +149,15 @@ namespace engine
                                      .get_tbl()["av"]["clamav"]["database"]
                                                ["default_path"]
                                      .value<std::string>()
-                                     .value()}};
+                                     .value()},
+                .log = {
+                    .level =
+                        m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["level"]
+                            .value<int>()
+                            .value(),
+                    .name = m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["name"]
+                                .value<std::string>()
+                                .value()}};
         }
 
         void Configuration::load_decompiler()
@@ -185,6 +195,9 @@ namespace engine
                         .name = m_toml.get_tbl()["server"]["_"]["log"]["name"]
                                     .value<std::string>()
                                     .value()},
+                .name = m_toml.get_tbl()["server"]["name"]
+                            .value<std::string>()
+                            .value(),
                 .bindaddr = m_toml.get_tbl()["server"]["bindaddr"]
                                 .value<std::string>()
                                 .value(),
@@ -204,19 +217,10 @@ namespace engine
         void Configuration::load_yara()
         {
             yara = (record::yara::Yara) {
-                .rules = {.malware_path =
-                              m_toml.get_tbl()["yara"]["rules"]["malware_path"]
-                                  .value<std::string>()
-                                  .value(),
-                          .packed_path =
-                              m_toml.get_tbl()["yara"]["rules"]["packed_path"]
-                                  .value<std::string>()
-                                  .value(),
-                          .cve_path =
-                              m_toml.get_tbl()["yara"]["rules"]["cve_path"]
-                                  .value<std::string>()
-                                  .value()}};
-        }
+                .rules = {.path = m_toml.get_tbl()["yara"]["rules"]["path"]
+                                      .value<std::string>()
+                                      .value()}};
+        } // namespace engine
 
         void Configuration::load_logging()
         {

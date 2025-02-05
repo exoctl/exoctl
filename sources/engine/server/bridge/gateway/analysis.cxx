@@ -94,10 +94,10 @@ namespace engine
 
             void Analysis::scan_yara()
             {
-                m_map.add_route("/scan/yara", [&]() {
+                m_map.add_route("/scan/fast/yara", [&]() {
                     m_socket_scan_yara = std::make_unique<gateway::WebSocket>(
                         m_server,
-                        BASE_ANALYSIS "/scan/yara",
+                        BASE_ANALYSIS "/scan/fast/yara",
                         UINT64_MAX,
                         [&](gateway::websocket::Context &p_context,
                             crow::websocket::connection &p_conn,

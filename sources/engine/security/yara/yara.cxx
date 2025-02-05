@@ -110,7 +110,7 @@ namespace engine
         {
             DIR *dir = opendir(p_path.c_str());
             if (!dir)
-                throw yara::exception::LoadRules(strerror(errno));
+                throw yara::exception::LoadRules(fmt::format("{} : '{}'", strerror(errno), p_path));
 
             const struct dirent *entry;
             while (!IS_NULL((entry = readdir(dir)))) {

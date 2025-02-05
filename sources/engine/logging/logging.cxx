@@ -30,8 +30,10 @@ namespace engine::logging
             sol::constructors<logging::Logging()>(),
             "load",
             &Logging::load,
+#ifdef ENGINE_PRO
             "register_plugins",
             &Logging::register_plugins,
+#endif
             "config",
             &Logging::config);
     }

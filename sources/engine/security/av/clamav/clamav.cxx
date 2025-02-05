@@ -29,10 +29,8 @@ namespace engine
             void Clamav::set_db_rule_fd(const std::string &p_path,
                                         unsigned int p_dboptions) const
             {
-                const cl_error_t ret = cl_load(p_path.c_str(),
-                                               m_engine,
-                                               &rules_loaded_count,
-                                               p_dboptions);
+                const cl_error_t ret = cl_load(
+                    p_path.c_str(), m_engine, &rules_loaded_count, p_dboptions);
 
                 if (ret != CL_SUCCESS) {
                     throw clamav::exception::SetDbRules(

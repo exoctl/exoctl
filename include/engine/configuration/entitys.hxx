@@ -76,9 +76,7 @@ namespace engine
                 namespace rules
                 {
                     struct Rules {
-                        std::string malware_path;
-                        std::string packed_path;
-                        std::string cve_path;
+                        std::string path;
                     };
                 } // namespace rules
 
@@ -91,6 +89,17 @@ namespace engine
             {
                 namespace clamav
                 {
+                    namespace _
+                    {
+                        namespace log
+                        {
+                            typedef struct Log {
+                                int level;
+                                std::string name;
+                            } Log;
+                        } // namespace log
+                    } // namespace _
+
                     namespace database
                     {
                         struct Database {
@@ -100,6 +109,7 @@ namespace engine
 
                     typedef struct Clamav {
                         database::Database database;
+                        _::log::Log log;
                     } Clamav;
                 } // namespace clamav
             } // namespace av
@@ -159,6 +169,7 @@ namespace engine
 
                 typedef struct Server {
                     _::log::Log log;
+                    std::string name;
                     std::string bindaddr;
                     uint16_t port;
                     uint16_t threads;
