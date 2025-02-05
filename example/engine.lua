@@ -1,6 +1,6 @@
 package.cpath = "build/sources/?.so;" .. package.cpath
 
-require("libengine")
+require("libskull")
 
 config = Configuration.new()
 logging = Logging.new()

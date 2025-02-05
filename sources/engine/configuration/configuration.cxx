@@ -42,6 +42,7 @@ namespace engine
         {
             TRY_BEGIN()
             m_toml.parse_file(path);
+
             Configuration::load_project();
             Configuration::load_server();
             Configuration::load_yara();
@@ -50,11 +51,25 @@ namespace engine
             Configuration::load_lief();
             Configuration::load_llama();
             Configuration::load_decompiler();
+
 #ifdef ENGINE_PRO
             Configuration::load_plugins();
 #endif
+
             TRY_END()
-            CATCH(std::exception, { throw exception::Load(e.what()); });
+            CATCH(toml::parse_error, {
+                const auto &source = e.source();
+                throw exception::Load(fmt::format(
+                    "Error parsing file '{:s}' at line {:d}, column {:d}: {:s}",
+                    *source.path,
+                    source.begin.line,
+                    source.begin.column,
+                    e.description()));
+            })
+            CATCH(std::exception, {
+                throw exception::Load(
+                    fmt::format("Unexpected error: {:s}", e.what()));
+            });
         }
 
 #ifdef ENGINE_PRO

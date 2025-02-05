@@ -13,8 +13,8 @@ namespace engine
     namespace security
     {
         Yara::Yara()
-            : m_yara_compiler(nullptr), m_yara_rules(nullptr),
-              m_rules_loaded_count(0)
+            : rules_loaded_count(0), m_yara_compiler(nullptr),
+              m_yara_rules(nullptr)
         {
             if (yr_initialize() != ERROR_SUCCESS) {
                 throw yara::exception::Initialize(
@@ -74,8 +74,8 @@ namespace engine
                 },
                 "scan_fast_callback",
                 &engine::security::Yara::scan_fast_callback,
-                "get_rules_loaded_count",
-                &engine::security::Yara::get_rules_loaded_count,
+                "rules_loaded_count",
+                &engine::security::Yara::rules_loaded_count,
                 "yara_set_signature_rule_fd",
                 &engine::security::Yara::yara_set_signature_rule_fd,
                 "set_signature_rule_mem",
@@ -94,14 +94,14 @@ namespace engine
 
             close(rules_fd);
 
-            m_rules_loaded_count++;
+            rules_loaded_count++;
             return error_success;
         }
 
         const int Yara::set_signature_rule_mem(const std::string &p_rule,
                                                const std::string &p_yrns) const
         {
-            m_rules_loaded_count++;
+            rules_loaded_count++;
             return yr_compiler_add_string(
                 m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
         }
@@ -225,11 +225,6 @@ namespace engine
             }
 
             return CALLBACK_CONTINUE;
-        }
-
-        const uint64_t Yara::get_rules_loaded_count() const
-        {
-            return m_rules_loaded_count;
         }
     }; // namespace security
 } // namespace engine

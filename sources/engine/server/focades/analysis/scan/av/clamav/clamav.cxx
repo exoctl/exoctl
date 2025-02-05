@@ -31,7 +31,7 @@ namespace engine
                         });
 
                         if (!IS_NULL(p_callback)) {
-                            p_callback(m_clamav.get_rules_loaded_count());
+                            p_callback(m_clamav.rules_loaded_count);
                         }
                     }
 

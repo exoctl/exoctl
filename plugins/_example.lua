@@ -6,10 +6,10 @@ end)
 
 local sha = Sha.new()
 
-print(yara:get_rules_loaded_count())
+print(yara.rules_loaded_count)
 
 logging:info("gen_sha256_hash(best_engine) = " .. sha:gen_sha256_hash("best_engine"))
-logging:info("Rules loaded: " .. tostring(yara_instance:get_rules_loaded_count()))
+logging:info("Rules loaded: " .. tostring(yara_instance.rules_loaded_count))
 
 yara_instance:scan_fast_bytes("some_binary_data", function(status, rule, ns)
     if status == 1 then

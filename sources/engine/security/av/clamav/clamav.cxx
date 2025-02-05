@@ -13,7 +13,7 @@ namespace engine
     {
         namespace av
         {
-            Clamav::Clamav() : m_engine(nullptr), m_rules_loaded_count(0)
+            Clamav::Clamav() : m_engine(nullptr), rules_loaded_count(0)
             {
                 if (cl_init(CL_INIT_DEFAULT) != CL_SUCCESS) {
                     throw clamav::exception::Initialize(
@@ -31,7 +31,7 @@ namespace engine
             {
                 const cl_error_t ret = cl_load(p_path.c_str(),
                                                m_engine,
-                                               &m_rules_loaded_count,
+                                               &rules_loaded_count,
                                                p_dboptions);
 
                 if (ret != CL_SUCCESS) {
@@ -115,11 +115,6 @@ namespace engine
                         "engine: " +
                         std::string(cl_strerror(ret)));
                 }
-            }
-
-            const unsigned int Clamav::get_rules_loaded_count() const
-            {
-                return m_rules_loaded_count;
             }
 
             Clamav::~Clamav()

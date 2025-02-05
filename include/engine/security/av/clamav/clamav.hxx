@@ -13,6 +13,9 @@ namespace engine
         {
             class Clamav
             {
+              private:
+                struct cl_engine *m_engine;
+
               public:
                 Clamav();
                 ~Clamav();
@@ -23,11 +26,8 @@ namespace engine
                     clamav::record::scan::Options,
                     const std::function<void(clamav::record::Data *)> &);
                 void load_rules(const std::function<void()> &);
-                [[nodiscard]] const unsigned int get_rules_loaded_count() const;
+                mutable unsigned int rules_loaded_count;
 
-              private:
-                struct cl_engine *m_engine;
-                mutable unsigned int m_rules_loaded_count;
             };
         } // namespace av
     } // namespace security

@@ -55,12 +55,11 @@ namespace engine
                 const std::string &,
                 const std::string &) const;
 
-            [[nodiscard]] const uint64_t get_rules_loaded_count() const;
+            mutable uint64_t rules_loaded_count;
 
           private:
             YR_COMPILER *m_yara_compiler;
             mutable YR_RULES *m_yara_rules;
-            mutable uint64_t m_rules_loaded_count;
             void compiler_rules() const;
             static YR_CALLBACK_FUNC scan_fast_callback(YR_SCAN_CONTEXT *,
                                                        const int,

@@ -34,13 +34,13 @@ file(GLOB_RECURSE SOURCES
     *.cxx
 )
 
-add_library(engine SHARED ${SOURCES})
+add_library(skull SHARED ${SOURCES})
 
 # Add source files to the target
-target_sources(engine PRIVATE ${SOURCES})
+target_sources(skull PRIVATE ${SOURCES})
 
 # Link libraries
-target_link_libraries(engine PRIVATE
+target_link_libraries(skull PRIVATE
     Crow::Crow
     liblua
     yara
@@ -63,18 +63,18 @@ target_link_libraries(engine PRIVATE
 # Add ENGINE_PRO flag if enabled
 if(ENGINE_PRO)
     message(STATUS "Building with ENGINE_PRO enabled")
-    target_compile_definitions(engine PRIVATE -DENGINE_PRO)
+    target_compile_definitions(skull PRIVATE -DENGINE_PRO)
 endif()
 
 if(PROTECT_ANTI_DEBUG)
     message(STATUS "Building with Egnine using Anti-Debug")
-    target_compile_definitions(engine PRIVATE -DPROTECT_ANTI_DEBUG)
+    target_compile_definitions(skull PRIVATE -DPROTECT_ANTI_DEBUG)
 endif()
 
 # Compiler flags for optimizations, debugging, and Skull Pro
 if(FLAGS_OPTIMIZATIONS)
     message(STATUS "Building with optimizations enabled")
-    target_compile_options(engine PRIVATE
+    target_compile_options(skull PRIVATE
         -O2
         -fmodules-ts
         -ftree-vectorize
@@ -92,7 +92,7 @@ if(FLAGS_OPTIMIZATIONS)
     )
 elseif(FLAGS_DEBUG)
     message(STATUS "Building with debug flags enabled")
-    target_compile_options(engine PRIVATE
+    target_compile_options(skull PRIVATE
         -ggdb3
         -ldl
         -fPIC

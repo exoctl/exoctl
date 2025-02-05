@@ -6,7 +6,7 @@
 #include <vector>
 
 extern "C" {
-int luaopen_libengine(lua_State *L)
+int luaopen_libskull(lua_State *L)
 {
     sol::state_view lua(L);
 
