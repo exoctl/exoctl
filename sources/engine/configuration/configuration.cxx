@@ -77,7 +77,7 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
-            plugins::Plugins::lua.state["configuration"] = this;
+            plugins::Plugins::lua.state["_configuration"] = this;
 
             plugins::Plugins::lua.state
                 .new_usertype<configuration::Configuration>(

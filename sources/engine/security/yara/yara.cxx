@@ -49,7 +49,7 @@ namespace engine
 #ifdef ENGINE_PRO
         void Yara::register_plugins()
         {
-            plugins::Plugins::lua.state["yara"] = this;
+            plugins::Plugins::lua.state["_yara"] = this;
 
             plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
                 "Yara",

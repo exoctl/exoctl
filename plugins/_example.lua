@@ -6,15 +6,25 @@ end)
 
 local sha = Sha.new()
 
-print(yara.rules_loaded_count)
+_yara:scan_fast_bytes("some_binary_data", function(status, rule, ns)
+    if status == 1 then
+        _logging:warn("Match encontrado:", rule, "namespace:", ns)
+    else
+        _logging:info("Nenhum match.")
+    end
+end)
 
-logging:info("gen_sha256_hash(best_engine) = " .. sha:gen_sha256_hash("best_engine"))
-logging:info("Rules loaded: " .. tostring(yara_instance.rules_loaded_count))
+Web.new(_server, "/plugins", function (req, args)
+    print(req)
+end)
+
+_logging:info("gen_sha256_hash(best_engine) = " .. sha:gen_sha256_hash("best_engine"))
+_logging:info("Rules loaded: " .. tostring(yara_instance.rules_loaded_count))
 
 yara_instance:scan_fast_bytes("some_binary_data", function(status, rule, ns)
     if status == 1 then
-        logging:warn("Match encontrado:", rule, "namespace:", ns)
+        _logging:warn("Match encontrado:", rule, "namespace:", ns)
     else
-        logging:info("Nenhum match.")
+        _logging:info("Nenhum match.")
     end
 end)

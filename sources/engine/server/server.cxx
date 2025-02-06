@@ -21,7 +21,7 @@ namespace engine
 #ifdef ENGINE_PRO
         void Server::register_plugins()
         {
-            plugins::Plugins::lua.state["server"] = this;
+            plugins::Plugins::lua.state["_server"] = this;
             plugins::Plugins::lua.state.new_usertype<Server>(
                 "Server",
                 "port",

@@ -49,7 +49,7 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-        plugins::Plugins::lua.state["engine"] = this;
+        plugins::Plugins::lua.state["_engine"] = this;
 
         plugins::Plugins::lua.state.new_usertype<engine::Engine>(
             "Engine",
