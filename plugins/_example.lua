@@ -14,8 +14,14 @@ _yara:scan_fast_bytes("some_binary_data", function(status, rule, ns)
     end
 end)
 
-Web.new(_server, "/plugins", function (req, args)
-    print(req)
+Web.new(_server, "/engine/status", function (req, args)
+    print(req.raw_url)
+    print(req.body)
+    print(req.method)
+    print(req.remote_ip_address)
+    print(req.keep_alive)
+    
+    return response.new(200, "The best engine")
 end)
 
 _logging:info("gen_sha256_hash(best_engine) = " .. sha:gen_sha256_hash("best_engine"))

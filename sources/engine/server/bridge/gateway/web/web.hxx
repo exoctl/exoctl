@@ -30,26 +30,40 @@ namespace engine::server::bridge::gateway
                 .middlewares<crow::App<middleware::web::JWTAuth>,
                              middleware::web::JWTAuth>()(m_on_request);
             m_server.get().validate();
-
-            Web::register_plugins();
         }
 
         void register_plugins() override
         {
-            sol::state &lua = plugins::Plugins::lua.state;
-            lua.new_usertype<Web>(
+            /* nothing */
+        }
+
+        static inline void plugins()
+        {
+            plugins::Plugins::lua.state.new_usertype<Web>(
                 "Web",
                 "new",
                 sol::factories([](Server &server,
                                   const std::string &url,
                                   sol::function callback) {
-                    return new Web(server,
-                                   url,
-                                   [callback](const crow::request &req,
-                                              Args... args) -> crow::response {
-                                       callback(req, args...);
-                                       return crow::response(200);
-                                   });
+                    return new Web(
+                        server,
+                        std::string("/plugins") + url,
+                        [callback](const crow::request &req,
+                                   Args... args) -> crow::response {
+                            crow::response response(200);
+
+                            if (callback.valid()) {
+                                sol::object callback_response =
+                                    callback.call<sol::object>(req, args...);
+
+                                if (callback_response.is<crow::response>()) {
+                                    return std::move(
+                                        callback_response.as<crow::response>());
+                                }
+                            }
+
+                            return response;
+                        });
                 }));
         }
 

@@ -2,6 +2,7 @@
 #include <engine/disassembly/capstone/exception.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/server/bridge/_/crow/crow.hxx>
 #include <engine/server/bridge/bridge.hxx>
 #include <engine/server/exception.hxx>
 
@@ -12,17 +13,20 @@ namespace engine
         void Bridge::setup(Server &p_server)
         {
             m_server = &p_server;
+            m_root = std::make_unique<bridge::Root>(*m_server);
             m_analysis = std::make_unique<bridge::Analysis>(*m_server);
             m_data = std::make_unique<bridge::Data>(*m_server);
             m_rev = std::make_unique<bridge::Rev>(*m_server);
             m_parser = std::make_unique<bridge::Parser>(*m_server);
-            m_root = std::make_unique<bridge::Root>(*m_server);
         }
 #ifdef ENGINE_PRO
         void Bridge::register_plugins()
         {
-            m_analysis->register_plugins();
+            engine::server::bridge::_::Crow::plugins();
+            engine::server::bridge::gateway::Web<>::plugins();
+
             m_data->register_plugins();
+            m_analysis->register_plugins();
         }
 #endif
         void Bridge::load()
