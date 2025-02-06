@@ -42,7 +42,7 @@ namespace engine
                         m_server,
                         BASE_ROOT,
                         [](const crow::request &req) -> crow::response {
-                            return crow::response(200, "The best engine !");
+                            return crow::response(200, "Skull 1.0.250202 feb 02, 2025");
                         });
                 });
             }

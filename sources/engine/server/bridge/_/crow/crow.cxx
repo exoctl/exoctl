@@ -13,11 +13,15 @@ namespace engine::server::bridge::_
     void Crow::plugins()
     {
         plugins::Plugins::lua.state.new_usertype<crow::response>(
-            "response",
-            sol::constructors<crow::response(int code_, std::string body_)>());
+            "Response",
+            sol::constructors<crow::response(int, std::string),
+                              crow::response(std::string),
+                              crow::response(std::string, std::string),
+                              crow::response(int, std::string, std::string),
+                              crow::response(int)>());
 
         plugins::Plugins::lua.state.new_usertype<crow::request>(
-            "requests",
+            "Requests",
             "method",
             sol::readonly(&crow::request::method),
             "raw_url",
