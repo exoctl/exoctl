@@ -20,10 +20,6 @@ namespace engine
                 {
                 }
 
-                Capstone::~Capstone()
-                {
-                }
-
                 void Capstone::disassembly(
                     const std::string &p_code,
                     const std::function<void(capstone::record::DTO *)>

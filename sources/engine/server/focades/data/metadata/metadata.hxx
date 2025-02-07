@@ -13,10 +13,12 @@ namespace engine::focades::data
     class Metadata : public interface::IPlugins
     {
       public:
-        Metadata();
+        Metadata() = default;
         ~Metadata() = default;
 
+#ifdef ENGINE_PRO
         void register_plugins() override;
+#endif
 
         void parse(const std::string &,
                    const std::function<void(metadata::record::DTO *)> &);

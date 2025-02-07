@@ -51,6 +51,15 @@ namespace engine
         {
             plugins::Plugins::lua.state["_yara"] = this;
 
+            plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
+                "Data",
+                "match_status",
+                sol::readonly(&yara::record::Data::match_status),
+                "rule",
+                sol::readonly(&yara::record::Data::rule),
+                "ns",
+                sol::readonly(&yara::record::Data::ns));
+
             plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
                 "Yara",
                 sol::constructors<engine::security::Yara()>(),
@@ -66,9 +75,7 @@ namespace engine
                    sol::function lua_callback) {
                     self.scan_fast_bytes(buffer, [&](yara::record::Data *data) {
                         if (lua_callback.valid()) {
-                            lua_callback(data->match_status,
-                                         std::string(data->rule),
-                                         std::string(data->ns));
+                            lua_callback(data);
                         }
                     });
                 },
@@ -110,7 +117,8 @@ namespace engine
         {
             DIR *dir = opendir(p_path.c_str());
             if (!dir)
-                throw yara::exception::LoadRules(fmt::format("{} : '{}'", strerror(errno), p_path));
+                throw yara::exception::LoadRules(
+                    fmt::format("{} : '{}'", strerror(errno), p_path));
 
             const struct dirent *entry;
             while (!IS_NULL((entry = readdir(dir)))) {

@@ -16,7 +16,7 @@ namespace engine
                 {
                   public:
                     Capstone(const cs_arch, const cs_mode);
-                    ~Capstone();
+                    ~Capstone() = default;
 
                     void disassembly(
                         const std::string &,

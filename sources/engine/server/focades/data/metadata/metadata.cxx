@@ -9,14 +9,12 @@ namespace engine
     {
         namespace data
         {
-            Metadata::Metadata()
-            {
-            }
-
+#ifdef ENGINE_PRO
             void Metadata::register_plugins()
             {
                 m_sha.register_plugins();
             }
+#endif
 
             void Metadata::parse(
                 const std::string &p_buffer,
