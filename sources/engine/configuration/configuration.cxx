@@ -37,13 +37,18 @@ namespace engine
                 "plugins",
                 sol::readonly(&Configuration::plugins),
                 "path",
-                &Configuration::path);
+                sol::property(
+                    [&](configuration::Configuration &cfg,
+                        const std::string &value) {
+                        cfg.path = value;
+                        cfg.m_toml.parse_file(value);
+                    },
+                    &configuration::Configuration::path));
         }
 
         void Configuration::load()
         {
             TRY_BEGIN()
-            m_toml.parse_file(path);
 
             Configuration::load_project();
             Configuration::load_server();
@@ -83,7 +88,15 @@ namespace engine
                 .new_usertype<configuration::Configuration>(
                     "Configuration",
                     "path",
-                    &Configuration::path,
+                    sol::property(
+                        [&](configuration::Configuration &cfg,
+                            const std::string &value) {
+                            cfg.path = value;
+                            cfg.m_toml.parse_file(cfg.path);
+                        },
+                        &configuration::Configuration::path),
+                    "load_logging",
+                    Configuration::load_logging,
                     "lief",
                     sol::readonly(&Configuration::lief),
                     "llama",
