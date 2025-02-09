@@ -1,7 +1,10 @@
+#include <atomic>
+#include <chrono>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/server/exception.hxx>
+#include <thread>
 
 namespace engine
 {
@@ -73,13 +76,8 @@ namespace engine
 
     void Engine::stop()
     {
-        Engine::finalize();
-        m_server.stop();
-    }
-
-    void Engine::finalize()
-    {
         is_running = false;
+        m_server.stop();
     }
 
     void Engine::run(const std::function<void()> &p_callback)
@@ -87,8 +85,14 @@ namespace engine
         is_running = true;
 
         TRY_BEGIN()
+        
         if (p_callback) {
-            p_callback();
+            std::jthread([this, p_callback]() {
+                while (is_running) {
+                    p_callback();
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+            }).detach();
         }
 
         m_server_bridge.load();
@@ -112,6 +116,6 @@ namespace engine
         CATCH(server::exception::ParcialAbort,
               { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
 
-        Engine::finalize();
+        is_running = false;
     }
 } // namespace engine

@@ -8,22 +8,22 @@ namespace engine::interface
     template <typename Derived> class IResponse
     {
       public:
-        static const parser::Json to_json()
+        inline  static const parser::Json to_json()
         {
             return Derived()._to_json();
         }
 
-        static const int code()
+        inline static const int code()
         {
             return Derived()._code();
         }
 
-        static const std::string status()
+        inline static const std::string status()
         {
             return Derived()._status();
         }
 
-        static const std::string message()
+        inline static const std::string message()
         {
             return Derived()._message();
         }

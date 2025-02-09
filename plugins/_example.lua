@@ -21,7 +21,6 @@ Web.new(_server, "/engine/status", function (req)
     else
         return Response.new(200, "Others method")
     end
-    
 end, http_method.Post, http_method.Delete, http_method.Get)
 
 local sha = Sha.new()
