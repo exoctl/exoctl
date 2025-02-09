@@ -16,5 +16,6 @@ logging:register_plugins()
 
 engine:setup(config, logging)
 engine:register_plugins()
+engine:load()
 
 engine:run()

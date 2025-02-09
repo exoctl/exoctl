@@ -4,7 +4,6 @@ yara_instance:load_rules(function ()
     yara_instance:load_rules_folder("./rules/")
 end)
 
-
 local config = Configuration.new()
 config.path = "plugins/_example.conf"
 config:load_logging()
@@ -16,6 +15,7 @@ logging:load()
 local http_method = HTTPMethod.new()
 
 Web.new(_server, "/engine/status", function (req)
+    logging:info(req.url)
     if(req.method == http_method.Get) then
         return Response.new(200, "The best engine for analysis malware")
     else

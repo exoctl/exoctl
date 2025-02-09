@@ -42,12 +42,13 @@ namespace engine
         ~Engine() = default;
         Engine();
 
-        void setup(configuration::Configuration &, logging::Logging &);
 #ifdef ENGINE_PRO
         void register_plugins() override;
 #endif
         void bind_to_lua(sol::state_view &) override;
-        void stop();
+        void setup(configuration::Configuration &, logging::Logging &);
+        void load();
         void run(const std::function<void()> & = nullptr);
+        void stop();
     };
 } // namespace engine

@@ -46,7 +46,9 @@ namespace engine
             "setup",
             &Engine::setup,
             "run",
-            &Engine::run);
+            &Engine::run,
+            "load",
+            &Engine::load);
     }
 
 #ifdef ENGINE_PRO
@@ -64,7 +66,9 @@ namespace engine
             "setup",
             &Engine::setup,
             "run",
-            &Engine::run);
+            &Engine::run,
+            "load",
+            &Engine::load);
 
         //  register plugin server
         m_server.register_plugins();
@@ -73,6 +77,14 @@ namespace engine
         m_server_bridge.register_plugins();
     }
 #endif
+
+    void Engine::load()
+    {
+        m_server_bridge.load();
+#ifdef ENGINE_PRO
+        m_plugins.load();
+#endif
+    }
 
     void Engine::stop()
     {
@@ -85,7 +97,7 @@ namespace engine
         is_running = true;
 
         TRY_BEGIN()
-        
+
         if (p_callback) {
             std::jthread([this, p_callback]() {
                 while (is_running) {
@@ -95,12 +107,9 @@ namespace engine
             }).detach();
         }
 
-        m_server_bridge.load();
 #ifdef ENGINE_PRO
-        m_plugins.load();
         m_plugins.run();
 #endif
-
         m_server.run();
 
         TRY_END()
