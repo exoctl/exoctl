@@ -2,7 +2,7 @@
 #include <engine/engine.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/logging/logging.hxx>
-#include <memory>
+#include <engine/memory/memory.hxx>
 #include <vector>
 
 extern "C" {
@@ -12,6 +12,9 @@ int luaopen_libskull(lua_State *L)
 
     std::vector<std::unique_ptr<engine::interface::IBind>> bindings;
 
+    bindings.reserve(4);
+
+    bindings.push_back(std::make_unique<engine::memory::Memory>());
     bindings.push_back(
         std::make_unique<engine::configuration::Configuration>());
     bindings.push_back(std::make_unique<engine::logging::Logging>());

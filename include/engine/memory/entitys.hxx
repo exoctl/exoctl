@@ -1,8 +1,8 @@
 namespace engine::memory::record
 {
     typedef struct Segment {
-        char *start;
-        char *end;
+        uint64_t start;
+        uint64_t end;
         const char *name;
         int type;
         int permissions;

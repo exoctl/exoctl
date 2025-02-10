@@ -2,7 +2,6 @@
 #include <chrono>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
-#include <engine/memory/memory.hxx>
 #include <engine/server/exception.hxx>
 #include <thread>
 
@@ -32,8 +31,6 @@ namespace engine
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
     {
-        memory.bind_to_lua(p_lua);
-        
         p_lua.new_usertype<engine::Engine>(
             "Engine",
             sol::constructors<engine::Engine()>(),
@@ -50,9 +47,7 @@ namespace engine
             "run",
             &Engine::run,
             "load",
-            &Engine::load,
-            "memory",
-            &Engine::memory);
+            &Engine::load);
     }
 
 #ifdef ENGINE_PRO

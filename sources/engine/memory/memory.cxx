@@ -14,8 +14,7 @@ namespace engine::memory
                 for (int i = 0; i < info->dlpi_phnum; i++) {
                     const auto &phdr = info->dlpi_phdr[i];
                     record::Segment segment;
-                    segment.start = reinterpret_cast<char *>(info->dlpi_addr +
-                                                             phdr.p_vaddr);
+                    segment.start = info->dlpi_addr + phdr.p_vaddr;
                     segment.end = segment.start + phdr.p_memsz;
                     segment.permissions = phdr.p_flags;
                     segment.type = phdr.p_type;
@@ -29,7 +28,35 @@ namespace engine::memory
 
     void Memory::bind_to_lua(sol::state_view &p_lua)
     {
-        //p_lua.new_usertype<memory::Memory>();
+        p_lua.new_usertype<record::Segment>(
+            "Segment",
+            sol::constructors<record::Segment()>(),
+            "start",
+            sol::readonly(&record::Segment::start),
+            "end",
+            sol::readonly(&record::Segment::end),
+            "name",
+            sol::readonly(&record::Segment::name),
+            "type",
+            sol::readonly(&record::Segment::type),
+            "permissions",
+            sol::readonly(&record::Segment::permissions));
+
+        p_lua.new_usertype<memory::Memory>(
+            "Memory",
+            sol::constructors<memory::Memory()>(),
+            "protect",
+            &Memory::protect,
+            "fd",
+            &Memory::fd,
+            "ftruncate",
+            &Memory::ftruncate,
+            "write",
+            &Memory::write,
+            "close",
+            &Memory::close,
+            "segments",
+            &Memory::segments);
     }
 
     const void Memory::protect(void *p_address,

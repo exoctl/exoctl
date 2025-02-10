@@ -36,7 +36,6 @@ namespace engine
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
         parser::binary::lief::_::Log m_lief_log;
-        memory::Memory memory;
 
       public:
         bool is_running;
