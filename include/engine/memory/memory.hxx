@@ -1,7 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include <engine/interfaces/ibind.hxx>
+#include <engine/memory/entitys.hxx>
 #include <sys/mman.h>
+#include <vector>
 
 // clang-format off
 #define IS_NULL(ptr) (ptr == nullptr)
@@ -11,12 +14,14 @@
 
 namespace engine::memory
 {
-    class Memory
+    class Memory : public interface::IBind
     {
       public:
         Memory();
         ~Memory() = default;
 
+        void bind_to_lua(sol::state_view &) override;
+        std::vector<record::Segment> segments;
         static const void protect(void *, const size_t, const unsigned int);
         static const int fd(const char *, const unsigned int);
         static void ftruncate(const int, const size_t);

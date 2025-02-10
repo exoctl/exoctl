@@ -32,6 +32,8 @@ namespace engine
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
     {
+        memory.bind_to_lua(p_lua);
+        
         p_lua.new_usertype<engine::Engine>(
             "Engine",
             sol::constructors<engine::Engine()>(),
@@ -48,7 +50,9 @@ namespace engine
             "run",
             &Engine::run,
             "load",
-            &Engine::load);
+            &Engine::load,
+            "memory",
+            &Engine::memory);
     }
 
 #ifdef ENGINE_PRO

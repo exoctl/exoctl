@@ -35,7 +35,20 @@ namespace engine::logging
             &Logging::register_plugins,
 #endif
             "config",
-            &Logging::config);
+            &Logging::config,
+            "info",
+            static_cast<void (Logging::*)(const std::string &)>(&Logging::info),
+            "warn",
+            static_cast<void (Logging::*)(const std::string &)>(&Logging::warn),
+            "critical",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::critical),
+            "debug",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::debug),
+            "error",
+            static_cast<void (Logging::*)(const std::string &)>(
+                &Logging::error));
     }
 
     void Logging::load()

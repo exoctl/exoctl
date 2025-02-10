@@ -5,6 +5,7 @@
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/lua/lua.hxx>
+#include <engine/memory/memory.hxx>
 #include <engine/parser/binary/lief/_/log.hxx>
 #include <engine/parser/toml.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -35,6 +36,7 @@ namespace engine
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
         parser::binary::lief::_::Log m_lief_log;
+        memory::Memory memory;
 
       public:
         bool is_running;
