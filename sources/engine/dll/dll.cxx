@@ -4,14 +4,6 @@ namespace engine
 {
     namespace dll
     {
-        Dll::Dll()
-        {
-        }
-
-        Dll::~Dll()
-        {
-        }
-
         const void *Dll::open(const char *p_name, int p_mode)
         {
             return dlopen(p_name, p_mode);

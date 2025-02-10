@@ -11,8 +11,8 @@ namespace engine
         class Dll
         {
           public:
-            Dll();
-            ~Dll();
+            Dll() = default;
+            ~Dll() = default;
 
             [[nodiscard]] const void *open(const char *, int);
             [[nodiscard]] const int close(void *);
