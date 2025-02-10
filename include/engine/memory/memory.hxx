@@ -22,6 +22,7 @@ namespace engine::memory
 
         void bind_to_lua(sol::state_view &) override;
         std::vector<record::Segment> segments;
+        void update();
         static const void protect(void *, const size_t, const unsigned int);
         static const int fd(const char *, const unsigned int);
         static void ftruncate(const int, const size_t);

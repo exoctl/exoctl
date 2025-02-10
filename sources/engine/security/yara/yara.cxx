@@ -70,29 +70,18 @@ namespace engine
                 "scan_bytes",
                 &engine::security::Yara::scan_bytes,
                 "scan_fast_bytes",
-                [](engine::security::Yara &self,
-                   const std::string &buffer,
-                   sol::function lua_callback) {
-                    self.scan_fast_bytes(buffer, [&](yara::record::Data *data) {
-                        if (lua_callback.valid()) {
-                            lua_callback(data);
-                        }
-                    });
-                },
-                "scan_fast_callback",
-                &engine::security::Yara::scan_fast_callback,
+                engine::security::Yara::scan_fast_bytes,
                 "rules_loaded_count",
                 &engine::security::Yara::rules_loaded_count,
-                "yara_set_signature_rule_fd",
-                &engine::security::Yara::yara_set_signature_rule_fd,
+                "set_signature_rule_fd",
+                &engine::security::Yara::set_signature_rule_fd,
                 "set_signature_rule_mem",
                 &engine::security::Yara::set_signature_rule_mem);
         }
 #endif
-        const int Yara::yara_set_signature_rule_fd(
-            const std::string &p_path,
-            const std::string &p_yrname,
-            const std::string &p_yrns) const
+        const int Yara::set_signature_rule_fd(const std::string &p_path,
+                                              const std::string &p_yrname,
+                                              const std::string &p_yrns) const
         {
             const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
@@ -130,7 +119,7 @@ namespace engine
                     continue;
                 }
                 if (entry_name.extension() == ".yar") {
-                    if (Yara::yara_set_signature_rule_fd(
+                    if (Yara::set_signature_rule_fd(
                             full_path, entry_name, p_path) != ERROR_SUCCESS) {
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
@@ -182,6 +171,10 @@ namespace engine
                     throw yara::exception::Scan("yr_rules_scan_mem() falied "
                                                 "scan buffer, internal error");
                 }
+            } else {
+                throw yara::exception::Scan(
+                    "scan_bytes() falied check if compiler rules sucessful use "
+                    "load_rules()");
             }
         }
 
@@ -189,18 +182,21 @@ namespace engine
             const std::string p_buffer,
             const std::function<void(yara::record::Data *)> &p_callback) const
         {
-            struct yara::record::Data *data = new struct yara::record::Data;
+            if (p_callback) {
+                struct yara::record::Data *data = new struct yara::record::Data;
 
-            data->match_status = yara::type::Scan::none;
+                data->match_status = yara::type::Scan::none;
 
-            Yara::scan_bytes(p_buffer,
-                             reinterpret_cast<YR_CALLBACK_FUNC>(
-                                 security::Yara::scan_fast_callback),
-                             data,
-                             SCAN_FLAGS_FAST_MODE);
+                Yara::scan_bytes(p_buffer,
+                                 reinterpret_cast<YR_CALLBACK_FUNC>(
+                                     security::Yara::scan_fast_callback),
+                                 data,
+                                 SCAN_FLAGS_FAST_MODE);
 
-            p_callback(data);
-            delete data;
+                p_callback(data);
+
+                delete data;
+            }
         }
 
         YR_CALLBACK_FUNC

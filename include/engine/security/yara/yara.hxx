@@ -43,6 +43,11 @@ namespace engine
                             YR_CALLBACK_FUNC,
                             void *,
                             int) const;
+            
+            /**
+             * @brief 
+             * 
+             */
             void load_rules(const std::function<void()> &) const;
 
             /* load rules if extension file '.yar'*/
@@ -50,7 +55,7 @@ namespace engine
 
             [[nodiscard]] const int set_signature_rule_mem(
                 const std::string &, const std::string &) const;
-            [[nodiscard]] const int yara_set_signature_rule_fd(
+            [[nodiscard]] const int set_signature_rule_fd(
                 const std::string &,
                 const std::string &,
                 const std::string &) const;

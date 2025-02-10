@@ -8,6 +8,13 @@ namespace engine::memory
 {
     Memory::Memory()
     {
+        Memory::update();
+    }
+
+    void Memory::update()
+    {
+        segments.clear();
+        
         dl_iterate_phdr(
             [](struct dl_phdr_info *info, size_t, void *data) {
                 Memory *self = static_cast<Memory *>(data);
@@ -51,6 +58,8 @@ namespace engine::memory
             &Memory::fd,
             "ftruncate",
             &Memory::ftruncate,
+            "update",
+            &Memory::update,
             "write",
             &Memory::write,
             "close",

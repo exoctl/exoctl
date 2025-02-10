@@ -101,7 +101,7 @@ namespace engine
             std::jthread([this, p_callback]() {
                 while (is_running) {
                     p_callback();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
                 }
             }).detach();
         }
