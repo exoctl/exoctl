@@ -1,6 +1,5 @@
 #include <atomic>
 #include <chrono>
-#include <engine/dll/dll.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/server/exception.hxx>
