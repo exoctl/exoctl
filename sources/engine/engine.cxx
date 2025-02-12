@@ -44,8 +44,12 @@ namespace engine
 #endif
             "setup",
             &Engine::setup,
+            "load_emergency",
+            &Engine::load_emergency,
             "run",
             &Engine::run,
+            "register_emergency",
+            &Engine::register_emergency,
             "load",
             &Engine::load);
     }
@@ -82,6 +86,7 @@ namespace engine
         m_server_bridge.load();
 #ifdef ENGINE_PRO
         m_plugins.load();
+        Engine::load_emergency();
 #endif
     }
 
@@ -89,6 +94,26 @@ namespace engine
     {
         is_running = false;
         m_server.stop();
+    }
+
+    void Engine::register_emergency(
+        const int p_sig,
+        std::function<void(int, siginfo_t *, void *)> p_handler)
+    {
+        m_map_emergencys[p_sig] = p_handler;
+    }
+
+    void Engine::load_emergency()
+    {
+        for (const auto &entry : m_map_emergencys) {
+            int sig = entry.first;
+            m_emergency.register_signal(
+                sig, [this, sig](int signal, siginfo_t *info, void *context) {
+                    if (m_map_emergencys.contains(sig)) {
+                        m_map_emergencys[sig](signal, info, context);
+                    }
+                });
+        }
     }
 
     void Engine::run(const std::function<void()> &p_callback)

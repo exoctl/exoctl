@@ -17,7 +17,6 @@ extern "C" {
 #include <thread>
 #include <tuple>
 #include <type_traits>
-#include <unordered_map>
 #include <vector>
 
 namespace engine

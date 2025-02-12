@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
+#include <engine/emergency/emergency.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
@@ -14,6 +15,7 @@
 #include <engine/server/bridge/bridge.hxx>
 #include <engine/server/server.hxx>
 #include <functional>
+#include <unordered_map>
 
 namespace engine
 {
@@ -31,6 +33,9 @@ namespace engine
 
         server::Server m_server;
         server::Bridge m_server_bridge;
+        emergency::Emergency m_emergency;
+        std::unordered_map<int, std::function<void(int, siginfo_t *, void *)>>
+            m_map_emergencys;
 
         server::_::Log m_server_log;
         llama::_::Log m_llama_log;
@@ -47,8 +52,12 @@ namespace engine
         void register_plugins() override;
 #endif
         void bind_to_lua(sol::state_view &) override;
+        void register_emergency(const int,
+                                std::function<void(int, siginfo_t *, void *)>);
         void setup(configuration::Configuration &, logging::Logging &);
+
         void load();
+        void load_emergency();
         void run(const std::function<void()> & = nullptr);
         void stop();
     };

@@ -1,4 +1,5 @@
 #include <engine/configuration/configuration.hxx>
+#include <engine/emergency/emergency.hxx>
 #include <engine/engine.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/logging/logging.hxx>
