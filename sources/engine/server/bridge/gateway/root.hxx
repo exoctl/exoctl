@@ -30,6 +30,7 @@ namespace engine
 
                 void prepare();
                 void root();
+                void plugins();
             };
         } // namespace bridge
     } // namespace server
