@@ -11,11 +11,12 @@ namespace engine::lua::record
             SCRIPT_BUFF
         } Type;
 
+        /*the important order*/
         typedef struct Script {
-            std::string script_path;
-            std::string script;
+            std::string path;
+            std::string name;
             Type type;
         } Plugin;
     } // namespace script
-    
+
 } // namespace engine::lua::record

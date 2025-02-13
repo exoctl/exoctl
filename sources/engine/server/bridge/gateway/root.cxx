@@ -52,8 +52,8 @@ namespace engine
                             for (const auto &script :
                                  plugins::Plugins::lua.scripts) {
                                 scripts_json.push_back(
-                                    {{"script_path", script.script_path},
-                                     {"script", script.script},
+                                    {{"path", script.path},
+                                     {"name", script.name},
                                      {"type",
                                       script.type == engine::lua::record::
                                                          script::SCRIPT_FILE
