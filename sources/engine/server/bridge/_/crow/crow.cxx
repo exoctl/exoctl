@@ -5,12 +5,7 @@
 
 namespace engine::server::bridge::_
 {
-    void Crow::register_plugins()
-    {
-        /*nothing*/
-    }
-
-    void Crow::plugins()
+    void Crow::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<crow::HTTPMethod>(
             "HTTPMethod",

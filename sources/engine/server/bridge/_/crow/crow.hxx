@@ -6,13 +6,12 @@
 
 namespace engine::server::bridge::_
 {
-    class Crow : public interface::IPlugins
+    class Crow : public interface::ISubPlugins<Crow>
     {
       public:
         Crow() = default;
         ~Crow() = default;
-        void register_plugins() override;
-        static void plugins();
+        void _plugins() override;
     };
 } // namespace engine::server::bridge::_
 

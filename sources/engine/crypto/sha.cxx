@@ -19,6 +19,8 @@ namespace engine
 #ifdef ENGINE_PRO
         void Sha::register_plugins()
         {
+            plugins::Plugins::lua.state["_sha"] = this;
+
             plugins::Plugins::lua.state.new_usertype<engine::crypto::Sha>(
                 "Sha",
                 sol::constructors<engine::crypto::Sha()>(),

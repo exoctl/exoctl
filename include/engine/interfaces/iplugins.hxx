@@ -21,7 +21,7 @@ namespace engine
             }
 
           private:
-            virtual const int _plugins() = 0;
+            virtual void _plugins() = 0;
         };
     } // namespace interface
 } // namespace engine
