@@ -41,7 +41,7 @@ namespace engine
                     m_web_root = std::make_unique<
                         engine::server::bridge::gateway::Web<>>(
                         m_server,
-                        BASE_ROOT "plugins",
+                        API_PREFIX BASE_ROOT "plugins",
                         [](const crow::request &req) -> crow::response {
                             crow::json::wvalue x;
 

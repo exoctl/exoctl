@@ -1,12 +1,13 @@
+#include <algorithm>
+#include <array>
 #include <engine/lua/exception.hxx>
 #include <engine/lua/lua.hxx>
 #include <fmt/core.h>
 #include <fstream>
 #include <random>
 #include <string>
+#include <string_view>
 #include <thread>
-#include <type_traits>
-#include <vector>
 
 namespace engine::lua
 {
@@ -36,23 +37,33 @@ namespace engine::lua
 
     const sol::lib Lua::from_lib(const std::string &name)
     {
-        static const std::unordered_map<std::string, sol::lib> lib_map = {
-            {"base", sol::lib::base},
-            {"package", sol::lib::package},
-            {"coroutine", sol::lib::coroutine},
-            {"string", sol::lib::string},
-            {"os", sol::lib::os},
-            {"math", sol::lib::math},
-            {"table", sol::lib::table},
-            {"debug", sol::lib::debug},
-            {"bit32", sol::lib::bit32},
-            {"io", sol::lib::io},
-            {"ffi", sol::lib::ffi},
-            {"jit", sol::lib::jit},
-            {"utf8", sol::lib::utf8}};
+        using Pair = std::pair<std::string_view, sol::lib>;
 
-        auto it = lib_map.find(name);
-        return (it != lib_map.end()) ? it->second : sol::lib::count;
+        static constexpr std::array<Pair, 13> lib_array = {
+            {{"base", sol::lib::base},
+             {"bit32", sol::lib::bit32},
+             {"coroutine", sol::lib::coroutine},
+             {"debug", sol::lib::debug},
+             {"ffi", sol::lib::ffi},
+             {"io", sol::lib::io},
+             {"jit", sol::lib::jit},
+             {"math", sol::lib::math},
+             {"os", sol::lib::os},
+             {"package", sol::lib::package},
+             {"string", sol::lib::string},
+             {"table", sol::lib::table},
+             {"utf8", sol::lib::utf8}}};
+
+        auto it =
+            std::lower_bound(lib_array.begin(),
+                             lib_array.end(),
+                             name,
+                             [](const Pair &pair, const std::string_view key) {
+                                 return pair.first < key;
+                             });
+
+        return (it != lib_array.end() && it->first == name) ? it->second
+                                                            : sol::lib::count;
     }
 
     const bool Lua::load_script_file(const std::string &p_script_name,
