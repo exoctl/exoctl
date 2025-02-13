@@ -34,6 +34,7 @@ namespace engine
             logging::Logging m_log;
 
             void run_plugins_thread();
+            void load_libraries();
         };
     } // namespace plugins
 } // namespace engine

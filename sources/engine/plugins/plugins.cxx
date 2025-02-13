@@ -24,6 +24,18 @@ namespace engine
                 LOG(m_log, warn, "Plugins not enabled");
         }
 
+        void Plugins::load_libraries()
+        {
+            LOG(m_log,
+                info,
+                fmt::format(
+                    "Loading standard libraries : '{:s}'",
+                    fmt::join(m_config.plugins.lua.standard.libraries, ", ")));
+            for (auto &name : m_config.plugins.lua.standard.libraries) {
+                lua.state.open_libraries(lua.from_lib(name));
+            }
+        }
+
         void Plugins::load_plugin_buff(const std::string &)
         {
         }
@@ -43,6 +55,7 @@ namespace engine
 
         void Plugins::load()
         {
+            Plugins::load_libraries();
             if (m_config.plugins.enable) {
                 Plugins::load_plugins_folder(m_config.plugins.path);
             }
@@ -67,7 +80,8 @@ namespace engine
         {
             DIR *dir = opendir(p_path.c_str());
             if (!dir)
-                throw plugins::exception::LoadPlugin(strerror(errno));
+                throw plugins::exception::LoadPlugin(
+                    fmt::format("{} : {}", strerror(errno), p_path));
 
             const struct dirent *entry;
             while (!IS_NULL((entry = readdir(dir)))) {

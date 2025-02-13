@@ -2,17 +2,20 @@
 
 #include <string>
 
-namespace engine::lua::record::plugin
+namespace engine::lua::record
 {
-    typedef enum Type {
-        SCRIPT_FILE,
-        SCRIPT_BUFF
-    } Type;
+    namespace script
+    {
+        typedef enum Type {
+            SCRIPT_FILE,
+            SCRIPT_BUFF
+        } Type;
 
-    typedef struct Plugin {
-        std::string script_path;
-        std::string script;
-        Type type;
-    } Plugin;
-
-} // namespace engine::lua::record::plugin
+        typedef struct Script {
+            std::string script_path;
+            std::string script;
+            Type type;
+        } Plugin;
+    } // namespace script
+    
+} // namespace engine::lua::record

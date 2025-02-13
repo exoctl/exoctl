@@ -16,7 +16,7 @@ namespace engine::emergency
         Emergency() = default;
         ~Emergency() = default;
 
-        const bool register_signal(
+        const bool receive_signal(
             const int, std::function<void(int, siginfo_t *, void *)>);
     };
 } // namespace engine::emergency

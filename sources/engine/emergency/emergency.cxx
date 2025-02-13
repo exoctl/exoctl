@@ -2,7 +2,7 @@
 
 namespace engine::emergency
 {
-    const bool Emergency::register_signal(
+    const bool Emergency::receive_signal(
         const int p_signum,
         std::function<void(int, siginfo_t *, void *)> p_handler)
     {

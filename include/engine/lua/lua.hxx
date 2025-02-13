@@ -28,21 +28,21 @@ namespace engine
           public:
             template <typename... Args> Lua(Args &&...args)
             {
-                state.open_libraries(sol::lib::base,
-                                     sol::lib::package,
-                                     std::forward<Args>(args)...);
+                state.open_libraries(std::forward<Args>(args)...);
             }
+            Lua() = default;
             ~Lua() = default;
             sol::state state;
 
-            [[nodiscard]] bool load_script_file(const std::string &, const std::string &);
-            [[nodiscard]] bool load_script_buff(const std::string &);
-            [[nodiscard]] const std::vector<record::plugin::Plugin> &get_scripts();
+            [[nodiscard]] const sol::lib from_lib(const std::string &name);
+            [[nodiscard]] const bool load_script_file(const std::string &,
+                                                const std::string &);
+            [[nodiscard]] const bool load_script_buff(const std::string &);
             void run();
 
-          private:
-            std::vector<record::plugin::Plugin> m_scripts;
+            std::vector<record::script::Script> scripts;
 
+          private:
             Lua(const Lua &) = delete;
             Lua &operator=(const Lua &) = delete;
         };

@@ -73,20 +73,17 @@ namespace engine
             "load",
             &Engine::load);
 
-        //  register plugin server
         m_server.register_plugins();
-
-        // register plugin bridge
         m_server_bridge.register_plugins();
     }
 #endif
 
     void Engine::load()
     {
+        Engine::load_emergency();
         m_server_bridge.load();
 #ifdef ENGINE_PRO
         m_plugins.load();
-        Engine::load_emergency();
 #endif
     }
 
@@ -107,7 +104,7 @@ namespace engine
     {
         for (const auto &entry : m_map_emergencys) {
             int sig = entry.first;
-            m_emergency.register_signal(
+            m_emergency.receive_signal(
                 sig, [this, sig](int signal, siginfo_t *info, void *context) {
                     if (m_map_emergencys.contains(sig)) {
                         m_map_emergencys[sig](signal, info, context);

@@ -145,13 +145,30 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::load_plugins()
         {
-            plugins = (record::plugins::Plugins) {
+            plugins = record::plugins::Plugins{
                 .path = m_toml.get_tbl()["plugins"]["path"]
                             .value<std::string>()
                             .value(),
-                .enable = m_toml.get_tbl()["plugins"]["enable"]
-                              .value<bool>()
-                              .value()};
+                .enable =
+                    m_toml.get_tbl()["plugins"]["enable"].value<bool>().value(),
+                .lua = (record::plugins::lua::Lua) {
+                    .standard =
+                        (record::plugins::lua::Standard) {.libraries = [&] {
+                            std::vector<std::string> lib_vec;
+                            if (auto arr =
+                                    m_toml
+                                        .get_tbl()["plugins"]["lua"]["standard"]
+                                                  ["libraries"]
+                                        .as_array()) {
+                                for (const auto &val : *arr) {
+                                    if (val.is_string()) {
+                                        lib_vec.emplace_back(
+                                            val.as_string()->get());
+                                    }
+                                }
+                            }
+                            return lib_vec;
+                        }()}}};
         }
 #endif
         void Configuration::load_av_clamav()
