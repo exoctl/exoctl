@@ -45,8 +45,9 @@ namespace engine
                         [](const crow::request &req) -> crow::response {
                             crow::json::wvalue x;
 
-                            x["lua"]["state_memory"] =
-                                plugins::Plugins::lua.state.memory_used();
+                            x["lua"]["state_memory"] = std::format(
+                                "{:x}",
+                                plugins::Plugins::lua.state.memory_used());
 
                             std::vector<crow::json::wvalue> scripts_json;
                             for (const auto &script :

@@ -53,9 +53,9 @@ namespace engine
             /* load rules if extension file '.yar'*/
             void load_rules_folder(const std::string & /* path */) const;
 
-            [[nodiscard]] const int set_signature_rule_mem(
+            [[nodiscard]] const int load_rule_buff(
                 const std::string &, const std::string &) const;
-            [[nodiscard]] const int set_signature_rule_fd(
+            [[nodiscard]] const int load_rule_file(
                 const std::string &,
                 const std::string &,
                 const std::string &) const;

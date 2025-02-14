@@ -73,13 +73,13 @@ namespace engine
                 engine::security::Yara::scan_fast_bytes,
                 "rules_loaded_count",
                 &engine::security::Yara::rules_loaded_count,
-                "set_signature_rule_fd",
-                &engine::security::Yara::set_signature_rule_fd,
-                "set_signature_rule_mem",
-                &engine::security::Yara::set_signature_rule_mem);
+                "load_rule_file",
+                &engine::security::Yara::load_rule_file,
+                "load_rule_buff",
+                &engine::security::Yara::load_rule_buff);
         }
 #endif
-        const int Yara::set_signature_rule_fd(const std::string &p_path,
+        const int Yara::load_rule_file(const std::string &p_path,
                                               const std::string &p_yrname,
                                               const std::string &p_yrns) const
         {
@@ -94,7 +94,7 @@ namespace engine
             return error_success;
         }
 
-        const int Yara::set_signature_rule_mem(const std::string &p_rule,
+        const int Yara::load_rule_buff(const std::string &p_rule,
                                                const std::string &p_yrns) const
         {
             rules_loaded_count++;
@@ -119,7 +119,7 @@ namespace engine
                     continue;
                 }
                 if (entry_name.extension() == ".yar") {
-                    if (Yara::set_signature_rule_fd(
+                    if (Yara::load_rule_file(
                             full_path, entry_name, p_path) != ERROR_SUCCESS) {
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
