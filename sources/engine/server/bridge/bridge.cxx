@@ -23,7 +23,7 @@ namespace engine
         void Bridge::register_plugins()
         {
             engine::server::bridge::_::Crow::plugins();
-            engine::server::bridge::gateway::Web<>::plugins();
+            engine::server::bridge::gateway::Web::plugins();
 
             m_data->register_plugins();
             m_analysis->register_plugins();

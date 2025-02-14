@@ -29,7 +29,7 @@ namespace engine
             LOG(m_log,
                 info,
                 fmt::format(
-                    "Loading standard libraries : '{:s}'",
+                    "Loading lua standard libraries : '{:s}'",
                     fmt::join(m_config.plugins.lua.standard.libraries, ", ")));
             for (auto &name : m_config.plugins.lua.standard.libraries) {
                 lua.state.open_libraries(lua.from_lib(name));

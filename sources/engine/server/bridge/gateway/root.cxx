@@ -12,7 +12,7 @@ namespace engine
             {
                 Root::prepare();
 
-                // add new routes
+                // Add new routes
                 Root::root();
                 Root::plugins();
             }
@@ -38,8 +38,9 @@ namespace engine
             void Root::plugins()
             {
                 m_map.add_route("/plugins", [&]() {
-                    m_web_root = std::make_unique<
-                        engine::server::bridge::gateway::Web<>>(
+                    m_web_plugins = std::make_unique<
+                        engine::server::bridge::gateway::Web>();
+                    m_web_plugins->setup(
                         m_server,
                         API_PREFIX BASE_ROOT "plugins",
                         [](const crow::request &req) -> crow::response {
@@ -63,7 +64,6 @@ namespace engine
                             }
 
                             x["lua"]["scripts"] = std::move(scripts_json);
-
                             return x;
                         });
                 });
@@ -73,7 +73,8 @@ namespace engine
             {
                 m_map.add_route(BASE_ROOT, [&]() {
                     m_web_root = std::make_unique<
-                        engine::server::bridge::gateway::Web<>>(
+                        engine::server::bridge::gateway::Web>();
+                    m_web_root->setup(
                         m_server,
                         BASE_ROOT,
                         [](const crow::request &req) -> crow::response {

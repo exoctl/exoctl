@@ -26,7 +26,8 @@ namespace engine
                 Server &m_server;
                 mutable gateway::Map m_map;
 
-                std::unique_ptr<gateway::Web<>> m_web_root;
+                std::unique_ptr<gateway::Web> m_web_root;
+                std::unique_ptr<gateway::Web> m_web_plugins;
 
                 void prepare();
                 void root();
