@@ -22,8 +22,8 @@ namespace engine
             Logging() = default;
             ~Logging() = default;
             Logging &operator=(const Logging &);
+            void setup(const configuration::Configuration &);
             void bind_to_lua(sol::state_view &) override;
-            configuration::Configuration config;
 
 #ifdef ENGINE_PRO
             void register_plugins() override;
@@ -77,6 +77,7 @@ namespace engine
                 const std::string &);
 
           private:
+            configuration::Configuration m_config;
             std::shared_ptr<spdlog::logger> m_logger;
 
           protected:

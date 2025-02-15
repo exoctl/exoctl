@@ -32,9 +32,7 @@ namespace engine
             logging::Logging *m_log;
 
           public:
-            Server() : m_app(std::make_shared<App>())
-            {
-            }
+            Server();
             ~Server() = default;
             Server &operator=(const Server &);
 

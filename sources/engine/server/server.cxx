@@ -5,6 +5,9 @@ namespace engine
 {
     namespace server
     {
+        Server::Server() : m_app(std::make_shared<App>())
+        {
+        }
         void Server::setup(configuration::Configuration &p_config,
                            logging::Logging &p_log)
         {

@@ -36,14 +36,14 @@ namespace engine
                 sol::readonly(&Configuration::decompiler),
                 "plugins",
                 sol::readonly(&Configuration::plugins),
-                "path",
-                sol::property(
-                    [&](configuration::Configuration &cfg,
-                        const std::string &value) {
-                        cfg.path = value;
-                        cfg.m_toml.parse_file(value);
-                    },
-                    &configuration::Configuration::path));
+                "setup",
+                Configuration::setup);
+        }
+
+        void Configuration::setup(const std::string &p_path)
+        {
+            m_path.assign(p_path);
+            m_toml.parse_file(m_path);
         }
 
         void Configuration::load()
@@ -87,14 +87,8 @@ namespace engine
             plugins::Plugins::lua.state
                 .new_usertype<configuration::Configuration>(
                     "Configuration",
-                    "path",
-                    sol::property(
-                        [&](configuration::Configuration &cfg,
-                            const std::string &value) {
-                            cfg.path = value;
-                            cfg.m_toml.parse_file(cfg.path);
-                        },
-                        &configuration::Configuration::path),
+                    "setup",
+                    &configuration::Configuration::setup,
                     "load_logging",
                     Configuration::load_logging,
                     "lief",
@@ -123,7 +117,7 @@ namespace engine
         Configuration &Configuration::operator=(const Configuration &p_config)
         {
             if (this != &p_config) {
-                path = path;
+                m_path = m_path;
 
                 m_toml = p_config.m_toml;
                 lief = p_config.lief;

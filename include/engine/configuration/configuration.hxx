@@ -21,12 +21,13 @@ namespace engine
             Configuration &operator=(const Configuration &);
 
             void bind_to_lua(sol::state_view &) override;
+            void setup(const std::string &);
             void load();
             
 #ifdef ENGINE_PRO
             void register_plugins() override;
+            record::plugins::Plugins plugins;
 #endif
-            std::string path;
             record::lief::Lief lief;
             record::llama::Llama llama;
             record::av::clamav::Clamav av_clamav;
@@ -35,10 +36,9 @@ namespace engine
             record::logging::Logging logging;
             record::server::Server server;
             record::decompiler::Decompiler decompiler;
-#ifdef ENGINE_PRO
-            record::plugins::Plugins plugins;
-#endif
+
           private:
+            std::string m_path;
             parser::Toml m_toml;
 
             void load_llama();
