@@ -5,9 +5,10 @@ namespace engine
 {
     namespace server
     {
-        Server::Server() : m_app(std::make_shared<App>())
+        Server::Server() : m_app(new App())
         {
         }
+
         void Server::setup(configuration::Configuration &p_config,
                            logging::Logging &p_log)
         {
@@ -51,6 +52,7 @@ namespace engine
 
         Server &Server::operator=(const Server &p_server)
         {
+            fmt::print("Copying ...\n");
             if (this != &p_server) {
                 m_config = p_server.m_config;
                 m_log = p_server.m_log;

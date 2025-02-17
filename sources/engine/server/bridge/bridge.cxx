@@ -13,17 +13,20 @@ namespace engine
         void Bridge::setup(Server &p_server)
         {
             m_server = &p_server;
-            m_root = std::make_unique<bridge::Root>(*m_server);
             m_analysis = std::make_unique<bridge::Analysis>(*m_server);
             m_data = std::make_unique<bridge::Data>(*m_server);
             m_rev = std::make_unique<bridge::Rev>(*m_server);
             m_parser = std::make_unique<bridge::Parser>(*m_server);
+#ifdef ENGINE_PRO
+            m_plugins = std::make_unique<bridge::Plugins>(*m_server);
+#endif
         }
 #ifdef ENGINE_PRO
         void Bridge::register_plugins()
         {
             engine::server::bridge::_::Crow::plugins();
             engine::server::bridge::gateway::Web::plugins();
+            //engine::server::bridge::gateway::WebSocket::plugins();
 
             m_data->register_plugins();
             m_analysis->register_plugins();
@@ -35,11 +38,13 @@ namespace engine
 
             TRY_BEGIN()
 
-            m_root->load();
             m_data->load();
             m_parser->load();
             m_rev->load();
             m_analysis->load();
+#ifdef ENGINE_PRO
+            m_plugins->load();
+#endif
 
             TRY_END()
             CATCH(std::bad_alloc, {

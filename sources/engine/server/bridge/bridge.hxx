@@ -6,8 +6,12 @@
 #include <engine/server/bridge/entitys.hxx>
 #include <engine/server/bridge/gateway/analysis.hxx>
 #include <engine/server/bridge/gateway/data.hxx>
+
+#ifdef ENGINE_PRO
+  #include <engine/server/bridge/gateway/plugins.hxx>
+#endif
+
 #include <engine/server/bridge/gateway/rev.hxx>
-#include <engine/server/bridge/gateway/root.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 #include <vector>
@@ -35,7 +39,9 @@ namespace engine
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::Analysis> m_analysis;
-            std::unique_ptr<bridge::Root> m_root;
+#ifdef ENGINE_PRO
+            std::unique_ptr<bridge::Plugins> m_plugins;
+#endif
             std::unique_ptr<bridge::Parser> m_parser;
             std::unique_ptr<bridge::Rev> m_rev;
             std::unique_ptr<bridge::Data> m_data;

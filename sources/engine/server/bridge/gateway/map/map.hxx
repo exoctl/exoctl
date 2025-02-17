@@ -23,7 +23,7 @@ namespace engine
                 {
                   public:
                     Map(const std::string &);
-                    ~Map();
+                    ~Map() = default;
 
                     void add_route(const std::string &,
                                    const std::function<void()> &);

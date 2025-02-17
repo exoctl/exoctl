@@ -12,10 +12,6 @@ namespace engine
                 {
                 }
 
-                Map::~Map()
-                {
-                }
-
                 void Map::add_route(const std::string &p_route,
                                     const std::function<void()> &p_handle)
                 {

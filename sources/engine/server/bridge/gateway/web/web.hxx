@@ -10,7 +10,10 @@
 
 namespace engine::server::bridge::gateway
 {
-    class Web : public interface::ISubPlugins<Web>
+    class Web
+#ifdef ENGINE_PRO
+        : public interface::ISubPlugins<Web>
+#endif
     {
       public:
         using on_request_callback =
@@ -23,10 +26,12 @@ namespace engine::server::bridge::gateway
                    const std::string &,
                    on_request_callback,
                    std::vector<crow::HTTPMethod> = {crow::HTTPMethod::GET});
-        void _plugins() override;
 
+#ifdef ENGINE_PRO
+        void _plugins() override;
+#endif
       private:
-        Server *m_server = nullptr;
+        Server *m_server;
         std::string m_url;
         on_request_callback m_on_request;
     };

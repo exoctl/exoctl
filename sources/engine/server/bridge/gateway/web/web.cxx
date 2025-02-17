@@ -1,4 +1,5 @@
 #include <engine/server/bridge/gateway/web/web.hxx>
+#include <stdio.h>
 
 namespace engine::server::bridge::gateway
 {
@@ -51,7 +52,6 @@ namespace engine::server::bridge::gateway
         }
 
         route(m_on_request);
-        m_server->get().validate();
     }
 
     void Web::_plugins()

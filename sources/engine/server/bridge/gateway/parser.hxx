@@ -21,7 +21,7 @@ namespace engine
             {
               public:
                 Parser(Server &);
-                ~Parser();
+                ~Parser() = default;
 
                 void load() const override;
 

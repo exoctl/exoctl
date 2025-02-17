@@ -80,8 +80,8 @@ namespace engine
         }
 #endif
         const int Yara::load_rule_file(const std::string &p_path,
-                                              const std::string &p_yrname,
-                                              const std::string &p_yrns) const
+                                       const std::string &p_yrname,
+                                       const std::string &p_yrns) const
         {
             const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
@@ -95,7 +95,7 @@ namespace engine
         }
 
         const int Yara::load_rule_buff(const std::string &p_rule,
-                                               const std::string &p_yrns) const
+                                       const std::string &p_yrns) const
         {
             rules_loaded_count++;
             return yr_compiler_add_string(
@@ -119,8 +119,8 @@ namespace engine
                     continue;
                 }
                 if (entry_name.extension() == ".yar") {
-                    if (Yara::load_rule_file(
-                            full_path, entry_name, p_path) != ERROR_SUCCESS) {
+                    if (Yara::load_rule_file(full_path, entry_name, p_path) !=
+                        ERROR_SUCCESS) {
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
                             "rule " +
@@ -154,7 +154,7 @@ namespace engine
             }
         }
 
-        void Yara::scan_bytes(const std::string p_buffer,
+        void Yara::scan_bytes(const std::string &p_buffer,
                               YR_CALLBACK_FUNC p_callback,
                               void *p_data,
                               int p_flags) const
@@ -179,7 +179,7 @@ namespace engine
         }
 
         void Yara::scan_fast_bytes(
-            const std::string p_buffer,
+            const std::string &p_buffer,
             const std::function<void(yara::record::Data *)> &p_callback) const
         {
             if (p_callback) {

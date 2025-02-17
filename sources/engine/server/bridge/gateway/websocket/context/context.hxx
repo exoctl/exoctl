@@ -5,47 +5,31 @@
 #include <list>
 #include <unordered_set>
 
-namespace engine
+namespace engine::server::bridge::gateway::websocket
 {
-    namespace server
+    class Context
     {
-        namespace bridge
-        {
-            namespace gateway
-            {
-                namespace websocket
-                {
-                    class Context
-                    {
-                      public:
-                        Context(configuration::Configuration &);
-                        ~Context();
+      public:
+        Context();
+        ~Context() = default;
 
-                        const void add(crow::websocket::connection *);
-                        const void erase(crow::websocket::connection *);
-                        const void close(crow::websocket::connection *,
-                                         uint16_t,
-                                         const std::string &);
-                        const std::size_t size() const;
-                        void broadcast_text(crow::websocket::connection *,
-                                            const std::string) const;
+        const void add(crow::websocket::connection *);
+        const void erase(crow::websocket::connection *);
+        const void close(crow::websocket::connection *,
+                         uint16_t,
+                         const std::string &);
+        const std::size_t size() const;
+        void broadcast_text(crow::websocket::connection *,
+                            const std::string) const;
 
-                        void broadcast_binary(crow::websocket::connection *,
-                                              const std::string) const;
+        void broadcast_binary(crow::websocket::connection *,
+                              const std::string) const;
 
-                        const std::string get_remote_ip(
-                            crow::websocket::connection *) const;
+        const std::string get_remote_ip(crow::websocket::connection *) const;
 
-                        const std::string get_subprotocol(
-                            crow::websocket::connection *) const;
+        const std::string get_subprotocol(crow::websocket::connection *) const;
 
-                      private:
-                        std::unordered_set<crow::websocket::connection *>
-                            m_context;
-                        configuration::Configuration &m_config;
-                    };
-                } // namespace websocket
-            } // namespace gateway
-        } // namespace bridge
-    } // namespace server
-} // namespace engine
+      private:
+        std::unordered_set<crow::websocket::connection *> m_context;
+    };
+} // namespace engine::server::bridge::gateway::websocket

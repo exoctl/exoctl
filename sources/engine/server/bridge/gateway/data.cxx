@@ -22,24 +22,23 @@ namespace engine
             void Data::data_metadata()
             {
                 m_map.add_route("/metadata", [&]() {
-                    m_socket_metadata = std::make_unique<gateway::WebSocket>(
+                    m_web_metadata = std::make_unique<
+                        engine::server::bridge::gateway::Web>();
+                    m_web_metadata->setup(
                         m_server,
                         BASE_DATA "/metadata",
-                        UINT64_MAX,
-                        [&](gateway::websocket::Context &p_context,
-                            crow::websocket::connection &p_conn,
-                            const std::string &p_data,
-                            bool p_is_binary) {
+                        [&](const crow::request &req) -> crow::response {
+                            std::string data;
                             m_data_metadata->parse(
-                                p_data,
+                                req.body,
                                 [&](focades::data::metadata::record::DTO
                                         *p_dto) {
-                                    p_context.broadcast_text(
-                                        &p_conn,
-                                        m_data_metadata->dto_json(p_dto)
-                                            .to_string());
+                                    data.assign(m_data_metadata->dto_json(p_dto)
+                                                    .to_string());
                                 });
-                        });
+                            return crow::response(data);
+                        },
+                        {crow::HTTPMethod::POST});
                 });
             }
 

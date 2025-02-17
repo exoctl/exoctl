@@ -10,12 +10,8 @@ namespace engine
             {
                 namespace websocket
                 {
-                    Context::Context(configuration::Configuration &p_config)
-                        : m_context(0), m_config(p_config)
-                    {
-                    }
-
-                    Context::~Context()
+                    Context::Context()
+                        : m_context(0)
                     {
                     }
 

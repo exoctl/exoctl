@@ -26,13 +26,16 @@ namespace engine
 
         void Plugins::load_libraries()
         {
-            LOG(m_log,
-                info,
-                fmt::format(
-                    "Loading lua standard libraries : '{:s}'",
-                    fmt::join(m_config.plugins.lua.standard.libraries, ", ")));
-            for (auto &name : m_config.plugins.lua.standard.libraries) {
-                lua.state.open_libraries(lua.from_lib(name));
+            if (m_config.plugins.enable) {
+                LOG(m_log,
+                    info,
+                    fmt::format(
+                        "Loading lua standard libraries : '{:s}'",
+                        fmt::join(m_config.plugins.lua.standard.libraries,
+                                  ", ")));
+                for (auto &name : m_config.plugins.lua.standard.libraries) {
+                    lua.state.open_libraries(lua.from_lib(name));
+                }
             }
         }
 
@@ -78,26 +81,28 @@ namespace engine
 
         void Plugins::load_plugins_folder(const std::string &p_path)
         {
-            DIR *dir = opendir(p_path.c_str());
-            if (!dir)
-                throw plugins::exception::LoadPlugin(
-                    fmt::format("{} : {}", strerror(errno), p_path));
+            if (m_config.plugins.enable) {
+                DIR *dir = opendir(p_path.c_str());
+                if (!dir)
+                    throw plugins::exception::LoadPlugin(
+                        fmt::format("{} : {}", strerror(errno), p_path));
 
-            const struct dirent *entry;
-            while (!IS_NULL((entry = readdir(dir)))) {
-                const std::filesystem::path entry_name = entry->d_name;
-                const std::string full_path =
-                    fmt::format("{}/{}", p_path.c_str(), entry_name.c_str());
+                const struct dirent *entry;
+                while (!IS_NULL((entry = readdir(dir)))) {
+                    const std::filesystem::path entry_name = entry->d_name;
+                    const std::string full_path = fmt::format(
+                        "{}/{}", p_path.c_str(), entry_name.c_str());
 
-                if (entry_name == "." || entry_name == "..") {
-                    continue;
-                } else if (entry->d_type == DT_DIR) {
-                    Plugins::load_plugins_folder(full_path);
+                    if (entry_name == "." || entry_name == "..") {
+                        continue;
+                    } else if (entry->d_type == DT_DIR) {
+                        Plugins::load_plugins_folder(full_path);
+                    }
+
+                    Plugins::load_plugin_file(full_path);
                 }
-
-                Plugins::load_plugin_file(full_path);
+                closedir(dir);
             }
-            closedir(dir);
         }
     } // namespace plugins
 } // namespace engine

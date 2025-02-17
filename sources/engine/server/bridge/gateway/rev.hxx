@@ -19,7 +19,7 @@ namespace engine
             {
               public:
                 Rev(Server &);
-                ~Rev();
+                ~Rev() = default;
 
                 void load() const override;
 
