@@ -18,10 +18,7 @@ namespace engine::server::bridge::gateway
             m_url,
             methods.size());
 
-        auto &route = m_server->get()
-                          .route_dynamic(m_url)
-                          .middlewares<crow::App<middleware::web::JWTAuth>,
-                                       middleware::web::JWTAuth>();
+        auto &route = m_server->get().route_dynamic(m_url);
 
         if (!methods.empty()) {
             switch (methods.size()) {
@@ -51,6 +48,7 @@ namespace engine::server::bridge::gateway
             route.methods(crow::HTTPMethod::GET);
         }
 
+        route.validate();
         route(m_on_request);
     }
 
