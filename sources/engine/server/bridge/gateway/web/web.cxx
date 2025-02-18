@@ -48,8 +48,8 @@ namespace engine::server::bridge::gateway
             route.methods(crow::HTTPMethod::GET);
         }
 
-        route.validate();
         route(m_on_request);
+        route.validate();
     }
 
     void Web::_plugins()

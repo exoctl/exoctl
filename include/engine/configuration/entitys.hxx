@@ -49,7 +49,7 @@ namespace engine::configuration::record
             namespace Log
             {
                 struct Log {
-                    int level;
+                    unsigned int level;
                     std::string name;
                 };
             } // namespace Log
@@ -67,7 +67,7 @@ namespace engine::configuration::record
             namespace Log
             {
                 struct Log {
-                    int level;
+                    unsigned int level;
                     std::string name;
                 };
             } // namespace Log
@@ -101,7 +101,7 @@ namespace engine::configuration::record
                 namespace log
                 {
                     typedef struct Log {
-                        int level;
+                        unsigned int level;
                         std::string name;
                     } Log;
                 } // namespace log

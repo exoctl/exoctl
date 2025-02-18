@@ -177,7 +177,7 @@ namespace engine
                 .log = {
                     .level =
                         m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["level"]
-                            .value<int>()
+                            .value<unsigned int>()
                             .value(),
                     .name = m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["name"]
                                 .value<std::string>()
@@ -214,7 +214,7 @@ namespace engine
         {
             server = (record::server::Server) {
                 .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
-                                     .value<int>()
+                                     .value<unsigned int>()
                                      .value(),
                         .name = m_toml.get_tbl()["server"]["_"]["log"]["name"]
                                     .value<std::string>()
@@ -266,7 +266,7 @@ namespace engine
                         .value<bool>()
                         .value(),
                 .level =
-                    m_toml.get_tbl()["logging"]["level"].value<int>().value(),
+                    m_toml.get_tbl()["logging"]["level"].value<unsigned int>().value(),
                 .trace = {.interval = m_toml
                                           .get_tbl()["logging"]["trace_updates"]
                                                     ["interval"]
@@ -298,7 +298,7 @@ namespace engine
         {
             lief = (record::lief::Lief) {
                 .log{.level = m_toml.get_tbl()["lief"]["_"]["log"]["level"]
-                                  .value<int>()
+                                  .value<unsigned int>()
                                   .value(),
                      .name = m_toml.get_tbl()["lief"]["_"]["log"]["name"]
                                  .value<std::string>()
@@ -309,7 +309,7 @@ namespace engine
         {
             llama = (record::llama::Llama) {
                 .log{.level = m_toml.get_tbl()["llama"]["_"]["log"]["level"]
-                                  .value<int>()
+                                  .value<unsigned int>()
                                   .value(),
                      .name = m_toml.get_tbl()["llama"]["_"]["log"]["name"]
                                  .value<std::string>()
