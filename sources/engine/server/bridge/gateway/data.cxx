@@ -28,15 +28,20 @@ namespace engine
                         m_server,
                         BASE_DATA "/metadata",
                         [&](const crow::request &req) -> crow::response {
-                            std::string data;
-                            m_data_metadata->parse(
-                                req.body,
-                                [&](focades::data::metadata::record::DTO
-                                        *p_dto) {
-                                    data.assign(m_data_metadata->dto_json(p_dto)
-                                                    .to_string());
-                                });
-                            return crow::response(data);
+                            if (req.body.size() > 0) {
+                                std::string data;
+                                m_data_metadata->parse(
+                                    req.body,
+                                    [&](focades::data::metadata::record::DTO
+                                            *p_dto) {
+                                        data.assign(
+                                            m_data_metadata->dto_json(p_dto)
+                                                .to_string());
+                                    });
+                                return crow::response(data);
+                            }
+                            
+                            return crow::response(crow::status::BAD_REQUEST);
                         },
                         {crow::HTTPMethod::POST});
                 });

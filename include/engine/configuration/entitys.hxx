@@ -153,7 +153,7 @@ namespace engine::configuration::record
             std::string pattern;
             std::string type;
             bool console;
-            int level;
+            unsigned int level;
             traceupdates::TraceUpdates trace;
             daily::Daily daily_settings;
             rotation::Rotation rotation_settings;
@@ -168,7 +168,7 @@ namespace engine::configuration::record
             namespace log
             {
                 typedef struct Log {
-                    int level;
+                    unsigned int level;
                     std::string name;
                 } Log;
             } // namespace log
