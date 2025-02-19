@@ -47,10 +47,8 @@ namespace engine
             }
         }
 #ifdef ENGINE_PRO
-        void Yara::register_plugins()
+        void Yara::_plugins()
         {
-            plugins::Plugins::lua.state["_yara"] = this;
-
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",
                 "match_status",

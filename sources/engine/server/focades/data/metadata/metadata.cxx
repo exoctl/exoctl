@@ -12,7 +12,6 @@ namespace engine
 #ifdef ENGINE_PRO
             void Metadata::register_plugins()
             {
-                m_sha.register_plugins();
             }
 #endif
 

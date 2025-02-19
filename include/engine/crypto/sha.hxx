@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <engine/interfaces/iplugins.hxx>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
@@ -7,14 +9,17 @@ namespace engine
 {
     namespace crypto
     {
-        class Sha : public interface::IPlugins
+        class Sha
+#ifdef ENGINE_PRO
+            : public interface::ISubPlugins<Sha>
+#endif
         {
           public:
             Sha();
             ~Sha();
-            
+
 #ifdef ENGINE_PRO
-            void register_plugins() override;
+            void _plugins() override;
 #endif
             [[nodiscard]] const std::string gen_sha256_hash(
                 const std::string &);

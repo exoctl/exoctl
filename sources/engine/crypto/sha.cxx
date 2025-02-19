@@ -17,10 +17,8 @@ namespace engine
             EVP_MD_CTX_free(m_ctx);
         }
 #ifdef ENGINE_PRO
-        void Sha::register_plugins()
+        void Sha::_plugins()
         {
-            plugins::Plugins::lua.state["_sha"] = this;
-
             plugins::Plugins::lua.state.new_usertype<engine::crypto::Sha>(
                 "Sha",
                 sol::constructors<engine::crypto::Sha()>(),

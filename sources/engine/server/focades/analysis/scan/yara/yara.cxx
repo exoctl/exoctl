@@ -1,4 +1,5 @@
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/server/focades/analysis/scan/yara/yara.hxx>
 #include <string>
@@ -18,7 +19,7 @@ namespace engine
 #ifdef ENGINE_PRO
                 void Yara::register_plugins()
                 {
-                    m_yara.register_plugins();
+                    plugins::Plugins::lua.state["_yara"] = &m_yara;
                 }
 #endif
                 void Yara::load_rules(

@@ -12,13 +12,17 @@ namespace engine
 {
     namespace security
     {
-        class Yara : public interface::IPlugins
+        class Yara
+#ifdef ENGINE_PRO
+            : public interface::ISubPlugins<Yara>
+#endif
+
         {
           public:
             Yara();
             ~Yara();
 #ifdef ENGINE_PRO
-            void register_plugins() override;
+            void _plugins() override;
 #endif
             /**
              * @brief this function realize fast scan using flag
@@ -29,7 +33,7 @@ namespace engine
              * Yr::Structs::Data scanned scan_fast_callback
              */
             void scan_fast_bytes(
-                const std::string&,
+                const std::string &,
                 const std::function<void(yara::record::Data *)> &) const;
 
             /**
@@ -39,26 +43,25 @@ namespace engine
              * @param void* user_data, pass for example Yr::Structs::Data
              * @param int flags used for scan
              */
-            void scan_bytes(const std::string&,
+            void scan_bytes(const std::string &,
                             YR_CALLBACK_FUNC,
                             void *,
                             int) const;
-            
+
             /**
-             * @brief 
-             * 
+             * @brief
+             *
              */
             void load_rules(const std::function<void()> &) const;
 
             /* load rules if extension file '.yar'*/
             void load_rules_folder(const std::string & /* path */) const;
 
-            [[nodiscard]] const int load_rule_buff(
-                const std::string &, const std::string &) const;
-            [[nodiscard]] const int load_rule_file(
-                const std::string &,
-                const std::string &,
-                const std::string &) const;
+            [[nodiscard]] const int load_rule_buff(const std::string &,
+                                                   const std::string &) const;
+            [[nodiscard]] const int load_rule_file(const std::string &,
+                                                   const std::string &,
+                                                   const std::string &) const;
 
             mutable uint64_t rules_loaded_count;
 
