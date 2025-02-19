@@ -93,13 +93,12 @@ namespace engine
             }
         }
 
+#ifdef ENGINE_PRO
         void Llama::_plugins()
         {
             plugins::Plugins::lua.state.new_usertype<llama_model_params>(
                 "llama_model_params",
                 sol::constructors<llama_model_params()>(),
-                //"devices",
-                //&llama_model_params::devices,
                 "n_gpu_layers",
                 &llama_model_params::n_gpu_layers,
                 "split_mode",
@@ -125,6 +124,66 @@ namespace engine
                 "check_tensors",
                 &llama_model_params::check_tensors);
 
+            plugins::Plugins::lua.state.new_usertype<llama_context_params>(
+                "llama_context_params",
+                sol::constructors<llama_context_params()>(),
+                "n_ctx",
+                &llama_context_params::n_ctx,
+                "n_batch",
+                &llama_context_params::n_batch,
+                "n_ubatch",
+                &llama_context_params::n_ubatch,
+                "n_seq_max",
+                &llama_context_params::n_seq_max,
+                "n_threads",
+                &llama_context_params::n_threads,
+                "n_threads_batch",
+                &llama_context_params::n_threads_batch,
+                "rope_scaling_type",
+                &llama_context_params::rope_scaling_type,
+                "pooling_type",
+                &llama_context_params::pooling_type,
+                "attention_type",
+                &llama_context_params::attention_type,
+                "rope_freq_base",
+                &llama_context_params::rope_freq_base,
+                "rope_freq_scale",
+                &llama_context_params::rope_freq_scale,
+                "yarn_ext_factor",
+                &llama_context_params::yarn_ext_factor,
+                "yarn_attn_factor",
+                &llama_context_params::yarn_attn_factor,
+                "yarn_beta_fast",
+                &llama_context_params::yarn_beta_fast,
+                "yarn_beta_slow",
+                &llama_context_params::yarn_beta_slow,
+                "yarn_orig_ctx",
+                &llama_context_params::yarn_orig_ctx,
+                "defrag_thold",
+                &llama_context_params::defrag_thold,
+                "cb_eval",
+                &llama_context_params::cb_eval,
+                "cb_eval_user_data",
+                &llama_context_params::cb_eval_user_data,
+                "type_k",
+                &llama_context_params::type_k,
+                "type_v",
+                &llama_context_params::type_v,
+                "logits_all",
+                &llama_context_params::logits_all,
+                "embeddings",
+                &llama_context_params::embeddings,
+                "offload_kqv",
+                &llama_context_params::offload_kqv,
+                "flash_attn",
+                &llama_context_params::flash_attn,
+                "no_perf",
+                &llama_context_params::no_perf,
+                "abort_callback",
+                &llama_context_params::abort_callback,
+                "abort_callback_data",
+                &llama_context_params::abort_callback_data);
+
             plugins::Plugins::lua.state.new_usertype<Llama>(
                 "Llama",
                 "load_model_default_params",
@@ -144,8 +203,17 @@ namespace engine
                     return self.load_model_file(p_path, params);
                 },
                 "load_context",
-                &Llama::load_context);
+                [](Llama &self,
+                   sol::optional<llama_context_params> opt_params) -> bool {
+                    llama_context_params params;
+                    if (opt_params) {
+                        params = opt_params.value();
+                    } else {
+                        params = llama_context_default_params();
+                    }
+                    return self.load_context(params);
+                });
         }
-
+#endif
     } // namespace llama
 } // namespace engine
