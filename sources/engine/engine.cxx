@@ -4,6 +4,7 @@
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/llama/llama.hxx>
+#include <engine/magic/magic.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/server/exception.hxx>
 #include <thread>
@@ -80,6 +81,7 @@ namespace engine
         llama::Llama::plugins();
         crypto::Sha::plugins();
         security::Yara::plugins();
+        magic::Magic::plugins();
 
         // plugins
         m_server.register_plugins();

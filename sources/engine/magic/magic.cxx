@@ -1,6 +1,7 @@
 #include <engine/magic/exception.hxx>
 #include <engine/magic/magic.hxx>
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
@@ -21,14 +22,22 @@ namespace engine
             magic_close(m_cookie);
         }
 
+#ifdef ENGINE_PRO
+        void Magic::_plugins()
+        {
+            plugins::Plugins::lua.state.new_usertype<magic::Magic>(
+                "Magic",
+                sol::constructors<magic::Magic()>(),
+                "load_mime",
+                &Magic::load_mime,
+                "mime",
+                sol::readonly(&Magic::mime));
+        }
+#endif
+
         void Magic::load_mime(const std::string &p_buffer)
         {
-            m_mime = magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
-        }
-
-        const std::string Magic::get_mime()
-        {
-            return m_mime;
+            mime = magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
         }
     } // namespace magic
 } // namespace engine

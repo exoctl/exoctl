@@ -1,5 +1,6 @@
 #include <cmath>
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/plugins.hxx>
 #include <engine/server/focades/data/metadata/metadata.hxx>
 #include <fmt/core.h>
 
@@ -12,6 +13,8 @@ namespace engine
 #ifdef ENGINE_PRO
             void Metadata::register_plugins()
             {
+                plugins::Plugins::lua.state["_sha"] = &m_sha;
+                plugins::Plugins::lua.state["_magic"] = &m_magic;
             }
 #endif
 
@@ -24,7 +27,7 @@ namespace engine
                         new metadata::record::DTO;
 
                     m_magic.load_mime(p_buffer);
-                    dto->mime_type.assign(m_magic.get_mime());
+                    dto->mime_type.assign(m_magic.mime);
                     dto->size = (int) p_buffer.size();
 
                     dto->sha256.assign(m_sha.gen_sha256_hash(p_buffer));
