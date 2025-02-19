@@ -2,6 +2,7 @@
 #include <chrono>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
+#include <engine/llama/llama.hxx>
 #include <engine/server/exception.hxx>
 #include <thread>
 
@@ -73,6 +74,10 @@ namespace engine
             "load",
             &Engine::load);
 
+        // subplugins
+        llama::Llama::plugins();
+        
+        // plugins
         m_server.register_plugins();
         m_server_bridge.register_plugins();
     }

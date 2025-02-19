@@ -1,6 +1,6 @@
 #include <engine/llama/exception.hxx>
 #include <engine/llama/llama.hxx>
-#include <llama/common/log.h>
+#include <engine/plugins/plugins.hxx>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -9,11 +9,7 @@ namespace engine
 {
     namespace llama
     {
-        Llama::Llama()
-        {
-        }
-
-        const bool Llama::load_model(const char *p_path, ...)
+        const bool Llama::load_model_file(const char *p_path, ...)
         {
             va_list ap;
             va_start(ap, p_path);
@@ -95,6 +91,60 @@ namespace engine
             if (m_model) {
                 llama_model_free(m_model);
             }
+        }
+
+        void Llama::_plugins()
+        {
+            plugins::Plugins::lua.state.new_usertype<llama_model_params>(
+                "llama_model_params",
+                sol::constructors<llama_model_params()>(),
+                //"devices",
+                //&llama_model_params::devices,
+                "n_gpu_layers",
+                &llama_model_params::n_gpu_layers,
+                "split_mode",
+                &llama_model_params::split_mode,
+                "main_gpu",
+                &llama_model_params::main_gpu,
+                "tensor_split",
+                &llama_model_params::tensor_split,
+                "rpc_servers",
+                &llama_model_params::rpc_servers,
+                "progress_callback",
+                &llama_model_params::progress_callback,
+                "progress_callback_user_data",
+                &llama_model_params::progress_callback_user_data,
+                "kv_overrides",
+                &llama_model_params::kv_overrides,
+                "vocab_only",
+                &llama_model_params::vocab_only,
+                "use_mmap",
+                &llama_model_params::use_mmap,
+                "use_mlock",
+                &llama_model_params::use_mlock,
+                "check_tensors",
+                &llama_model_params::check_tensors);
+
+            plugins::Plugins::lua.state.new_usertype<Llama>(
+                "Llama",
+                "load_model_default_params",
+                llama_model_default_params,
+                "load_context_default_params",
+                llama_context_default_params,
+                "load_model_file",
+                [](Llama &self,
+                   const char *p_path,
+                   sol::optional<llama_model_params> opt_params) -> bool {
+                    llama_model_params params;
+                    if (opt_params) {
+                        params = opt_params.value();
+                    } else {
+                        params = llama_model_default_params();
+                    }
+                    return self.load_model_file(p_path, params);
+                },
+                "load_context",
+                &Llama::load_context);
         }
 
     } // namespace llama

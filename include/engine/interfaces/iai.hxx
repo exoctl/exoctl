@@ -13,7 +13,7 @@ namespace engine
             IAi() {};
             virtual ~IAi() {};
 
-            virtual const bool load_model(const char *p_path, ...) = 0;
+            virtual const bool load_model_file(const char *p_path, ...) = 0;
         };
     } // namespace interface
 } // namespace engine

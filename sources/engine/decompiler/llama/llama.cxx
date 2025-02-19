@@ -11,7 +11,7 @@ namespace engine
 
         Llama::Llama(const std::string &p_model)
         {
-            if (m_llama.load_model(p_model.c_str(),
+            if (m_llama.load_model_file(p_model.c_str(),
                                    llama_model_default_params())) {
                 m_llama.load_context(llama_context_default_params());
             }
