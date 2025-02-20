@@ -47,3 +47,6 @@
 [submodule "libraries/sol2"]
 	path = libraries/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "libraries/unicorn"]
+	path = libraries/unicorn
+	url = https://github.com/unicorn-engine/unicorn.git

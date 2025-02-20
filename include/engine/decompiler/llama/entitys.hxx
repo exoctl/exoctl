@@ -2,18 +2,12 @@
 
 #include <string>
 
-namespace engine
+namespace engine::decompiler::llama
 {
-    namespace decompiler
+    namespace record
     {
-        namespace llama
-        {
-            namespace record
-            {
-                typedef struct CData {
-                    std::string text;
-                } Data;
-            } // namespace record
-        } // namespace llama
-    } // namespace decompiler
-} // namespace engine
+        typedef struct CData {
+            std::string text;
+        } Data;
+    } // namespace record
+} // namespace engine::decompiler::llama

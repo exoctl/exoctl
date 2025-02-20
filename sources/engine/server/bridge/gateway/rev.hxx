@@ -27,17 +27,27 @@ namespace engine
                 Server &m_server;
                 mutable gateway::Map m_map;
 
-                std::unique_ptr<gateway::WebSocket> m_socket_capstone_x64;
-                std::unique_ptr<gateway::WebSocket> m_socket_capstone_arm64;
+                std::unique_ptr<gateway::WebSocket>
+                    m_socket_capstone_x64_little;
+                std::unique_ptr<gateway::WebSocket>
+                    m_socket_capstone_arm64_little;
+                std::unique_ptr<gateway::WebSocket>
+                    m_socket_capstone_x64_big;
+                std::unique_ptr<gateway::WebSocket>
+                    m_socket_capstone_arm64_big;
 
                 std::unique_ptr<focades::rev::disassembly::Capstone>
-                    m_capstone_x64;
+                    m_capstone_x64_little;
                 std::unique_ptr<focades::rev::disassembly::Capstone>
-                    m_capstone_arm64;
+                    m_capstone_arm64_little;
+
+                std::unique_ptr<focades::rev::disassembly::Capstone>
+                    m_capstone_arm64_big;
 
                 void prepare();
-                void capstone_x64();
-                void capstone_arm64();
+                void capstone_x64_little();
+                void capstone_arm64_little();
+                void capstone_arm64_big();
             };
         } // namespace bridge
     } // namespace server

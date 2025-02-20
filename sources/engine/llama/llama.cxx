@@ -25,7 +25,8 @@ namespace engine
             return true;
         }
 
-        bool Llama::load_context(llama_context_params p_params)
+        const bool Llama::load_context(
+            const struct llama_context_params p_params)
         {
             if (!m_model) {
                 return false;
@@ -40,48 +41,84 @@ namespace engine
             return true;
         }
 
-        const std::string Llama::generate_text(const std::string &p_prompt,
-                                               int max_tokens)
+        void Llama::sampler_add(struct llama_sampler *)
         {
-            if (!m_model) {
-                throw llama::exception::GenerateMessage(
-                    "Model is not initialized.");
-            }
-
-            if (!m_context) {
-                throw llama::exception::GenerateMessage(
-                    "Context is not initialized.");
-            }
-
-            int n_prompt = llama_tokenize(m_model,
-                                          p_prompt.c_str(),
-                                          p_prompt.size(),
-                                          nullptr,
-                                          0,
-                                          true,
-                                          true);
-
-            if (n_prompt <= 0) {
-                throw llama::exception::GenerateMessage(
-                    "Failed to tokenize prompt.");
-            }
-
-            std::vector<llama_token> prompt_tokens(n_prompt);
-            n_prompt = llama_tokenize(m_model,
-                                      p_prompt.c_str(),
-                                      p_prompt.size(),
-                                      prompt_tokens.data(),
-                                      n_prompt,
-                                      true,
-                                      true);
-
-            if (n_prompt <= 0) {
-                throw llama::exception::GenerateMessage(
-                    "Error during prompt tokenization.");
-            }
-
-            return "";
         }
+
+        void Llama::load_sampler(
+            const struct llama_sampler_chain_params p_params)
+        {
+            m_sampler = llama_sampler_chain_init(p_params);
+        }
+
+        // const std::string Llama::prompt(const std::string &prompt,
+        //                                        float temperature,
+        //                                        float min_p)
+        //{
+        // if (!m_model) {
+        //     throw std::runtime_error(
+        //         "generate_text: Modelo não inicializado.");
+        // }
+        // if (!m_context) {
+        //     throw std::runtime_error(
+        //         "generate_text: Contexto não inicializado.");
+        // }
+        //
+        //// Tokeniza o prompt.
+        // std::vector<llama_token> promptTokens =
+        // llama_tokenize(m_model, prompt.c_str(), true, true);
+        //
+        //// Prepara o batch inicial com o prompt.
+        // llama_batch batch;
+        // batch.token = promptTokens.data();
+        // batch.n_tokens = promptTokens.size();
+        //
+        //// Inicializa o sampler com os parâmetros desejados.
+        // llama_sampler_chain_params samplerParams =
+        //     llama_sampler_chain_default_params();
+        // samplerParams.no_perf = true;
+        // llama_sampler *sampler = llama_sampler_chain_init(samplerParams);
+        // llama_sampler_chain_add(sampler,
+        //                         llama_sampler_init_min_p(min_p, 1));
+        // llama_sampler_chain_add(sampler,
+        //                         llama_sampler_init_temp(temperature));
+        // llama_sampler_chain_add(
+        //     sampler, llama_sampler_init_dist(LLAMA_DEFAULT_SEED));
+        //
+        // std::string resposta;
+        // while (true) {
+        //    // Verifica se o contexto ainda comporta novos tokens.
+        //    int contextSize = llama_n_ctx(m_context);
+        //    int nCtxUsed = llama_get_kv_cache_used_cells(m_context);
+        //    if (nCtxUsed + batch.n_tokens > contextSize) {
+        //        llama_sampler_free(sampler);
+        //        throw std::runtime_error("Limite do contexto excedido.");
+        //    }
+        //
+        //    // Executa a decodificação do modelo.
+        //    if (llama_decode(m_context, batch) < 0) {
+        //        llama_sampler_free(sampler);
+        //        throw std::runtime_error("Erro durante a decodificação.");
+        //    }
+        //
+        //    // Amostra um token.
+        //    llama_token currToken =
+        //        llama_sampler_sample(sampler, m_context, -1);
+        //    if (llama_token_is_eog(m_model, currToken)) {
+        //        break; // Encerra ao encontrar o token de fim de geração.
+        //    }
+        //    std::string token_str =
+        //    llama_token_to_piece(m_model, currToken, true);
+        //    resposta += token_str;
+        //
+        //    // Atualiza o batch para processar apenas o novo token.
+        //    batch.token = &currToken;
+        //    batch.n_tokens = 1;
+        //}
+        // llama_sampler_free(sampler);
+        // return resposta;
+        //    "";
+        //}
 
         Llama::~Llama()
         {
@@ -90,6 +127,9 @@ namespace engine
             }
             if (m_model) {
                 llama_model_free(m_model);
+            }
+            if (m_sampler) {
+                llama_sampler_free(m_sampler);
             }
         }
 
@@ -186,6 +226,18 @@ namespace engine
 
             plugins::Plugins::lua.state.new_usertype<Llama>(
                 "Llama",
+                "load_sampler",
+                [](Llama &self,
+                   sol::optional<llama_sampler_chain_params> opt_params)
+                    -> void {
+                    llama_sampler_chain_params params;
+                    if (opt_params) {
+                        params = opt_params.value();
+                    } else {
+                        params = llama_sampler_chain_default_params();
+                    }
+                    self.load_sampler(params);
+                },
                 "load_model_default_params",
                 llama_model_default_params,
                 "load_context_default_params",
