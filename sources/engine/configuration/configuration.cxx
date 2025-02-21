@@ -64,6 +64,14 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
+            plugins::Plugins::lua.state.new_usertype<sol::type>("Types",
+                                                     "number",
+                                                     sol::var(sol::type::number),
+                                                     "string",
+                                                     sol::var(sol::type::string),
+                                                     "boolean",
+                                                     sol::var(sol::type::boolean));
+
             plugins::Plugins::lua.state.new_usertype<configuration::DynConfig>(
                 "DynConfig",
                 "setup",
@@ -72,9 +80,28 @@ namespace engine
                 Configuration::load_logging,
                 "load",
                 &DynConfig::load,
-                "get");
+                "get",
+                [](configuration::DynConfig &self,
+                   const std::string &path,
+                   sol::type type) -> sol::object {
+                    switch (type) {
+                        case sol::type::number:
+                            return sol::make_object(plugins::Plugins::lua.state,
+                                                    self.get<int16_t>(path));
+                        case sol::type::string:
+                            return sol::make_object(
+                                plugins::Plugins::lua.state,
+                                self.get<std::string>(path));
+                        case sol::type::boolean:
+                            return sol::make_object(plugins::Plugins::lua.state,
+                                                    self.get<bool>(path));
+                        default:
+                            throw std::runtime_error("Unsupported type");
+                    }
+                });
         }
 #endif
+
         void DynConfig::load()
         {
             dynamic_configs.clear();
