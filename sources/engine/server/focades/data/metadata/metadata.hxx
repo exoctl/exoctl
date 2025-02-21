@@ -10,7 +10,10 @@
 
 namespace engine::focades::data
 {
-    class Metadata : public interface::IPlugins
+    class Metadata
+#ifdef ENGINE_PRO
+        : public interface::IPlugins
+#endif
     {
       public:
         Metadata() = default;

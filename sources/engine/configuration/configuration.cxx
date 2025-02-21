@@ -18,24 +18,6 @@ namespace engine
                 "register_plugins",
                 &Configuration::register_plugins,
 #endif
-                "lief",
-                sol::readonly(&Configuration::lief),
-                "llama",
-                sol::readonly(&Configuration::llama),
-                "av_clamav",
-                sol::readonly(&Configuration::av_clamav),
-                "project",
-                sol::readonly(&Configuration::project),
-                "yara",
-                sol::readonly(&Configuration::yara),
-                "logging",
-                sol::readonly(&Configuration::logging),
-                "server",
-                sol::readonly(&Configuration::server),
-                "decompiler",
-                sol::readonly(&Configuration::decompiler),
-                "plugins",
-                sol::readonly(&Configuration::plugins),
                 "setup",
                 Configuration::setup);
         }
@@ -82,37 +64,69 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
-            plugins::Plugins::lua.state["_configuration"] = this;
-
-            plugins::Plugins::lua.state
-                .new_usertype<configuration::Configuration>(
-                    "Configuration",
-                    "setup",
-                    &configuration::Configuration::setup,
-                    "load_logging",
-                    Configuration::load_logging,
-                    "lief",
-                    sol::readonly(&Configuration::lief),
-                    "llama",
-                    sol::readonly(&Configuration::llama),
-                    "av_clamav",
-                    sol::readonly(&Configuration::av_clamav),
-                    "project",
-                    sol::readonly(&Configuration::project),
-                    "yara",
-                    sol::readonly(&Configuration::yara),
-                    "logging",
-                    sol::readonly(&Configuration::logging),
-                    "server",
-                    sol::readonly(&Configuration::server),
-                    "decompiler",
-                    sol::readonly(&Configuration::decompiler),
-                    "plugins",
-                    sol::readonly(&Configuration::plugins),
-                    "load",
-                    &Configuration::load);
+            plugins::Plugins::lua.state.new_usertype<configuration::DynConfig>(
+                "DynConfig",
+                "setup",
+                &configuration::Configuration::setup,
+                "load_logging",
+                Configuration::load_logging,
+                "load",
+                &DynConfig::load,
+                "get");
         }
 #endif
+        void DynConfig::load()
+        {
+            dynamic_configs.clear();
+
+            std::function<void(const toml::table &,
+                               std::unordered_map<std::string, std::any> &)>
+                process_table;
+            process_table =
+                [&process_table](
+                    const toml::table &table,
+                    std::unordered_map<std::string, std::any> &section_data) {
+                    for (const auto &[key, value] : table) {
+                        std::string key_str = std::string(key);
+                        fmt::print("{}\n", key_str);
+                        if (value.is_string()) {
+                            section_data[key_str] = value.as_string()->get();
+                        } else if (value.is_integer()) {
+                            section_data[key_str] = value.as_integer()->get();
+                        } else if (value.is_boolean()) {
+                            section_data[key_str] = value.as_boolean()->get();
+                        } else if (value.is_floating_point()) {
+                            section_data[key_str] =
+                                value.as_floating_point()->get();
+                        } else if (value.is_array()) {
+                            std::vector<std::any> array_values;
+                            for (const auto &elem : *value.as_array()) {
+                                if (elem.is_string()) {
+                                    array_values.push_back(
+                                        elem.as_string()->get());
+                                } else if (elem.is_integer()) {
+                                    array_values.push_back(
+                                        elem.as_integer()->get());
+                                } else if (elem.is_floating_point()) {
+                                    array_values.push_back(
+                                        elem.as_floating_point()->get());
+                                } else if (elem.is_boolean()) {
+                                    array_values.push_back(
+                                        elem.as_boolean()->get());
+                                }
+                            }
+                            section_data[key_str] = array_values;
+                        } else if (value.is_table()) {
+                            std::unordered_map<std::string, std::any>
+                                sub_section_data;
+                            process_table(*value.as_table(), sub_section_data);
+                            section_data[key_str] = sub_section_data;
+                        }
+                    }
+                };
+
+            process_table(m_toml.tbl, dynamic_configs);
+        }
 
         Configuration &Configuration::operator=(const Configuration &p_config)
         {
@@ -140,20 +154,17 @@ namespace engine
         void Configuration::load_plugins()
         {
             plugins = record::plugins::Plugins{
-                .path = m_toml.get_tbl()["plugins"]["path"]
-                            .value<std::string>()
-                            .value(),
-                .enable =
-                    m_toml.get_tbl()["plugins"]["enable"].value<bool>().value(),
+                .path =
+                    m_toml.tbl["plugins"]["path"].value<std::string>().value(),
+                .enable = m_toml.tbl["plugins"]["enable"].value<bool>().value(),
                 .lua = (record::plugins::lua::Lua) {
                     .standard =
                         (record::plugins::lua::Standard) {.libraries = [&] {
                             std::vector<std::string> lib_vec;
-                            if (auto arr =
-                                    m_toml
-                                        .get_tbl()["plugins"]["lua"]["standard"]
-                                                  ["libraries"]
-                                        .as_array()) {
+                            if (auto arr = m_toml
+                                               .tbl["plugins"]["lua"]
+                                                   ["standard"]["libraries"]
+                                               .as_array()) {
                                 for (const auto &val : *arr) {
                                     if (val.is_string()) {
                                         lib_vec.emplace_back(
@@ -168,44 +179,39 @@ namespace engine
         void Configuration::load_av_clamav()
         {
             av_clamav = (record::av::clamav::Clamav) {
-                .database = {.default_path =
-                                 m_toml
-                                     .get_tbl()["av"]["clamav"]["database"]
-                                               ["default_path"]
-                                     .value<std::string>()
-                                     .value()},
-                .log = {
-                    .level =
-                        m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["level"]
-                            .value<unsigned int>()
-                            .value(),
-                    .name = m_toml.get_tbl()["av"]["clamav"]["_"]["log"]["name"]
-                                .value<std::string>()
-                                .value()}};
+                .database =
+                    {.default_path =
+                         m_toml.tbl["av"]["clamav"]["database"]["default_path"]
+                             .value<std::string>()
+                             .value()},
+                .log = {.level = m_toml.tbl["av"]["clamav"]["_"]["log"]["level"]
+                                     .value<unsigned int>()
+                                     .value(),
+                        .name = m_toml.tbl["av"]["clamav"]["_"]["log"]["name"]
+                                    .value<std::string>()
+                                    .value()}};
         }
 
         void Configuration::load_decompiler()
         {
             decompiler = (record::decompiler::Decompiler) {
-                .llama = {.model =
-                              m_toml.get_tbl()["decompiler"]["llama"]["model"]
-                                  .value<std::string>()
-                                  .value()}};
+                .llama = {.model = m_toml.tbl["decompiler"]["llama"]["model"]
+                                       .value<std::string>()
+                                       .value()}};
         }
 
         void Configuration::load_project()
         {
             project = (record::Project) {
-                .name = m_toml.get_tbl()["project"]["name"]
-                            .value<std::string>()
-                            .value(),
-                .version = m_toml.get_tbl()["project"]["version"]
+                .name =
+                    m_toml.tbl["project"]["name"].value<std::string>().value(),
+                .version = m_toml.tbl["project"]["version"]
                                .value<std::string>()
                                .value(),
-                .description = m_toml.get_tbl()["project"]["description"]
+                .description = m_toml.tbl["project"]["description"]
                                    .value<std::string>()
                                    .value(),
-                .copyright = m_toml.get_tbl()["project"]["copyright"]
+                .copyright = m_toml.tbl["project"]["copyright"]
                                  .value<std::string>()
                                  .value()};
         }
@@ -213,26 +219,25 @@ namespace engine
         void Configuration::load_server()
         {
             server = (record::server::Server) {
-                .log = {.level = m_toml.get_tbl()["server"]["_"]["log"]["level"]
+                .log = {.level = m_toml.tbl["server"]["_"]["log"]["level"]
                                      .value<unsigned int>()
                                      .value(),
-                        .name = m_toml.get_tbl()["server"]["_"]["log"]["name"]
+                        .name = m_toml.tbl["server"]["_"]["log"]["name"]
                                     .value<std::string>()
                                     .value()},
-                .name = m_toml.get_tbl()["server"]["name"]
-                            .value<std::string>()
-                            .value(),
-                .bindaddr = m_toml.get_tbl()["server"]["bindaddr"]
+                .name =
+                    m_toml.tbl["server"]["name"].value<std::string>().value(),
+                .bindaddr = m_toml.tbl["server"]["bindaddr"]
                                 .value<std::string>()
                                 .value(),
-                .port = m_toml.get_tbl()["server"]["port"]
+                .port = m_toml.tbl["server"]["port"]
                             .value<unsigned short>()
                             .value(),
-                .threads = m_toml.get_tbl()["server"]["threads"]
+                .threads = m_toml.tbl["server"]["threads"]
                                .value<unsigned short>()
                                .value(),
                 .ssl_certificate_path =
-                    m_toml.get_tbl()["server"]["ssl_certificate_path"]
+                    m_toml.tbl["server"]["ssl_certificate_path"]
                         .value<std::string>()
                         .value(),
             };
@@ -241,7 +246,7 @@ namespace engine
         void Configuration::load_yara()
         {
             yara = (record::yara::Yara) {
-                .rules = {.path = m_toml.get_tbl()["yara"]["rules"]["path"]
+                .rules = {.path = m_toml.tbl["yara"]["rules"]["path"]
                                       .value<std::string>()
                                       .value()}};
         } // namespace engine
@@ -249,58 +254,52 @@ namespace engine
         void Configuration::load_logging()
         {
             logging = (record::logging::Logging) {
-                .filepath = m_toml.get_tbl()["logging"]["filepath"]
+                .filepath = m_toml.tbl["logging"]["filepath"]
                                 .value<std::string>()
                                 .value(),
-                .name = m_toml.get_tbl()["logging"]["name"]
-                            .value<std::string>()
-                            .value(),
-                .pattern = m_toml.get_tbl()["logging"]["pattern"]
+                .name =
+                    m_toml.tbl["logging"]["name"].value<std::string>().value(),
+                .pattern = m_toml.tbl["logging"]["pattern"]
                                .value<std::string>()
                                .value(),
-                .type = m_toml.get_tbl()["logging"]["type"]
-                            .value<std::string>()
-                            .value(),
-                .console =
-                    m_toml.get_tbl()["logging"]["console"]["output_enabled"]
-                        .value<bool>()
-                        .value(),
-                .level =
-                    m_toml.get_tbl()["logging"]["level"].value<unsigned int>().value(),
-                .trace = {.interval = m_toml
-                                          .get_tbl()["logging"]["trace_updates"]
-                                                    ["interval"]
-                                          .value<uint16_t>()
-                                          .value()},
+                .type =
+                    m_toml.tbl["logging"]["type"].value<std::string>().value(),
+                .console = m_toml.tbl["logging"]["console"]["output_enabled"]
+                               .value<bool>()
+                               .value(),
+                .level = m_toml.tbl["logging"]["level"]
+                             .value<unsigned int>()
+                             .value(),
+                .trace = {.interval =
+                              m_toml.tbl["logging"]["trace_updates"]["interval"]
+                                  .value<uint16_t>()
+                                  .value()},
                 .daily_settings =
-                    {.hours = m_toml.get_tbl()["logging"]["daily"]["hours"]
+                    {.hours = m_toml.tbl["logging"]["daily"]["hours"]
                                   .value<uint16_t>()
                                   .value(),
-                     .minutes = m_toml.get_tbl()["logging"]["daily"]["minutes"]
+                     .minutes = m_toml.tbl["logging"]["daily"]["minutes"]
                                     .value<uint16_t>()
                                     .value(),
-                     .max_size =
-                         m_toml.get_tbl()["logging"]["daily"]["max_size"]
-                             .value<uint16_t>()
-                             .value()},
+                     .max_size = m_toml.tbl["logging"]["daily"]["max_size"]
+                                     .value<uint16_t>()
+                                     .value()},
                 .rotation_settings = {
-                    .max_files =
-                        m_toml.get_tbl()["logging"]["rotation"]["max_files"]
-                            .value<uint16_t>()
-                            .value(),
-                    .max_size =
-                        m_toml.get_tbl()["logging"]["rotation"]["max_size"]
-                            .value<uint16_t>()
-                            .value()}};
+                    .max_files = m_toml.tbl["logging"]["rotation"]["max_files"]
+                                     .value<uint16_t>()
+                                     .value(),
+                    .max_size = m_toml.tbl["logging"]["rotation"]["max_size"]
+                                    .value<uint16_t>()
+                                    .value()}};
         }
 
         void Configuration::load_lief()
         {
             lief = (record::lief::Lief) {
-                .log{.level = m_toml.get_tbl()["lief"]["_"]["log"]["level"]
+                .log{.level = m_toml.tbl["lief"]["_"]["log"]["level"]
                                   .value<unsigned int>()
                                   .value(),
-                     .name = m_toml.get_tbl()["lief"]["_"]["log"]["name"]
+                     .name = m_toml.tbl["lief"]["_"]["log"]["name"]
                                  .value<std::string>()
                                  .value()}};
         }
@@ -308,10 +307,10 @@ namespace engine
         void Configuration::load_llama()
         {
             llama = (record::llama::Llama) {
-                .log{.level = m_toml.get_tbl()["llama"]["_"]["log"]["level"]
+                .log{.level = m_toml.tbl["llama"]["_"]["log"]["level"]
                                   .value<unsigned int>()
                                   .value(),
-                     .name = m_toml.get_tbl()["llama"]["_"]["log"]["name"]
+                     .name = m_toml.tbl["llama"]["_"]["log"]["name"]
                                  .value<std::string>()
                                  .value()}};
         }

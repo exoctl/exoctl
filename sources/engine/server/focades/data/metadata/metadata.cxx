@@ -17,7 +17,6 @@ namespace engine
                 plugins::Plugins::lua.state["_magic"] = &m_magic;
             }
 #endif
-
             void Metadata::parse(
                 const std::string &p_buffer,
                 const std::function<void(metadata::record::DTO *)> &p_callback)

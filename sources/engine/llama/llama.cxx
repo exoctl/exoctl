@@ -133,6 +133,16 @@ namespace engine
             }
         }
 
+        const struct llama_model_params Llama::load_model_default_params()
+        {
+            return llama_model_default_params();
+        }
+
+        const struct llama_context_params Llama::load_context_default_params()
+        {
+            return llama_context_default_params();
+        }
+
 #ifdef ENGINE_PRO
         void Llama::_plugins()
         {
@@ -224,6 +234,7 @@ namespace engine
                 "abort_callback_data",
                 &llama_context_params::abort_callback_data);
 
+            // llama bind
             plugins::Plugins::lua.state.new_usertype<Llama>(
                 "Llama",
                 "load_sampler",
@@ -239,9 +250,9 @@ namespace engine
                     self.load_sampler(params);
                 },
                 "load_model_default_params",
-                llama_model_default_params,
+                load_model_default_params,
                 "load_context_default_params",
-                llama_context_default_params,
+                load_context_default_params,
                 "load_model_file",
                 [](Llama &self,
                    const char *p_path,

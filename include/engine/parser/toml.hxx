@@ -9,15 +9,14 @@ namespace engine
         class Toml
         {
           public:
-            Toml();
-            ~Toml();
+            Toml() = default;
+            ~Toml() = default;
 
             void parse_file(const std::string &);
             void parse_buffer(const std::string_view &);
-            const toml::table &get_tbl() const;
+            toml::table tbl;
 
           private:
-            toml::table m_tbl;
         };
     } // namespace parser
 } // namespace engine
