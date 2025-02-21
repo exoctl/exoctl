@@ -34,7 +34,7 @@ namespace engine::server::bridge
                 m_server,
                 BASE_PLUGINS,
                 [&](const crow::request &req) -> crow::response {
-                    if (m_server.get_config().plugins.enable) {
+                    if (m_server.get_config().get<bool>("plugins.enable")) {
                         crow::json::wvalue x;
 
                         x["lua"]["state_memory"] = std::format(

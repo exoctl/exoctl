@@ -12,7 +12,8 @@ namespace engine::security::av::clamav::_
         m_config = p_config;
         m_log = p_log;
 
-        m_log.create_logger(m_config.logging.type, m_config.av_clamav.log.name);
+        m_log.create_logger(m_config.get<std::string>("logging.type"),
+                            m_config.get<std::string>("av.clamav._.log.name"));
 
         cl_set_clcb_msg(&Log::log);
     }
@@ -24,19 +25,27 @@ namespace engine::security::av::clamav::_
     {
         switch (severity) {
             case CL_MSG_ERROR:
-                m_log.get_logger(m_config.av_clamav.log.name)
+                m_log
+                    .get_logger(
+                        m_config.get<std::string>("av.clamav._.log.name"))
                     ->error("{}", p_msg);
                 break;
             case CL_MSG_WARN:
-                m_log.get_logger(m_config.av_clamav.log.name)
+                m_log
+                    .get_logger(
+                        m_config.get<std::string>("av.clamav._.log.name"))
                     ->warn("{}", p_msg);
                 break;
             case CL_MSG_INFO_VERBOSE:
-                m_log.get_logger(m_config.av_clamav.log.name)
+                m_log
+                    .get_logger(
+                        m_config.get<std::string>("av.clamav._.log.name"))
                     ->debug("{}", p_msg);
                 break;
             default:
-                m_log.get_logger(m_config.av_clamav.log.name)
+                m_log
+                    .get_logger(
+                        m_config.get<std::string>("av.clamav._.log.name"))
                     ->debug("{}", p_msg);
                 break;
         }

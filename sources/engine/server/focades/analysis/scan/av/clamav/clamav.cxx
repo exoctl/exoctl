@@ -26,7 +26,8 @@ namespace engine
                     {
                         m_clamav.load_rules([&]() {
                             m_clamav.set_db_rule_fd(
-                                m_config.av_clamav.database.default_path,
+                                m_config.get<std::string>(
+                                    "av.clamav.database.default_path"),
                                 CL_DB_STDOPT);
                         });
 

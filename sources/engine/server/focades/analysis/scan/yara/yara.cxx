@@ -26,7 +26,8 @@ namespace engine
                     const std::function<void(uint64_t)> &p_callback) const
                 {
                     m_yara.load_rules([&]() {
-                        m_yara.load_rules_folder(m_config.yara.rules.path);
+                        m_yara.load_rules_folder(
+                            m_config.get<std::string>("yara.rules.path"));
                     });
 
                     if (!IS_NULL(p_callback)) {

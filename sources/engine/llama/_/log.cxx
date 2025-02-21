@@ -9,7 +9,8 @@ namespace engine::llama::_
         m_config = p_config;
         m_log = p_log;
 
-        m_log.create_logger(m_config.logging.type, m_config.llama.log.name);
+        m_log.create_logger(m_config.get<std::string>("logging.type"),
+                            m_config.get<std::string>("llama._.log.name"));
 
         llama_log_set(&Log::log, this);
     }
@@ -19,7 +20,9 @@ namespace engine::llama::_
                   void *p_user_data)
     {
         auto *logger_instance = reinterpret_cast<Log *>(p_user_data);
-        if (logger_instance && p_level >= logger_instance->m_config.llama.log.level) {
+        if (logger_instance &&
+            p_level >=
+                logger_instance->m_config.get<int64_t>("llama._.log.level")) {
             switch (p_level) {
                 case GGML_LOG_LEVEL_CONT:
                 case GGML_LOG_LEVEL_NONE:
@@ -27,22 +30,22 @@ namespace engine::llama::_
 
                 case GGML_LOG_LEVEL_DEBUG:
                     logger_instance->m_log
-                        .get_logger(logger_instance->m_config.llama.log.name)
+                        .get_logger(logger_instance->m_config.get<std::string>("llama._.log.name"))
                         ->debug("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_INFO:
                     logger_instance->m_log
-                        .get_logger(logger_instance->m_config.llama.log.name)
+                        .get_logger(logger_instance->m_config.get<std::string>("llama._.log.name"))
                         ->info("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_WARN:
                     logger_instance->m_log
-                        .get_logger(logger_instance->m_config.llama.log.name)
+                        .get_logger(logger_instance->m_config.get<std::string>("llama._.log.name"))
                         ->warn("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_ERROR:
                     logger_instance->m_log
-                        .get_logger(logger_instance->m_config.llama.log.name)
+                        .get_logger(logger_instance->m_config.get<std::string>("llama._.log.name"))
                         ->error("{}", p_message);
                     break;
             }

@@ -58,7 +58,8 @@ namespace engine::logging
 
     void Logging::load()
     {
-        active_instance(m_config.logging.type, m_config.logging.name);
+        active_instance(m_config.get<std::string>("logging.type"),
+                        m_config.get<std::string>("logging.name"));
     }
 
     void Logging::active_instance(const std::string &p_type,
@@ -81,24 +82,24 @@ namespace engine::logging
         if (p_type == "daily") {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::daily_file_sink_mt>(
-                    m_config.logging.filepath,
-                    m_config.logging.daily_settings.hours,
-                    m_config.logging.daily_settings.minutes,
+                    m_config.get<std::string>("logging.filepath"),
+                    m_config.get<int64_t>("logging.daily.hours"),
+                    m_config.get<int64_t>("logging.daily.minutes"),
                     false,
-                    m_config.logging.daily_settings.max_size));
+                    m_config.get<int64_t>("logging.daily.max_size")));
         } else if (p_type == "rotation") {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-                    m_config.logging.filepath,
-                    m_config.logging.rotation_settings.max_size,
-                    m_config.logging.rotation_settings.max_files));
+                    m_config.get<std::string>("logging.filepath"),
+                    m_config.get<int64_t>("logging.rotation.max_size"),
+                    m_config.get<int64_t>("logging.rotation.max_files")));
         } else {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-                    m_config.logging.filepath, true));
+                    m_config.get<std::string>("logging.filepath"), true));
         }
 
-        if (m_config.logging.console) {
+        if (m_config.get<bool>("logging.console.output_enabled")) {
             if (std::none_of(sinks.begin(), sinks.end(), [](const auto &sink) {
                     return dynamic_cast<spdlog::sinks::stdout_color_sink_mt *>(
                                sink.get()) != nullptr;
@@ -113,10 +114,10 @@ namespace engine::logging
         spdlog::register_logger(logger);
 
         logger->flush_on(static_cast<spdlog::level::level_enum>(
-            m_config.logging.trace.interval));
-        logger->set_pattern(m_config.logging.pattern);
-        logger->set_level(
-            static_cast<spdlog::level::level_enum>(m_config.logging.level));
+            m_config.get<int64_t>("logging.trace_updates.interval")));
+        logger->set_pattern(m_config.get<std::string>("logging.pattern"));
+        logger->set_level(static_cast<spdlog::level::level_enum>(
+            m_config.get<int64_t>("logging.level")));
 
         return logger;
     }

@@ -20,21 +20,31 @@ namespace engine
             m_config = p_config;
             m_log = p_log;
 
-            if (!m_config.plugins.enable)
+            if (!m_config.get<bool>("plugins.enable"))
                 LOG(m_log, warn, "Plugins not enabled");
         }
 
         void Plugins::load_libraries()
         {
-            if (m_config.plugins.enable) {
+            if (m_config.get<bool>("plugins.enable")) {
+                const auto &libs_any = m_config.get<std::vector<std::any>>(
+                    "plugins.lua.standard.libraries");
+                std::vector<std::string> libraries(libs_any.size());
+                std::transform(libs_any.begin(),
+                               libs_any.end(),
+                               libraries.begin(),
+                               [](const std::any &val) -> std::string {
+                                   return std::any_cast<std::string>(val);
+                               });
+
                 LOG(m_log,
                     info,
-                    fmt::format(
-                        "Loading lua standard libraries : '{:s}'",
-                        fmt::join(m_config.plugins.lua.standard.libraries,
-                                  ", ")));
-                for (auto &name : m_config.plugins.lua.standard.libraries) {
-                    lua.state.open_libraries(lua.from_lib(name));
+                    fmt::format("Loading lua standard libraries: '{}'",
+                                fmt::join(libraries, ", ")));
+
+                for (const auto &name : libs_any) {
+                    lua.state.open_libraries(
+                        lua.from_lib(std::any_cast<std::string>(name)));
                 }
             }
         }
@@ -59,14 +69,15 @@ namespace engine
         void Plugins::load()
         {
             Plugins::load_libraries();
-            if (m_config.plugins.enable) {
-                Plugins::load_plugins_folder(m_config.plugins.path);
+            if (m_config.get<bool>("plugins.enable")) {
+                Plugins::load_plugins_folder(
+                    m_config.get<std::string>("plugins.path"));
             }
         }
 
         void Plugins::run()
         {
-            if (m_config.plugins.enable) {
+            if (m_config.get<bool>("plugins.enable")) {
                 LOG(m_log, info, "Launching plugins async...");
                 std::async(
                     std::launch::async, &Plugins::run_plugins_thread, this)
@@ -81,7 +92,7 @@ namespace engine
 
         void Plugins::load_plugins_folder(const std::string &p_path)
         {
-            if (m_config.plugins.enable) {
+            if (m_config.get<bool>("plugins.enable")) {
                 DIR *dir = opendir(p_path.c_str());
                 if (!dir)
                     throw plugins::exception::LoadPlugin(

@@ -15,34 +15,45 @@ namespace engine
                 crow::logger::setHandler(
                     this); // define global logger for Server
 
-                m_log.create_logger(m_config.logging.type,
-                                    m_config.server.log.name);
+                m_log.create_logger(
+                    m_config.get<std::string>("logging.type"),
+                    m_config.get<std::string>("server._.log.name"));
 
                 Log::active_level(static_cast<crow::LogLevel>(
-                    m_config.server.log.level));
+                    m_config.get<int64_t>("server._.log.level")));
             }
 
             void Log::log(std::string p_message, crow::LogLevel p_level)
             {
                 switch (p_level) {
                     case crow::LogLevel::Debug:
-                        m_log.get_logger(m_config.server.log.name)
+                        m_log
+                            .get_logger(
+                                m_config.get<std::string>("server._.log.name"))
                             ->debug("{}", p_message);
                         break;
                     case crow::LogLevel::Info:
-                        m_log.get_logger(m_config.server.log.name)
+                        m_log
+                            .get_logger(
+                                m_config.get<std::string>("server._.log.name"))
                             ->info("{}", p_message);
                         break;
                     case crow::LogLevel::Warning:
-                        m_log.get_logger(m_config.server.log.name)
+                        m_log
+                            .get_logger(
+                                m_config.get<std::string>("server._.log.name"))
                             ->warn("{}", p_message);
                         break;
                     case crow::LogLevel::Error:
-                        m_log.get_logger(m_config.server.log.name)
+                        m_log
+                            .get_logger(
+                                m_config.get<std::string>("server._.log.name"))
                             ->error("{}", p_message);
                         break;
                     case crow::LogLevel::Critical:
-                        m_log.get_logger(m_config.server.log.name)
+                        m_log
+                            .get_logger(
+                                m_config.get<std::string>("server._.log.name"))
                             ->critical("{}", p_message);
                         break;
                 }

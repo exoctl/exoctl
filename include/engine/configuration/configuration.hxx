@@ -26,43 +26,6 @@ namespace engine
             void setup(const std::string &);
             void load();
 
-#ifdef ENGINE_PRO
-            void register_plugins() override;
-            record::plugins::Plugins plugins;
-#endif
-            record::lief::Lief lief;
-            record::llama::Llama llama;
-            record::av::clamav::Clamav av_clamav;
-            record::Project project;
-            record::yara::Yara yara;
-            record::logging::Logging logging;
-            record::server::Server server;
-            record::decompiler::Decompiler decompiler;
-            /*
-             end sections
-            */
-          protected:
-            parser::Toml m_toml;
-
-          private:
-            std::string m_path;
-
-            void load_llama();
-            void load_av_clamav();
-            void load_project();
-            void load_sig();
-            void load_server();
-            void load_yara();
-            void load_logging();
-            void load_lief();
-            void load_decompiler();
-            void load_plugins();
-        };
-
-        struct DynConfig : public Configuration {
-          public:
-            void load();
-
             template <typename T> T get(const std::string &path) const
             {
                 std::istringstream path_stream(path);
@@ -96,10 +59,24 @@ namespace engine
                 }
                 throw std::runtime_error("Invalid path: " + path);
             }
-
+#ifdef ENGINE_PRO
+            void register_plugins() override;
+#endif
           private:
+            std::string m_path;
             std::unordered_map<std::string, std::any> dynamic_configs;
-        };
+            parser::Toml m_toml;
 
+            void load_llama();
+            void load_av_clamav();
+            void load_project();
+            void load_sig();
+            void load_server();
+            void load_yara();
+            void load_logging();
+            void load_lief();
+            void load_decompiler();
+            void load_plugins();
+        };
     } // namespace configuration
 } // namespace engine
