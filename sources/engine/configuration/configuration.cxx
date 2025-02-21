@@ -64,14 +64,6 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
-            plugins::Plugins::lua.state.new_usertype<sol::type>("Types",
-                                                     "number",
-                                                     sol::var(sol::type::number),
-                                                     "string",
-                                                     sol::var(sol::type::string),
-                                                     "boolean",
-                                                     sol::var(sol::type::boolean));
-
             plugins::Plugins::lua.state.new_usertype<configuration::DynConfig>(
                 "DynConfig",
                 "setup",
@@ -81,24 +73,46 @@ namespace engine
                 "load",
                 &DynConfig::load,
                 "get",
-                [](configuration::DynConfig &self,
-                   const std::string &path,
-                   sol::type type) -> sol::object {
+                sol::overload([](configuration::DynConfig &self,
+                                 const std::string &section,
+                                 const int type) -> sol::object {
+                    auto &lua = plugins::Plugins::lua.state;
                     switch (type) {
-                        case sol::type::number:
-                            return sol::make_object(plugins::Plugins::lua.state,
-                                                    self.get<int16_t>(path));
-                        case sol::type::string:
+                        case 1:
                             return sol::make_object(
-                                plugins::Plugins::lua.state,
-                                self.get<std::string>(path));
-                        case sol::type::boolean:
-                            return sol::make_object(plugins::Plugins::lua.state,
-                                                    self.get<bool>(path));
+                                lua, self.get<std::string>(section));
+                        case 2:
+                            return sol::make_object(lua,
+                                                    self.get<int64_t>(section));
+                        case 3:
+                            return sol::make_object(lua,
+                                                    self.get<bool>(section));
+                        case 4: {
+                            // Obtenha o vetor de std::any
+                            auto vec = self.get<std::vector<std::any>>(section);
+                            // Cria uma nova tabela Lua
+                            sol::table luaTable = lua.create_table();
+                            // Itera sobre cada elemento do vetor
+                            for (size_t i = 0; i < vec.size(); ++i) {
+                                const auto &elem = vec[i];
+                                if (elem.type() == typeid(std::string)) {
+                                    luaTable[i + 1] =
+                                        std::any_cast<std::string>(elem);
+                                } else if (elem.type() == typeid(int64_t)) {
+                                    luaTable[i + 1] =
+                                        std::any_cast<int64_t>(elem);
+                                } else if (elem.type() == typeid(bool)) {
+                                    luaTable[i + 1] = std::any_cast<bool>(elem);
+                                } else {
+                                    luaTable[i + 1] = sol::nil;
+                                }
+                            }
+                            return sol::make_object(lua, luaTable);
+                        }
                         default:
-                            throw std::runtime_error("Unsupported type");
+                            throw std::runtime_error("Tipo não suportado");
                     }
-                });
+                }));
         }
 #endif
 
@@ -115,7 +129,6 @@ namespace engine
                     std::unordered_map<std::string, std::any> &section_data) {
                     for (const auto &[key, value] : table) {
                         std::string key_str = std::string(key);
-                        fmt::print("{}\n", key_str);
                         if (value.is_string()) {
                             section_data[key_str] = value.as_string()->get();
                         } else if (value.is_integer()) {
