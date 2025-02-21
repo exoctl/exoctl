@@ -11,12 +11,12 @@ namespace engine
         void Bridge::setup(Server &p_server)
         {
             m_server = &p_server;
-            m_analysis = std::make_unique<bridge::Analysis>(*m_server);
-            m_data = std::make_unique<bridge::Data>(*m_server);
-            m_rev = std::make_unique<bridge::Rev>(*m_server);
-            m_parser = std::make_unique<bridge::Parser>(*m_server);
+            m_analysis = std::make_unique<bridge::endpoints::Analysis>(*m_server);
+            m_data = std::make_unique<bridge::endpoints::Data>(*m_server);
+            m_rev = std::make_unique<bridge::endpoints::Rev>(*m_server);
+            m_parser = std::make_unique<bridge::endpoints::Parser>(*m_server);
 #ifdef ENGINE_PRO
-            m_plugins = std::make_unique<bridge::Plugins>(*m_server);
+            m_plugins = std::make_unique<bridge::endpoints::Plugins>(*m_server);
 #endif
         }
 #ifdef ENGINE_PRO

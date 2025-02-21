@@ -38,13 +38,13 @@ namespace engine
             Server *m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
 
-            std::unique_ptr<bridge::Analysis> m_analysis;
+            std::unique_ptr<bridge::endpoints::Analysis> m_analysis;
 #ifdef ENGINE_PRO
-            std::unique_ptr<bridge::Plugins> m_plugins;
+            std::unique_ptr<bridge::endpoints::Plugins> m_plugins;
 #endif
-            std::unique_ptr<bridge::Parser> m_parser;
-            std::unique_ptr<bridge::Rev> m_rev;
-            std::unique_ptr<bridge::Data> m_data;
+            std::unique_ptr<bridge::endpoints::Parser> m_parser;
+            std::unique_ptr<bridge::endpoints::Rev> m_rev;
+            std::unique_ptr<bridge::endpoints::Data> m_data;
         };
     } // namespace server
 } // namespace engine

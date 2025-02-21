@@ -1,7 +1,7 @@
 #include <engine/server/bridge/endpoints/parser.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 
-namespace engine::server::bridge
+namespace engine::server::bridge::endpoints
 {
     Parser::Parser(Server &p_server) : m_server(p_server), m_map(BASE_PARSER)
     {
@@ -36,7 +36,8 @@ namespace engine::server::bridge
     void Parser::parser_pe()
     {
         m_map.add_route("/binary/lief/pe", [&]() {
-            m_socket_pe = std::make_unique<engine::server::gateway::WebSocket>();
+            m_socket_pe =
+                std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_pe->setup(
                 m_server,
                 BASE_PARSER "/binary/lief/pe",
@@ -77,7 +78,8 @@ namespace engine::server::bridge
     void Parser::parser_dex()
     {
         m_map.add_route("/binary/lief/dex", [&]() {
-            m_socket_dex = std::make_unique<engine::server::gateway::WebSocket>();
+            m_socket_dex =
+                std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_dex->setup(
                 m_server,
                 BASE_PARSER "/binary/lief/dex",
@@ -118,7 +120,8 @@ namespace engine::server::bridge
     void Parser::parser_elf()
     {
         m_map.add_route("/binary/lief/elf", [&]() {
-            m_socket_elf = std::make_unique<engine::server::gateway::WebSocket>();
+            m_socket_elf =
+                std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_elf->setup(
                 m_server,
                 BASE_PARSER "/binary/lief/elf",
@@ -159,7 +162,8 @@ namespace engine::server::bridge
     void Parser::parser_art()
     {
         m_map.add_route("/binary/lief/art", [&]() {
-            m_socket_art = std::make_unique<engine::server::gateway::WebSocket>();
+            m_socket_art =
+                std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_art->setup(
                 m_server,
                 BASE_PARSER "/binary/lief/art",
@@ -200,7 +204,8 @@ namespace engine::server::bridge
     void Parser::parser_macho()
     {
         m_map.add_route("/binary/lief/macho", [&]() {
-            m_socket_macho = std::make_unique<engine::server::gateway::WebSocket>();
+            m_socket_macho =
+                std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_macho->setup(
                 m_server,
                 BASE_PARSER "/binary/lief/macho",
@@ -239,4 +244,4 @@ namespace engine::server::bridge
         });
     }
 
-} // namespace engine::server::bridge
+} // namespace engine::server::bridge::endpoints

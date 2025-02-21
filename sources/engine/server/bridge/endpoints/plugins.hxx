@@ -10,7 +10,7 @@
 
 #define BASE_PLUGINS API_PREFIX "/plugins"
 
-namespace engine::server::bridge
+namespace engine::server::bridge::endpoints
 {
     class Plugins : public interface::IGateway
     {

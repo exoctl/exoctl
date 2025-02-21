@@ -4,7 +4,7 @@
 #include <engine/server/exception.hxx>
 #include <stdint.h>
 
-namespace engine::server::bridge
+namespace engine::server::bridge::endpoints
 {
     Analysis::Analysis(Server &p_crow) : m_server(p_crow), m_map(BASE_ANALYSIS)
     {

@@ -2,7 +2,7 @@
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 
-namespace engine::server::bridge
+namespace engine::server::bridge::endpoints
 {
     Rev::Rev(Server &p_server) : m_server(p_server), m_map(BASE_REV)
     {
@@ -137,4 +137,4 @@ namespace engine::server::bridge
                 });
         });
     }
-} // namespace engine::server::bridge
+} // namespace engine::server::bridge::endpoints

@@ -11,50 +11,41 @@
 
 #define BASE_PARSER API_PREFIX "/parser"
 
-namespace engine
+namespace engine::server::bridge::endpoints
 {
-    namespace server
+
+    class Parser : public interface::IGateway
     {
-        namespace bridge
-        {
-            class Parser : public interface::IGateway
-            {
-              public:
-                Parser(Server &);
-                ~Parser() = default;
+      public:
+        Parser(Server &);
+        ~Parser() = default;
 
-                void load() const override;
+        void load() const override;
 
-              private:
-                Server &m_server;
-                mutable engine::server::gateway::Map m_map;
+      private:
+        Server &m_server;
+        mutable engine::server::gateway::Map m_map;
 
-                std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;
-                std::unique_ptr<engine::server::gateway::WebSocket>
-                    m_socket_elf;
+        std::unique_ptr<focades::parser::binary::ELF> m_parser_elf;
+        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_elf;
 
-                std::unique_ptr<focades::parser::binary::PE> m_parser_pe;
-                std::unique_ptr<engine::server::gateway::WebSocket> m_socket_pe;
+        std::unique_ptr<focades::parser::binary::PE> m_parser_pe;
+        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_pe;
 
-                std::unique_ptr<focades::parser::binary::MACHO> m_parser_macho;
-                std::unique_ptr<engine::server::gateway::WebSocket>
-                    m_socket_macho;
+        std::unique_ptr<focades::parser::binary::MACHO> m_parser_macho;
+        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_macho;
 
-                std::unique_ptr<focades::parser::binary::DEX> m_parser_dex;
-                std::unique_ptr<engine::server::gateway::WebSocket>
-                    m_socket_dex;
+        std::unique_ptr<focades::parser::binary::DEX> m_parser_dex;
+        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_dex;
 
-                std::unique_ptr<focades::parser::binary::ART> m_parser_art;
-                std::unique_ptr<engine::server::gateway::WebSocket>
-                    m_socket_art;
+        std::unique_ptr<focades::parser::binary::ART> m_parser_art;
+        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_art;
 
-                void prepare();
-                void parser_elf();
-                void parser_pe();
-                void parser_dex();
-                void parser_art();
-                void parser_macho();
-            };
-        } // namespace bridge
-    } // namespace server
-} // namespace engine
+        void prepare();
+        void parser_elf();
+        void parser_pe();
+        void parser_dex();
+        void parser_art();
+        void parser_macho();
+    };
+} // namespace engine::server::bridge::endpoints

@@ -10,35 +10,29 @@
 
 #define BASE_DATA API_PREFIX "/data"
 
-namespace engine
+namespace engine::server::bridge::endpoints
 {
-    namespace server
-    {
-        namespace bridge
-        {
-            class Data : public interface::IGateway
+    class Data : public interface::IGateway
 #ifdef ENGINE_PRO
-                ,
-                         public interface::IPlugins
+        ,
+                 public interface::IPlugins
 #endif
-            {
-              public:
-                Data(Server &);
-                ~Data() = default;
+    {
+      public:
+        Data(Server &);
+        ~Data() = default;
 
-                void register_plugins() override;
-                void load() const override;
+        void register_plugins() override;
+        void load() const override;
 
-              private:
-                Server &m_server;
-                mutable engine::server::gateway::Map m_map;
+      private:
+        Server &m_server;
+        mutable engine::server::gateway::Map m_map;
 
-                std::unique_ptr<engine::server::gateway::Web> m_web_metadata;
-                std::unique_ptr<focades::data::Metadata> m_data_metadata;
+        std::unique_ptr<engine::server::gateway::Web> m_web_metadata;
+        std::unique_ptr<focades::data::Metadata> m_data_metadata;
 
-                void prepare();
-                void data_metadata();
-            };
-        } // namespace bridge
-    } // namespace server
-} // namespace engine
+        void prepare();
+        void data_metadata();
+    };
+} // namespace engine::server::bridge::endpoints

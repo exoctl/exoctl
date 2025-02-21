@@ -4,8 +4,9 @@
 #include <engine/server/bridge/endpoints/plugins.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 
-namespace engine::server::bridge
+namespace engine::server::bridge::endpoints
 {
+
     Plugins::Plugins(Server &p_server) : m_server(p_server), m_map(BASE_PLUGINS)
     {
         Plugins::prepare();
@@ -28,8 +29,7 @@ namespace engine::server::bridge
     void Plugins::plugins()
     {
         m_map.add_route(BASE_PLUGINS, [&]() {
-            m_web_plugins =
-                std::make_unique<engine::server::gateway::Web>();
+            m_web_plugins = std::make_unique<engine::server::gateway::Web>();
             m_web_plugins->setup(
                 m_server,
                 BASE_PLUGINS,
@@ -62,6 +62,6 @@ namespace engine::server::bridge
                 });
         });
     }
-} // namespace engine::server::bridge
+} // namespace engine::server::bridge::endpoints
 
 #endif

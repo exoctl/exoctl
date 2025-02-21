@@ -40,6 +40,8 @@ namespace engine
                 Server::setup,
                 "run_async",
                 Server::run_async,
+                "stop",
+                Server::stop,
                 "port",
                 sol::readonly(&Server::port),
                 "bindaddr",
