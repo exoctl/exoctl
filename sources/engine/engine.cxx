@@ -18,18 +18,18 @@ namespace engine
     void Engine::setup(configuration::Configuration &p_config,
                        logging::Logging &p_log)
     {
-        m_log = p_log;
+        m_logging = p_log;
         m_configuration = p_config;
 
 #ifdef ENGINE_PRO
-        m_plugins.setup(m_configuration, m_log);
+        m_plugins.setup(m_configuration, m_logging);
 #endif
-        m_clamav_log.setup(m_configuration, m_log);
-        m_llama_log.setup(m_configuration, m_log);
-        m_lief_log.setup(m_configuration, m_log);
-        m_server_log.setup(m_configuration, m_log);
+        m_clamav_log.setup(m_configuration, m_logging);
+        m_llama_log.setup(m_configuration, m_logging);
+        m_lief_log.setup(m_configuration, m_logging);
+        m_server_log.setup(m_configuration, m_logging);
 
-        m_server.setup(m_configuration, m_log);
+        m_server.setup(m_configuration, m_logging);
         m_server_bridge.setup(m_server);
     }
 
@@ -62,6 +62,9 @@ namespace engine
     void Engine::register_plugins()
     {
         plugins::Plugins::lua.state["_engine"] = this;
+        plugins::Plugins::lua.state["_logging"] = &m_logging;
+        plugins::Plugins::lua.state["_configuration"] = &m_configuration;
+        plugins::Plugins::lua.state["_server"] = &m_server;
 
         plugins::Plugins::lua.state.new_usertype<engine::Engine>(
             "Engine",
@@ -142,11 +145,11 @@ namespace engine
 #ifdef ENGINE_PRO
         m_plugins.run();
 #endif
-        m_server.run();
+        auto runner = m_server.run_async();
 
         TRY_END()
         CATCH(server::exception::Abort, {
-            LOG(m_log,
+            LOG(m_logging,
                 error,
                 "Critical Crow aborted. Engine stopping. Reason: {}",
                 e.what());
@@ -155,7 +158,7 @@ namespace engine
                                  std::string(e.what()));
         })
         CATCH(server::exception::ParcialAbort,
-              { LOG(m_log, error, "Non-critical occurred: {}", e.what()); })
+              { LOG(m_logging, error, "Non-critical occurred: {}", e.what()); })
 
         is_running = false;
     }

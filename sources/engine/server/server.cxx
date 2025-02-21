@@ -1,4 +1,7 @@
 #include <engine/server/exception.hxx>
+#include <engine/server/gateway/crow/crow.hxx>
+#include <engine/server/gateway/web/web.hxx>
+#include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
 
 namespace engine
@@ -26,9 +29,17 @@ namespace engine
 #ifdef ENGINE_PRO
         void Server::register_plugins()
         {
-            plugins::Plugins::lua.state["_server"] = this;
+            engine::server::gateway::Crow::plugins();
+            engine::server::gateway::Web::plugins();
+            // engine::server::gateway::WebSocket::plugins();
+
             plugins::Plugins::lua.state.new_usertype<Server>(
                 "Server",
+                sol::constructors<server::Server()>(),
+                "setup",
+                Server::setup,
+                "run_async",
+                Server::run_async,
                 "port",
                 sol::readonly(&Server::port),
                 "bindaddr",
@@ -38,9 +49,9 @@ namespace engine
         }
 #endif
 
-        void Server::run()
+        std::future<void> Server::run_async()
         {
-            m_app
+            return m_app
                 ->bindaddr(bindaddr)
 #if CROW_OPENSSL
                 .ssl_file(ssl_certificate_path)
@@ -48,7 +59,7 @@ namespace engine
                 .port(port)
                 .concurrency(concurrency)
                 .server_name(name)
-                .run();
+                .run_async();
         }
 
         Server &Server::operator=(const Server &p_server)

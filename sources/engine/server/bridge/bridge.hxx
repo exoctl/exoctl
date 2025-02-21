@@ -1,17 +1,17 @@
 #pragma once
 
 // clang-format off
-#include <engine/server/bridge/gateway/parser.hxx>
+#include <engine/server/bridge/endpoints/parser.hxx>
 // clang-format on
+#include <engine/server/bridge/endpoints/analysis.hxx>
+#include <engine/server/bridge/endpoints/data.hxx>
 #include <engine/server/bridge/entitys.hxx>
-#include <engine/server/bridge/gateway/analysis.hxx>
-#include <engine/server/bridge/gateway/data.hxx>
 
 #ifdef ENGINE_PRO
-  #include <engine/server/bridge/gateway/plugins.hxx>
+#include <engine/server/bridge/endpoints/plugins.hxx>
 #endif
 
-#include <engine/server/bridge/gateway/rev.hxx>
+#include <engine/server/bridge/endpoints/rev.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 #include <vector>

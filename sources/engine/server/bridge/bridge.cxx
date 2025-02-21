@@ -1,8 +1,6 @@
 #include <cstdint>
-#include <engine/disassembly/capstone/exception.hxx>
 #include <engine/parser/json.hxx>
 #include <engine/security/yara/exception.hxx>
-#include <engine/server/bridge/_/crow/crow.hxx>
 #include <engine/server/bridge/bridge.hxx>
 #include <engine/server/exception.hxx>
 
@@ -24,10 +22,6 @@ namespace engine
 #ifdef ENGINE_PRO
         void Bridge::register_plugins()
         {
-            engine::server::bridge::_::Crow::plugins();
-            engine::server::bridge::gateway::Web::plugins();
-            //engine::server::bridge::gateway::WebSocket::plugins();
-
             m_data->register_plugins();
             m_analysis->register_plugins();
         }

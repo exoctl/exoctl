@@ -49,7 +49,7 @@ namespace engine
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif
-            void run();
+            std::future<void> run_async();
             void stop();
         };
     } // namespace server

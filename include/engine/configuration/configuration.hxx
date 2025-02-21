@@ -1,7 +1,6 @@
 #pragma once
 
 #include <any>
-#include <engine/configuration/entitys.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/parser/toml.hxx>

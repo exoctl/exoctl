@@ -27,7 +27,7 @@ namespace engine
     {
       private:
         configuration::Configuration m_configuration;
-        logging::Logging m_log;
+        logging::Logging m_logging;
 
         plugins::Plugins m_plugins;
 

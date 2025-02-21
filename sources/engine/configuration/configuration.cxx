@@ -1,5 +1,4 @@
 #include <engine/configuration/configuration.hxx>
-#include <engine/configuration/entitys.hxx>
 #include <engine/configuration/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 
