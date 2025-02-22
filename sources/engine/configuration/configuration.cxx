@@ -25,16 +25,16 @@ namespace engine
                                  const int type) -> sol::object {
                     auto &lua = plugins::Plugins::lua.state;
                     switch (type) {
-                        case 1:
+                        case 0:
                             return sol::make_object(
                                 lua, self.get<std::string>(section));
-                        case 2:
+                        case 1:
                             return sol::make_object(lua,
                                                     self.get<int64_t>(section));
-                        case 3:
+                        case 2:
                             return sol::make_object(lua,
                                                     self.get<bool>(section));
-                        case 4: {
+                        case 3: {
                             auto vec = self.get<std::vector<std::any>>(section);
                             sol::table luaTable = lua.create_table();
                             for (size_t i = 0; i < vec.size(); ++i) {
@@ -54,7 +54,7 @@ namespace engine
                             return sol::make_object(lua, luaTable);
                         }
                         default:
-                            throw std::runtime_error("Tipo não suportado");
+                            throw std::runtime_error("Type not supported");
                     }
                 }));
         }
@@ -81,16 +81,16 @@ namespace engine
                                      const int type) -> sol::object {
                         auto &lua = plugins::Plugins::lua.state;
                         switch (type) {
-                            case 1:
+                            case 0:
                                 return sol::make_object(
                                     lua, self.get<std::string>(section));
-                            case 2:
+                            case 1:
                                 return sol::make_object(
                                     lua, self.get<int64_t>(section));
-                            case 3:
+                            case 2:
                                 return sol::make_object(
                                     lua, self.get<bool>(section));
-                            case 4: {
+                            case 3: {
                                 auto vec =
                                     self.get<std::vector<std::any>>(section);
                                 sol::table luaTable = lua.create_table();

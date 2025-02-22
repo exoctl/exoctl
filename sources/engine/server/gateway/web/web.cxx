@@ -72,7 +72,7 @@ namespace engine::server::gateway
                 Web *instance = new Web();
                 instance->setup(
                     server,
-                    "/plugins" + url,
+                    url,
                     [callback](const crow::request &req) -> crow::response {
                         crow::response response(200);
 
@@ -91,4 +91,4 @@ namespace engine::server::gateway
                 return instance;
             }));
     }
-} // namespace engine::server::bridge::gateway
+} // namespace engine::server::gateway
