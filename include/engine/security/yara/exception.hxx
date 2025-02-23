@@ -31,6 +31,16 @@ namespace engine
                     const char *what() const noexcept override;
                 };
 
+                class Unload : public interface::IException
+                {
+                  private:
+                    const std::string m_error_message;
+
+                  public:
+                    explicit Unload(const std::string &);
+                    const char *what() const noexcept override;
+                };
+
                 class Initialize : public interface::IException
                 {
                   private:

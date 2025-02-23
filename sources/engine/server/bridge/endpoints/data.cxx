@@ -8,13 +8,13 @@ namespace engine::server::bridge::endpoints
 
         // add new routes
         Data::data_metadata();
-    } // namespace engine::server::bridge::endpoints
-
+    }
+#ifdef ENGINE_PRO
     void Data::register_plugins()
     {
         m_data_metadata->register_plugins();
     }
-
+#endif
     void Data::data_metadata()
     {
         m_map.add_route("/metadata", [&]() {
@@ -42,7 +42,7 @@ namespace engine::server::bridge::endpoints
 
     void Data::prepare()
     {
-        LOG(m_server.get_log(), info, "Preparing gateway data routes ...");
+        m_server.log->info("Preparing gateway data routes ...");
         m_data_metadata = std::make_unique<focades::data::Metadata>();
     }
 

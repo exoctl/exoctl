@@ -21,7 +21,7 @@ namespace engine::server::bridge::endpoints
     {
       public:
         Analysis(Server &);
-        ~Analysis();
+        ~Analysis() = default;
 
         void load() const override;
         void register_plugins() override;

@@ -21,8 +21,7 @@ namespace engine
                     "yr_initialize() error initialize yara");
             }
 
-            const int yr_compiler = yr_compiler_create(&m_yara_compiler);
-
+            const int yr_compiler = Yara::load_compiler();
             if (yr_compiler != ERROR_SUCCESS &&
                 yr_compiler == ERROR_INSUFFICIENT_MEMORY) {
                 throw yara::exception::Initialize(
@@ -30,15 +29,19 @@ namespace engine
             }
         }
 
-        Yara::~Yara()
+        const int Yara::load_compiler()
         {
-            if (yr_finalize() != ERROR_SUCCESS) {
-                yara::exception::Finalize("yr_finalize() error finalize yara");
-            }
+            return yr_compiler_create(&m_yara_compiler);
+        }
 
+        void Yara::unload_compiler()
+        {
             if (!IS_NULL(m_yara_compiler))
                 yr_compiler_destroy(m_yara_compiler);
+        }
 
+        void Yara::unload_stream_rules()
+        {
             if (!IS_NULL(m_yara_rules)) {
                 if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
                     yara::exception::Finalize(
@@ -47,17 +50,34 @@ namespace engine
             }
         }
 
+        const int Yara::load_stream_rules(YR_STREAM *p_stream)
+        {
+            return yr_rules_load_stream(p_stream, &m_yara_rules);
+        }
+
+        const int Yara::save_stream_rules(YR_STREAM *p_stream)
+        {
+            return yr_rules_save_stream(m_yara_rules, p_stream);
+        }
+
+        Yara::~Yara()
+        {
+            if (yr_finalize() != ERROR_SUCCESS) {
+                yara::exception::Finalize("yr_finalize() error finalize yara");
+            }
+
+            Yara::unload_compiler();
+            Yara::unload_stream_rules();
+        }
+
 #ifdef ENGINE_PRO
         void Yara::_plugins()
         {
             plugins::Plugins::lua.state.new_enum<yara::type::Scan>(
                 "Scan",
-                {{"nomatch",
-                 yara::type::Scan::nomatch},
-                 {"match",
-                 yara::type::Scan::match},
-                 {"none",
-                 yara::type::Scan::none}});
+                {{"nomatch", yara::type::Scan::nomatch},
+                 {"match", yara::type::Scan::match},
+                 {"none", yara::type::Scan::none}});
 
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",

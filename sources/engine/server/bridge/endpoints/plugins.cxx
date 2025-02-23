@@ -23,7 +23,7 @@ namespace engine::server::bridge::endpoints
 
     void Plugins::prepare()
     {
-        LOG(m_server.get_log(), info, "Preparing gateway plugins routes ...");
+        m_server.log->info( "Preparing gateway plugins routes ...");
     }
 
     void Plugins::plugins()
@@ -34,7 +34,7 @@ namespace engine::server::bridge::endpoints
                 m_server,
                 BASE_PLUGINS,
                 [&](const crow::request &req) -> crow::response {
-                    if (m_server.get_config().get<bool>("plugins.enable")) {
+                    if (m_server.config->get<bool>("plugins.enable")) {
                         crow::json::wvalue x;
 
                         x["lua"]["state_memory"] = std::format(

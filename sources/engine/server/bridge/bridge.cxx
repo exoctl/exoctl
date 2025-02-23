@@ -11,7 +11,8 @@ namespace engine
         void Bridge::setup(Server &p_server)
         {
             m_server = &p_server;
-            m_analysis = std::make_unique<bridge::endpoints::Analysis>(*m_server);
+            m_analysis =
+                std::make_unique<bridge::endpoints::Analysis>(*m_server);
             m_data = std::make_unique<bridge::endpoints::Data>(*m_server);
             m_rev = std::make_unique<bridge::endpoints::Rev>(*m_server);
             m_parser = std::make_unique<bridge::endpoints::Parser>(*m_server);
@@ -28,7 +29,7 @@ namespace engine
 #endif
         void Bridge::load()
         {
-            LOG(m_server->get_log(), info, "Loading Gateways ... ");
+            m_server->log->info("Loading Gateways ... ");
 
             TRY_BEGIN()
 
@@ -42,15 +43,15 @@ namespace engine
 
             TRY_END()
             CATCH(std::bad_alloc, {
-                LOG(m_server->get_log(), error, "{}", e.what());
+                m_server->log->error("{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::runtime_error, {
-                LOG(m_server->get_log(), error, "{}", e.what());
+                m_server->log->error("{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::exception, {
-                LOG(m_server->get_log(), warn, "{}", e.what());
+                m_server->log->warn("{}", e.what());
                 throw exception::ParcialAbort(e.what());
             })
         }

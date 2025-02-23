@@ -14,6 +14,15 @@ namespace engine
             {
                 return m_error_message.c_str();
             }
+
+            Get::Get(const std::string &p_message)
+                : m_error_message(p_message)
+            {
+            }
+            const char *Get::what() const noexcept
+            {
+                return m_error_message.c_str();
+            }
         } // namespace exception
     } // namespace configuration
 } // namespace engine

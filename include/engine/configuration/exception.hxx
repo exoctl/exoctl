@@ -16,6 +16,16 @@ namespace engine
                 explicit Load(const std::string &);
                 const char *what() const noexcept override;
             };
+
+            class Get : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
+
+              public:
+                explicit Get(const std::string &);
+                const char *what() const noexcept override;
+            };
         } // namespace exception
     } // namespace configuration
 } // namespace engine

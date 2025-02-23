@@ -21,7 +21,7 @@ namespace engine::server::bridge::endpoints
 
     void Rev::prepare()
     {
-        LOG(m_server.get_log(), info, "Preparing gateway rev routes ...");
+        m_server.log->info( "Preparing gateway rev routes ...");
 
         m_capstone_x64_little =
             std::make_unique<focades::rev::disassembly::Capstone>(

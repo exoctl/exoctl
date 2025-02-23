@@ -5,6 +5,7 @@
 #include <engine/exception.hxx>
 #include <engine/llama/llama.hxx>
 #include <engine/magic/magic.hxx>
+#include <engine/parser/json.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/server/exception.hxx>
 #include <thread>
@@ -85,6 +86,7 @@ namespace engine
         crypto::Sha::plugins();
         security::Yara::plugins();
         magic::Magic::plugins();
+        parser::Json::plugins();
 
         // plugins
         m_server.register_plugins();
@@ -143,9 +145,9 @@ namespace engine
         }
 
 #ifdef ENGINE_PRO
-        m_plugins.run();
+        auto runner_plugins = m_plugins.run_async();
 #endif
-        auto runner = m_server.run_async();
+        auto runner_server = m_server.run_async();
 
         TRY_END()
         CATCH(server::exception::Abort, {

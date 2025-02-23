@@ -1,4 +1,5 @@
 #include <engine/parser/json.hxx>
+#include <engine/plugins/plugins.hxx>
 
 namespace engine
 {
@@ -14,10 +15,34 @@ namespace engine
             m_document.CopyFrom(other.m_document, m_allocator);
         }
 
-        Json::~Json()
+#ifdef ENGINE_PRO
+        void Json::_plugins()
         {
+            plugins::Plugins::lua.state.new_usertype<parser::Json>(
+                "Json",
+                sol::constructors<Json(), Json(const parser::Json &)>(),
+                "from_string",
+                &Json::from_string,
+                "to_string",
+                &Json::to_string,
+                "add_member_string",
+                Json::add_member_string,
+                "add_member_uint16",
+                Json::add_member_uint16,
+                "add_member_int",
+                Json::add_member_int,
+                "add_member_uint64",
+                Json::add_member_uint64,
+                "add_member_vector",
+                Json::add_member_vector,
+                "add_member_json",
+                Json::add_member_json,
+                "add_member_bool",
+                Json::add_member_bool,
+                "add_member_double",
+                Json::add_member_double);
         }
-
+#endif
         void Json::from_string(const std::string &json_str)
         {
             m_document.Parse(json_str.c_str());

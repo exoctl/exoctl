@@ -4,6 +4,7 @@
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/parser/toml.hxx>
+#include <engine/configuration/exception.hxx>
 #include <unordered_map>
 
 namespace engine
@@ -35,16 +36,16 @@ namespace engine
                 while (std::getline(path_stream, section, '.')) {
                     auto it = current_section->find(section);
                     if (it == current_section->end()) {
-                        throw std::runtime_error("Section or key not found: " +
-                                                 section);
+                        throw exception::Get("Section or key not found: " +
+                                             section);
                     }
 
                     if (path_stream.eof()) {
                         try {
                             return std::any_cast<T>(it->second);
                         } catch (const std::bad_any_cast &) {
-                            throw std::runtime_error("Type mismatch for key: " +
-                                                     section);
+                            throw exception::Get("Type mismatch for key: " +
+                                                 section);
                         }
                     }
 
@@ -53,10 +54,10 @@ namespace engine
                             const std::unordered_map<std::string, std::any> &>(
                             it->second);
                     } catch (const std::bad_any_cast &) {
-                        throw std::runtime_error("Invalid path: " + path);
+                        throw exception::Get("Invalid path: " + path);
                     }
                 }
-                throw std::runtime_error("Invalid path: " + path);
+                throw exception::Get("Invalid path: " + path);
             }
 #ifdef ENGINE_PRO
             void register_plugins() override;
@@ -65,17 +66,6 @@ namespace engine
             std::string m_path;
             std::unordered_map<std::string, std::any> dynamic_configs;
             parser::Toml m_toml;
-
-            void load_llama();
-            void load_av_clamav();
-            void load_project();
-            void load_sig();
-            void load_server();
-            void load_yara();
-            void load_logging();
-            void load_lief();
-            void load_decompiler();
-            void load_plugins();
         };
     } // namespace configuration
 } // namespace engine

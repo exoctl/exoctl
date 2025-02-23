@@ -9,7 +9,7 @@ namespace engine
         void Configuration::bind_to_lua(sol::state_view &p_lua)
         {
             plugins::Plugins::lua.state.new_enum<toml::node_type>(
-                "node_type",
+                "NodeType",
                 {{"array", toml::node_type::array},
                  {"string", toml::node_type::string},
                  {"integer", toml::node_type::integer},

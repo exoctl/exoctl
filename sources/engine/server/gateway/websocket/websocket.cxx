@@ -22,10 +22,7 @@ namespace engine::server::gateway
         m_on_open = on_open;
         m_on_close = on_close;
 
-        LOG(m_server->get_log(),
-            info,
-            "Creating WebSocket route for URL: '{}'",
-            m_url);
+        m_server->log->info("Creating WebSocket route for URL: '{}'", m_url);
 
         m_server->get()
             .route_dynamic(m_url)
@@ -77,11 +74,8 @@ namespace engine::server::gateway
         std::lock_guard<std::mutex> _(m_mtx);
         m_context.erase(p_conn);
 
-        LOG(m_server->get_log(),
-            warn,
-            "Connection {} closed: reason = '{}'",
-            m_url,
-            p_reason);
+        m_server->log->warn(
+            "Connection {} closed: reason = '{}'", m_url, p_reason);
     }
 
     void WebSocket::def_open_connection(crow::websocket::connection *p_conn)
@@ -91,8 +85,7 @@ namespace engine::server::gateway
         m_context.broadcast_text(
             p_conn, websocket::responses::Connected::to_json().to_string());
 
-        LOG(m_server->get_log(),
-            info,
+        m_server->log->info(
             "Connection opened {} from IP: '{}',  SubProtocol : "
             "'{}'",
             m_url,
@@ -114,8 +107,7 @@ namespace engine::server::gateway
     {
         std::lock_guard<std::mutex> _(m_mtx);
 
-        LOG(m_server->get_log(),
-            debug,
+        m_server->log->debug(
             "Message received on route '{}': data size = {} from "
             "IP: "
             "{}",
@@ -129,11 +121,7 @@ namespace engine::server::gateway
     {
         std::lock_guard<std::mutex> _(m_mtx);
 
-        LOG(m_server->get_log(),
-            error,
-            "Error on route '{}': error = {}",
-            m_url,
-            p_error);
+        m_server->log->error("Error on route '{}': error = {}", m_url, p_error);
     }
 
     // void WebSocket::_plugins()
@@ -194,4 +182,4 @@ namespace engine::server::gateway
     //             return instance;
     //         }));
     // }
-} // namespace engine::server::bridge::gateway
+} // namespace engine::server::gateway

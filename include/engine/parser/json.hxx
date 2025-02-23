@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/interfaces/iplugins.hxx>
 #include <rapidjson/allocators.h>
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -12,13 +13,16 @@ namespace engine
 {
     namespace parser
     {
-        class Json
+        class Json : public interface::ISubPlugins<Json>
         {
           public:
             Json();
             Json(const parser::Json &);
-            ~Json();
+            ~Json() = default;
 
+#ifdef ENGINE_PRO
+            void _plugins() override;
+#endif
             [[nodiscard]] std::string to_string() const;
             void add_member_string(const std::string &, const std::string &);
             void add_member_int(const std::string &, const int);

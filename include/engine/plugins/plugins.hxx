@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <functional>
 #include <memory>
+#include <future>
 
 namespace engine
 {
@@ -25,7 +26,7 @@ namespace engine
             void load_plugins_folder(const std::string &);
 
             void load();
-            void run();
+            std::future<void> run_async();
 
             static lua::Lua lua;
 

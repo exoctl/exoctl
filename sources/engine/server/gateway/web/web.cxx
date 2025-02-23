@@ -11,11 +11,9 @@ namespace engine::server::gateway
         m_url = p_url;
         m_on_request = on_request;
 
-        LOG(m_server->get_log(),
-            info,
-            "Creating HTTP route for URL: '{}' with {} methods",
-            m_url,
-            methods.size());
+        m_server->log->info("Creating HTTP route for URL: '{}' with {} methods",
+                            m_url,
+                            methods.size());
 
         auto &route = m_server->get().route_dynamic(m_url);
 

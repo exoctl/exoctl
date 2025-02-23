@@ -23,13 +23,12 @@ namespace engine::server::bridge::endpoints
 
     void Parser::prepare()
     {
-        LOG(m_server.get_log(), info, "Preparing gateway parser routes ...");
+        m_server.log->info( "Preparing gateway parser routes ...");
 
         m_parser_elf = std::make_unique<focades::parser::binary::ELF>();
         m_parser_macho = std::make_unique<focades::parser::binary::MACHO>();
         m_parser_pe = std::make_unique<focades::parser::binary::PE>();
         m_parser_dex = std::make_unique<focades::parser::binary::DEX>();
-        // Supondo que m_parser_art seja inicializado de forma similar
         m_parser_art = std::make_unique<focades::parser::binary::ART>();
     }
 

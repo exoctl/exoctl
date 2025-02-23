@@ -8,7 +8,6 @@ namespace engine
         {
             namespace exception
             {
-
                 CompilerRules::CompilerRules(const std::string &p_message)
                     : m_error_message(p_message)
                 {
@@ -41,6 +40,15 @@ namespace engine
                 {
                 }
                 const char *Finalize::what() const noexcept
+                {
+                    return m_error_message.c_str();
+                }
+
+                Unload::Unload(const std::string &p_message)
+                    : m_error_message(p_message)
+                {
+                }
+                const char *Unload::what() const noexcept
                 {
                     return m_error_message.c_str();
                 }

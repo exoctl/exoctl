@@ -21,8 +21,9 @@ namespace engine::server::bridge::endpoints
       public:
         Data(Server &);
         ~Data() = default;
-
+#ifdef ENGINE_PRO
         void register_plugins() override;
+#endif
         void load() const override;
 
       private:

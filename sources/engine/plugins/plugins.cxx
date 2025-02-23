@@ -75,14 +75,15 @@ namespace engine
             }
         }
 
-        void Plugins::run()
+        std::future<void> Plugins::run_async()
         {
-            if (m_config.get<bool>("plugins.enable")) {
-                LOG(m_log, info, "Launching plugins async...");
-                std::async(
-                    std::launch::async, &Plugins::run_plugins_thread, this)
-                    .get();
+            if (!m_config.get<bool>("plugins.enable")) {
+                return std::future<void>();
             }
+
+            LOG(m_log, info, "Launching plugins async...");
+            return std::async(
+                std::launch::async, &Plugins::run_plugins_thread, this);
         }
 
         void Plugins::run_plugins_thread()

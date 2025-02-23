@@ -15,15 +15,15 @@ namespace engine
         void Server::setup(configuration::Configuration &p_config,
                            logging::Logging &p_log)
         {
-            m_config = &p_config;
-            m_log = &p_log;
+            config = &p_config;
+            log = &p_log;
 
-            name.assign(m_config->get<std::string>("server.name"));
-            bindaddr.assign(m_config->get<std::string>("server.bindaddr"));
+            name.assign(config->get<std::string>("server.name"));
+            bindaddr.assign(config->get<std::string>("server.bindaddr"));
             ssl_certificate_path.assign(
-                m_config->get<std::string>("server.ssl_certificate_path"));
-            concurrency = m_config->get<int64_t>("server.threads");
-            port = m_config->get<int64_t>("server.port");
+                config->get<std::string>("server.ssl_certificate_path"));
+            concurrency = config->get<int64_t>("server.threads");
+            port = config->get<int64_t>("server.port");
         }
 
 #ifdef ENGINE_PRO
@@ -67,16 +67,16 @@ namespace engine
         Server &Server::operator=(const Server &p_server)
         {
             if (this != &p_server) {
-                m_config = p_server.m_config;
-                m_log = p_server.m_log;
+                config = p_server.config;
+                log = p_server.log;
                 m_app = std::make_shared<App>(*p_server.m_app);
 
-                name.assign(m_config->get<std::string>("server.name"));
-                bindaddr.assign(m_config->get<std::string>("server.bindaddr"));
+                name.assign(config->get<std::string>("server.name"));
+                bindaddr.assign(config->get<std::string>("server.bindaddr"));
                 ssl_certificate_path.assign(
-                    m_config->get<std::string>("server.ssl_certificate_path"));
-                concurrency = m_config->get<int64_t>("server.threads");
-                port = m_config->get<int64_t>("server.port");
+                    config->get<std::string>("server.ssl_certificate_path"));
+                concurrency = config->get<int64_t>("server.threads");
+                port = config->get<int64_t>("server.port");
             }
             return *this;
         }
@@ -86,19 +86,10 @@ namespace engine
             m_app->stop();
         }
 
-        configuration::Configuration &Server::get_config()
-        {
-            return *m_config;
-        }
-
         App &Server::get()
         {
             return *m_app;
         }
 
-        logging::Logging &Server::get_log()
-        {
-            return *m_log;
-        }
     } // namespace server
 } // namespace engine

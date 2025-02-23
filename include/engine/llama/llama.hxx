@@ -9,10 +9,6 @@ namespace engine
 {
     namespace llama
     {
-        /*
-This class is a warraper for llama, nothing more, I can use some native C llama
-functions for C++ in the plugins and modify the name to fit the class
-         */
         class Llama : public interface::IAi
 #ifdef ENGINE_PRO
             ,
@@ -27,11 +23,12 @@ functions for C++ in the plugins and modify the name to fit the class
             const bool load_context(const struct llama_context_params);
             void load_sampler(const struct llama_sampler_chain_params);
             void sampler_add(struct llama_sampler *);
-            // const std::string prompt(const std::string &,
-            //                          float = 0.8f,
-            //                          float = 0.0f);
+// const std::string prompt(const std::string &,
+//                          float = 0.8f,
+//                          float = 0.0f);
+#ifdef ENGINE_PRO
             void _plugins() override;
-
+#endif
             /*
               wrappers
             */
