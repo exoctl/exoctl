@@ -46,17 +46,18 @@ namespace engine
                 }
             }
         }
+
 #ifdef ENGINE_PRO
         void Yara::_plugins()
         {
-            plugins::Plugins::lua.state.new_usertype<yara::type::Scan>(
+            plugins::Plugins::lua.state.new_enum<yara::type::Scan>(
                 "Scan",
-                "nomatch",
-                sol::var(yara::type::Scan::nomatch),
-                "match",
-                sol::var(yara::type::Scan::match),
-                "none",
-                sol::var(yara::type::Scan::none));
+                {{"nomatch",
+                 yara::type::Scan::nomatch},
+                 {"match",
+                 yara::type::Scan::match},
+                 {"none",
+                 yara::type::Scan::none}});
 
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",

@@ -8,6 +8,14 @@ namespace engine
     {
         void Configuration::bind_to_lua(sol::state_view &p_lua)
         {
+            plugins::Plugins::lua.state.new_enum<toml::node_type>(
+                "node_type",
+                {{"array", toml::node_type::array},
+                 {"string", toml::node_type::string},
+                 {"integer", toml::node_type::integer},
+                 {"floating_point", toml::node_type::floating_point},
+                 {"boolean", toml::node_type::boolean}});
+
             p_lua.new_usertype<configuration::Configuration>(
                 "Configuration",
                 sol::constructors<configuration::Configuration()>(),
@@ -68,6 +76,14 @@ namespace engine
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
+            plugins::Plugins::lua.state.new_enum<toml::node_type>(
+                "node_type",
+                {{"array", toml::node_type::array},
+                 {"string", toml::node_type::string},
+                 {"integer", toml::node_type::integer},
+                 {"floating_point", toml::node_type::floating_point},
+                 {"boolean", toml::node_type::boolean}});
+
             plugins::Plugins::lua.state
                 .new_usertype<configuration::Configuration>(
                     "Configuration",
@@ -78,19 +94,19 @@ namespace engine
                     "get",
                     sol::overload([](configuration::Configuration &self,
                                      const std::string &section,
-                                     const int type) -> sol::object {
+                                     toml::node_type type) -> sol::object {
                         auto &lua = plugins::Plugins::lua.state;
                         switch (type) {
-                            case 0:
+                            case toml::node_type::string:
                                 return sol::make_object(
                                     lua, self.get<std::string>(section));
-                            case 1:
+                            case toml::node_type::integer:
                                 return sol::make_object(
                                     lua, self.get<int64_t>(section));
-                            case 2:
+                            case toml::node_type::boolean:
                                 return sol::make_object(
                                     lua, self.get<bool>(section));
-                            case 3: {
+                            case toml::node_type::array: {
                                 auto vec =
                                     self.get<std::vector<std::any>>(section);
                                 sol::table luaTable = lua.create_table();
@@ -116,6 +132,7 @@ namespace engine
                         }
                     }));
         }
+
 #endif
 
         void Configuration::load()
