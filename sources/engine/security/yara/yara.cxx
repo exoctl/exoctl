@@ -44,20 +44,19 @@ namespace engine
         {
             if (!IS_NULL(m_yara_rules)) {
                 if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
-                    yara::exception::Finalize(
-                        "yr_rules_destroy() failed destroy rules");
+                    /* nothing */
                 }
             }
         }
 
-        const int Yara::load_stream_rules(YR_STREAM *p_stream)
+        const int Yara::load_stream_rules(YR_STREAM &p_stream)
         {
-            return yr_rules_load_stream(p_stream, &m_yara_rules);
+            return yr_rules_load_stream(&p_stream, &m_yara_rules);
         }
 
-        const int Yara::save_stream_rules(YR_STREAM *p_stream)
+        const int Yara::save_stream_rules(YR_STREAM &p_stream)
         {
-            return yr_rules_save_stream(m_yara_rules, p_stream);
+            return yr_rules_save_stream(m_yara_rules, &p_stream);
         }
 
         Yara::~Yara()
@@ -79,6 +78,15 @@ namespace engine
                  {"match", yara::type::Scan::match},
                  {"none", yara::type::Scan::none}});
 
+            plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
+                "YR_STREAM",
+                "user_data",
+                &YR_STREAM::user_data,
+                "read",
+                &YR_STREAM::read,
+                "write",
+                &YR_STREAM::write);
+                
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",
                 "match_status",
@@ -91,20 +99,30 @@ namespace engine
             plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
                 "Yara",
                 sol::constructors<engine::security::Yara()>(),
+                "unload_stream_rules",
+                Yara::unload_stream_rules,
+                "load_stream_rules",
+                Yara::load_stream_rules,
+                "save_stream_rules",
+                Yara::save_stream_rules,
+                "load_compiler",
+                Yara::load_compiler,
+                "unload_compiler",
+                Yara::unload_compiler,
                 "load_rules_folder",
-                &engine::security::Yara::load_rules_folder,
+                &Yara::load_rules_folder,
                 "load_rules",
-                &engine::security::Yara::load_rules,
+                &Yara::load_rules,
                 "scan_bytes",
-                &engine::security::Yara::scan_bytes,
+                &Yara::scan_bytes,
                 "scan_fast_bytes",
-                engine::security::Yara::scan_fast_bytes,
+                Yara::scan_fast_bytes,
                 "rules_loaded_count",
-                &engine::security::Yara::rules_loaded_count,
+                &Yara::rules_loaded_count,
                 "load_rule_file",
-                &engine::security::Yara::load_rule_file,
+                &Yara::load_rule_file,
                 "load_rule_buff",
-                &engine::security::Yara::load_rule_buff);
+                &Yara::load_rule_buff);
         }
 #endif
         const int Yara::load_rule_file(const std::string &p_path,

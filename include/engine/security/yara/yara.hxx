@@ -49,9 +49,9 @@ namespace engine
                             int) const;
 
             void unload_stream_rules();
-            const int load_stream_rules(YR_STREAM *);
-            const int save_stream_rules(YR_STREAM *);
-            const int load_compiler();
+            [[nodiscard]] const int load_stream_rules(YR_STREAM &);
+            [[nodiscard]] const int save_stream_rules(YR_STREAM &);
+            [[nodiscard]] const int load_compiler();
             void unload_compiler();
 
             void load_rules(const std::function<void()> &) const;
