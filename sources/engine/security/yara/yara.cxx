@@ -36,8 +36,10 @@ namespace engine
 
         void Yara::unload_compiler()
         {
-            if (!IS_NULL(m_yara_compiler))
+            if (!IS_NULL(m_yara_compiler)) {
                 yr_compiler_destroy(m_yara_compiler);
+                m_yara_compiler = nullptr;
+            }
         }
 
         void Yara::unload_stream_rules()
@@ -46,6 +48,7 @@ namespace engine
                 if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
                     /* nothing */
                 }
+                m_yara_rules = nullptr;
             }
         }
 
@@ -72,21 +75,44 @@ namespace engine
 #ifdef ENGINE_PRO
         void Yara::_plugins()
         {
-            plugins::Plugins::lua.state.new_enum<yara::type::Scan>(
-                "Scan",
-                {{"nomatch", yara::type::Scan::nomatch},
-                 {"match", yara::type::Scan::match},
-                 {"none", yara::type::Scan::none}});
+            {
+                plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
+                    "YR_STREAM",
+                    sol::constructors<YR_STREAM()>(),
+                    "user_data",
+                    &YR_STREAM::user_data,
+                    "read",
+                    [](YR_STREAM &stream, sol::function func) {
+                        static sol::function lua_read_func = func;
+                        stream.read = [](void *ptr,
+                                         size_t size,
+                                         size_t count,
+                                         void *user_data) -> size_t {
+                            if (!lua_read_func.valid())
+                                return 0;
+                            return lua_read_func(ptr, size, count, user_data);
+                        };
+                    },
+                    "write",
+                    [](YR_STREAM &stream, sol::function func) {
+                        static sol::function lua_write_func = func;
+                        stream.write = [](const void *ptr,
+                                          size_t size,
+                                          size_t count,
+                                          void *user_data) -> size_t {
+                            if (!lua_write_func.valid())
+                                return 0;
 
-            plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
-                "YR_STREAM",
-                "user_data",
-                &YR_STREAM::user_data,
-                "read",
-                &YR_STREAM::read,
-                "write",
-                &YR_STREAM::write);
-                
+                            return lua_write_func(
+                                std::string(static_cast<const char *>(ptr),
+                                            size * count),
+                                size,
+                                count,
+                                user_data);
+                        };
+                    });
+            }
+
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",
                 "match_status",
