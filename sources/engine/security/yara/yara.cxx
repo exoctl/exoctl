@@ -79,27 +79,29 @@ namespace engine
                 plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
                     "YR_STREAM",
                     sol::constructors<YR_STREAM()>(),
-                    "user_data",
-                    &YR_STREAM::user_data,
                     "read",
                     [](YR_STREAM &stream, sol::function func) {
                         static sol::function lua_read_func = func;
                         stream.read = [](void *ptr,
                                          size_t size,
                                          size_t count,
-                                         void *user_data) -> size_t {
+                                         void *) -> size_t {
                             if (!lua_read_func.valid())
                                 return 0;
-                            return lua_read_func(ptr, size, count, user_data);
+                            return lua_read_func(
+                                std::string(static_cast<const char *>(ptr),
+                                            size * count),
+                                size,
+                                count);
                         };
                     },
                     "write",
                     [](YR_STREAM &stream, sol::function func) {
                         static sol::function lua_write_func = func;
                         stream.write = [](const void *ptr,
-                                          size_t size,
-                                          size_t count,
-                                          void *user_data) -> size_t {
+                                          const size_t size,
+                                          const size_t count,
+                                          void *) -> size_t {
                             if (!lua_write_func.valid())
                                 return 0;
 
@@ -107,8 +109,7 @@ namespace engine
                                 std::string(static_cast<const char *>(ptr),
                                             size * count),
                                 size,
-                                count,
-                                user_data);
+                                count);
                         };
                     });
             }

@@ -145,9 +145,9 @@ namespace engine
         }
 
 #ifdef ENGINE_PRO
-        auto runner_plugins = m_plugins.run_async();
+        m_plugins.run_async();
 #endif
-        auto runner_server = m_server.run_async();
+        m_server.run_async();
 
         TRY_END()
         CATCH(server::exception::Abort, {

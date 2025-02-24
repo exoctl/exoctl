@@ -11,7 +11,7 @@
 #include <engine/server/bridge/endpoints/plugins.hxx>
 #endif
 
-#include <engine/server/bridge/endpoints/rev.hxx>
+#include <engine/server/bridge/endpoints/reverse.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 #include <vector>
@@ -43,7 +43,7 @@ namespace engine
             std::unique_ptr<bridge::endpoints::Plugins> m_plugins;
 #endif
             std::unique_ptr<bridge::endpoints::Parser> m_parser;
-            std::unique_ptr<bridge::endpoints::Rev> m_rev;
+            std::unique_ptr<bridge::endpoints::Reverse> m_reverse;
             std::unique_ptr<bridge::endpoints::Data> m_data;
         };
     } // namespace server

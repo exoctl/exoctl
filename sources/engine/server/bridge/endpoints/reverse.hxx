@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/igateway.hxx>
-#include <engine/server/focades/rev/disassembly/capstone/capstone.hxx>
+#include <engine/server/focades/reverse/disassembly/capstone/capstone.hxx>
 #include <engine/server/gateway/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
@@ -12,11 +12,11 @@
 namespace engine::server::bridge::endpoints
 {
 
-    class Rev : public interface::IGateway
+    class Reverse : public interface::IGateway
     {
       public:
-        Rev(Server &);
-        ~Rev() = default;
+        Reverse(Server &);
+        ~Reverse() = default;
 
         void load() const override;
 
@@ -33,12 +33,12 @@ namespace engine::server::bridge::endpoints
         std::unique_ptr<engine::server::gateway::WebSocket>
             m_socket_capstone_arm64_big;
 
-        std::unique_ptr<focades::rev::disassembly::Capstone>
+        std::unique_ptr<focades::reverse::disassembly::Capstone>
             m_capstone_x64_little;
-        std::unique_ptr<focades::rev::disassembly::Capstone>
+        std::unique_ptr<focades::reverse::disassembly::Capstone>
             m_capstone_arm64_little;
 
-        std::unique_ptr<focades::rev::disassembly::Capstone>
+        std::unique_ptr<focades::reverse::disassembly::Capstone>
             m_capstone_arm64_big;
 
         void prepare();

@@ -1,5 +1,5 @@
 #include <engine/memory/memory.hxx>
-#include <engine/server/focades/rev/disassembly/capstone/capstone.hxx>
+#include <engine/server/focades/reverse/disassembly/capstone/capstone.hxx>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 #include <stdint.h>
@@ -9,7 +9,7 @@ namespace engine
 {
     namespace focades
     {
-        namespace rev
+        namespace reverse
         {
             namespace disassembly
             {
@@ -95,6 +95,6 @@ namespace engine
                     return disassembly;
                 }
             } // namespace disassembly
-        } // namespace rev
+        } // namespace reverse
     } // namespace focades
 } // namespace engine

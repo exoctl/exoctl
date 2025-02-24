@@ -2,13 +2,13 @@
 
 #include <engine/disassembly/capstone/capstone.hxx>
 #include <engine/parser/json.hxx>
-#include <engine/server/focades/rev/disassembly/capstone/entitys.hxx>
+#include <engine/server/focades/reverse/disassembly/capstone/entitys.hxx>
 
 namespace engine
 {
     namespace focades
     {
-        namespace rev
+        namespace reverse
         {
             namespace disassembly
             {
@@ -31,6 +31,6 @@ namespace engine
                     const std::string m_mode;
                 };
             } // namespace disassembly
-        } // namespace rev
+        } // namespace reverse
     } // namespace focades
 } // namespace engine

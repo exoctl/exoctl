@@ -8,7 +8,7 @@ namespace engine
 {
     namespace focades
     {
-        namespace rev
+        namespace reverse
         {
             namespace disassembly
             {
@@ -33,6 +33,6 @@ namespace engine
                     } // namespace record
                 } // namespace capstone
             } // namespace disassembly
-        } // namespace rev
+        } // namespace reverse
     } // namespace focades
 } // namespace engine

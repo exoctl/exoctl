@@ -14,7 +14,7 @@ namespace engine
             m_analysis =
                 std::make_unique<bridge::endpoints::Analysis>(*m_server);
             m_data = std::make_unique<bridge::endpoints::Data>(*m_server);
-            m_rev = std::make_unique<bridge::endpoints::Rev>(*m_server);
+            m_reverse = std::make_unique<bridge::endpoints::Reverse>(*m_server);
             m_parser = std::make_unique<bridge::endpoints::Parser>(*m_server);
 #ifdef ENGINE_PRO
             m_plugins = std::make_unique<bridge::endpoints::Plugins>(*m_server);
@@ -35,7 +35,7 @@ namespace engine
 
             m_data->load();
             m_parser->load();
-            m_rev->load();
+            m_reverse->load();
             m_analysis->load();
 #ifdef ENGINE_PRO
             m_plugins->load();
