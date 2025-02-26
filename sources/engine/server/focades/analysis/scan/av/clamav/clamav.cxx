@@ -70,9 +70,9 @@ namespace engine
 
                         if (!IS_NULL(p_dto)) {
 
-                            json.add_member_string("virname", p_dto->virname);
-                            json.add_member_int("math_status",
-                                                p_dto->math_status);
+                            json.add_member("virname", p_dto->virname);
+                            json.add_member("math_status",
+                                            (int) p_dto->math_status);
                         }
 
                         return json;

@@ -66,10 +66,10 @@ namespace engine
 
                     if (!IS_NULL(p_dto)) {
 
-                        json.add_member_string("ns", p_dto->ns);
-                        json.add_member_string("rule", p_dto->rule);
-                        json.add_member_int("match_status",
-                                            p_dto->match_status);
+                        json.add_member("ns", p_dto->ns);
+                        json.add_member("rule", p_dto->rule);
+                        json.add_member("match_status",
+                                            (int)p_dto->match_status);
                     }
 
                     return json;

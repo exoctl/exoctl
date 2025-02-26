@@ -43,7 +43,7 @@ namespace engine::server::bridge::endpoints
                     m_scan_yara->scan_fast_bytes(
                         p_data,
                         [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json.add_member_json("yara",
+                            json.add_member("yara",
                                                  m_scan_yara->dto_json(p_dto));
                         });
 
@@ -51,11 +51,11 @@ namespace engine::server::bridge::endpoints
                         p_data,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
-                            av.add_member_json(
+                            av.add_member(
                                 "clamav", m_scan_av_clamav->dto_json(p_dto));
                         });
 
-                    json.add_member_json("av", av);
+                    json.add_member("av", av);
                     p_context.broadcast_text(&p_conn, json.to_string());
 
                     TRY_END()

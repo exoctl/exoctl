@@ -27,15 +27,46 @@ namespace engine
             void _plugins() override;
 #endif
             [[nodiscard]] std::string to_string() const;
-            void add_member_string(const std::string &, const std::string &);
-            void add_member_int(const std::string &, const int);
-            void add_member_double(const std::string &, const double);
-            void add_member_bool(const std::string &, const bool);
-            void add_member_json(const std::string &, const Json &);
-            void add_member_vector(const std::string &,
-                                   const std::vector<Json> &);
-            void add_member_uint16(const std::string &, const uint16_t);
-            void add_member_uint64(const std::string &, const uint64_t);
+
+            template <typename T>
+            void add_member(const std::string &p_key, const T &p_value)
+            {
+                rapidjson::Value k(p_key.c_str(), m_allocator);
+                rapidjson::Value v;
+
+                if constexpr (std::is_same_v<T, std::string>) {
+                    v.SetString(p_value.c_str(), m_allocator);
+                } else if constexpr (std::is_same_v<T, int>) {
+                    v.SetInt(p_value);
+                } else if constexpr (std::is_same_v<T, uint16_t>) {
+                    v.SetUint(p_value);
+                } else if constexpr (std::is_same_v<T, uint64_t>) {
+                    v.SetUint64(p_value);
+                } else if constexpr (std::is_same_v<T, int16_t>) {
+                    v.SetInt(p_value);
+                } else if constexpr (std::is_same_v<T, int64_t>) {
+                    v.SetInt64(p_value);
+                } else if constexpr (std::is_same_v<T, double>) {
+                    v.SetDouble(p_value);
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    v.SetBool(p_value);
+                } else if constexpr (std::is_same_v<T, Json>) {
+                    v.CopyFrom(p_value.m_document, m_allocator);
+                } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
+                    rapidjson::Value array(rapidjson::kArrayType);
+                    for (const auto &value : p_value) {
+                        rapidjson::Value item;
+                        item.CopyFrom(value.m_document, m_allocator);
+                        array.PushBack(item, m_allocator);
+                    }
+                    m_document.AddMember(k, array, m_allocator);
+                    return;
+                } else {
+                    throw std::runtime_error("Unsupported type");
+                }
+
+                m_document.AddMember(k, v, m_allocator);
+            }
             void clear();
 
             void from_string(const std::string &);
