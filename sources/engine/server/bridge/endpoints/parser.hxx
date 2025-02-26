@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/interfaces/igateway.hxx>
+#include  <engine/interfaces/iendpoints.hxx>
 #include <engine/server/focades/parser/binary/lief/art/art.hxx>
 #include <engine/server/focades/parser/binary/lief/dex/dex.hxx>
 #include <engine/server/focades/parser/binary/lief/elf/elf.hxx>
@@ -14,7 +14,7 @@
 namespace engine::server::bridge::endpoints
 {
 
-    class Parser : public interface::IGateway
+    class Parser : public interface::IEndpoints
     {
       public:
         Parser(Server &);

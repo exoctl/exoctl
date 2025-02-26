@@ -27,24 +27,28 @@ namespace engine
         void Plugins::load_libraries()
         {
             if (m_config.get<bool>("plugins.enable")) {
-                const auto &libs_any = m_config.get<std::vector<std::any>>(
-                    "plugins.lua.standard.libraries");
-                std::vector<std::string> libraries(libs_any.size());
-                std::transform(libs_any.begin(),
-                               libs_any.end(),
-                               libraries.begin(),
-                               [](const std::any &val) -> std::string {
-                                   return std::any_cast<std::string>(val);
-                               });
+                auto node =
+                    m_config.get<toml::array>("plugins.lua.standard.libraries");
+
+                std::vector<std::string> libs_any;               
+                for (const auto &elem : *node.as_array()) {
+                    if (!elem.is_string()) {
+                        throw exception::LoadPlugin(
+                            "Array contains non-string elements at key: "
+                            "plugins.lua.standard.libraries");
+                    }
+                    libs_any.push_back(*elem.value<std::string>());
+                }
 
                 LOG(m_log,
                     info,
                     fmt::format("Loading lua standard libraries: '{}'",
-                                fmt::join(libraries, ", ")));
+                                fmt::join(libs_any, ", ")));
 
                 for (const auto &name : libs_any) {
-                    lua.state.open_libraries(
-                        lua.from_lib(std::any_cast<std::string>(name)));
+                    auto lib = lua.from_lib(
+                        name);
+                    lua.state.open_libraries(lib);
                 }
             }
         }

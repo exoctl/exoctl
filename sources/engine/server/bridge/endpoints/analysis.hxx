@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/interfaces/igateway.hxx>
+#include  <engine/interfaces/iendpoints.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/server/focades/analysis/scan/av/clamav/clamav.hxx>
 #include <engine/server/focades/analysis/scan/yara/yara.hxx>
@@ -13,7 +13,7 @@
 
 namespace engine::server::bridge::endpoints
 {
-    class Analysis : public interface::IGateway
+    class Analysis : public interface::IEndpoints
 #ifdef ENGINE_PRO
         ,
                      public interface::IPlugins

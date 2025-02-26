@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/interfaces/igateway.hxx>
+#include  <engine/interfaces/iendpoints.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/server/focades/data/metadata/metadata.hxx>
 #include <engine/server/gateway/map/map.hxx>
@@ -12,7 +12,7 @@
 
 namespace engine::server::bridge::endpoints
 {
-    class Data : public interface::IGateway
+    class Data : public interface::IEndpoints
 #ifdef ENGINE_PRO
         ,
                  public interface::IPlugins

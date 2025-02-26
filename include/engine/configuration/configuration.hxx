@@ -1,12 +1,11 @@
 #pragma once
 
 #include <any>
+#include <engine/configuration/exception.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/configuration/exception.hxx>
-#include <unordered_map>
 #include <toml++/toml.hpp>
-
+#include <unordered_map>
 
 namespace engine
 {
@@ -29,43 +28,32 @@ namespace engine
 
             template <typename T> T get(const std::string &path) const
             {
-                std::istringstream path_stream(path);
-                std::string section;
-                const std::unordered_map<std::string, std::any>
-                    *current_section = &dynamic_configs;
-
-                while (std::getline(path_stream, section, '.')) {
-                    auto it = current_section->find(section);
-                    if (it == current_section->end()) {
-                        throw exception::Get("Section or key not found: " +
-                                             section);
-                    }
-
-                    if (path_stream.eof()) {
-                        try {
-                            return std::any_cast<T>(it->second);
-                        } catch (const std::bad_any_cast &) {
-                            throw exception::Get("Type mismatch for key: " +
-                                                 section);
-                        }
-                    }
-
-                    try {
-                        current_section = &std::any_cast<
-                            const std::unordered_map<std::string, std::any> &>(
-                            it->second);
-                    } catch (const std::bad_any_cast &) {
-                        throw exception::Get("Invalid path: " + path);
-                    }
+                auto node = m_toml.at_path(path);
+                if (!node) {
+                    throw exception::Get("Section or key not found: " + path);
                 }
-                throw exception::Get("Invalid path: " + path);
+
+                if constexpr (std::is_same_v<T, toml::array>) {
+                    auto *arr = node.as_array();
+                    if (!arr) {
+                        throw exception::Get(
+                            "Type mismatch: expected array for key: " + path);
+                    }
+                    return *arr;
+                } else {
+                    auto value = node.value<T>();
+                    if (!value) {
+                        throw exception::Get("Type mismatch for key: " + path);
+                    }
+                    return *value;
+                }
             }
+
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif
           private:
             std::string m_path;
-            std::unordered_map<std::string, std::any> dynamic_configs;
             toml::table m_toml;
         };
     } // namespace configuration

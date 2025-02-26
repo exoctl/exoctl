@@ -32,43 +32,52 @@ namespace engine
                                  const std::string &section,
                                  const toml::node_type type) -> sol::object {
                     auto &lua = plugins::Plugins::lua.state;
+                    auto node = self.m_toml.at_path(section);
+
+                    if (!node) {
+                        throw exception::Get("Section or key not found: " +
+                                             section);
+                    }
                     switch (type) {
                         case toml::node_type::string:
                             return sol::make_object(
-                                lua, self.get<std::string>(section));
+                                lua, node.value<std::string>().value());
                         case toml::node_type::integer:
-                            return sol::make_object(lua,
-                                                    self.get<int64_t>(section));
+                            return sol::make_object(
+                                lua, node.value<int64_t>().value());
                         case toml::node_type::boolean:
                             return sol::make_object(lua,
-                                                    self.get<bool>(section));
+                                                    node.value<bool>().value());
+                        case toml::node_type::floating_point:
+                            return sol::make_object(
+                                lua, node.value<double>().value());
                         case toml::node_type::array: {
-                            auto vec = self.get<std::vector<std::any>>(section);
+                            if (!node.is_array()) {
+                                throw exception::Get("Type mismatch for key: " +
+                                                     section);
+                            }
+
                             sol::table luaTable = lua.create_table();
-                            for (size_t i = 0; i < vec.size(); ++i) {
-                                const auto &elem = vec[i];
-                                if (elem.type() == typeid(std::string)) {
-                                    luaTable[i + 1] =
-                                        std::any_cast<std::string>(elem);
-                                } else if (elem.type() == typeid(int64_t)) {
-                                    luaTable[i + 1] =
-                                        std::any_cast<int64_t>(elem);
-                                } else if (elem.type() == typeid(bool)) {
-                                    luaTable[i + 1] = std::any_cast<bool>(elem);
-                                } else if (elem.type() == typeid(double)) {
-                                    luaTable[i + 1] =
-                                        std::any_cast<double>(elem);
+                            size_t index = 1;
+                            for (const auto &elem : *node.as_array()) {
+                                if (auto val = elem.value<std::string>()) {
+                                    luaTable[index] = *val;
+                                } else if (auto val = elem.value<int64_t>()) {
+                                    luaTable[index] = *val;
+                                } else if (auto val = elem.value<bool>()) {
+                                    luaTable[index] = *val;
+                                } else if (auto val = elem.value<double>()) {
+                                    luaTable[index] = *val;
                                 } else {
-                                    luaTable[i + 1] = sol::nil;
+                                    luaTable[index] = sol::nil;
                                 }
+                                index++;
                             }
                             return sol::make_object(lua, luaTable);
                         }
-                        case toml::node_type::floating_point:
-                            return sol::make_object(lua,
-                                                    self.get<double>(section));
                         default:
-                            throw std::runtime_error("Type not supported");
+                            throw exception::Get("Unsupported type for key: " +
+                                                 section);
                     }
                 }));
         }
@@ -76,7 +85,6 @@ namespace engine
         void Configuration::setup(const std::string &p_path)
         {
             m_path.assign(p_path);
-            m_toml = toml::parse_file(m_path);
         }
 
 #ifdef ENGINE_PRO
@@ -91,54 +99,7 @@ namespace engine
         {
             TRY_BEGIN()
 
-            dynamic_configs.clear();
-
-            std::function<void(const toml::table &,
-                               std::unordered_map<std::string, std::any> &)>
-                process_table;
-            process_table =
-                [&process_table](
-                    const toml::table &table,
-                    std::unordered_map<std::string, std::any> &section_data) {
-                    for (const auto &[key, value] : table) {
-                        std::string key_str = std::string(key);
-                        if (value.is_string()) {
-                            section_data[key_str] = value.as_string()->get();
-                        } else if (value.is_integer()) {
-                            section_data[key_str] = value.as_integer()->get();
-                        } else if (value.is_boolean()) {
-                            section_data[key_str] = value.as_boolean()->get();
-                        } else if (value.is_floating_point()) {
-                            section_data[key_str] =
-                                value.as_floating_point()->get();
-                        } else if (value.is_array()) {
-                            std::vector<std::any> array_values;
-                            for (const auto &elem : *value.as_array()) {
-                                if (elem.is_string()) {
-                                    array_values.push_back(
-                                        elem.as_string()->get());
-                                } else if (elem.is_integer()) {
-                                    array_values.push_back(
-                                        elem.as_integer()->get());
-                                } else if (elem.is_floating_point()) {
-                                    array_values.push_back(
-                                        elem.as_floating_point()->get());
-                                } else if (elem.is_boolean()) {
-                                    array_values.push_back(
-                                        elem.as_boolean()->get());
-                                }
-                            }
-                            section_data[key_str] = array_values;
-                        } else if (value.is_table()) {
-                            std::unordered_map<std::string, std::any>
-                                sub_section_data;
-                            process_table(*value.as_table(), sub_section_data);
-                            section_data[key_str] = sub_section_data;
-                        }
-                    }
-                };
-
-            process_table(m_toml, dynamic_configs);
+            m_toml = toml::parse_file(m_path);
 
             TRY_END()
             CATCH(toml::parse_error, {
@@ -161,7 +122,6 @@ namespace engine
         {
             if (this != &p_config) {
                 m_path = p_config.m_path;
-                dynamic_configs = p_config.dynamic_configs;
                 m_toml = p_config.m_toml;
             }
             return *this;

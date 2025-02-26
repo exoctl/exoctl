@@ -4,10 +4,10 @@ namespace engine
 {
     namespace interface
     {
-        class IGateway
+        class IEndpoints
         {
           public:
-            virtual ~IGateway() = default;
+            virtual ~IEndpoints() = default;
             virtual void load() const = 0;
         };
     } // namespace interface
