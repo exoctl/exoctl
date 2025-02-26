@@ -1,5 +1,6 @@
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 #include <engine/plugins/plugins.hxx>
+#include <iostream>
 
 namespace engine
 {
@@ -40,7 +41,19 @@ namespace engine
                        bool value) { self.add_member(key, value); },
                     [](engine::parser::Json &self,
                        const std::string &key,
-                       double value) { self.add_member(key, value); }));
+                       double value) { self.add_member(key, value); },
+                    [](engine::parser::Json &self,
+                       const std::string &key,
+                       sol::table value) {
+                        std::vector<engine::parser::Json> vec;
+                        for (auto &item : value) {
+                            if (item.second.is<engine::parser::Json>()) {
+                                vec.push_back(
+                                    item.second.as<engine::parser::Json>());
+                            }
+                        }
+                        self.add_member(key, vec);
+                    }));
         }
 #endif
 

@@ -1,5 +1,5 @@
 #include <cstdint>
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/server/bridge/bridge.hxx>
 #include <engine/server/exception.hxx>

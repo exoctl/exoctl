@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
 #include <engine/server/focades/analysis/scan/av/clamav/entitys.hxx>
 

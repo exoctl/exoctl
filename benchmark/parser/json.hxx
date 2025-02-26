@@ -1,7 +1,7 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 
 class JsonBenchmark : public benchmark::Fixture
 {

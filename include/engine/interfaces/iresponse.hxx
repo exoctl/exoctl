@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 
 namespace engine::interface
 {

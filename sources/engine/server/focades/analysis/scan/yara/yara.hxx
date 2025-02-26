@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/server/focades/analysis/scan/yara/entitys.hxx>
 #include <string>

@@ -5,7 +5,7 @@
 #include <engine/exception.hxx>
 #include <engine/llama/llama.hxx>
 #include <engine/magic/magic.hxx>
-#include <engine/parser/json.hxx>
+#include <engine/parser/json/json.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <engine/server/exception.hxx>
 #include <thread>
