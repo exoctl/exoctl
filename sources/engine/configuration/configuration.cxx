@@ -22,7 +22,6 @@ namespace engine
                 "get",
                 sol::overload([](configuration::Configuration &self,
                                  const std::string &section) -> sol::object {
-                    auto &lua = plugins::Plugins::lua.state;
                     auto node = self.get(section);
 
                     if (!node) {
@@ -31,18 +30,20 @@ namespace engine
 
                     if (node.is_string()) {
                         return sol::make_object(
-                            lua, node.value<std::string>().value());
+                            plugins::Plugins::lua.state,
+                            node.value<std::string>().value());
                     } else if (node.is_integer()) {
-                        return sol::make_object(lua,
+                        return sol::make_object(plugins::Plugins::lua.state,
                                                 node.value<int64_t>().value());
                     } else if (node.is_boolean()) {
-                        return sol::make_object(lua,
+                        return sol::make_object(plugins::Plugins::lua.state,
                                                 node.value<bool>().value());
                     } else if (node.is_floating_point()) {
-                        return sol::make_object(lua,
+                        return sol::make_object(plugins::Plugins::lua.state,
                                                 node.value<double>().value());
                     } else if (node.is_array()) {
-                        sol::table luaTable = lua.create_table();
+                        sol::table luaTable =
+                            plugins::Plugins::lua.state.create_table();
                         size_t index = 1;
                         for (const auto &elem : *node.as_array()) {
                             if (auto val = elem.value<std::string>()) {
@@ -58,9 +59,10 @@ namespace engine
                             }
                             index++;
                         }
-                        return sol::make_object(lua, luaTable);
+                        return sol::make_object(plugins::Plugins::lua.state,
+                                                luaTable);
                     } else if (node.is_table()) {
-                        sol::table luaTable = lua.create_table();
+                        sol::table luaTable = plugins::Plugins::lua.state.create_table();
                         for (const auto &[key, value] : *node.as_table()) {
                             if (value.is_string()) {
                                 luaTable[key.str()] =
@@ -78,10 +80,11 @@ namespace engine
                                 luaTable[key.str()] = sol::nil;
                             }
                         }
-                        return sol::make_object(lua, luaTable);
+                        return sol::make_object(plugins::Plugins::lua.state,
+                                                luaTable);
                     } else if (node.is_date()) {
                         auto date = node.value<toml::date>().value();
-                        return sol::make_object(lua,
+                        return sol::make_object(plugins::Plugins::lua.state,
                                                 fmt::format("{:04}-{:02}-{:02}",
                                                             date.year,
                                                             date.month,
@@ -89,7 +92,7 @@ namespace engine
                     } else if (node.is_time()) {
                         auto time = node.value<toml::time>().value();
                         return sol::make_object(
-                            lua,
+                            plugins::Plugins::lua.state,
                             fmt::format("{:02}:{:02}:{:02}.{:03}",
                                         time.hour,
                                         time.minute,
@@ -98,7 +101,7 @@ namespace engine
                     } else if (node.is_date_time()) {
                         auto dt = node.value<toml::date_time>().value();
                         return sol::make_object(
-                            lua,
+                            plugins::Plugins::lua.state,
                             fmt::format(
                                 "{:04}-{:02}-{:02}T{:02}:{:02}:{:02}.{:03}{}",
                                 dt.date.year,

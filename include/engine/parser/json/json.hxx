@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
+#include <optional>
 #include <rapidjson/allocators.h>
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -22,6 +23,14 @@ namespace engine
             Json();
             Json(const parser::Json &);
             ~Json() = default;
+            Json &operator=(const Json &other)
+            {
+                if (this != &other) {
+                    m_document.SetObject();
+                    m_document.CopyFrom(other.m_document, m_allocator);
+                }
+                return *this;
+            }
 
 #ifdef ENGINE_PRO
             void _plugins() override;
@@ -29,7 +38,66 @@ namespace engine
             [[nodiscard]] std::string to_string() const;
 
             template <typename T>
-            void add_member(const std::string &p_key, const T &p_value)
+            std::optional<T> get(const std::string &p_key) const
+            {
+                if (!m_document.HasMember(p_key.c_str())) {
+                    return std::nullopt;
+                }
+
+                const rapidjson::Value &v = m_document[p_key.c_str()];
+
+                if constexpr (std::is_same_v<T, std::string>) {
+                    if (v.IsString())
+                        return std::string(v.GetString());
+                } else if constexpr (std::is_same_v<T, int>) {
+                    if (v.IsInt())
+                        return v.GetInt();
+                } else if constexpr (std::is_same_v<T, uint16_t>) {
+                    if (v.IsUint())
+                        return static_cast<uint16_t>(v.GetUint());
+                } else if constexpr (std::is_same_v<T, uint64_t>) {
+                    if (v.IsUint64())
+                        return v.GetUint64();
+                } else if constexpr (std::is_same_v<T, int16_t>) {
+                    if (v.IsInt())
+                        return static_cast<int16_t>(v.GetInt());
+                } else if constexpr (std::is_same_v<T, int64_t>) {
+                    if (v.IsInt64())
+                        return v.GetInt64();
+                } else if constexpr (std::is_same_v<T, double>) {
+                    if (v.IsDouble())
+                        return v.GetDouble();
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    if (v.IsBool())
+                        return v.GetBool();
+                } else if constexpr (std::is_same_v<T, Json>) {
+                    if (v.IsObject()) {
+                        Json jsonObj;
+                        jsonObj.m_document.CopyFrom(
+                            v, jsonObj.m_allocator, true);
+
+                        return std::move(jsonObj);
+                    }
+                } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
+                    if (v.IsArray()) {
+                        std::vector<Json> jsonArray;
+                        jsonArray.reserve(v.Size());
+
+                        for (const auto &item : v.GetArray()) {
+                            Json jsonObj;
+                            jsonObj.m_document.CopyFrom(
+                                item, jsonObj.m_allocator, true);
+                            jsonArray.push_back(std::move(jsonObj));
+                        }
+                        return std::move(jsonArray);
+                    }
+                }
+
+                return std::nullopt;
+            }
+
+            template <typename T>
+            void add(const std::string &p_key, const T &p_value)
             {
                 rapidjson::Value k(p_key.c_str(), m_allocator);
                 rapidjson::Value v;

@@ -69,27 +69,27 @@ namespace engine
                     if (!IS_NULL(p_dto)) {
                         std::vector<parser::Json> ins;
 
-                        disassembly.add_member("arch", m_arch);
-                        disassembly.add_member("mode", m_mode);
+                        disassembly.add("arch", m_arch);
+                        disassembly.add("mode", m_mode);
 
                         for (const auto &instruction : p_dto->instructions) {
                             parser::Json ins_json;
-                            ins_json.add_member("address",
+                            ins_json.add("address",
                                                        instruction.address);
-                            ins_json.add_member("mnemonic",
+                            ins_json.add("mnemonic",
                                                        instruction.mnemonic);
-                            ins_json.add_member("operands",
+                            ins_json.add("operands",
                                                        instruction.operands);
-                            ins_json.add_member("size",
+                            ins_json.add("size",
                                                        instruction.size);
-                            ins_json.add_member("id", instruction.id);
-                            ins_json.add_member("bytes",
+                            ins_json.add("id", instruction.id);
+                            ins_json.add("bytes",
                                                        instruction.bytes);
 
                             ins.push_back(ins_json);
                         }
 
-                        disassembly.add_member("instructions", ins);
+                        disassembly.add("instructions", ins);
                     }
 
                     return disassembly;

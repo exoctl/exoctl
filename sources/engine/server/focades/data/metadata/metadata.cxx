@@ -56,18 +56,18 @@ namespace engine
                 engine::parser::Json json;
 
                 if (!IS_NULL(p_dto)) {
-                    json.add_member("mime_type", p_dto->mime_type);
-                    json.add_member("sha256", p_dto->sha256);
-                    json.add_member("sha1", p_dto->sha1);
-                    json.add_member("sha512", p_dto->sha512);
-                    json.add_member("sha224", p_dto->sha224);
-                    json.add_member("sha384", p_dto->sha384);
-                    json.add_member("sha3_256", p_dto->sha3_256);
-                    json.add_member("sha3_512", p_dto->sha3_512);
-                    json.add_member("size", p_dto->size);
-                    json.add_member("creation_date",
+                    json.add("mime_type", p_dto->mime_type);
+                    json.add("sha256", p_dto->sha256);
+                    json.add("sha1", p_dto->sha1);
+                    json.add("sha512", p_dto->sha512);
+                    json.add("sha224", p_dto->sha224);
+                    json.add("sha384", p_dto->sha384);
+                    json.add("sha3_256", p_dto->sha3_256);
+                    json.add("sha3_512", p_dto->sha3_512);
+                    json.add("size", p_dto->size);
+                    json.add("creation_date",
                                            p_dto->creation_date);
-                    json.add_member("entropy", p_dto->entropy);
+                    json.add("entropy", p_dto->entropy);
                 }
 
                 return json;

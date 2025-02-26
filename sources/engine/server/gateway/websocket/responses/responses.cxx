@@ -10,9 +10,9 @@ namespace engine::server::gateway::websocket::responses
     {
         parser::Json json;
 
-        json.add_member("status", Connected::_status());
-        json.add_member("message", Connected::_message());
-        json.add_member("code", Connected::_code());
+        json.add("status", Connected::_status());
+        json.add("message", Connected::_message());
+        json.add("code", Connected::_code());
 
         return json;
     }
@@ -40,9 +40,9 @@ namespace engine::server::gateway::websocket::responses
     {
         parser::Json json;
 
-        json.add_member("status", UnsupportedData::_status());
-        json.add_member("message", UnsupportedData::_message());
-        json.add_member("code", UnsupportedData::_code());
+        json.add("status", UnsupportedData::_status());
+        json.add("message", UnsupportedData::_message());
+        json.add("code", UnsupportedData::_code());
 
         return json;
     }
@@ -66,9 +66,9 @@ namespace engine::server::gateway::websocket::responses
     {
         parser::Json json;
 
-        json.add_member("status", InvalidTokenJWT::_status());
-        json.add_member("message", InvalidTokenJWT::_message());
-        json.add_member("code", InvalidTokenJWT::_code());
+        json.add("status", InvalidTokenJWT::_status());
+        json.add("message", InvalidTokenJWT::_message());
+        json.add("code", InvalidTokenJWT::_code());
 
         return json;
     }
@@ -96,9 +96,9 @@ namespace engine::server::gateway::websocket::responses
     {
         parser::Json json;
 
-        json.add_member("status", BadRequests::_status());
-        json.add_member("message", BadRequests::_message());
-        json.add_member("code", BadRequests::_code());
+        json.add("status", BadRequests::_status());
+        json.add("message", BadRequests::_message());
+        json.add("code", BadRequests::_code());
 
         return json;
     }

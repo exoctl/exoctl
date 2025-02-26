@@ -26,22 +26,51 @@ namespace engine
                 &Json::from_string,
                 "to_string",
                 &Json::to_string,
-                "add_member",
+                "clear",
+                &Json::clear,
+                "get",
+                sol::overload([](engine::parser::Json &self,
+                                 const std::string &key) -> sol::object {
+                    auto &lua = plugins::Plugins::lua.state;
+
+                    auto make_lua_object = [&](auto value) -> sol::object {
+                        return value ? sol::make_object(lua, *value)
+                                     : sol::make_object(lua, sol::nil);
+                    };
+
+                    if (auto value = self.get<std::string>(key))
+                        return make_lua_object(value);
+                    if (auto value = self.get<int64_t>(key))
+                        return make_lua_object(value);
+                    if (auto value = self.get<engine::parser::Json>(key))
+                        return make_lua_object(value);
+                    if (auto value = self.get<bool>(key))
+                        return make_lua_object(value);
+                    if (auto value = self.get<double>(key))
+                        return make_lua_object(value);
+                    if (auto value =
+                            self.get<std::vector<engine::parser::Json>>(key))
+                        return make_lua_object(value);
+
+                    return sol::make_object(lua, sol::nil);
+                }),
+                "add",
                 sol::overload(
                     [](engine::parser::Json &self,
                        const std::string &key,
-                       const std::string &value) {
-                        self.add_member(key, value);
-                    },
+                       const std::string &value) { self.add(key, value); },
                     [](engine::parser::Json &self,
                        const std::string &key,
-                       int64_t value) { self.add_member(key, value); },
+                       int64_t value) { self.add(key, value); },
                     [](engine::parser::Json &self,
                        const std::string &key,
-                       bool value) { self.add_member(key, value); },
+                       engine::parser::Json value) { self.add(key, value); },
                     [](engine::parser::Json &self,
                        const std::string &key,
-                       double value) { self.add_member(key, value); },
+                       bool value) { self.add(key, value); },
+                    [](engine::parser::Json &self,
+                       const std::string &key,
+                       double value) { self.add(key, value); },
                     [](engine::parser::Json &self,
                        const std::string &key,
                        sol::table value) {
@@ -52,10 +81,15 @@ namespace engine
                                     item.second.as<engine::parser::Json>());
                             }
                         }
-                        self.add_member(key, vec);
+                        self.add(key, vec);
                     }));
         }
 #endif
+
+        void Json::clear()
+        {
+            m_document.Clear();
+        }
 
         void Json::from_string(const std::string &json_str)
         {
