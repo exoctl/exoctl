@@ -29,51 +29,100 @@ namespace engine
                 Configuration::setup,
                 "get",
                 sol::overload([](configuration::Configuration &self,
-                                 const std::string &section,
-                                 const toml::node_type type) -> sol::object {
+                                 const std::string &section) -> sol::object {
                     auto &lua = plugins::Plugins::lua.state;
                     auto node = self.get(section);
 
-                    switch (type) {
-                        case toml::node_type::string:
-                            return sol::make_object(
-                                lua, node.value<std::string>().value());
-                        case toml::node_type::integer:
-                            return sol::make_object(
-                                lua, node.value<int64_t>().value());
-                        case toml::node_type::boolean:
-                            return sol::make_object(lua,
-                                                    node.value<bool>().value());
-                        case toml::node_type::floating_point:
-                            return sol::make_object(
-                                lua, node.value<double>().value());
-                        case toml::node_type::array: {
-                            if (!node.is_array()) {
-                                throw exception::Get("Type mismatch for key: " +
-                                                     section);
-                            }
+                    if (!node) {
+                        throw exception::Get("Key not found: " + section);
+                    }
 
-                            sol::table luaTable = lua.create_table();
-                            size_t index = 1;
-                            for (const auto &elem : *node.as_array()) {
-                                if (auto val = elem.value<std::string>()) {
-                                    luaTable[index] = *val;
-                                } else if (auto val = elem.value<int64_t>()) {
-                                    luaTable[index] = *val;
-                                } else if (auto val = elem.value<bool>()) {
-                                    luaTable[index] = *val;
-                                } else if (auto val = elem.value<double>()) {
-                                    luaTable[index] = *val;
-                                } else {
-                                    luaTable[index] = sol::nil;
-                                }
-                                index++;
+                    if (node.is_string()) {
+                        return sol::make_object(
+                            lua, node.value<std::string>().value());
+                    } else if (node.is_integer()) {
+                        return sol::make_object(lua,
+                                                node.value<int64_t>().value());
+                    } else if (node.is_boolean()) {
+                        return sol::make_object(lua,
+                                                node.value<bool>().value());
+                    } else if (node.is_floating_point()) {
+                        return sol::make_object(lua,
+                                                node.value<double>().value());
+                    } else if (node.is_array()) {
+                        sol::table luaTable = lua.create_table();
+                        size_t index = 1;
+                        for (const auto &elem : *node.as_array()) {
+                            if (auto val = elem.value<std::string>()) {
+                                luaTable[index] = *val;
+                            } else if (auto val = elem.value<int64_t>()) {
+                                luaTable[index] = *val;
+                            } else if (auto val = elem.value<bool>()) {
+                                luaTable[index] = *val;
+                            } else if (auto val = elem.value<double>()) {
+                                luaTable[index] = *val;
+                            } else {
+                                luaTable[index] = sol::nil;
                             }
-                            return sol::make_object(lua, luaTable);
+                            index++;
                         }
-                        default:
-                            throw exception::Get("Unsupported type for key: " +
-                                                 section);
+                        return sol::make_object(lua, luaTable);
+                    } else if (node.is_table()) {
+                        sol::table luaTable = lua.create_table();
+                        for (const auto &[key, value] : *node.as_table()) {
+                            if (value.is_string()) {
+                                luaTable[key.str()] =
+                                    value.value<std::string>().value();
+                            } else if (value.is_integer()) {
+                                luaTable[key.str()] =
+                                    value.value<int64_t>().value();
+                            } else if (value.is_boolean()) {
+                                luaTable[key.str()] =
+                                    value.value<bool>().value();
+                            } else if (value.is_floating_point()) {
+                                luaTable[key.str()] =
+                                    value.value<double>().value();
+                            } else {
+                                luaTable[key.str()] = sol::nil;
+                            }
+                        }
+                        return sol::make_object(lua, luaTable);
+                    } else if (node.is_date()) {
+                        auto date = node.value<toml::date>().value();
+                        return sol::make_object(lua,
+                                                fmt::format("{:04}-{:02}-{:02}",
+                                                            date.year,
+                                                            date.month,
+                                                            date.day));
+                    } else if (node.is_time()) {
+                        auto time = node.value<toml::time>().value();
+                        return sol::make_object(
+                            lua,
+                            fmt::format("{:02}:{:02}:{:02}.{:03}",
+                                        time.hour,
+                                        time.minute,
+                                        time.second,
+                                        time.nanosecond / 1'000'000));
+                    } else if (node.is_date_time()) {
+                        auto dt = node.value<toml::date_time>().value();
+                        return sol::make_object(
+                            lua,
+                            fmt::format(
+                                "{:04}-{:02}-{:02}T{:02}:{:02}:{:02}.{:03}{}",
+                                dt.date.year,
+                                dt.date.month,
+                                dt.date.day,
+                                dt.time.hour,
+                                dt.time.minute,
+                                dt.time.second,
+                                dt.time.nanosecond / 1'000'000,
+                                dt.offset ? fmt::format("{:+03}:{:02}",
+                                                        dt.offset->minutes / 60,
+                                                        dt.offset->minutes % 60)
+                                          : "Z"));
+                    } else {
+                        throw exception::Get("Unsupported type for key: " +
+                                             section);
                     }
                 }));
         }

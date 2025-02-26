@@ -81,15 +81,18 @@ namespace engine::logging
         std::vector<spdlog::sink_ptr> sinks;
 
         if (p_type == "daily") {
-            sinks.emplace_back(std::make_shared<
-                               spdlog::sinks::daily_file_sink_mt>(
-                m_config.get("logging.filepath").value<std::string>().value(),
-                m_config.get("logging.daily.hours").value<int64_t>().value(),
-                m_config.get("logging.daily.minutes").value<int64_t>().value(),
-                false,
-                m_config.get("logging.daily.max_size")
-                    .value<int64_t>()
-                    .value()));
+            auto time = m_config.get("logging.daily.time").as_time();
+            sinks.emplace_back(
+                std::make_shared<spdlog::sinks::daily_file_sink_mt>(
+                    m_config.get("logging.filepath")
+                        .value<std::string>()
+                        .value(),
+                    time->get().hour,
+                    time->get().minute,
+                    false,
+                    m_config.get("logging.daily.max_size")
+                        .value<int64_t>()
+                        .value()));
         } else if (p_type == "rotation") {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
