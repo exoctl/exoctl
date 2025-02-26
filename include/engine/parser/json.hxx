@@ -13,7 +13,10 @@ namespace engine
 {
     namespace parser
     {
-        class Json : public interface::ISubPlugins<Json>
+        class Json
+#ifdef ENGINE_PRO
+            : public interface::ISubPlugins<Json>
+#endif
         {
           public:
             Json();
@@ -35,7 +38,6 @@ namespace engine
             void add_member_uint64(const std::string &, const uint64_t);
             void clear();
 
-            [[nodiscard]] rapidjson::Document &get_document();
             void from_string(const std::string &);
 
           private:

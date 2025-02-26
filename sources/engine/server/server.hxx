@@ -12,7 +12,6 @@
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/logging.hxx>
-#include <engine/parser/toml.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <memory>
 

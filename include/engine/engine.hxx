@@ -8,7 +8,6 @@
 #include <engine/lua/lua.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/binary/lief/_/log.hxx>
-#include <engine/parser/toml.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/security/av/clamav/_/log.hxx>
 #include <engine/server/_/log/log.hxx>

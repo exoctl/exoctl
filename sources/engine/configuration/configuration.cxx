@@ -30,19 +30,19 @@ namespace engine
                 "get",
                 sol::overload([](configuration::Configuration &self,
                                  const std::string &section,
-                                 const int type) -> sol::object {
+                                 const toml::node_type type) -> sol::object {
                     auto &lua = plugins::Plugins::lua.state;
                     switch (type) {
-                        case 0:
+                        case toml::node_type::string:
                             return sol::make_object(
                                 lua, self.get<std::string>(section));
-                        case 1:
+                        case toml::node_type::integer:
                             return sol::make_object(lua,
                                                     self.get<int64_t>(section));
-                        case 2:
+                        case toml::node_type::boolean:
                             return sol::make_object(lua,
                                                     self.get<bool>(section));
-                        case 3: {
+                        case toml::node_type::array: {
                             auto vec = self.get<std::vector<std::any>>(section);
                             sol::table luaTable = lua.create_table();
                             for (size_t i = 0; i < vec.size(); ++i) {
@@ -55,12 +55,18 @@ namespace engine
                                         std::any_cast<int64_t>(elem);
                                 } else if (elem.type() == typeid(bool)) {
                                     luaTable[i + 1] = std::any_cast<bool>(elem);
+                                } else if (elem.type() == typeid(double)) {
+                                    luaTable[i + 1] =
+                                        std::any_cast<double>(elem);
                                 } else {
                                     luaTable[i + 1] = sol::nil;
                                 }
                             }
                             return sol::make_object(lua, luaTable);
                         }
+                        case toml::node_type::floating_point:
+                            return sol::make_object(lua,
+                                                    self.get<double>(section));
                         default:
                             throw std::runtime_error("Type not supported");
                     }
@@ -70,67 +76,13 @@ namespace engine
         void Configuration::setup(const std::string &p_path)
         {
             m_path.assign(p_path);
-            m_toml.parse_file(m_path);
+            m_toml = toml::parse_file(m_path);
         }
 
 #ifdef ENGINE_PRO
         void Configuration::register_plugins()
         {
-            plugins::Plugins::lua.state.new_enum<toml::node_type>(
-                "NodeType",
-                {{"array", toml::node_type::array},
-                 {"string", toml::node_type::string},
-                 {"integer", toml::node_type::integer},
-                 {"floating_point", toml::node_type::floating_point},
-                 {"boolean", toml::node_type::boolean}});
-
-            plugins::Plugins::lua.state
-                .new_usertype<configuration::Configuration>(
-                    "Configuration",
-                    "setup",
-                    &configuration::Configuration::setup,
-                    "load",
-                    &Configuration::load,
-                    "get",
-                    sol::overload([](configuration::Configuration &self,
-                                     const std::string &section,
-                                     toml::node_type type) -> sol::object {
-                        auto &lua = plugins::Plugins::lua.state;
-                        switch (type) {
-                            case toml::node_type::string:
-                                return sol::make_object(
-                                    lua, self.get<std::string>(section));
-                            case toml::node_type::integer:
-                                return sol::make_object(
-                                    lua, self.get<int64_t>(section));
-                            case toml::node_type::boolean:
-                                return sol::make_object(
-                                    lua, self.get<bool>(section));
-                            case toml::node_type::array: {
-                                auto vec =
-                                    self.get<std::vector<std::any>>(section);
-                                sol::table luaTable = lua.create_table();
-                                for (size_t i = 0; i < vec.size(); ++i) {
-                                    const auto &elem = vec[i];
-                                    if (elem.type() == typeid(std::string)) {
-                                        luaTable[i + 1] =
-                                            std::any_cast<std::string>(elem);
-                                    } else if (elem.type() == typeid(int64_t)) {
-                                        luaTable[i + 1] =
-                                            std::any_cast<int64_t>(elem);
-                                    } else if (elem.type() == typeid(bool)) {
-                                        luaTable[i + 1] =
-                                            std::any_cast<bool>(elem);
-                                    } else {
-                                        luaTable[i + 1] = sol::nil;
-                                    }
-                                }
-                                return sol::make_object(lua, luaTable);
-                            }
-                            default:
-                                throw std::runtime_error("Type not supported");
-                        }
-                    }));
+            Configuration::bind_to_lua(plugins::Plugins::lua.state);
         }
 
 #endif
@@ -186,17 +138,18 @@ namespace engine
                     }
                 };
 
-            process_table(m_toml.tbl, dynamic_configs);
+            process_table(m_toml, dynamic_configs);
 
             TRY_END()
             CATCH(toml::parse_error, {
                 const auto &source = e.source();
-                throw exception::Load(fmt::format(
-                    "Error parsing file '{:s}' at line {:d}, column {:d}: {:s}",
-                    *source.path,
-                    source.begin.line,
-                    source.begin.column,
-                    e.description()));
+                throw exception::Load(
+                    fmt::format("Error parsing file '{:s}' at line {:d}, "
+                                "column {:d}: {:s}",
+                                *source.path,
+                                source.begin.line,
+                                source.begin.column,
+                                e.description()));
             })
             CATCH(std::exception, {
                 throw exception::Load(

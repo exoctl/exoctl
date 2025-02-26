@@ -150,26 +150,7 @@ namespace engine::logging
 #ifdef ENGINE_PRO
     void Logging::register_plugins()
     {
-        plugins::Plugins::lua.state.new_usertype<Logging>(
-            "Logging",
-            sol::constructors<logging::Logging()>(),
-            "load",
-            &Logging::load,
-            "setup",
-            &Logging::setup,
-            "info",
-            static_cast<void (Logging::*)(const std::string &)>(&Logging::info),
-            "warn",
-            static_cast<void (Logging::*)(const std::string &)>(&Logging::warn),
-            "critical",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::critical),
-            "debug",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::debug),
-            "error",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::error));
+        Logging::bind_to_lua(plugins::Plugins::lua.state);
     }
 #endif
 

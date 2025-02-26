@@ -120,10 +120,5 @@ namespace engine
 
             m_document.AddMember(k, array, m_allocator);
         }
-
-        rapidjson::Document &Json::get_document()
-        {
-            return m_document;
-        }
     } // namespace parser
 } // namespace engine

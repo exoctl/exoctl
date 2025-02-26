@@ -67,19 +67,7 @@ namespace engine
         plugins::Plugins::lua.state["_configuration"] = &m_configuration;
         plugins::Plugins::lua.state["_server"] = &m_server;
 
-        plugins::Plugins::lua.state.new_usertype<engine::Engine>(
-            "Engine",
-            sol::constructors<engine::Engine()>(),
-            "is_running",
-            sol::readonly(&Engine::is_running),
-            "stop",
-            &Engine::stop,
-            "setup",
-            &Engine::setup,
-            "run",
-            &Engine::run,
-            "load",
-            &Engine::load);
+        Engine::bind_to_lua(plugins::Plugins::lua.state);
 
         // subplugins
         llama::Llama::plugins();

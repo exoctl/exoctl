@@ -3,9 +3,10 @@
 #include <any>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/parser/toml.hxx>
 #include <engine/configuration/exception.hxx>
 #include <unordered_map>
+#include <toml++/toml.hpp>
+
 
 namespace engine
 {
@@ -65,7 +66,7 @@ namespace engine
           private:
             std::string m_path;
             std::unordered_map<std::string, std::any> dynamic_configs;
-            parser::Toml m_toml;
+            toml::table m_toml;
         };
     } // namespace configuration
 } // namespace engine

@@ -44,9 +44,7 @@ namespace engine
                 clamav::record::scan::Options p_options,
                 const std::function<void(clamav::record::Data *)> &p_callback)
             {
-                struct clamav::record::Data *data =
-                    static_cast<struct clamav::record::Data *>(
-                        alloca(sizeof(struct clamav::record::Data)));
+                struct clamav::record::Data *data = new clamav::record::Data;
 
                 int fd;
 
@@ -97,6 +95,7 @@ namespace engine
                     p_callback(data);
                 }
 
+                delete data;
                 memory::Memory::close(fd);
             }
 

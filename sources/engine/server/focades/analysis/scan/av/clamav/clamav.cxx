@@ -17,10 +17,6 @@ namespace engine
                     {
                     }
 
-                    Clamav::~Clamav()
-                    {
-                    }
-
                     void Clamav::load_rules(
                         const std::function<void(unsigned int)> &p_callback)
                     {
@@ -41,20 +37,17 @@ namespace engine
                         const std::function<void(clamav::record::DTO *)>
                             &p_callback)
                     {
-                        if (!IS_NULL(p_callback)) {
-                            struct clamav::record::DTO *dto =
-                                new clamav::record::DTO;
+                        if (!IS_NULL(p_callback) && !p_buffer.empty()) {
+                            auto dto = std::make_unique<clamav::record::DTO>();
 
                             security::av::clamav::record::scan::Options
                                 scanopts;
-
                             scanopts.general =
                                 CL_SCAN_GENERAL_ALLMATCHES |
                                 CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE |
                                 CL_SCAN_GENERAL_COLLECT_METADATA;
-                            scanopts.parse = ~(0);
-                            scanopts.heuristic =
-                                CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE;
+                            scanopts.parse = CL_SCAN_PARSE_ARCHIVE;
+                            scanopts.heuristic = CL_SCAN_HEURISTIC_MACROS;
 
                             m_clamav.scan_fast_bytes(
                                 p_buffer,
@@ -65,8 +58,7 @@ namespace engine
                                     dto->virname = p_data->virname;
                                 });
 
-                            p_callback(dto);
-                            delete dto;
+                            p_callback(dto.get());
                         }
                     }
 

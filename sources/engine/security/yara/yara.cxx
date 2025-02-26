@@ -77,7 +77,7 @@ namespace engine
         {
             {
                 plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
-                    "YR_STREAM",
+                    "Stream",
                     sol::constructors<YR_STREAM()>(),
                     "read",
                     [](YR_STREAM &stream, sol::function func) {

@@ -11,7 +11,7 @@ namespace engine::focades::analysis::scan::av
     {
       public:
         Clamav(configuration::Configuration &);
-        ~Clamav();
+        ~Clamav() = default;
 
         void scan_fast_bytes(
             const std::string &,
