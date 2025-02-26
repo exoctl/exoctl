@@ -32,12 +32,8 @@ namespace engine
                                  const std::string &section,
                                  const toml::node_type type) -> sol::object {
                     auto &lua = plugins::Plugins::lua.state;
-                    auto node = self.m_toml.at_path(section);
+                    auto node = self.get(section);
 
-                    if (!node) {
-                        throw exception::Get("Section or key not found: " +
-                                             section);
-                    }
                     switch (type) {
                         case toml::node_type::string:
                             return sol::make_object(
@@ -116,6 +112,16 @@ namespace engine
                 throw exception::Load(
                     fmt::format("Unexpected error: {:s}", e.what()));
             });
+        }
+
+        toml::node_view<const toml::node> Configuration::get(
+            const std::string &path) const
+        {
+            auto node = m_toml.at_path(path);
+            if (!node) {
+                throw exception::Get("Section or key not found: " + path);
+            }
+            return node;
         }
 
         Configuration &Configuration::operator=(const Configuration &p_config)

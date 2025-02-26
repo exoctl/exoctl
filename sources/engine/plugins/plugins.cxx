@@ -20,18 +20,17 @@ namespace engine
             m_config = p_config;
             m_log = p_log;
 
-            if (!m_config.get<bool>("plugins.enable"))
+            if (!m_config.get("plugins.enable").value<bool>().value())
                 LOG(m_log, warn, "Plugins not enabled");
         }
 
         void Plugins::load_libraries()
         {
-            if (m_config.get<bool>("plugins.enable")) {
-                auto node =
-                    m_config.get<toml::array>("plugins.lua.standard.libraries");
-
-                std::vector<std::string> libs_any;               
-                for (const auto &elem : *node.as_array()) {
+            if (m_config.get("plugins.enable").value<bool>().value()) {
+                std::vector<std::string> libs_any;
+                for (const auto &elem :
+                     *m_config.get("plugins.lua.standard.libraries")
+                          .as_array()) {
                     if (!elem.is_string()) {
                         throw exception::LoadPlugin(
                             "Array contains non-string elements at key: "
@@ -46,8 +45,7 @@ namespace engine
                                 fmt::join(libs_any, ", ")));
 
                 for (const auto &name : libs_any) {
-                    auto lib = lua.from_lib(
-                        name);
+                    auto lib = lua.from_lib(name);
                     lua.state.open_libraries(lib);
                 }
             }
@@ -73,15 +71,15 @@ namespace engine
         void Plugins::load()
         {
             Plugins::load_libraries();
-            if (m_config.get<bool>("plugins.enable")) {
+            if (m_config.get("plugins.enable").value<bool>().value()) {
                 Plugins::load_plugins_folder(
-                    m_config.get<std::string>("plugins.path"));
+                    m_config.get("plugins.path").value<std::string>().value());
             }
         }
 
         std::future<void> Plugins::run_async()
         {
-            if (!m_config.get<bool>("plugins.enable")) {
+            if (!m_config.get("plugins.enable").value<bool>().value()) {
                 return std::future<void>();
             }
 
@@ -97,7 +95,7 @@ namespace engine
 
         void Plugins::load_plugins_folder(const std::string &p_path)
         {
-            if (m_config.get<bool>("plugins.enable")) {
+            if (m_config.get("plugins.enable").value<bool>().value()) {
                 DIR *dir = opendir(p_path.c_str());
                 if (!dir)
                     throw plugins::exception::LoadPlugin(

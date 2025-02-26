@@ -1,6 +1,6 @@
 #pragma once
 
-#include  <engine/interfaces/iendpoints.hxx>
+#include  <engine/interfaces/iendpoint.hxx>
 #include <engine/server/focades/reverse/disassembly/capstone/capstone.hxx>
 #include <engine/server/gateway/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
@@ -12,7 +12,7 @@
 namespace engine::server::bridge::endpoints
 {
 
-    class Reverse : public interface::IEndpoints
+    class Reverse : public interface::IEndpoint
     {
       public:
         Reverse(Server &);

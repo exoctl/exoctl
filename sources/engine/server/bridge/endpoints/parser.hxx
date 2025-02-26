@@ -1,6 +1,6 @@
 #pragma once
 
-#include  <engine/interfaces/iendpoints.hxx>
+#include  <engine/interfaces/iendpoint.hxx>
 #include <engine/server/focades/parser/binary/lief/art/art.hxx>
 #include <engine/server/focades/parser/binary/lief/dex/dex.hxx>
 #include <engine/server/focades/parser/binary/lief/elf/elf.hxx>
@@ -14,7 +14,7 @@
 namespace engine::server::bridge::endpoints
 {
 
-    class Parser : public interface::IEndpoints
+    class Parser : public interface::IEndpoint
     {
       public:
         Parser(Server &);

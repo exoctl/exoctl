@@ -27,7 +27,8 @@ namespace engine
                 {
                     m_yara.load_rules([&]() {
                         m_yara.load_rules_folder(
-                            m_config.get<std::string>("yara.rules.path"));
+                            m_config.get("yara.rules.path").value<std::string>()
+                            .value());
                     });
 
                     if (!IS_NULL(p_callback)) {

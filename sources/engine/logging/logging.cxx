@@ -58,8 +58,9 @@ namespace engine::logging
 
     void Logging::load()
     {
-        active_instance(m_config.get<std::string>("logging.type"),
-                        m_config.get<std::string>("logging.name"));
+        active_instance(
+            m_config.get("logging.type").value<std::string>().value(),
+            m_config.get("logging.name").value<std::string>().value());
     }
 
     void Logging::active_instance(const std::string &p_type,
@@ -80,26 +81,39 @@ namespace engine::logging
         std::vector<spdlog::sink_ptr> sinks;
 
         if (p_type == "daily") {
-            sinks.emplace_back(
-                std::make_shared<spdlog::sinks::daily_file_sink_mt>(
-                    m_config.get<std::string>("logging.filepath"),
-                    m_config.get<int64_t>("logging.daily.hours"),
-                    m_config.get<int64_t>("logging.daily.minutes"),
-                    false,
-                    m_config.get<int64_t>("logging.daily.max_size")));
+            sinks.emplace_back(std::make_shared<
+                               spdlog::sinks::daily_file_sink_mt>(
+                m_config.get("logging.filepath").value<std::string>().value(),
+                m_config.get("logging.daily.hours").value<int64_t>().value(),
+                m_config.get("logging.daily.minutes").value<int64_t>().value(),
+                false,
+                m_config.get("logging.daily.max_size")
+                    .value<int64_t>()
+                    .value()));
         } else if (p_type == "rotation") {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-                    m_config.get<std::string>("logging.filepath"),
-                    m_config.get<int64_t>("logging.rotation.max_size"),
-                    m_config.get<int64_t>("logging.rotation.max_files")));
+                    m_config.get("logging.filepath")
+                        .value<std::string>()
+                        .value(),
+                    m_config.get("logging.rotation.max_size")
+                        .value<int64_t>()
+                        .value(),
+                    m_config.get("logging.rotation.max_files")
+                        .value<int64_t>()
+                        .value()));
         } else {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-                    m_config.get<std::string>("logging.filepath"), true));
+                    m_config.get("logging.filepath")
+                        .value<std::string>()
+                        .value(),
+                    true));
         }
 
-        if (m_config.get<bool>("logging.console.output_enabled")) {
+        if (m_config.get("logging.console.output_enabled")
+                .value<bool>()
+                .value()) {
             if (std::none_of(sinks.begin(), sinks.end(), [](const auto &sink) {
                     return dynamic_cast<spdlog::sinks::stdout_color_sink_mt *>(
                                sink.get()) != nullptr;
@@ -114,10 +128,13 @@ namespace engine::logging
         spdlog::register_logger(logger);
 
         logger->flush_on(static_cast<spdlog::level::level_enum>(
-            m_config.get<int64_t>("logging.trace_updates.interval")));
-        logger->set_pattern(m_config.get<std::string>("logging.pattern"));
+            m_config.get("logging.trace_updates.interval")
+                .value<int64_t>()
+                .value()));
+        logger->set_pattern(
+            m_config.get("logging.pattern").value<std::string>().value());
         logger->set_level(static_cast<spdlog::level::level_enum>(
-            m_config.get<int64_t>("logging.level")));
+            m_config.get("logging.level").value<int64_t>().value()));
 
         return logger;
     }

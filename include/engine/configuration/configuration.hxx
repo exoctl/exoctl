@@ -1,11 +1,9 @@
 #pragma once
 
-#include <any>
 #include <engine/configuration/exception.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <toml++/toml.hpp>
-#include <unordered_map>
 
 namespace engine
 {
@@ -26,28 +24,8 @@ namespace engine
             void setup(const std::string &);
             void load();
 
-            template <typename T> T get(const std::string &path) const
-            {
-                auto node = m_toml.at_path(path);
-                if (!node) {
-                    throw exception::Get("Section or key not found: " + path);
-                }
-
-                if constexpr (std::is_same_v<T, toml::array>) {
-                    auto *arr = node.as_array();
-                    if (!arr) {
-                        throw exception::Get(
-                            "Type mismatch: expected array for key: " + path);
-                    }
-                    return *arr;
-                } else {
-                    auto value = node.value<T>();
-                    if (!value) {
-                        throw exception::Get("Type mismatch for key: " + path);
-                    }
-                    return *value;
-                }
-            }
+            [[nodiscard]] toml::node_view<const toml::node> get(
+                const std::string &path) const;
 
 #ifdef ENGINE_PRO
             void register_plugins() override;

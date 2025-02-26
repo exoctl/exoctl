@@ -19,6 +19,16 @@ namespace engine
                 explicit LoadPlugin(const std::string &);
                 const char *what() const noexcept override;
             };
+
+            class LoadLibraries : public interface::IException
+            {
+              private:
+                const std::string m_error_message;
+
+              public:
+                explicit LoadLibraries(const std::string &);
+                const char *what() const noexcept override;
+            };
         } // namespace exception
     } // namespace plugins
 } // namespace engine

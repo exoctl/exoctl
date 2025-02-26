@@ -27,16 +27,16 @@ namespace engine
         {
           private:
             std::shared_ptr<App> m_app;
-            
-            public:
+
+          public:
             Server();
             ~Server() = default;
             Server &operator=(const Server &);
             configuration::Configuration *config;
             logging::Logging *log;
-            
+
             void setup(configuration::Configuration &, logging::Logging &);
-            
+
             App &get();
             unsigned short concurrency;
             std::string bindaddr;

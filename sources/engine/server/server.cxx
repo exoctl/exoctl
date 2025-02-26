@@ -8,7 +8,7 @@ namespace engine
 {
     namespace server
     {
-        Server::Server() : m_app(new App())
+        Server::Server() : m_app(std::make_shared<App>())
         {
         }
 
@@ -18,12 +18,17 @@ namespace engine
             config = &p_config;
             log = &p_log;
 
-            name.assign(config->get<std::string>("server.name"));
-            bindaddr.assign(config->get<std::string>("server.bindaddr"));
+            name.assign(
+                config->get("server.name").value<std::string>().value());
+            bindaddr.assign(
+                config->get("server.bindaddr").value<std::string>().value());
             ssl_certificate_path.assign(
-                config->get<std::string>("server.ssl_certificate_path"));
-            concurrency = config->get<int64_t>("server.threads");
-            port = config->get<int64_t>("server.port");
+                config->get("server.ssl_certificate_path")
+                    .value<std::string>()
+                    .value());
+            concurrency =
+                config->get("server.threads").value<int64_t>().value();
+            port = config->get("server.port").value<int64_t>().value();
         }
 
 #ifdef ENGINE_PRO
@@ -71,12 +76,22 @@ namespace engine
                 log = p_server.log;
                 m_app = std::make_shared<App>(*p_server.m_app);
 
-                name.assign(config->get<std::string>("server.name"));
-                bindaddr.assign(config->get<std::string>("server.bindaddr"));
+                name.assign(p_server.config->get("server.name")
+                                .value<std::string>()
+                                .value());
+                bindaddr.assign(p_server.config->get("server.bindaddr")
+                                    .value<std::string>()
+                                    .value());
                 ssl_certificate_path.assign(
-                    config->get<std::string>("server.ssl_certificate_path"));
-                concurrency = config->get<int64_t>("server.threads");
-                port = config->get<int64_t>("server.port");
+                    p_server.config->get("server.ssl_certificate_path")
+                        .value<std::string>()
+                        .value());
+                concurrency = p_server.config->get("server.threads")
+                                  .value<int64_t>()
+                                  .value();
+                port = p_server.config->get("server.port")
+                           .value<int64_t>()
+                           .value();
             }
             return *this;
         }

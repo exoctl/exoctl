@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include  <engine/interfaces/iendpoints.hxx>
+#include  <engine/interfaces/iendpoint.hxx>
 #include <engine/server/gateway/map/map.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
@@ -12,7 +12,7 @@
 
 namespace engine::server::bridge::endpoints
 {
-    class Plugins : public interface::IEndpoints
+    class Plugins : public interface::IEndpoint
     {
       public:
         Plugins(Server &);

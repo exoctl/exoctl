@@ -12,8 +12,9 @@ namespace engine::security::av::clamav::_
         m_config = p_config;
         m_log = p_log;
 
-        m_log.create_logger(m_config.get<std::string>("logging.type"),
-                            m_config.get<std::string>("av.clamav._.log.name"));
+        m_log.create_logger(
+            m_config.get("logging.type").value<std::string>().value(),
+            m_config.get("av.clamav._.log.name").value<std::string>().value());
 
         cl_set_clcb_msg(&Log::log);
     }
@@ -26,26 +27,30 @@ namespace engine::security::av::clamav::_
         switch (severity) {
             case CL_MSG_ERROR:
                 m_log
-                    .get_logger(
-                        m_config.get<std::string>("av.clamav._.log.name"))
+                    .get_logger(m_config.get("av.clamav._.log.name")
+                                    .value<std::string>()
+                                    .value())
                     ->error("{}", p_msg);
                 break;
             case CL_MSG_WARN:
                 m_log
-                    .get_logger(
-                        m_config.get<std::string>("av.clamav._.log.name"))
+                    .get_logger(m_config.get("av.clamav._.log.name")
+                                    .value<std::string>()
+                                    .value())
                     ->warn("{}", p_msg);
                 break;
             case CL_MSG_INFO_VERBOSE:
                 m_log
-                    .get_logger(
-                        m_config.get<std::string>("av.clamav._.log.name"))
+                    .get_logger(m_config.get("av.clamav._.log.name")
+                                    .value<std::string>()
+                                    .value())
                     ->debug("{}", p_msg);
                 break;
             default:
                 m_log
-                    .get_logger(
-                        m_config.get<std::string>("av.clamav._.log.name"))
+                    .get_logger(m_config.get("av.clamav._.log.name")
+                                    .value<std::string>()
+                                    .value())
                     ->debug("{}", p_msg);
                 break;
         }
