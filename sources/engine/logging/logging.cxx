@@ -89,7 +89,7 @@ namespace engine::logging
                         .value(),
                     time->get().hour,
                     time->get().minute,
-                    false,
+                    m_config.get("logging.daily.truncate").value<bool>().value(),
                     m_config.get("logging.daily.max_size")
                         .value<int64_t>()
                         .value()));

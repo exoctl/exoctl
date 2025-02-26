@@ -8,14 +8,6 @@ namespace engine
     {
         void Configuration::bind_to_lua(sol::state_view &p_lua)
         {
-            p_lua.new_enum<toml::node_type>(
-                "NodeType",
-                {{"array", toml::node_type::array},
-                 {"string", toml::node_type::string},
-                 {"integer", toml::node_type::integer},
-                 {"floating_point", toml::node_type::floating_point},
-                 {"boolean", toml::node_type::boolean}});
-
             p_lua.new_usertype<configuration::Configuration>(
                 "Configuration",
                 sol::constructors<configuration::Configuration()>(),
