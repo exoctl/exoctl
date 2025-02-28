@@ -52,6 +52,16 @@ namespace engine
             }
         }
 
+        void Yara::rules_foreach(
+            const std::function<void(const YR_RULE &)> &p_callback)
+        {
+            const YR_RULE *rule;
+            yr_rules_foreach(m_yara_rules, rule)
+            {
+                p_callback(*rule);
+            }
+        }
+
         const int Yara::load_stream_rules(YR_STREAM &p_stream)
         {
             return yr_rules_load_stream(&p_stream, &m_yara_rules);
@@ -75,58 +85,105 @@ namespace engine
 #ifdef ENGINE_PRO
         void Yara::_plugins()
         {
-            {
-                plugins::Plugins::lua.state.new_usertype<YR_RULE>(
-                    "Rule",
-                    sol::constructors<YR_RULE()>(),
-                    "flags",
-                    sol::readonly(&YR_RULE::flags),
-                    "num_atoms",
-                    sol::readonly(&YR_RULE::num_atoms),
-                    "required_strings",
-                    sol::readonly(&YR_RULE::required_strings),
-                    "unused",
-                    sol::readonly(&YR_RULE::unused),
-                    "identifier",
-                    sol::readonly(&YR_RULE::identifier));
+            plugins::Plugins::lua.state.new_usertype<YR_STRING>(
+                "String",
+                sol::constructors<YR_STRING()>(),
+                "flags",
+                sol::readonly(&YR_STRING::flags),
+                "idx",
+                sol::readonly(&YR_STRING::idx),
+                "fixed_offset",
+                sol::readonly(&YR_STRING::fixed_offset),
+                "rule_idx",
+                sol::readonly(&YR_STRING::rule_idx),
+                "length",
+                sol::readonly(&YR_STRING::length),
+                "string",
+                [](const YR_STRING &s) {
+                    return std::string(reinterpret_cast<const char *>(s.string),
+                                       s.length);
+                },
+                "identifier",
+                sol::readonly(&YR_STRING::identifier));
 
-                plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
-                    "Stream",
-                    sol::constructors<YR_STREAM()>(),
-                    "read",
-                    [](YR_STREAM &stream, sol::function func) {
-                        static sol::function lua_read_func = func;
-                        stream.read = [](void *ptr,
-                                         size_t size,
-                                         size_t count,
-                                         void *) -> size_t {
-                            if (!lua_read_func.valid())
-                                return 0;
-                            return lua_read_func(
-                                std::string(static_cast<const char *>(ptr),
-                                            size * count),
-                                size,
-                                count);
-                        };
-                    },
-                    "write",
-                    [](YR_STREAM &stream, sol::function func) {
-                        static sol::function lua_write_func = func;
-                        stream.write = [](const void *ptr,
-                                          const size_t size,
-                                          const size_t count,
-                                          void *) -> size_t {
-                            if (!lua_write_func.valid())
-                                return 0;
+            plugins::Plugins::lua.state.new_usertype<YR_NAMESPACE>(
+                "Namespace",
+                sol::constructors<YR_NAMESPACE()>(),
+                "name",
+                sol::readonly(&YR_NAMESPACE::name),
+                "idx",
+                sol::readonly(&YR_NAMESPACE::idx));
 
-                            return lua_write_func(
-                                std::string(static_cast<const char *>(ptr),
-                                            size * count),
-                                size,
-                                count);
-                        };
-                    });
-            }
+            plugins::Plugins::lua.state.new_usertype<YR_META>(
+                "Meta",
+                sol::constructors<YR_META()>(),
+                "flags",
+                sol::readonly(&YR_META::flags),
+                "type",
+                sol::readonly(&YR_META::type),
+                "identifier",
+                sol::readonly(&YR_META::identifier),
+                "integer",
+                sol::readonly(&YR_META::integer),
+                "string",
+                sol::readonly(&YR_META::string));
+
+            plugins::Plugins::lua.state.new_usertype<YR_RULE>(
+                "Rule",
+                sol::constructors<YR_RULE()>(),
+                "flags",
+                sol::readonly(&YR_RULE::flags),
+                "num_atoms",
+                sol::readonly(&YR_RULE::num_atoms),
+                "required_strings",
+                sol::readonly(&YR_RULE::required_strings),
+                "identifier",
+                sol::readonly(&YR_RULE::identifier),
+                "tags",
+                sol::readonly(&YR_RULE::tags),
+                "ns",
+                sol::readonly(&YR_RULE::ns),
+                "strings",
+                sol::readonly(&YR_RULE::strings),
+                "metas",
+                sol::readonly(&YR_RULE::metas));
+
+            plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
+                "Stream",
+                sol::constructors<YR_STREAM()>(),
+                "read",
+                [](YR_STREAM &stream, sol::function func) {
+                    static sol::function lua_read_func = func;
+                    stream.read = [](void *ptr,
+                                     size_t size,
+                                     size_t count,
+                                     void *) -> size_t {
+                        if (!lua_read_func.valid())
+                            return 0;
+                        return lua_read_func(
+                            std::string(static_cast<const char *>(ptr),
+                                        size * count),
+                            size,
+                            count);
+                    };
+                },
+                "write",
+                [](YR_STREAM &stream, sol::function func) {
+                    static sol::function lua_write_func = func;
+                    stream.write = [](const void *ptr,
+                                      const size_t size,
+                                      const size_t count,
+                                      void *) -> size_t {
+                        if (!lua_write_func.valid())
+                            return 0;
+
+                        return lua_write_func(
+                            std::string(static_cast<const char *>(ptr),
+                                        size * count),
+                            size,
+                            count);
+                    };
+                });
 
             // yr_rules_foreach
 
@@ -146,6 +203,8 @@ namespace engine
                 Yara::unload_stream_rules,
                 "load_stream_rules",
                 Yara::load_stream_rules,
+                "rules_foreach",
+                &Yara::rules_foreach,
                 "save_stream_rules",
                 Yara::save_stream_rules,
                 "load_compiler",
@@ -208,6 +267,7 @@ namespace engine
                 &Yara::load_rule_buff);
         }
 #endif
+
         const int Yara::load_rule_file(const std::string &p_path,
                                        const std::string &p_yrname,
                                        const std::string &p_yrns) const

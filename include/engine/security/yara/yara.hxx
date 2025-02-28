@@ -48,6 +48,8 @@ namespace engine
                             void *,
                             int) const;
 
+            void rules_foreach(const std::function<void(const YR_RULE &)> &);
+
             void unload_stream_rules();
             [[nodiscard]] const int load_stream_rules(YR_STREAM &);
             [[nodiscard]] const int save_stream_rules(YR_STREAM &);
