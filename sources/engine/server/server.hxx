@@ -20,9 +20,10 @@ namespace engine
     namespace server
     {
         using App = crow::App<>;
-        class Server
+        class Server : public interface::IBind
 #ifdef ENGINE_PRO
-            : public interface::IPlugins
+            ,
+                       public interface::IPlugins
 #endif
         {
           private:
@@ -43,6 +44,7 @@ namespace engine
             std::string name;
             unsigned short port;
             std::string ssl_certificate_path;
+            void bind_to_lua(sol::state_view &) override;
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif

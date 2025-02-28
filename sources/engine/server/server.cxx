@@ -1,4 +1,4 @@
-#include <engine/server/exception.hxx>
+#include <engine/bridge/exception.hxx>
 #include <engine/server/gateway/crow/crow.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
@@ -38,23 +38,30 @@ namespace engine
             engine::server::gateway::Web::plugins();
             // engine::server::gateway::WebSocket::plugins();
 
-            plugins::Plugins::lua.state.new_usertype<Server>(
-                "Server",
-                sol::constructors<server::Server()>(),
-                "setup",
-                Server::setup,
-                "run_async",
-                Server::run_async,
-                "stop",
-                Server::stop,
-                "port",
-                sol::readonly(&Server::port),
-                "bindaddr",
-                sol::readonly(&Server::bindaddr),
-                "concurrency",
-                sol::readonly(&Server::concurrency));
+            Server::bind_to_lua(plugins::Plugins::lua.state);
         }
 #endif
+
+        void Server::bind_to_lua(sol::state_view &p_lua)
+        {
+
+            p_lua.new_usertype<Server>("Server",
+                                       sol::constructors<server::Server()>(),
+                                       "setup",
+                                       Server::setup,
+                                       "run_async",
+                                       Server::run_async,
+                                       "stop",
+                                       Server::stop,
+                                       "register_plugins",
+                                       &Server::register_plugins,
+                                       "port",
+                                       sol::readonly(&Server::port),
+                                       "bindaddr",
+                                       sol::readonly(&Server::bindaddr),
+                                       "concurrency",
+                                       sol::readonly(&Server::concurrency));
+        }
 
         std::future<void> Server::run_async()
         {

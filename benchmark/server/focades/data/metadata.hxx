@@ -1,7 +1,7 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
-#include <engine/server/focades/data/metadata/metadata.hxx>
+#include <engine/bridge/focades/data/metadata/metadata.hxx>
 #include <string>
 
 class MetadataBenchmark : public benchmark::Fixture

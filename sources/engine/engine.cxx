@@ -7,7 +7,7 @@
 #include <engine/magic/magic.hxx>
 #include <engine/parser/json/json.hxx>
 #include <engine/security/yara/yara.hxx>
-#include <engine/server/exception.hxx>
+#include <engine/bridge/exception.hxx>
 #include <thread>
 
 namespace engine
@@ -17,9 +17,11 @@ namespace engine
     }
 
     void Engine::setup(configuration::Configuration &p_config,
-                       logging::Logging &p_log)
+                       logging::Logging &p_log,
+                       server::Server &p_server)
     {
         m_logging = p_log;
+        m_server = p_server;
         m_configuration = p_config;
 
 #ifdef ENGINE_PRO
@@ -31,7 +33,6 @@ namespace engine
         m_server_log.setup(m_configuration, m_logging);
 
         m_server.setup(m_configuration, m_logging);
-        m_server_bridge.setup(m_server);
     }
 
     void Engine::bind_to_lua(sol::state_view &p_lua)
@@ -69,23 +70,17 @@ namespace engine
 
         Engine::bind_to_lua(plugins::Plugins::lua.state);
 
-        // subplugins
         llama::Llama::plugins();
         crypto::Sha::plugins();
         security::Yara::plugins();
         magic::Magic::plugins();
         parser::Json::plugins();
-
-        // plugins
-        m_server.register_plugins();
-        m_server_bridge.register_plugins();
     }
 #endif
 
     void Engine::load()
     {
         Engine::load_emergency();
-        m_server_bridge.load();
 #ifdef ENGINE_PRO
         m_plugins.load();
 #endif

@@ -4,7 +4,9 @@
 #include <engine/interfaces/ibind.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/memory/memory.hxx>
+#include <engine/server/server.hxx>
 #include <vector>
+#include <engine/bridge/bridge.hxx>
 
 extern "C" {
 int luaopen_libskull(lua_State *L)
@@ -13,8 +15,10 @@ int luaopen_libskull(lua_State *L)
 
     std::vector<std::unique_ptr<engine::interface::IBind>> bindings;
 
-    bindings.reserve(4);
+    bindings.reserve(6);
 
+    bindings.push_back(std::make_unique<engine::server::Server>());
+    bindings.push_back(std::make_unique<engine::server::Bridge>());
     bindings.push_back(std::make_unique<engine::memory::Memory>());
     bindings.push_back(
         std::make_unique<engine::configuration::Configuration>());
