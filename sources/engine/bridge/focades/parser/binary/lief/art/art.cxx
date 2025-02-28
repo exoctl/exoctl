@@ -1,55 +1,36 @@
+#include <engine/bridge/focades/parser/binary/lief/art/art.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json/json.hxx>
-#include <engine/bridge/focades/parser/binary/lief/art/art.hxx>
 
-namespace engine
+namespace engine::bridge::focades::parser::binary::art
 {
-    namespace focades
+
+    void ART::parse_bytes(
+        const std::string &p_buffer,
+        const std::function<void(binary::art::record::DTO *)> &p_callback)
     {
-        namespace parser
-        {
-            namespace binary
-            {
-                ART::ART()
-                {
-                }
-                ART::~ART()
-                {
-                }
+        m_art.parse_bytes(p_buffer,
+                          [&](std::unique_ptr<const LIEF::ART::File> p_art) {
+                              if (p_art) {
+                                  struct binary::art::record::DTO *dto =
+                                      new binary::art::record::DTO;
 
-                void ART::parse_bytes(
-                    const std::string &p_buffer,
-                    const std::function<void(binary::art::record::DTO *)>
-                        &p_callback)
-                {
-                    m_art.parse_bytes(
-                        p_buffer,
-                        [&](std::unique_ptr<const LIEF::ART::File> p_art) {
-                            if (p_art) {
-                                struct binary::art::record::DTO *dto =
-                                    new binary::art::record::DTO;
+                                  dto->art = &p_art;
 
-                                dto->art = &p_art;
+                                  p_callback(dto);
+                                  delete dto;
+                              }
+                          });
+    }
 
-                                p_callback(dto);
-                                delete dto;
-                            }
-                        });
-                }
+    const ::engine::parser::Json ART::dto_json(binary::art::record::DTO *p_dto)
+    {
+        ::engine::parser::Json json;
 
-                const ::engine::parser::Json ART::dto_json(
-                    binary::art::record::DTO *p_dto)
-                {
-                    ::engine::parser::Json json;
+        if (!IS_NULL(p_dto)) {
+            json.from_string(LIEF::to_json(*p_dto->art->get()));
+        }
 
-                    if (!IS_NULL(p_dto)) {
-                        json.from_string(LIEF::to_json(*p_dto->art->get()));
-                    }
-
-                    return json;
-                }
-
-            } // namespace binary
-        } // namespace parser
-    } // namespace focades
-} // namespace engine
+        return json;
+    }
+} // namespace engine::bridge::focades::parser::binary::art

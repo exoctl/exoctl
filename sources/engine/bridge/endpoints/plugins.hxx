@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include  <engine/interfaces/iendpoint.hxx>
+#include <engine/interfaces/iendpoint.hxx>
 #include <engine/server/gateway/map/map.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
@@ -10,18 +10,18 @@
 
 #define BASE_PLUGINS API_PREFIX "/plugins"
 
-namespace engine::server::bridge::endpoints
+namespace engine::bridge::endpoints
 {
     class Plugins : public interface::IEndpoint
     {
       public:
-        Plugins(Server &);
+        Plugins(server::Server &);
         ~Plugins() = default;
 
         void load() const override;
 
       private:
-        Server &m_server;
+        server::Server &m_server;
         mutable engine::server::gateway::Map m_map;
 
         std::unique_ptr<engine::server::gateway::Web> m_web_plugins;
@@ -29,6 +29,6 @@ namespace engine::server::bridge::endpoints
         void prepare();
         void plugins();
     };
-} // namespace engine::server::bridge
+} // namespace engine::bridge::endpoints
 
 #endif

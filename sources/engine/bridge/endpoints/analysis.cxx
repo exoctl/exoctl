@@ -1,12 +1,12 @@
-#include <engine/logging/logging.hxx>
-#include <engine/security/yara/exception.hxx>
 #include <engine/bridge/endpoints/analysis.hxx>
 #include <engine/bridge/exception.hxx>
+#include <engine/logging/logging.hxx>
+#include <engine/security/yara/exception.hxx>
 #include <stdint.h>
 
-namespace engine::server::bridge::endpoints
+namespace engine::bridge::endpoints
 {
-    Analysis::Analysis(Server &p_server)
+    Analysis::Analysis(server::Server &p_server)
         : m_server(p_server), m_map(BASE_ANALYSIS)
     {
         Analysis::prepare();
@@ -26,13 +26,13 @@ namespace engine::server::bridge::endpoints
     {
         m_map.add_route("/scan", [&]() {
             m_socket_scan =
-                std::make_unique<engine::server::gateway::WebSocket>();
+                std::make_unique<server::gateway::WebSocket>();
             m_socket_scan->setup(
                 m_server,
                 BASE_ANALYSIS "/scan",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -43,16 +43,14 @@ namespace engine::server::bridge::endpoints
                     m_scan_yara->scan_fast_bytes(
                         p_data,
                         [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json.add("yara",
-                                                 m_scan_yara->dto_json(p_dto));
+                            json.add("yara", m_scan_yara->dto_json(p_dto));
                         });
 
                     m_scan_av_clamav->scan_fast_bytes(
                         p_data,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
-                            av.add(
-                                "clamav", m_scan_av_clamav->dto_json(p_dto));
+                            av.add("clamav", m_scan_av_clamav->dto_json(p_dto));
                         });
 
                     json.add("av", av);
@@ -76,7 +74,7 @@ namespace engine::server::bridge::endpoints
                 BASE_ANALYSIS "/scan/av/clamav",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -102,7 +100,7 @@ namespace engine::server::bridge::endpoints
                 BASE_ANALYSIS "/scan/yara/fast",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -132,10 +130,10 @@ namespace engine::server::bridge::endpoints
     {
         m_server.log->info("Preparing gateway analysis routes ...");
 
-        m_scan_yara =
-            std::make_unique<focades::analysis::scan::Yara>(*m_server.config);
+        m_scan_yara = std::make_unique<focades::analysis::scan::yara::Yara>(
+            *m_server.config);
         m_scan_av_clamav =
-            std::make_unique<focades::analysis::scan::av::Clamav>(
+            std::make_unique<focades::analysis::scan::av::clamav::Clamav>(
                 *m_server.config);
 
         TRY_BEGIN()
@@ -157,7 +155,7 @@ namespace engine::server::bridge::endpoints
         TRY_END()
         CATCH(security::yara::exception::LoadRules, {
             m_server.log->error("{}", e.what());
-            throw server::exception::Abort(e.what());
+            throw exception::Abort(e.what());
         })
     }
-} // namespace engine::server::bridge::endpoints
+} // namespace engine::bridge::endpoints

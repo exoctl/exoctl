@@ -2,7 +2,7 @@
 
 #include <engine/parser/binary/lief/lief.hxx>
 
-namespace engine::focades::parser::binary::dex
+namespace engine::bridge::focades::parser::binary::dex
 {
     namespace record
     {
@@ -10,4 +10,4 @@ namespace engine::focades::parser::binary::dex
             std::unique_ptr<const LIEF::DEX::File> *dex;
         } DTO;
     } // namespace record
-} // namespace engine::focades::parser::binary::dex
+} // namespace engine::bridge::focades::parser::binary::dex

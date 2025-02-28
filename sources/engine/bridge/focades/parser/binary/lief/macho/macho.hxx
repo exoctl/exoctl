@@ -4,13 +4,13 @@
 #include <engine/parser/json/json.hxx>
 #include <engine/bridge/focades/parser/binary/lief/macho/entitys.hxx>
 
-namespace engine::focades::parser::binary
+namespace engine::bridge::focades::parser::binary::macho
 {
     class MACHO
     {
       public:
-        MACHO();
-        ~MACHO();
+        MACHO() = default;
+        ~MACHO() = default;
 
         void parse_bytes(
             const std::string &,
@@ -22,4 +22,4 @@ namespace engine::focades::parser::binary
                                        const LIEF::MachO::Parser>
             m_macho;
     };
-} // namespace engine::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary

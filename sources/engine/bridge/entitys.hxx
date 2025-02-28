@@ -5,26 +5,23 @@
 
 namespace engine
 {
-    namespace server
+    namespace bridge
     {
-        namespace bridge
+        namespace type
         {
-            namespace type
-            {
-                enum Bridge {
-                    websocket,
-                    web
-                };
-            } // namespace type
+            enum Bridge {
+                websocket,
+                web
+            };
+        } // namespace type
 
-            namespace record
-            {
-                typedef struct Bridge {
-                    const std::string path;
-                    const type::Bridge type;
-                    const uint64_t connections; /* only websocket connections */
-                } Bridge;
-            } // namespace record
-        } // namespace bridge
-    } // namespace server
+        namespace record
+        {
+            typedef struct Bridge {
+                const std::string path;
+                const type::Bridge type;
+                const uint64_t connections; /* only websocket connections */
+            } Bridge;
+        } // namespace record
+    } // namespace bridge
 } // namespace engine

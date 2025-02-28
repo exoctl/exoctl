@@ -1,36 +1,25 @@
 #pragma once
 
+#include <engine/bridge/focades/parser/binary/lief/dex/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json/json.hxx>
-#include <engine/bridge/focades/parser/binary/lief/dex/entitys.hxx>
 
-namespace engine
+namespace engine::bridge::focades::parser::binary::dex
 {
-    namespace focades
+    class DEX
     {
-        namespace parser
-        {
-            namespace binary
-            {
-                class DEX
-                {
-                  public:
-                    DEX();
-                    ~DEX();
+      public:
+        DEX() = default;
+        ~DEX() = default;
 
-                    void parse_bytes(
-                        const std::string &,
-                        const std::function<void(binary::dex::record::DTO *)>
-                            &);
-                    const ::engine::parser::Json dto_json(
-                        binary::dex::record::DTO *);
+        void parse_bytes(
+            const std::string &,
+            const std::function<void(binary::dex::record::DTO *)> &);
+        const ::engine::parser::Json dto_json(binary::dex::record::DTO *);
 
-                  private:
-                    ::engine::parser::binary::LIEF<const LIEF::DEX::File,
-                                                   const LIEF::DEX::Parser>
-                        m_dex;
-                };
-            } // namespace binary
-        } // namespace parser
-    } // namespace focades
-} // namespace engine
+      private:
+        ::engine::parser::binary::LIEF<const LIEF::DEX::File,
+                                       const LIEF::DEX::Parser>
+            m_dex;
+    };
+} // namespace engine::bridge::focades::parser::binary

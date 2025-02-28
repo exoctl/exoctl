@@ -1,8 +1,8 @@
 #include <engine/bridge/endpoints/data.hxx>
 
-namespace engine::server::bridge::endpoints
+namespace engine::bridge::endpoints
 {
-    Data::Data(Server &p_server) : m_server(p_server), m_map(BASE_DATA)
+    Data::Data(server::Server &p_server) : m_server(p_server), m_map(BASE_DATA)
     {
         Data::prepare();
 
@@ -43,7 +43,7 @@ namespace engine::server::bridge::endpoints
     void Data::prepare()
     {
         m_server.log->info("Preparing gateway data routes ...");
-        m_data_metadata = std::make_unique<focades::data::Metadata>();
+        m_data_metadata = std::make_unique<focades::data::metadata::Metadata>();
     }
 
     void Data::load() const
@@ -51,4 +51,4 @@ namespace engine::server::bridge::endpoints
         m_map.get_routes(
             [&](const std::string p_route) { m_map.call_route(p_route); });
     }
-} // namespace engine::server::bridge::endpoints
+} // namespace engine::bridge::endpoints

@@ -8,7 +8,7 @@
 #include <engine/bridge/focades/data/metadata/entitys.hxx>
 #include <functional>
 
-namespace engine::focades::data
+namespace engine::bridge::focades::data::metadata
 {
     class Metadata
 #ifdef ENGINE_PRO
@@ -34,4 +34,4 @@ namespace engine::focades::data
         magic::Magic m_magic;
         crypto::Sha m_sha;
     };
-} // namespace engine::focades::data
+} // namespace engine::bridge::focades::data

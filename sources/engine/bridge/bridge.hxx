@@ -18,7 +18,7 @@
 
 namespace engine
 {
-    namespace server
+    namespace bridge
     {
         class Bridge : public interface::IBind
 #ifdef ENGINE_PRO
@@ -31,14 +31,14 @@ namespace engine
             ~Bridge() = default;
 
             void load();
-            void setup(Server &);
+            void setup(server::Server &);
 #ifdef ENGINE_PRO
             void register_plugins() override;
 #endif
             void bind_to_lua(sol::state_view &) override;
 
           private:
-            Server *m_server;
+            server::Server *m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
 
             std::unique_ptr<bridge::endpoints::Analysis> m_analysis;
@@ -49,5 +49,5 @@ namespace engine
             std::unique_ptr<bridge::endpoints::Reverse> m_reverse;
             std::unique_ptr<bridge::endpoints::Data> m_data;
         };
-    } // namespace server
+    } // namespace bridge
 } // namespace engine

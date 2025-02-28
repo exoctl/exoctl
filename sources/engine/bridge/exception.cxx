@@ -1,6 +1,6 @@
 #include <engine/bridge/exception.hxx>
 
-namespace engine::server::exception
+namespace engine::bridge::exception
 {
     Abort::Abort(const std::string &p_message) : m_error_message(p_message)
     {

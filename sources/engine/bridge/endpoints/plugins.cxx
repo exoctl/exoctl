@@ -4,9 +4,9 @@
 #include <engine/bridge/endpoints/plugins.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 
-namespace engine::server::bridge::endpoints
+namespace engine::bridge::endpoints
 {
-    Plugins::Plugins(Server &p_server) : m_server(p_server), m_map(BASE_PLUGINS)
+    Plugins::Plugins(server::Server &p_server) : m_server(p_server), m_map(BASE_PLUGINS)
     {
         Plugins::prepare();
 
@@ -63,6 +63,6 @@ namespace engine::server::bridge::endpoints
                 });
         });
     }
-} // namespace engine::server::bridge::endpoints
+} // namespace engine::bridge::endpoints
 
 #endif

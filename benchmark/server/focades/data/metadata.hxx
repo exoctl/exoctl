@@ -9,7 +9,7 @@ class MetadataBenchmark : public benchmark::Fixture
   public:
     void SetUp(const ::benchmark::State &state) override
     {
-        metadata = new engine::focades::data::Metadata();
+        metadata = new engine::bridge::focades::data::Metadata();
     }
 
     void TearDown(const ::benchmark::State &state) override
@@ -17,5 +17,5 @@ class MetadataBenchmark : public benchmark::Fixture
         delete metadata;
     }
 
-    engine::focades::data::Metadata *metadata;
+    engine::bridge::focades::data::Metadata *metadata;
 };

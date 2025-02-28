@@ -1,5 +1,6 @@
 #include <atomic>
 #include <chrono>
+#include <engine/bridge/exception.hxx>
 #include <engine/crypto/sha.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
@@ -7,7 +8,6 @@
 #include <engine/magic/magic.hxx>
 #include <engine/parser/json/json.hxx>
 #include <engine/security/yara/yara.hxx>
-#include <engine/bridge/exception.hxx>
 #include <thread>
 
 namespace engine
@@ -116,8 +116,6 @@ namespace engine
     {
         is_running = true;
 
-        TRY_BEGIN()
-
         if (p_callback) {
             std::jthread([this, p_callback]() {
                 while (is_running) {
@@ -131,19 +129,6 @@ namespace engine
         m_plugins.run_async();
 #endif
         m_server.run_async();
-
-        TRY_END()
-        CATCH(server::exception::Abort, {
-            LOG(m_logging,
-                error,
-                "Critical Crow aborted. Engine stopping. Reason: {}",
-                e.what());
-            Engine::stop();
-            throw exception::Run("Operation failed, Crow was aborted: " +
-                                 std::string(e.what()));
-        })
-        CATCH(server::exception::ParcialAbort,
-              { LOG(m_logging, error, "Non-critical occurred: {}", e.what()); })
 
         is_running = false;
     }

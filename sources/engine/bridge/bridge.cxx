@@ -3,9 +3,9 @@
 
 namespace engine
 {
-    namespace server
+    namespace bridge
     {
-        void Bridge::setup(Server &p_server)
+        void Bridge::setup(server::Server &p_server)
         {
             m_server = &p_server;
             m_analysis =
@@ -20,9 +20,9 @@ namespace engine
 
         void Bridge::bind_to_lua(sol::state_view &p_lua)
         {
-            p_lua.new_usertype<server::Bridge>(
+            p_lua.new_usertype<bridge::Bridge>(
                 "Bridge",
-                sol::constructors<server::Bridge()>(),
+                sol::constructors<bridge::Bridge()>(),
 #ifdef ENGINE_PRO
                 "register_plugins",
                 &Bridge::register_plugins,
@@ -70,5 +70,5 @@ namespace engine
                 throw exception::ParcialAbort(e.what());
             })
         }
-    } // namespace server
+    } // namespace bridge
 } // namespace engine

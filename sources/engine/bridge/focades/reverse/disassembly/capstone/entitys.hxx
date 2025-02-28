@@ -4,35 +4,26 @@
 #include <map>
 #include <string>
 
-namespace engine
+namespace engine::bridge::focades::reverse::disassembly
 {
-    namespace focades
+    namespace capstone
     {
-        namespace reverse
+        namespace record
         {
-            namespace disassembly
-            {
-                namespace capstone
-                {
-                    namespace record
-                    {
-                        typedef struct Instruction {
-                            std::string address;
-                            std::string mnemonic;
-                            std::string operands;
-                            uint16_t size;
-                            int id;
-                            std::string bytes;
-                        } Instruction;
+            typedef struct Instruction {
+                std::string address;
+                std::string mnemonic;
+                std::string operands;
+                uint16_t size;
+                int id;
+                std::string bytes;
+            } Instruction;
 
-                        typedef struct DTO {
-                            std::string arch;
-                            std::string mode;
-                            std::vector<Instruction> instructions;
-                        } DTO;
-                    } // namespace record
-                } // namespace capstone
-            } // namespace disassembly
-        } // namespace reverse
-    } // namespace focades
-} // namespace engine
+            typedef struct DTO {
+                std::string arch;
+                std::string mode;
+                std::vector<Instruction> instructions;
+            } DTO;
+        } // namespace record
+    } // namespace capstone
+} // namespace engine::bridge::focades::reverse::disassembly

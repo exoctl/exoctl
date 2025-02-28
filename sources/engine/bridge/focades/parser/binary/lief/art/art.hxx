@@ -1,36 +1,25 @@
 #pragma once
 
+#include <engine/bridge/focades/parser/binary/lief/art/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json/json.hxx>
-#include <engine/bridge/focades/parser/binary/lief/art/entitys.hxx>
 
-namespace engine
+namespace engine::bridge::focades::parser::binary::art
 {
-    namespace focades
+    class ART
     {
-        namespace parser
-        {
-            namespace binary
-            {
-                class ART
-                {
-                  public:
-                    ART();
-                    ~ART();
+      public:
+        ART() = default;
+        ~ART() = default;
 
-                    void parse_bytes(
-                        const std::string &,
-                        const std::function<void(binary::art::record::DTO *)>
-                            &);
-                    const ::engine::parser::Json dto_json(
-                        binary::art::record::DTO *);
+        void parse_bytes(
+            const std::string &,
+            const std::function<void(binary::art::record::DTO *)> &);
+        const ::engine::parser::Json dto_json(binary::art::record::DTO *);
 
-                  private:
-                    ::engine::parser::binary::LIEF<const LIEF::ART::File,
-                                                   const LIEF::ART::Parser>
-                        m_art;
-                };
-            } // namespace binary
-        } // namespace parser
-    } // namespace focades
-} // namespace engine
+      private:
+        ::engine::parser::binary::LIEF<const LIEF::ART::File,
+                                       const LIEF::ART::Parser>
+            m_art;
+    };
+} // namespace engine::bridge::focades::parser::binary

@@ -1,9 +1,9 @@
 #include <engine/bridge/endpoints/parser.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 
-namespace engine::server::bridge::endpoints
+namespace engine::bridge::endpoints
 {
-    Parser::Parser(Server &p_server) : m_server(p_server), m_map(BASE_PARSER)
+    Parser::Parser(server::Server &p_server) : m_server(p_server), m_map(BASE_PARSER)
     {
         Parser::prepare();
 
@@ -23,13 +23,14 @@ namespace engine::server::bridge::endpoints
 
     void Parser::prepare()
     {
-        m_server.log->info( "Preparing gateway parser routes ...");
+        m_server.log->info("Preparing gateway parser routes ...");
 
-        m_parser_elf = std::make_unique<focades::parser::binary::ELF>();
-        m_parser_macho = std::make_unique<focades::parser::binary::MACHO>();
-        m_parser_pe = std::make_unique<focades::parser::binary::PE>();
-        m_parser_dex = std::make_unique<focades::parser::binary::DEX>();
-        m_parser_art = std::make_unique<focades::parser::binary::ART>();
+        m_parser_elf = std::make_unique<focades::parser::binary::elf::ELF>();
+        m_parser_macho =
+            std::make_unique<focades::parser::binary::macho::MACHO>();
+        m_parser_pe = std::make_unique<focades::parser::binary::pe::PE>();
+        m_parser_dex = std::make_unique<focades::parser::binary::dex::DEX>();
+        m_parser_art = std::make_unique<focades::parser::binary::art::ART>();
     }
 
     void Parser::parser_pe()
@@ -42,7 +43,7 @@ namespace engine::server::bridge::endpoints
                 BASE_PARSER "/binary/lief/pe",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -60,13 +61,13 @@ namespace engine::server::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                gateway::websocket::responses::BadRequests::
+                                server::gateway::websocket::responses::BadRequests::
                                     to_json()
                                         .to_string());
                         })
                     } else {
                         p_context.broadcast_text(&p_conn,
-                                                 gateway::websocket::responses::
+                            server::gateway::websocket::responses::
                                                      UnsupportedData::to_json()
                                                          .to_string());
                     }
@@ -84,7 +85,7 @@ namespace engine::server::bridge::endpoints
                 BASE_PARSER "/binary/lief/dex",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -102,13 +103,13 @@ namespace engine::server::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                gateway::websocket::responses::BadRequests::
+                                server::gateway::websocket::responses::BadRequests::
                                     to_json()
                                         .to_string());
                         })
                     } else {
                         p_context.broadcast_text(&p_conn,
-                                                 gateway::websocket::responses::
+                            server::gateway::websocket::responses::
                                                      UnsupportedData::to_json()
                                                          .to_string());
                     }
@@ -126,7 +127,7 @@ namespace engine::server::bridge::endpoints
                 BASE_PARSER "/binary/lief/elf",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -144,13 +145,13 @@ namespace engine::server::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                gateway::websocket::responses::BadRequests::
+                                server::gateway::websocket::responses::BadRequests::
                                     to_json()
                                         .to_string());
                         })
                     } else {
                         p_context.broadcast_text(&p_conn,
-                                                 gateway::websocket::responses::
+                            server::gateway::websocket::responses::
                                                      UnsupportedData::to_json()
                                                          .to_string());
                     }
@@ -168,7 +169,7 @@ namespace engine::server::bridge::endpoints
                 BASE_PARSER "/binary/lief/art",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -186,13 +187,13 @@ namespace engine::server::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                gateway::websocket::responses::BadRequests::
+                                server::gateway::websocket::responses::BadRequests::
                                     to_json()
                                         .to_string());
                         })
                     } else {
                         p_context.broadcast_text(&p_conn,
-                                                 gateway::websocket::responses::
+                            server::gateway::websocket::responses::
                                                      UnsupportedData::to_json()
                                                          .to_string());
                     }
@@ -210,7 +211,7 @@ namespace engine::server::bridge::endpoints
                 BASE_PARSER "/binary/lief/macho",
                 UINT64_MAX,
                 // on_message_callback
-                [&](gateway::websocket::Context &p_context,
+                [&](server::gateway::websocket::Context &p_context,
                     crow::websocket::connection &p_conn,
                     const std::string &p_data,
                     bool p_is_binary) {
@@ -229,13 +230,13 @@ namespace engine::server::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                gateway::websocket::responses::BadRequests::
+                                server::gateway::websocket::responses::BadRequests::
                                     to_json()
                                         .to_string());
                         })
                     } else {
                         p_context.broadcast_text(&p_conn,
-                                                 gateway::websocket::responses::
+                            server::gateway::websocket::responses::
                                                      UnsupportedData::to_json()
                                                          .to_string());
                     }
@@ -243,4 +244,4 @@ namespace engine::server::bridge::endpoints
         });
     }
 
-} // namespace engine::server::bridge::endpoints
+} // namespace engine::bridge::endpoints

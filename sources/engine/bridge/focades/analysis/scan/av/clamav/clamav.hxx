@@ -1,11 +1,11 @@
 #pragma once
 
+#include <engine/bridge/focades/analysis/scan/av/clamav/entitys.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/parser/json/json.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
-#include <engine/bridge/focades/analysis/scan/av/clamav/entitys.hxx>
 
-namespace engine::focades::analysis::scan::av
+namespace engine::bridge::focades::analysis::scan::av::clamav
 {
     class Clamav
     {
@@ -23,4 +23,4 @@ namespace engine::focades::analysis::scan::av
         security::av::Clamav m_clamav;
         configuration::Configuration &m_config;
     };
-} // namespace engine::focades::analysis::scan::av
+} // namespace engine::bridge::focades::analysis::scan::av::clamav
