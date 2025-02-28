@@ -76,6 +76,20 @@ namespace engine
         void Yara::_plugins()
         {
             {
+                plugins::Plugins::lua.state.new_usertype<YR_RULE>(
+                    "Rule",
+                    sol::constructors<YR_RULE()>(),
+                    "flags",
+                    sol::readonly(&YR_RULE::flags),
+                    "num_atoms",
+                    sol::readonly(&YR_RULE::num_atoms),
+                    "required_strings",
+                    sol::readonly(&YR_RULE::required_strings),
+                    "unused",
+                    sol::readonly(&YR_RULE::unused),
+                    "identifier",
+                    sol::readonly(&YR_RULE::identifier));
+
                 plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
                     "Stream",
                     sol::constructors<YR_STREAM()>(),
@@ -114,6 +128,8 @@ namespace engine
                     });
             }
 
+            // yr_rules_foreach
+
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",
                 "match_status",
@@ -141,7 +157,47 @@ namespace engine
                 "load_rules",
                 &Yara::load_rules,
                 "scan_bytes",
-                &Yara::scan_bytes,
+                [](Yara &self,
+                   const std::string &buffer,
+                   sol::function func,
+                   int flags) {
+                    if (func.valid()) {
+                        static sol::function scan_bytes_func = func;
+                        /*+ operator before the lambda, which removes captures
+                         * and converts the lambda to a pure function pointer*/
+                        self.scan_bytes(
+                            buffer,
+                            +[](YR_SCAN_CONTEXT *context,
+                                int message,
+                                void *message_data,
+                                void *user_data) -> int {
+                                switch (message) {
+
+                                    case CALLBACK_MSG_RULE_MATCHING: {
+                                        const YR_RULE *rule =
+                                            reinterpret_cast<YR_RULE *>(
+                                                message_data);
+                                        return scan_bytes_func(message, rule);
+                                    }
+                                    case CALLBACK_MSG_RULE_NOT_MATCHING:
+                                        return scan_bytes_func(message);
+
+                                    case CALLBACK_MSG_SCAN_FINISHED:
+                                        return scan_bytes_func(message);
+
+                                    case CALLBACK_MSG_IMPORT_MODULE:
+                                        return scan_bytes_func(message);
+
+                                    case CALLBACK_MSG_MODULE_IMPORTED:
+                                        return scan_bytes_func(message);
+                                }
+
+                                return scan_bytes_func(message);
+                            },
+                            nullptr,
+                            flags);
+                    }
+                },
                 "scan_fast_bytes",
                 Yara::scan_fast_bytes,
                 "rules_loaded_count",
