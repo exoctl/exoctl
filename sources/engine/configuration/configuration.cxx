@@ -62,7 +62,8 @@ namespace engine
                         return sol::make_object(plugins::Plugins::lua.state,
                                                 luaTable);
                     } else if (node.is_table()) {
-                        sol::table luaTable = plugins::Plugins::lua.state.create_table();
+                        sol::table luaTable =
+                            plugins::Plugins::lua.state.create_table();
                         for (const auto &[key, value] : *node.as_table()) {
                             if (value.is_string()) {
                                 luaTable[key.str()] =

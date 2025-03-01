@@ -2,12 +2,9 @@
 
 #include <string>
 
-namespace engine::decompiler::llama
+namespace engine::decompiler::llama::record
 {
-    namespace record
-    {
-        typedef struct CData {
-            std::string text;
-        } Data;
-    } // namespace record
-} // namespace engine::decompiler::llama
+    using Data = struct CData {
+        std::string text;
+    };
+} // namespace engine::decompiler::llama::record

@@ -20,7 +20,7 @@ namespace engine
     class Engine : public interface::IBind
 #ifdef ENGINE_PRO
         ,
-                    public interface::IPlugins
+                   public interface::IPlugins
 #endif
     {
       private:
@@ -29,13 +29,12 @@ namespace engine
         plugins::Plugins m_plugins;
         server::Server m_server;
 
-
         emergency::Emergency m_emergency;
         std::unordered_map<int, std::function<void(int, siginfo_t *, void *)>>
             m_map_emergencys;
 
         server::_::Log m_server_log;
-        
+
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
         parser::binary::lief::_::Log m_lief_log;

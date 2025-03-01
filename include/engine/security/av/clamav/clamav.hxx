@@ -27,7 +27,6 @@ namespace engine
                     const std::function<void(clamav::record::Data *)> &);
                 void load_rules(const std::function<void()> &);
                 mutable unsigned int rules_loaded_count;
-
             };
         } // namespace av
     } // namespace security

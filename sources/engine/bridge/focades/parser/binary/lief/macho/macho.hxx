@@ -1,8 +1,8 @@
 #pragma once
 
+#include <engine/bridge/focades/parser/binary/lief/macho/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json/json.hxx>
-#include <engine/bridge/focades/parser/binary/lief/macho/entitys.hxx>
 
 namespace engine::bridge::focades::parser::binary::macho
 {
@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::macho
                                        const LIEF::MachO::Parser>
             m_macho;
     };
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::macho

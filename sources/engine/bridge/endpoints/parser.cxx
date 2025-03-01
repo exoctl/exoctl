@@ -3,7 +3,8 @@
 
 namespace engine::bridge::endpoints
 {
-    Parser::Parser(server::Server &p_server) : m_server(p_server), m_map(BASE_PARSER)
+    Parser::Parser(server::Server &p_server)
+        : m_server(p_server), m_map(BASE_PARSER)
     {
         Parser::prepare();
 
@@ -61,15 +62,16 @@ namespace engine::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                server::gateway::websocket::responses::BadRequests::
-                                    to_json()
+                                server::gateway::websocket::responses::
+                                    BadRequests::to_json()
                                         .to_string());
                         })
                     } else {
-                        p_context.broadcast_text(&p_conn,
+                        p_context.broadcast_text(
+                            &p_conn,
                             server::gateway::websocket::responses::
-                                                     UnsupportedData::to_json()
-                                                         .to_string());
+                                UnsupportedData::to_json()
+                                    .to_string());
                     }
                 });
         });
@@ -103,15 +105,16 @@ namespace engine::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                server::gateway::websocket::responses::BadRequests::
-                                    to_json()
+                                server::gateway::websocket::responses::
+                                    BadRequests::to_json()
                                         .to_string());
                         })
                     } else {
-                        p_context.broadcast_text(&p_conn,
+                        p_context.broadcast_text(
+                            &p_conn,
                             server::gateway::websocket::responses::
-                                                     UnsupportedData::to_json()
-                                                         .to_string());
+                                UnsupportedData::to_json()
+                                    .to_string());
                     }
                 });
         });
@@ -145,15 +148,16 @@ namespace engine::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                server::gateway::websocket::responses::BadRequests::
-                                    to_json()
+                                server::gateway::websocket::responses::
+                                    BadRequests::to_json()
                                         .to_string());
                         })
                     } else {
-                        p_context.broadcast_text(&p_conn,
+                        p_context.broadcast_text(
+                            &p_conn,
                             server::gateway::websocket::responses::
-                                                     UnsupportedData::to_json()
-                                                         .to_string());
+                                UnsupportedData::to_json()
+                                    .to_string());
                     }
                 });
         });
@@ -187,15 +191,16 @@ namespace engine::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                server::gateway::websocket::responses::BadRequests::
-                                    to_json()
+                                server::gateway::websocket::responses::
+                                    BadRequests::to_json()
                                         .to_string());
                         })
                     } else {
-                        p_context.broadcast_text(&p_conn,
+                        p_context.broadcast_text(
+                            &p_conn,
                             server::gateway::websocket::responses::
-                                                     UnsupportedData::to_json()
-                                                         .to_string());
+                                UnsupportedData::to_json()
+                                    .to_string());
                     }
                 });
         });
@@ -230,15 +235,16 @@ namespace engine::bridge::endpoints
                         CATCH(engine::parser::binary::lief::exception::Parser, {
                             p_context.broadcast_text(
                                 &p_conn,
-                                server::gateway::websocket::responses::BadRequests::
-                                    to_json()
+                                server::gateway::websocket::responses::
+                                    BadRequests::to_json()
                                         .to_string());
                         })
                     } else {
-                        p_context.broadcast_text(&p_conn,
+                        p_context.broadcast_text(
+                            &p_conn,
                             server::gateway::websocket::responses::
-                                                     UnsupportedData::to_json()
-                                                         .to_string());
+                                UnsupportedData::to_json()
+                                    .to_string());
                     }
                 });
         });

@@ -25,8 +25,7 @@ namespace engine::bridge::endpoints
     void Analysis::scan()
     {
         m_map.add_route("/scan", [&]() {
-            m_socket_scan =
-                std::make_unique<server::gateway::WebSocket>();
+            m_socket_scan = std::make_unique<server::gateway::WebSocket>();
             m_socket_scan->setup(
                 m_server,
                 BASE_ANALYSIS "/scan",

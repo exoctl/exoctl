@@ -14,7 +14,7 @@ namespace engine::memory
     void Memory::update()
     {
         segments.clear();
-        
+
         dl_iterate_phdr(
             [](struct dl_phdr_info *info, size_t, void *data) {
                 Memory *self = static_cast<Memory *>(data);

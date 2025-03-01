@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <engine/interfaces/iplugins.hxx>
 #include <openssl/evp.h>

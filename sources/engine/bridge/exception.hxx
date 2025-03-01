@@ -28,5 +28,5 @@ namespace engine
                 const char *what() const noexcept override;
             };
         } // namespace exception
-    } // namespace server
+    } // namespace bridge
 } // namespace engine

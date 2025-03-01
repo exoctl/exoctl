@@ -13,18 +13,15 @@
     }
 #define TRY_END() }
 
-namespace engine
+namespace engine::interface
 {
-    namespace interface
+    class IException : public std::exception
     {
-        class IException : public std::exception
-        {
-          protected:
-            explicit IException() = default;
+      protected:
+        explicit IException() = default;
 
-          public:
-            virtual ~IException() = default;
-            virtual const char *what() const noexcept override = 0;
-        };
-    } // namespace interface
-} // namespace engine
+      public:
+        ~IException() override = default;
+        [[nodiscard]] auto what() const noexcept -> const char * override = 0;
+    };
+} // namespace engine::interface

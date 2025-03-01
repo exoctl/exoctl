@@ -19,4 +19,4 @@ namespace engine::bridge::exception
         return m_error_message.c_str();
     }
 
-} // namespace engine::server::exception
+} // namespace engine::bridge::exception

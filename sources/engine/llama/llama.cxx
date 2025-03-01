@@ -234,7 +234,6 @@ namespace engine
                 "abort_callback_data",
                 &llama_context_params::abort_callback_data);
 
-            // llama bind
             plugins::Plugins::lua.state.new_usertype<Llama>(
                 "Llama",
                 "load_sampler",

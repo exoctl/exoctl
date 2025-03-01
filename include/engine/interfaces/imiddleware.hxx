@@ -1,10 +1,7 @@
 #pragma once
 
-namespace engine
+namespace engine::interface
 {
-    namespace interface
-    {
-        struct IMiddleware {
-        };
-    } // namespace interface
-} // namespace engine
+    struct IMiddleware {
+    };
+} // namespace engine::interface

@@ -35,4 +35,4 @@ namespace engine::bridge::focades::parser::binary::macho
 
         return json;
     }
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::macho

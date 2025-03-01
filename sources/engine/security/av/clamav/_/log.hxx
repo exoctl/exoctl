@@ -1,8 +1,8 @@
 #pragma once
 
-#include <engine/security/av/clamav/clamav.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/logging/logging.hxx>
+#include <engine/security/av/clamav/clamav.hxx>
 
 namespace engine::security::av::clamav::_
 {

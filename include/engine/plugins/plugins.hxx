@@ -7,8 +7,8 @@
 #include <engine/lua/lua.hxx>
 #include <filesystem>
 #include <functional>
-#include <memory>
 #include <future>
+#include <memory>
 
 namespace engine
 {

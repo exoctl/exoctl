@@ -1,19 +1,10 @@
 #pragma once
 
-namespace engine
+namespace engine::security::sig::type
 {
-    namespace security
-    {
-        namespace sig
-        {
-            namespace type
-            {
-                enum Scan {
-                    nomatch,
-                    match,
-                    none /* default value */
-                };
-            } // namespace type
-        } // namespace sig
-    } // namespace security
-} // namespace engine
+    enum Scan {
+        nomatch,
+        match,
+        none /* default value */
+    };
+} // namespace engine::security::sig::type

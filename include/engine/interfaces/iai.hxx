@@ -3,17 +3,14 @@
 #include <cstdarg>
 #include <string>
 
-namespace engine
+namespace engine::interface
 {
-    namespace interface
+    class IAi
     {
-        class IAi
-        {
-          public:
-            IAi() {};
-            virtual ~IAi() {};
+      public:
+        IAi() = default;
+        virtual ~IAi() = default;
 
-            virtual const bool load_model_file(const char *p_path, ...) = 0;
-        };
-    } // namespace interface
-} // namespace engine
+        virtual auto load_model_file(const char *p_path, ...) -> const bool = 0;
+    };
+} // namespace engine::interface

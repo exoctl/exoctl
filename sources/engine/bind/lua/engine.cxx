@@ -1,3 +1,4 @@
+#include <engine/bridge/bridge.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/emergency/emergency.hxx>
 #include <engine/engine.hxx>
@@ -6,7 +7,6 @@
 #include <engine/memory/memory.hxx>
 #include <engine/server/server.hxx>
 #include <vector>
-#include <engine/bridge/bridge.hxx>
 
 extern "C" {
 int luaopen_libskull(lua_State *L)

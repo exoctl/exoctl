@@ -35,4 +35,4 @@ namespace engine::server::gateway
         std::string m_url;
         on_request_callback m_on_request;
     };
-} // namespace engine::server::bridge::gateway
+} // namespace engine::server::gateway

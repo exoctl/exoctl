@@ -1,12 +1,13 @@
 #ifdef ENGINE_PRO
 
-#include <engine/plugins/plugins.hxx>
 #include <engine/bridge/endpoints/plugins.hxx>
+#include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 
 namespace engine::bridge::endpoints
 {
-    Plugins::Plugins(server::Server &p_server) : m_server(p_server), m_map(BASE_PLUGINS)
+    Plugins::Plugins(server::Server &p_server)
+        : m_server(p_server), m_map(BASE_PLUGINS)
     {
         Plugins::prepare();
 

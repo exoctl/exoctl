@@ -33,4 +33,4 @@ namespace engine::bridge::focades::parser::binary::elf
 
         return json;
     }
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::elf

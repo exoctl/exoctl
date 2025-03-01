@@ -52,4 +52,4 @@ namespace engine::server::gateway::websocket::responses
         const std::string _status() const override;
         const std::string _message() const override;
     };
-} // namespace engine::server::gateway::Websocket::responses
+} // namespace engine::server::gateway::websocket::responses

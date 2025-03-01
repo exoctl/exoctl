@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::dex
                                        const LIEF::DEX::Parser>
             m_dex;
     };
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::dex

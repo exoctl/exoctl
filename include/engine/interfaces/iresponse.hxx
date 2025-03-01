@@ -8,7 +8,7 @@ namespace engine::interface
     template <typename Derived> class IResponse
     {
       public:
-        inline  static const parser::Json to_json()
+        inline static const parser::Json to_json()
         {
             return Derived()._to_json();
         }

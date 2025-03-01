@@ -1,10 +1,10 @@
 #pragma once
 
+#include <cstdint>
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <spdlog/spdlog.h>
-#include <stdint.h>
 
 #define LOG(obj, type, msg, ...) obj.type(msg, ##__VA_ARGS__)
 

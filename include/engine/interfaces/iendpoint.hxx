@@ -1,14 +1,11 @@
 #pragma once
 
-namespace engine
+namespace engine::interface
 {
-    namespace interface
+    class IEndpoint
     {
-        class IEndpoint
-        {
-          public:
-            virtual ~IEndpoint() = default;
-            virtual void load() const = 0;
-        };
-    } // namespace interface
-} // namespace engine
+      public:
+        virtual ~IEndpoint() = default;
+        virtual void load() const = 0;
+    };
+} // namespace engine::interface

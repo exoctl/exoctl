@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::pe
                                        const LIEF::PE::Parser>
             m_pe;
     };
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::pe

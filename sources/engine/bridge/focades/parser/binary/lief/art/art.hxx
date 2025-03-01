@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::art
                                        const LIEF::ART::Parser>
             m_art;
     };
-} // namespace engine::bridge::focades::parser::binary
+} // namespace engine::bridge::focades::parser::binary::art

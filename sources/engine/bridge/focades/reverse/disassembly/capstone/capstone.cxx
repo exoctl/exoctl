@@ -76,4 +76,4 @@ namespace engine::bridge::focades::reverse::disassembly::capstone
 
         return disassembly;
     }
-} // namespace engine::bridge::focades::reverse::disassembly
+} // namespace engine::bridge::focades::reverse::disassembly::capstone

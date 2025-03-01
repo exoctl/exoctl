@@ -12,7 +12,7 @@ namespace engine::server::gateway
 {
     class WebSocket
 #ifdef ENGINE_PRO
-       // : public interface::ISubPlugins<WebSocket>
+    // : public interface::ISubPlugins<WebSocket>
 #endif
     {
       public:
@@ -36,18 +36,18 @@ namespace engine::server::gateway
                                bool)>;
 
         void setup(Server &,
-              const std::string &,
-              uint64_t,
-              on_message_callback = nullptr,
-              on_error_callback = nullptr,
-              on_accept_callback = nullptr,
-              on_open_callback = nullptr,
-              on_close_callback = nullptr);
+                   const std::string &,
+                   uint64_t,
+                   on_message_callback = nullptr,
+                   on_error_callback = nullptr,
+                   on_accept_callback = nullptr,
+                   on_open_callback = nullptr,
+                   on_close_callback = nullptr);
 
         ~WebSocket() = default;
         WebSocket() = default;
 
-        //void _plugins() override;
+        // void _plugins() override;
         const std::size_t size_connections() const;
 
       private:
@@ -71,4 +71,4 @@ namespace engine::server::gateway
         void def_error_connection(crow::websocket::connection *,
                                   const std::string &);
     };
-} // namespace engine::server::bridge::gateway
+} // namespace engine::server::gateway
