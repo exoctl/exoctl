@@ -26,8 +26,6 @@ namespace engine
                 &Json::from_string,
                 "to_string",
                 &Json::to_string,
-                "clear",
-                &Json::clear,
                 "get",
                 sol::overload([](engine::parser::Json &self,
                                  const std::string &key) -> sol::object {
