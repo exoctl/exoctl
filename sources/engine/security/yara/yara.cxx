@@ -1,5 +1,6 @@
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
+#include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/security/yara/yara.hxx>
@@ -319,13 +320,20 @@ namespace engine
                                      size_t size,
                                      size_t count,
                                      void *) -> size_t {
-                        if (!lua_read_func.valid())
+                        if (!lua_read_func.valid()) {
                             return 0;
-                        return lua_read_func(
+                        }
+                        sol::protected_function_result result = lua_read_func(
                             std::string(static_cast<const char *>(ptr),
                                         size * count),
                             size,
                             count);
+                        if (!result.valid()) {
+                            sol::error err = result;
+                            throw plugins::exception::Runtime(fmt::format(
+                                "Lua callback error : {}", err.what()));
+                        }
+                        return result;
                     };
                 },
                 "write",
@@ -335,18 +343,23 @@ namespace engine
                                       const size_t size,
                                       const size_t count,
                                       void *) -> size_t {
-                        if (!lua_write_func.valid())
+                        if (!lua_write_func.valid()) {
                             return 0;
-
-                        return lua_write_func(
+                        }
+                        sol::protected_function_result result = lua_write_func(
                             std::string(static_cast<const char *>(ptr),
                                         size * count),
                             size,
                             count);
+                        if (!result.valid()) {
+                            sol::error err = result;
+                            throw plugins::exception::Runtime(fmt::format(
+                                "Lua callback error in : {}\n", err.what()));
+                            return 0;
+                        }
+                        return result;
                     };
                 });
-
-            // yr_rules_foreach
 
             plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
                 "Data",
@@ -381,45 +394,44 @@ namespace engine
                    const std::string &buffer,
                    sol::function func,
                    int flags) {
-                    if (func.valid()) {
-                        static sol::function scan_bytes_func = func;
-                        /*+ operator before the lambda, which removes captures
-                         * and converts the lambda to a pure function pointer*/
-                        self.scan_bytes(
-                            buffer,
-                            +[](YR_SCAN_CONTEXT *context,
-                                int message,
-                                void *message_data,
-                                void *user_data) -> int {
-                                switch (message) {
-
-                                    case CALLBACK_MSG_RULE_MATCHING: {
-                                        const YR_RULE *rule =
-                                            reinterpret_cast<YR_RULE *>(
-                                                message_data);
-                                        return scan_bytes_func(message, rule);
-                                    }
-                                    case CALLBACK_MSG_RULE_NOT_MATCHING:
-                                        return scan_bytes_func(message);
-
-                                    case CALLBACK_MSG_SCAN_FINISHED:
-                                        return scan_bytes_func(message);
-
-                                    case CALLBACK_MSG_IMPORT_MODULE:
-                                        return scan_bytes_func(message);
-
-                                    case CALLBACK_MSG_MODULE_IMPORTED:
-                                        return scan_bytes_func(message);
-                                }
-
-                                return scan_bytes_func(message);
-                            },
-                            nullptr,
-                            flags);
+                    if (!func.valid()) {
+                        return;
                     }
+
+                    static sol::function scan_bytes_func = func;
+                    self.scan_bytes(
+                        buffer,
+                        +[](YR_SCAN_CONTEXT *context,
+                            int message,
+                            void *message_data,
+                            void *user_data) -> int {
+                            sol::protected_function_result result;
+                            switch (message) {
+                                case CALLBACK_MSG_RULE_MATCHING: {
+                                    const YR_RULE *rule =
+                                        reinterpret_cast<YR_RULE *>(
+                                            message_data);
+                                    result = scan_bytes_func(message, rule);
+                                    break;
+                                }
+                                default:
+                                    result = scan_bytes_func(message);
+                                    break;
+                            }
+                            if (!result.valid()) {
+                                sol::error err = result;
+                                throw plugins::exception::Runtime(
+                                    fmt::format("Lua callback error in : {}\n",
+                                                err.what()));
+                                return 0;
+                            }
+                            return result;
+                        },
+                        nullptr,
+                        flags);
                 },
                 "scan_fast_bytes",
-                Yara::scan_fast_bytes,
+                &Yara::scan_fast_bytes,
                 "rules_loaded_count",
                 &Yara::rules_loaded_count,
                 "load_rule_file",

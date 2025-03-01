@@ -104,6 +104,8 @@ namespace engine
 
                 if constexpr (std::is_same_v<T, std::string>) {
                     v.SetString(p_value.c_str(), m_allocator);
+                } else if constexpr (std::is_same_v<T, const char *>) {
+                    v.SetString(p_value, m_allocator);
                 } else if constexpr (std::is_same_v<T, int>) {
                     v.SetInt(p_value);
                 } else if constexpr (std::is_same_v<T, uint16_t>) {

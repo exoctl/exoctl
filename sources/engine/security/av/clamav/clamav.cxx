@@ -44,7 +44,8 @@ namespace engine
                 clamav::record::scan::Options p_options,
                 const std::function<void(clamav::record::Data *)> &p_callback)
             {
-                struct clamav::record::Data *data = new clamav::record::Data;
+                auto data =
+                    std::make_shared<clamav::record::Data>();
 
                 int fd;
 
@@ -92,10 +93,9 @@ namespace engine
                 }();
 
                 if (!IS_NULL(p_callback)) {
-                    p_callback(data);
+                    p_callback(data.get());
                 }
 
-                delete data;
                 memory::Memory::close(fd);
             }
 
