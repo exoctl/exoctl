@@ -67,7 +67,7 @@ namespace engine::server::gateway
                     }
                 }
 
-                Web *instance = new Web();
+                auto instance = std::make_shared<Web>();
                 instance->setup(
                     server,
                     url,

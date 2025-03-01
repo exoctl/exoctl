@@ -31,7 +31,7 @@ namespace engine::bridge::endpoints
                                 data.assign(m_data_metadata->dto_json(p_dto)
                                                 .to_string());
                             });
-                        return crow::response(data);
+                        return crow::response(200, "application/json", data);
                     }
 
                     return crow::response(crow::status::BAD_REQUEST);

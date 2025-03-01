@@ -51,7 +51,11 @@ namespace engine::server::gateway
                               crow::response(std::string),
                               crow::response(std::string, std::string),
                               crow::response(int, std::string, std::string),
-                              crow::response(int)>());
+                              crow::response(int)>(),
+            "set_header",
+            &crow::response::set_header,
+            "add_header",
+            &crow::response::add_header);
 
         plugins::Plugins::lua.state.new_usertype<crow::request>(
             "Requests",

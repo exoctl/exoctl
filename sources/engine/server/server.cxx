@@ -45,22 +45,36 @@ namespace engine
         void Server::bind_to_lua(sol::state_view &p_lua)
         {
 
-            p_lua.new_usertype<Server>("Server",
-                                       sol::constructors<server::Server()>(),
-                                       "setup",
-                                       Server::setup,
-                                       "run_async",
-                                       Server::run_async,
-                                       "stop",
-                                       Server::stop,
-                                       "register_plugins",
-                                       &Server::register_plugins,
-                                       "port",
-                                       sol::readonly(&Server::port),
-                                       "bindaddr",
-                                       sol::readonly(&Server::bindaddr),
-                                       "concurrency",
-                                       sol::readonly(&Server::concurrency));
+            p_lua.new_usertype<Server>(
+                "Server",
+                sol::constructors<server::Server()>(),
+                "setup",
+                &Server::setup,
+                "run_async",
+                &Server::run_async,
+                "stop",
+                &Server::stop,
+                "tick",
+                sol::overload([](Server &server,
+                                 int32_t milliseconds,
+                                 sol::function callback) {
+                    server.tick(std::chrono::milliseconds(milliseconds),
+                                callback);
+                }),
+                "register_plugins",
+                &Server::register_plugins,
+                "port",
+                sol::readonly(&Server::port),
+                "bindaddr",
+                sol::readonly(&Server::bindaddr),
+                "concurrency",
+                sol::readonly(&Server::concurrency));
+        }
+
+        void Server::tick(std::chrono::milliseconds p_milliseconds,
+                          std::function<void()> p_func)
+        {
+            m_app->tick(p_milliseconds, p_func);
         }
 
         std::future<void> Server::run_async()

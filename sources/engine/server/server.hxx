@@ -49,6 +49,8 @@ namespace engine
             void register_plugins() override;
 #endif
             std::future<void> run_async();
+
+            void tick(std::chrono::milliseconds d, std::function<void()> f);
             void stop();
         };
     } // namespace server
