@@ -6,8 +6,6 @@
 #include <engine/interfaces/iplugins.hxx>
 #include <spdlog/spdlog.h>
 
-#define LOG(obj, type, msg, ...) obj.type(msg, ##__VA_ARGS__)
-
 namespace engine
 {
     namespace logging
@@ -36,7 +34,7 @@ namespace engine
                 m_logger->warn(p_msg, std::forward<Args>(p_args)...);
             }
 
-            void warn(const std::string &p_msg);
+            void warn(const std::string &);
 
             template <typename... Args>
             void info(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -44,7 +42,7 @@ namespace engine
                 m_logger->info(p_msg, std::forward<Args>(p_args)...);
             }
 
-            void info(const std::string &p_msg);
+            void info(const std::string &);
 
             template <typename... Args>
             void error(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -52,7 +50,7 @@ namespace engine
                 m_logger->error(p_msg, std::forward<Args>(p_args)...);
             }
 
-            void error(const std::string &p_msg);
+            void error(const std::string &);
 
             template <typename... Args>
             void debug(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -60,7 +58,7 @@ namespace engine
                 m_logger->debug(p_msg, std::forward<Args>(p_args)...);
             }
 
-            void debug(const std::string &p_msg);
+            void debug(const std::string &);
 
             template <typename... Args>
             void critical(fmt::format_string<Args...> p_msg, Args &&...p_args)
@@ -68,7 +66,7 @@ namespace engine
                 m_logger->critical(p_msg, std::forward<Args>(p_args)...);
             }
 
-            void critical(const std::string &p_msg);
+            void critical(const std::string &);
 
             std::shared_ptr<spdlog::logger> create_logger(const std::string &,
                                                           const std::string &);

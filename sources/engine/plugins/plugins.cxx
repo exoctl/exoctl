@@ -21,7 +21,7 @@ namespace engine
             m_log = p_log;
 
             if (!m_config.get("plugins.enable").value<bool>().value())
-                LOG(m_log, warn, "Plugins not enabled");
+                m_log.warn("Plugins not enabled");
         }
 
         void Plugins::load_libraries()
@@ -39,10 +39,8 @@ namespace engine
                     libs_any.push_back(*elem.value<std::string>());
                 }
 
-                LOG(m_log,
-                    info,
-                    fmt::format("Loading lua standard libraries: '{}'",
-                                fmt::join(libs_any, ", ")));
+                m_log.info(fmt::format("Loading lua standard libraries: '{}'",
+                                       fmt::join(libs_any, ", ")));
 
                 for (const auto &name : libs_any) {
                     auto lib = lua.from_lib(name);
@@ -58,12 +56,9 @@ namespace engine
         void Plugins::load_plugin_file(const std::filesystem::path &p_path)
         {
             if (p_path.extension() == ".lua") {
-                LOG(m_log, info, "Loading plugin lua '{}'", p_path.c_str());
+                m_log.info("Loading plugin lua '{}'", p_path.c_str());
                 if (!lua.load_script_file(p_path.filename(), p_path)) {
-                    LOG(m_log,
-                        error,
-                        "Falied to load plugin '{}'",
-                        p_path.c_str());
+                    m_log.error("Falied to load plugin '{}'", p_path.c_str());
                 }
             }
         }
@@ -83,7 +78,7 @@ namespace engine
                 return std::future<void>();
             }
 
-            LOG(m_log, info, "Launching plugins async...");
+            m_log.info("Launching plugins async...");
             return std::async(
                 std::launch::async, &Plugins::run_plugins_thread, this);
         }
