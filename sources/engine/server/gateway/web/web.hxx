@@ -25,7 +25,8 @@ namespace engine::server::gateway
         void setup(Server &,
                    const std::string &,
                    on_request_callback,
-                   std::vector<crow::HTTPMethod> = {crow::HTTPMethod::GET});
+                   const std::vector<crow::HTTPMethod> & = {
+                       crow::HTTPMethod::GET});
 
 #ifdef ENGINE_PRO
         void _plugins() override;

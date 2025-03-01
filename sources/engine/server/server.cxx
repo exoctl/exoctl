@@ -55,11 +55,11 @@ namespace engine
                 "stop",
                 &Server::stop,
                 "tick",
-                sol::overload([](Server &server,
+                sol::overload([](Server &self,
                                  int32_t milliseconds,
                                  sol::function callback) {
-                    server.tick(std::chrono::milliseconds(milliseconds),
-                                callback);
+                    self.tick(std::chrono::milliseconds(milliseconds),
+                              callback);
                 }),
                 "register_plugins",
                 &Server::register_plugins,
@@ -95,7 +95,7 @@ namespace engine
             if (this != &p_server) {
                 config = p_server.config;
                 log = p_server.log;
-                m_app = std::make_shared<App>(*p_server.m_app);
+                m_app = p_server.m_app;
 
                 name.assign(p_server.config->get("server.name")
                                 .value<std::string>()

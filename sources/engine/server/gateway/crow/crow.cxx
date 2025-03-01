@@ -55,7 +55,9 @@ namespace engine::server::gateway
             "set_header",
             &crow::response::set_header,
             "add_header",
-            &crow::response::add_header);
+            &crow::response::add_header,
+            "get_header_value",
+            &crow::response::get_header_value);
 
         plugins::Plugins::lua.state.new_usertype<crow::request>(
             "Requests",
