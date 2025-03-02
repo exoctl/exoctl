@@ -50,6 +50,15 @@ namespace engine
 
             void rules_foreach(const std::function<void(const YR_RULE &)> &);
 
+            void metas_foreach(YR_RULE *,
+                               const std::function<void(const YR_META &)> &);
+
+            void strings_foreach(
+                YR_RULE *, const std::function<void(const YR_STRING &)> &);
+
+            void tags_foreach(YR_RULE *,
+                              const std::function<void(const char *)> &);
+
             void unload_stream_rules();
             [[nodiscard]] const int load_stream_rules(YR_STREAM &);
             [[nodiscard]] const int save_stream_rules(YR_STREAM &);

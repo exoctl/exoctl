@@ -63,6 +63,40 @@ namespace engine
             }
         }
 
+        void Yara::strings_foreach(
+            YR_RULE *p_rule,
+            const std::function<void(const YR_STRING &)> &p_callback)
+        {
+            YR_STRING *string;
+            yr_rule_strings_foreach(p_rule, string)
+            {
+                p_callback(*string);
+            }
+        }
+
+        void Yara::metas_foreach(
+            YR_RULE *p_rule,
+            const std::function<void(const YR_META &)> &p_callback)
+        {
+            const YR_META *meta;
+            yr_rule_metas_foreach(p_rule, meta)
+            {
+                p_callback(*meta);
+            }
+        }
+
+        void Yara::tags_foreach(
+            YR_RULE *p_rule,
+            const std::function<void(const char *)> &p_callback)
+        {
+            const char *tag;
+
+            yr_rule_tags_foreach(p_rule, tag)
+            {
+                p_callback(tag);
+            }
+        }
+
         const int Yara::load_stream_rules(YR_STREAM &p_stream)
         {
             return yr_rules_load_stream(&p_stream, &m_yara_rules);
@@ -244,6 +278,11 @@ namespace engine
             return CALLBACK_CONTINUE;
         }
 
+        /**
+         * TODO: migrate the plugins to another friend class that will contain
+         *   the yara plugins and so on for all classes that serve as plugins
+         *   interface
+         */
 #ifdef ENGINE_PRO
         void Yara::_plugins()
         {
@@ -374,17 +413,23 @@ namespace engine
                 "Yara",
                 sol::constructors<engine::security::Yara()>(),
                 "unload_stream_rules",
-                Yara::unload_stream_rules,
+                &Yara::unload_stream_rules,
                 "load_stream_rules",
-                Yara::load_stream_rules,
+                &Yara::load_stream_rules,
                 "rules_foreach",
                 &Yara::rules_foreach,
+                "metas_foreach",
+                &Yara::metas_foreach,
+                "tags_foreach",
+                &Yara::tags_foreach,
+                "strings_foreach",
+                &Yara::strings_foreach,
                 "save_stream_rules",
-                Yara::save_stream_rules,
+                &Yara::save_stream_rules,
                 "load_compiler",
-                Yara::load_compiler,
+                &Yara::load_compiler,
                 "unload_compiler",
-                Yara::unload_compiler,
+                &Yara::unload_compiler,
                 "load_rules_folder",
                 &Yara::load_rules_folder,
                 "load_rules",
@@ -407,11 +452,38 @@ namespace engine
                             void *user_data) -> int {
                             sol::protected_function_result result;
                             switch (message) {
+                                case CALLBACK_MSG_RULE_NOT_MATCHING:
                                 case CALLBACK_MSG_RULE_MATCHING: {
                                     const YR_RULE *rule =
                                         reinterpret_cast<YR_RULE *>(
                                             message_data);
                                     result = scan_bytes_func(message, rule);
+                                    break;
+                                }
+                                case CALLBACK_MSG_SCAN_FINISHED:
+                                    result = scan_bytes_func(
+                                        message, sol::type::lua_nil);
+                                    break;
+                                case CALLBACK_MSG_TOO_MANY_MATCHES: {
+                                    const YR_STRING *string =
+                                        reinterpret_cast<YR_STRING *>(
+                                            message_data);
+                                    result = scan_bytes_func(message, string);
+                                    break;
+                                }
+                                case CALLBACK_MSG_CONSOLE_LOG: {
+                                    const char *log =
+                                        reinterpret_cast<const char *>(
+                                            message_data);
+                                    result = scan_bytes_func(message, log);
+                                    break;
+                                }
+                                case CALLBACK_MSG_IMPORT_MODULE: {
+                                    const YR_MODULE_IMPORT *module_import =
+                                        reinterpret_cast<YR_MODULE_IMPORT *>(
+                                            message_data);
+                                    result =
+                                        scan_bytes_func(message, module_import);
                                     break;
                                 }
                                 default:
@@ -423,7 +495,7 @@ namespace engine
                                 throw plugins::exception::Runtime(
                                     fmt::format("Lua callback error in : {}\n",
                                                 err.what()));
-                                return 0;
+                                return CALLBACK_ABORT;
                             }
                             return result;
                         },
