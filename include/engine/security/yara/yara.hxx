@@ -2,6 +2,7 @@
 
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/security/yara/entitys.hxx>
+#include <engine/security/yara/plugin/yara.hxx>
 #include <filesystem>
 #include <functional>
 #include <stack>
@@ -12,18 +13,16 @@ namespace engine
 {
     namespace security
     {
-        class Yara
-#ifdef ENGINE_PRO
-            : public interface::ISubPlugins<Yara>
-#endif
+        class Yara; // Forward declaration yara plugin
 
+        class Yara
         {
           public:
             Yara();
             ~Yara();
-#ifdef ENGINE_PRO
-            void _plugins() override;
-#endif
+
+            friend class yara::plugin::Yara;
+            
             /**
              * @brief this function realize fast scan using flag
              * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback

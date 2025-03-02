@@ -7,6 +7,7 @@
 #include <engine/llama/llama.hxx>
 #include <engine/magic/magic.hxx>
 #include <engine/parser/json/json.hxx>
+#include <engine/security/yara/plugin/yara.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <thread>
 
@@ -72,7 +73,7 @@ namespace engine
 
         llama::Llama::plugins();
         crypto::Sha::plugins();
-        security::Yara::plugins();
+        security::yara::plugin::Yara::plugins();
         magic::Magic::plugins();
         parser::Json::plugins();
     }

@@ -1,0 +1,29 @@
+#ifdef ENGINE_PRO
+
+#pragma once
+
+#include <engine/interfaces/iplugins.hxx>
+
+namespace engine::security::yara::plugin
+{
+    class Yara : public interface::ISubPlugins<Yara>
+    {
+      public:
+        Yara() = default;
+        ~Yara() = default;
+
+        void _plugins() override;
+
+      private:
+        inline void bind_import();
+        inline void bind_string();
+        inline void bind_namespace();
+        inline void bind_meta();
+        inline void bind_rule();
+        inline void bind_stream();
+        inline void bind_data();
+        inline void bind_yara();
+    };
+} // namespace engine::security::yara::plugin
+
+#endif
