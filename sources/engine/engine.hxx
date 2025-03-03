@@ -34,7 +34,6 @@ namespace engine
             m_map_emergencys;
 
         server::_::Log m_server_log;
-
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
         parser::binary::lief::_::Log m_lief_log;

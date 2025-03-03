@@ -4,29 +4,25 @@
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/logging/plugin/logging.hxx>
 #include <spdlog/spdlog.h>
 
 namespace engine
 {
     namespace logging
     {
-        class Logging : public interface::IBind
-#ifdef ENGINE_PRO
-            ,
-                        public interface::IPlugins
-#endif
+        class Logging;
+
+        class Logging
         {
           public:
             Logging() = default;
             ~Logging() = default;
             Logging &operator=(const Logging &);
             void setup(const configuration::Configuration &);
-            void bind_to_lua(sol::state_view &) override;
-
-#ifdef ENGINE_PRO
-            void register_plugins() override;
-#endif
             void load();
+
+            friend class plugin::Logging;
 
             template <typename... Args>
             void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)

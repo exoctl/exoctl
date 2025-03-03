@@ -23,34 +23,6 @@ namespace engine::logging
         return *this;
     }
 
-    void Logging::bind_to_lua(sol::state_view &p_lua)
-    {
-        p_lua.new_usertype<logging::Logging>(
-            "Logging",
-            sol::constructors<logging::Logging()>(),
-            "load",
-            &Logging::load,
-#ifdef ENGINE_PRO
-            "register_plugins",
-            &Logging::register_plugins,
-#endif
-            "setup",
-            &Logging::setup,
-            "info",
-            static_cast<void (Logging::*)(const std::string &)>(&Logging::info),
-            "warn",
-            static_cast<void (Logging::*)(const std::string &)>(&Logging::warn),
-            "critical",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::critical),
-            "debug",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::debug),
-            "error",
-            static_cast<void (Logging::*)(const std::string &)>(
-                &Logging::error));
-    }
-
     void Logging::setup(const configuration::Configuration &p_config)
     {
         m_config = p_config;
@@ -164,12 +136,4 @@ namespace engine::logging
     {
         m_logger->critical(p_msg);
     }
-
-#ifdef ENGINE_PRO
-    void Logging::register_plugins()
-    {
-        Logging::bind_to_lua(plugins::Plugins::lua.state);
-    }
-#endif
-
 } // namespace engine::logging
