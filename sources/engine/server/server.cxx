@@ -1,5 +1,4 @@
 #include <engine/bridge/exception.hxx>
-#include <engine/server/gateway/crow/crow.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
@@ -29,46 +28,6 @@ namespace engine
             concurrency =
                 config->get("server.threads").value<int64_t>().value();
             port = config->get("server.port").value<int64_t>().value();
-        }
-
-#ifdef ENGINE_PRO
-        void Server::register_plugins()
-        {
-            engine::server::gateway::Crow::plugins();
-            engine::server::gateway::Web::plugins();
-            // engine::server::gateway::WebSocket::plugins();
-
-            Server::bind_to_lua(plugins::Plugins::lua.state);
-        }
-#endif
-
-        void Server::bind_to_lua(sol::state_view &p_lua)
-        {
-
-            p_lua.new_usertype<Server>(
-                "Server",
-                sol::constructors<server::Server()>(),
-                "setup",
-                &Server::setup,
-                "run_async",
-                &Server::run_async,
-                "stop",
-                &Server::stop,
-                "tick",
-                sol::overload([](Server &self,
-                                 int32_t milliseconds,
-                                 sol::function callback) {
-                    self.tick(std::chrono::milliseconds(milliseconds),
-                              callback);
-                }),
-                "register_plugins",
-                &Server::register_plugins,
-                "port",
-                sol::readonly(&Server::port),
-                "bindaddr",
-                sol::readonly(&Server::bindaddr),
-                "concurrency",
-                sol::readonly(&Server::concurrency));
         }
 
         void Server::tick(std::chrono::milliseconds p_milliseconds,

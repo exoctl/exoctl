@@ -2,6 +2,7 @@
 
 #include <crow.h>
 #include <engine/plugins/plugins.hxx>
+#include <engine/server/gateway/web/plugin/web.hxx>
 #include <engine/server/gateway/websocket/middlewares/jwtauth.hxx>
 #include <engine/server/server.hxx>
 #include <functional>
@@ -10,14 +11,15 @@
 
 namespace engine::server::gateway
 {
+    class Web; // Forward declaration Web plugin
+
     class Web
-#ifdef ENGINE_PRO
-        : public interface::ISubPlugins<Web>
-#endif
     {
       public:
         using on_request_callback =
             std::function<crow::response(const crow::request &)>;
+
+        friend class web::plugin::Web;
 
         Web() = default;
         ~Web() = default;
@@ -28,9 +30,6 @@ namespace engine::server::gateway
                    const std::vector<crow::HTTPMethod> & = {
                        crow::HTTPMethod::GET});
 
-#ifdef ENGINE_PRO
-        void _plugins() override;
-#endif
       private:
         Server *m_server;
         std::string m_url;

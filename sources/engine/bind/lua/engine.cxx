@@ -17,7 +17,7 @@ int luaopen_libskull(lua_State *L)
 
     bindings.reserve(6);
 
-    bindings.push_back(std::make_unique<engine::server::Server>());
+    bindings.push_back(std::make_unique<engine::server::plugin::Server>());
     bindings.push_back(std::make_unique<engine::bridge::Bridge>());
     bindings.push_back(std::make_unique<engine::memory::Memory>());
     bindings.push_back(

@@ -1,13 +1,15 @@
 #ifdef ENGINE_PRO
 
-#include <engine/server/gateway/crow/crow.hxx>
+#include <engine/plugins/exception.hxx>
+#include <engine/plugins/plugins.hxx>
+#include <engine/server/plugin/server.hxx>
 #include <engine/server/server.hxx>
 
-namespace engine::server::gateway
+namespace engine::server::plugin
 {
-    void Crow::_plugins()
+    void Server::bind_http_methods(sol::state_view &p_lua)
     {
-        plugins::Plugins::lua.state.new_enum<crow::HTTPMethod>(
+        p_lua.new_enum<crow::HTTPMethod>(
             "HTTPMethod",
             {{"Delete", crow::HTTPMethod::Delete},
              {"Get", crow::HTTPMethod::Get},
@@ -44,8 +46,11 @@ namespace engine::server::gateway
              {"Unlink", crow::HTTPMethod::Unlink},
              {"Source", crow::HTTPMethod::Source},
              {"InternalMethodCount", crow::HTTPMethod::InternalMethodCount}});
+    }
 
-        plugins::Plugins::lua.state.new_usertype<crow::response>(
+    void Server::bind_response(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<crow::response>(
             "Response",
             sol::constructors<crow::response(int, std::string),
                               crow::response(std::string),
@@ -60,8 +65,11 @@ namespace engine::server::gateway
             &crow::response::get_header_value,
             "redirect",
             &crow::response::redirect);
+    }
 
-        plugins::Plugins::lua.state.new_usertype<crow::request>(
+    void Server::bind_requests(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<crow::request>(
             "Requests",
             "method",
             sol::readonly(&crow::request::method),
@@ -69,8 +77,6 @@ namespace engine::server::gateway
             sol::readonly(&crow::request::raw_url),
             "url",
             sol::readonly(&crow::request::url),
-            //"url_params",
-            // sol::readonly(&crow::request::url_params),
             "body",
             sol::readonly(&crow::request::body),
             "remote_ip_address",
@@ -87,6 +93,47 @@ namespace engine::server::gateway
             sol::readonly(&crow::request::upgrade));
     }
 
-} // namespace engine::server::gateway
+    void Server::bind_server(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<server::Server>(
+            "Server",
+            sol::constructors<server::Server()>(),
+            "setup",
+            &server::Server::setup,
+            "run_async",
+            &server::Server::run_async,
+            "stop",
+            &server::Server::stop,
+            "tick",
+            sol::overload([](server::Server &self,
+                             int32_t milliseconds,
+                             sol::function callback) {
+                self.tick(std::chrono::milliseconds(milliseconds), callback);
+            }),
+            "port",
+            sol::readonly(&server::Server::port),
+            "bindaddr",
+            sol::readonly(&server::Server::bindaddr),
+            "concurrency",
+            sol::readonly(&server::Server::concurrency),
+            "plugins",
+            &Server::plugins);
+    }
+
+    void Server::_plugins()
+    {
+        Server::bind_http_methods(plugins::Plugins::lua.state);
+        Server::bind_response(plugins::Plugins::lua.state);
+        Server::bind_requests(plugins::Plugins::lua.state);
+        Server::bind_server(plugins::Plugins::lua.state);
+
+        gateway::web::plugin::Web::plugins();
+    }
+
+    void Server::bind_to_lua(sol::state_view &p_lua)
+    {
+        Server::bind_server(p_lua);
+    }
+} // namespace engine::server::plugin
 
 #endif

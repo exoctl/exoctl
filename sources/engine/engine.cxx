@@ -58,16 +58,19 @@ namespace engine
             "register_emergency",
             &Engine::register_emergency,
             "load",
-            &Engine::load);
+            &Engine::load,
+            "logging",
+            &Engine::m_logging,
+            "configuration",
+            &Engine::m_configuration,
+            "server",
+            &Engine::m_server);
     }
 
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
         plugins::Plugins::lua.state["_engine"] = this;
-        plugins::Plugins::lua.state["_logging"] = &m_logging;
-        plugins::Plugins::lua.state["_configuration"] = &m_configuration;
-        plugins::Plugins::lua.state["_server"] = &m_server;
 
         Engine::bind_to_lua(plugins::Plugins::lua.state);
 

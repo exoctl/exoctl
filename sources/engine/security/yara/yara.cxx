@@ -1,7 +1,5 @@
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
-#include <engine/plugins/exception.hxx>
-#include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <fcntl.h>

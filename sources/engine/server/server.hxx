@@ -13,23 +13,23 @@
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/plugins/plugins.hxx>
+#include <engine/server/plugin/server.hxx>
 #include <memory>
 
 namespace engine
 {
     namespace server
     {
+        class Server; // Forward declaration Server plugin
         using App = crow::App<>;
-        class Server : public interface::IBind
-#ifdef ENGINE_PRO
-            ,
-                       public interface::IPlugins
-#endif
+        class Server
         {
           private:
             std::shared_ptr<App> m_app;
 
           public:
+            friend class engine::server::plugin::Server;
+
             Server();
             ~Server() = default;
             Server &operator=(const Server &);
@@ -44,10 +44,6 @@ namespace engine
             std::string name;
             unsigned short port;
             std::string ssl_certificate_path;
-            void bind_to_lua(sol::state_view &) override;
-#ifdef ENGINE_PRO
-            void register_plugins() override;
-#endif
             std::future<void> run_async();
 
             void tick(std::chrono::milliseconds d, std::function<void()> f);
