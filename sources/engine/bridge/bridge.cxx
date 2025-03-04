@@ -10,15 +10,14 @@ namespace engine
 #endif
         std::shared_ptr<bridge::endpoints::Parser> Bridge::parser;
         std::shared_ptr<bridge::endpoints::Reverse> Bridge::reverse;
-        std::shared_ptr<bridge::endpoints::Data> Bridge::data;
-        std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis;
-
+        std::shared_ptr<bridge::endpoints::Data> Bridge::data(
+            std::make_shared<bridge::endpoints::Data>());
+        std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
+            std::make_shared<bridge::endpoints::Analysis>());
 
         void Bridge::setup(server::Server &p_server)
         {
             m_server = &p_server;
-            analysis = std::make_shared<bridge::endpoints::Analysis>();
-            data = std::make_shared<bridge::endpoints::Data>();
 
             analysis->setup(*m_server);
             data->setup(*m_server);
