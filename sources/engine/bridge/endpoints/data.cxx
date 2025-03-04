@@ -19,7 +19,9 @@ namespace engine::bridge::endpoints
     void Data::_plugins()
     {
         focades::data::metadata::Metadata::plugins();
-        plugins::Plugins::lua.state["_metadata"] = m_data_metadata;
+        //plugins::Plugins::lua.state["_metadata"] = m_data_metadata;
+        plugins::Plugins::lua.state.new_usertype<endpoints::Data>(
+            "Data", "metadata", &endpoints::Data::m_data_metadata);
     }
 #endif
 

@@ -1,5 +1,6 @@
 #include <atomic>
 #include <chrono>
+#include <engine/bridge/bridge.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/crypto/sha.hxx>
 #include <engine/engine.hxx>
@@ -82,6 +83,7 @@ namespace engine
         security::yara::extend::Yara::plugins();
         magic::extend::Magic::plugins();
         parser::extend::Json::plugins();
+        engine::bridge::extend::Bridge::plugins();
     }
 #endif
 

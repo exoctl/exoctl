@@ -11,7 +11,7 @@
 #include <engine/bridge/endpoints/plugins.hxx>
 #endif
 
-#include <engine/bridge/plugin/bridge.hxx>
+#include <engine/bridge/extend/bridge.hxx>
 
 #include <engine/bridge/endpoints/reverse.hxx>
 #include <engine/server/server.hxx>
@@ -23,36 +23,29 @@ namespace engine
     namespace bridge
     {
         class Bridge;
-        class Bridge : public interface::IBind
-#ifdef ENGINE_PRO
-            ,
-                       public interface::IPlugins
-#endif
+
+        class Bridge
         {
           public:
             Bridge();
             ~Bridge() = default;
 
-            friend class plugin::Bridge;
+            friend class extend::Bridge;
 
             void load();
             void setup(server::Server &);
+
 #ifdef ENGINE_PRO
-            void register_plugins() override;
+            static std::shared_ptr<bridge::endpoints::Plugins> plugins;
 #endif
-            void bind_to_lua(sol::state_view &) override;
+            static std::shared_ptr<bridge::endpoints::Parser> parser;
+            static std::shared_ptr<bridge::endpoints::Reverse> reverse;
+            static std::shared_ptr<bridge::endpoints::Data> data;
+            static std::shared_ptr<bridge::endpoints::Analysis> analysis;
 
           private:
             server::Server *m_server;
             std::vector<bridge::record::Bridge> m_endpoints;
-
-            std::unique_ptr<bridge::endpoints::Analysis> m_analysis;
-#ifdef ENGINE_PRO
-            std::unique_ptr<bridge::endpoints::Plugins> m_plugins;
-#endif
-            std::unique_ptr<bridge::endpoints::Parser> m_parser;
-            std::unique_ptr<bridge::endpoints::Reverse> m_reverse;
-            std::unique_ptr<bridge::endpoints::Data> m_data;
         };
     } // namespace bridge
 } // namespace engine

@@ -10,7 +10,8 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
     class Clamav
     {
       public:
-        Clamav(configuration::Configuration &);
+        Clamav();
+        void setup(configuration::Configuration &);
         ~Clamav() = default;
 
         void scan_fast_bytes(
@@ -21,6 +22,6 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
 
       private:
         security::av::Clamav m_clamav;
-        configuration::Configuration &m_config;
+        configuration::Configuration *m_config;
     };
 } // namespace engine::bridge::focades::analysis::scan::av::clamav

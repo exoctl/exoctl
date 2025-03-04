@@ -6,24 +6,32 @@
 
 namespace engine::bridge::focades::analysis::scan::yara
 {
-    Yara::Yara(configuration::Configuration &p_config) : m_config(p_config)
+    Yara::Yara() : m_yara(std::make_shared<security::Yara>())
     {
     }
-#ifdef ENGINE_PRO
-    void Yara::register_plugins()
+
+    void Yara::setup(configuration::Configuration &p_config)
     {
-        plugins::Plugins::lua.state["_yara"] = &m_yara;
+        m_config = &p_config;
+    }
+
+#ifdef ENGINE_PRO
+    void Yara::_plugins()
+    {
+        plugins::Plugins::lua.state.new_usertype<yara::Yara>(
+            "YaraAnalysis", "yara", &Yara::m_yara);
     }
 #endif
+
     void Yara::load_rules(const std::function<void(uint64_t)> &p_callback) const
     {
-        m_yara.load_rules([&]() {
-            m_yara.load_rules_folder(
-                m_config.get("yara.rules.path").value<std::string>().value());
+        m_yara->load_rules([&]() {
+            m_yara->load_rules_folder(
+                m_config->get("yara.rules.path").value<std::string>().value());
         });
 
         if (!IS_NULL(p_callback)) {
-            p_callback(m_yara.rules_loaded_count);
+            p_callback(m_yara->rules_loaded_count);
         }
     }
 
@@ -32,7 +40,7 @@ namespace engine::bridge::focades::analysis::scan::yara
         const std::function<void(yara::record::DTO *)> &p_callback)
     {
         if (!IS_NULL(p_callback)) {
-            m_yara.scan_fast_bytes(
+            m_yara->scan_fast_bytes(
                 p_buffer, [&](security::yara::record::Data *p_data) {
                     if (!IS_NULL(p_data)) {
                         struct yara::record::DTO *dto = new yara::record::DTO;

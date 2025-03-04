@@ -4,16 +4,20 @@
 
 namespace engine::bridge::focades::analysis::scan::av::clamav
 {
-    Clamav::Clamav(configuration::Configuration &p_config)
-        : m_clamav(), m_config(p_config)
+    Clamav::Clamav() : m_clamav()
     {
+    }
+
+    void Clamav::setup(configuration::Configuration &p_config)
+    {
+        m_config = &p_config;
     }
 
     void Clamav::load_rules(const std::function<void(unsigned int)> &p_callback)
     {
         m_clamav.load_rules([&]() {
             m_clamav.set_db_rule_fd(
-                m_config.get("av.clamav.database.default_path")
+                m_config->get("av.clamav.database.default_path")
                     .value<std::string>()
                     .value(),
                 CL_DB_STDOPT);

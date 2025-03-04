@@ -15,10 +15,10 @@ int luaopen_libskull(lua_State *L)
 
     std::vector<std::unique_ptr<engine::interface::IBind>> bindings;
 
-    bindings.reserve(6);
+    bindings.reserve(5);
 
     bindings.push_back(std::make_unique<engine::server::extend::Server>());
-    bindings.push_back(std::make_unique<engine::bridge::Bridge>());
+    bindings.push_back(std::make_unique<engine::bridge::extend::Bridge>());
     bindings.push_back(std::make_unique<engine::memory::Memory>());
     bindings.push_back(
         std::make_unique<engine::configuration::extend::Configuration>());

@@ -6,10 +6,20 @@
 
 namespace engine::bridge::endpoints
 {
-    Analysis::Analysis(server::Server &p_server)
-        : m_server(p_server), m_map(BASE_ANALYSIS)
+    Analysis::Analysis()
+        : m_map(BASE_ANALYSIS),
+          m_scan_av_clamav(
+              std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
+          m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>())
     {
-        Analysis::prepare();
+    }
+
+    void Analysis::setup(server::Server &p_server)
+    {
+        m_server = &p_server;
+
+        m_scan_yara->setup(*m_server->config);
+        m_scan_av_clamav->setup(*m_server->config);
 
         // add new routes
         Analysis::scan();
@@ -17,17 +27,22 @@ namespace engine::bridge::endpoints
         Analysis::scan_av_clamav();
     }
 
-    void Analysis::register_plugins()
+#ifdef ENGINE_PRO
+    void Analysis::_plugins()
     {
-        m_scan_yara->register_plugins();
+        focades::analysis::scan::yara::Yara::plugins();
+        
+        plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
+            "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
     }
+#endif
 
     void Analysis::scan()
     {
         m_map.add_route("/scan", [&]() {
             m_socket_scan = std::make_unique<server::gateway::WebSocket>();
             m_socket_scan->setup(
-                m_server,
+                *m_server,
                 BASE_ANALYSIS "/scan",
                 UINT64_MAX,
                 // on_message_callback
@@ -57,7 +72,7 @@ namespace engine::bridge::endpoints
 
                     TRY_END()
                     CATCH(security::yara::exception::Scan, {
-                        m_server.log->info("Error scan yara '{}'", e.what());
+                        m_server->log->info("Error scan yara '{}'", e.what());
                     })
                 });
         });
@@ -69,7 +84,7 @@ namespace engine::bridge::endpoints
             m_socket_scan_av_clamav =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_scan_av_clamav->setup(
-                m_server,
+                *m_server,
                 BASE_ANALYSIS "/scan/av/clamav",
                 UINT64_MAX,
                 // on_message_callback
@@ -95,7 +110,7 @@ namespace engine::bridge::endpoints
             m_socket_scan_yara =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_scan_yara->setup(
-                m_server,
+                *m_server,
                 BASE_ANALYSIS "/scan/yara/fast",
                 UINT64_MAX,
                 // on_message_callback
@@ -113,7 +128,7 @@ namespace engine::bridge::endpoints
                         });
                     TRY_END()
                     CATCH(security::yara::exception::Scan, {
-                        m_server.log->info("Error scan yara '{}'", e.what());
+                        m_server->log->info("Error scan yara '{}'", e.what());
                     })
                 });
         });
@@ -121,40 +136,29 @@ namespace engine::bridge::endpoints
 
     void Analysis::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
-    }
-
-    void Analysis::prepare()
-    {
-        m_server.log->info("Preparing gateway analysis routes ...");
-
-        m_scan_yara = std::make_unique<focades::analysis::scan::yara::Yara>(
-            *m_server.config);
-        m_scan_av_clamav =
-            std::make_unique<focades::analysis::scan::av::clamav::Clamav>(
-                *m_server.config);
-
         TRY_BEGIN()
-        m_server.log->info("Loading rules yara ...");
+        m_server->log->info("Loading rules yara ...");
         m_scan_yara->load_rules([&](uint64_t p_total_rules) {
-            m_server.log->info(
+            m_server->log->info(
                 "Successfully loaded rules. Total Yara rules count: "
                 "{:d}",
                 p_total_rules);
         });
 
-        m_server.log->info("Loading rules clamav ...");
+        m_server->log->info("Loading rules clamav ...");
         m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
-            m_server.log->info(
+            m_server->log->info(
                 "Successfully loaded rules. Total Clamav rules count: "
                 "{:d}",
                 p_total_rules);
         });
         TRY_END()
         CATCH(security::yara::exception::LoadRules, {
-            m_server.log->error("{}", e.what());
+            m_server->log->error("{}", e.what());
             throw exception::Abort(e.what());
         })
+
+        m_map.get_routes(
+            [&](const std::string p_route) { m_map.call_route(p_route); });
     }
 } // namespace engine::bridge::endpoints
