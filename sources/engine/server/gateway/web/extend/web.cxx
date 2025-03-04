@@ -1,9 +1,11 @@
+#ifdef ENGINE_PRO
+
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/gateway/web/plugin/web.hxx>
+#include <engine/server/gateway/web/extend/web.hxx>
 #include <engine/server/gateway/web/web.hxx>
 
-namespace engine::server::gateway::web::plugin
+namespace engine::server::gateway::web::extend
 {
     void Web::_plugins()
     {
@@ -50,4 +52,6 @@ namespace engine::server::gateway::web::plugin
                 return instance;
             }));
     }
-} // namespace engine::server::gateway::web::plugin
+} // namespace engine::server::gateway::web::extend
+
+#endif

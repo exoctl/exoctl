@@ -11,6 +11,8 @@
 #include <engine/bridge/endpoints/plugins.hxx>
 #endif
 
+#include <engine/bridge/plugin/bridge.hxx>
+
 #include <engine/bridge/endpoints/reverse.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
@@ -20,6 +22,7 @@ namespace engine
 {
     namespace bridge
     {
+        class Bridge;
         class Bridge : public interface::IBind
 #ifdef ENGINE_PRO
             ,
@@ -27,8 +30,10 @@ namespace engine
 #endif
         {
           public:
-            Bridge() = default;
+            Bridge();
             ~Bridge() = default;
+
+            friend class plugin::Bridge;
 
             void load();
             void setup(server::Server &);

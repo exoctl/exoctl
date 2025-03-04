@@ -7,10 +7,15 @@
 namespace engine::bridge::focades::data::metadata
 {
 #ifdef ENGINE_PRO
-    void Metadata::register_plugins()
+    void Metadata::_plugins()
     {
-        plugins::Plugins::lua.state["_sha"] = &m_sha;
-        plugins::Plugins::lua.state["_magic"] = &m_magic;
+        plugins::Plugins::lua.state
+            .new_usertype<focades::data::metadata::Metadata>(
+                "Metadata",
+                "sha",
+                &Metadata::m_sha,
+                "magic",
+                &Metadata::m_magic);
     }
 #endif
     void Metadata::parse(

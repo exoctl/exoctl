@@ -1,11 +1,9 @@
-#ifdef ENGINE_PRO
-
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/plugin/server.hxx>
+#include <engine/server/extend/server.hxx>
 #include <engine/server/server.hxx>
 
-namespace engine::server::plugin
+namespace engine::server::extend
 {
     void Server::bind_http_methods(sol::state_view &p_lua)
     {
@@ -115,11 +113,10 @@ namespace engine::server::plugin
             "bindaddr",
             sol::readonly(&server::Server::bindaddr),
             "concurrency",
-            sol::readonly(&server::Server::concurrency),
-            "plugins",
-            &Server::plugins);
+            sol::readonly(&server::Server::concurrency));
     }
 
+#ifdef ENGINE_PRO
     void Server::_plugins()
     {
         Server::bind_http_methods(plugins::Plugins::lua.state);
@@ -127,13 +124,12 @@ namespace engine::server::plugin
         Server::bind_requests(plugins::Plugins::lua.state);
         Server::bind_server(plugins::Plugins::lua.state);
 
-        gateway::web::plugin::Web::plugins();
+        gateway::web::extend::Web::plugins();
     }
+#endif
 
     void Server::bind_to_lua(sol::state_view &p_lua)
     {
         Server::bind_server(p_lua);
     }
-} // namespace engine::server::plugin
-
-#endif
+} // namespace engine::server::extend

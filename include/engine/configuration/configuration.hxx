@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/configuration/exception.hxx>
-#include <engine/configuration/plugin/configuration.hxx>
+#include <engine/configuration/extend/configuration.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <toml++/toml.hpp>
@@ -19,7 +19,7 @@ namespace engine
             ~Configuration() = default;
             Configuration &operator=(const Configuration &);
 
-            friend class plugin::Configuration;
+            friend class extend::Configuration;
 
             void setup(const std::string &);
             void load();

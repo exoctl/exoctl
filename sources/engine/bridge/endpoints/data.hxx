@@ -15,25 +15,25 @@ namespace engine::bridge::endpoints
     class Data : public interface::IEndpoint
 #ifdef ENGINE_PRO
         ,
-                 public interface::IPlugins
+                 public interface::ISubPlugins<Data>
 #endif
     {
       public:
-        Data(server::Server &);
+        Data();
+        void setup(server::Server &);
         ~Data() = default;
 #ifdef ENGINE_PRO
-        void register_plugins() override;
+        void _plugins() override;
 #endif
         void load() const override;
 
       private:
-        server::Server &m_server;
+        server::Server *m_server;
         mutable engine::server::gateway::Map m_map;
 
         std::unique_ptr<engine::server::gateway::Web> m_web_metadata;
-        std::unique_ptr<focades::data::metadata::Metadata> m_data_metadata;
+        std::shared_ptr<focades::data::metadata::Metadata> m_data_metadata;
 
-        void prepare();
         void data_metadata();
     };
 } // namespace engine::bridge::endpoints

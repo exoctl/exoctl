@@ -12,7 +12,7 @@ namespace engine::bridge::focades::data::metadata
 {
     class Metadata
 #ifdef ENGINE_PRO
-        : public interface::IPlugins
+        : public interface::ISubPlugins<Metadata>
 #endif
     {
       public:
@@ -20,7 +20,7 @@ namespace engine::bridge::focades::data::metadata
         ~Metadata() = default;
 
 #ifdef ENGINE_PRO
-        void register_plugins() override;
+        void _plugins() override;
 #endif
 
         void parse(const std::string &,

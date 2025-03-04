@@ -44,8 +44,7 @@ namespace engine
                 clamav::record::scan::Options p_options,
                 const std::function<void(clamav::record::Data *)> &p_callback)
             {
-                auto data =
-                    std::make_shared<clamav::record::Data>();
+                auto data = std::make_shared<clamav::record::Data>();
 
                 int fd;
 
@@ -77,6 +76,7 @@ namespace engine
                                        .heuristic = p_options.heuristic,
                                        .mail = p_options.mail,
                                        .dev = p_options.dev};
+
                 const cl_error_t ret = cl_scandesc(
                     fd, "tmp_", &data->virname, nullptr, m_engine, &scanopts);
 

@@ -4,16 +4,16 @@
 
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::bridge::plugin
+namespace engine::parser::extend
 {
-    class Bridge : public interface::ISubPlugins<Bridge>
+    class Json : public interface::ISubPlugins<Json>
     {
       public:
         void _plugins() override;
 
       private:
-        void bind_bridge();
+        void bind_json();
     };
-} // namespace engine::bridge::plugin
+} // namespace engine::parser::extend
 
 #endif

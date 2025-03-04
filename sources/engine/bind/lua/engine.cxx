@@ -17,12 +17,12 @@ int luaopen_libskull(lua_State *L)
 
     bindings.reserve(6);
 
-    bindings.push_back(std::make_unique<engine::server::plugin::Server>());
+    bindings.push_back(std::make_unique<engine::server::extend::Server>());
     bindings.push_back(std::make_unique<engine::bridge::Bridge>());
     bindings.push_back(std::make_unique<engine::memory::Memory>());
     bindings.push_back(
-        std::make_unique<engine::configuration::plugin::Configuration>());
-    bindings.push_back(std::make_unique<engine::logging::plugin::Logging>());
+        std::make_unique<engine::configuration::extend::Configuration>());
+    bindings.push_back(std::make_unique<engine::logging::extend::Logging>());
     bindings.push_back(std::make_unique<engine::Engine>());
 
     for (auto &bind : bindings) {

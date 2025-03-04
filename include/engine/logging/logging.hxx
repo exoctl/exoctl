@@ -4,7 +4,7 @@
 #include <engine/configuration/configuration.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/logging/plugin/logging.hxx>
+#include <engine/logging/extend/logging.hxx>
 #include <spdlog/spdlog.h>
 
 namespace engine
@@ -22,7 +22,7 @@ namespace engine
             void setup(const configuration::Configuration &);
             void load();
 
-            friend class plugin::Logging;
+            friend class extend::Logging;
 
             template <typename... Args>
             void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)

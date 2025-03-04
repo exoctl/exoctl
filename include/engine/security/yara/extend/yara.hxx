@@ -4,7 +4,7 @@
 
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::security::yara::plugin
+namespace engine::security::yara::extend
 {
     class Yara : public interface::ISubPlugins<Yara>
     {
@@ -24,6 +24,6 @@ namespace engine::security::yara::plugin
         inline void bind_data();
         inline void bind_yara();
     };
-} // namespace engine::security::yara::plugin
+} // namespace engine::security::yara::extend
 
 #endif

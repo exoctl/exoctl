@@ -2,25 +2,33 @@
 
 namespace engine::bridge::endpoints
 {
-    Data::Data(server::Server &p_server) : m_server(p_server), m_map(BASE_DATA)
+    Data::Data()
+        : m_map(BASE_DATA),
+          m_data_metadata(std::make_shared<focades::data::metadata::Metadata>())
     {
-        Data::prepare();
+    }
+
+    void Data::setup(server::Server &p_server)
+    {
+        m_server = &p_server;
 
         // add new routes
         Data::data_metadata();
     }
 #ifdef ENGINE_PRO
-    void Data::register_plugins()
+    void Data::_plugins()
     {
-        m_data_metadata->register_plugins();
+        focades::data::metadata::Metadata::plugins();
+        plugins::Plugins::lua.state["_metadata"] = m_data_metadata;
     }
 #endif
+
     void Data::data_metadata()
     {
         m_map.add_route("/metadata", [&]() {
             m_web_metadata = std::make_unique<engine::server::gateway::Web>();
             m_web_metadata->setup(
-                m_server,
+                *m_server,
                 BASE_DATA "/metadata",
                 [&](const crow::request &req) -> crow::response {
                     if (req.body.size() > 0) {
@@ -38,12 +46,6 @@ namespace engine::bridge::endpoints
                 },
                 {crow::HTTPMethod::POST});
         });
-    }
-
-    void Data::prepare()
-    {
-        m_server.log->info("Preparing gateway data routes ...");
-        m_data_metadata = std::make_unique<focades::data::metadata::Metadata>();
     }
 
     void Data::load() const

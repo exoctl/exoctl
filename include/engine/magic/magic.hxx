@@ -1,31 +1,26 @@
 #pragma once
 
-#include <engine/interfaces/iplugins.hxx>
+#include <engine/magic/extend/magic.hxx>
 #include <magic.h>
 #include <string>
 
-namespace engine
+namespace engine::magic
 {
-    namespace magic
+    class Magic;
+
+    class Magic
     {
-        class Magic
-#ifdef ENGINE_PRO
-            : public interface::ISubPlugins<Magic>
-#endif
-        {
-          public:
-            Magic();
-            ~Magic();
-            void load_mime(const std::string &buffer);
+      public:
+        Magic();
+        ~Magic();
 
-#ifdef ENGINE_PRO
-            void _plugins() override;
-#endif
+        friend class extend::Magic;
 
-            std::string mime;
+        void load_mime(const std::string &buffer);
 
-          private:
-            magic_t m_cookie;
-        };
-    } // namespace magic
-} // namespace engine
+        std::string mime;
+
+      private:
+        magic_t m_cookie;
+    };
+} // namespace engine::magic

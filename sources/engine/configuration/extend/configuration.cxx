@@ -1,8 +1,8 @@
-#include <engine/configuration/plugin/configuration.hxx>
+#include <engine/configuration/extend/configuration.hxx>
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 
-namespace engine::configuration::plugin
+namespace engine::configuration::extend
 {
     void Configuration::bind_configuration(sol::state_view &p_lua)
     {
@@ -11,10 +11,6 @@ namespace engine::configuration::plugin
             sol::constructors<configuration::Configuration()>(),
             "load",
             &configuration::Configuration::load,
-#ifdef ENGINE_PRO
-            "plugins",
-            &Configuration::plugins,
-#endif
             "setup",
             &configuration::Configuration::setup,
             "get",
@@ -129,7 +125,6 @@ namespace engine::configuration::plugin
     {
         Configuration::bind_configuration(plugins::Plugins::lua.state);
     }
-
 #endif
 
-} // namespace engine::configuration::plugin
+} // namespace engine::configuration::extend

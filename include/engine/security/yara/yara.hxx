@@ -2,7 +2,7 @@
 
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/security/yara/entitys.hxx>
-#include <engine/security/yara/plugin/yara.hxx>
+#include <engine/security/yara/extend/yara.hxx>
 #include <filesystem>
 #include <functional>
 #include <stack>
@@ -21,8 +21,8 @@ namespace engine
             Yara();
             ~Yara();
 
-            friend class yara::plugin::Yara;
-            
+            friend class yara::extend::Yara;
+
             /**
              * @brief this function realize fast scan using flag
              * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback

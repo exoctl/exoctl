@@ -1,8 +1,8 @@
 #include <engine/logging/logging.hxx>
-#include <engine/logging/plugin/logging.hxx>
+#include <engine/logging/extend/logging.hxx>
 #include <engine/plugins/plugins.hxx>
 
-namespace engine::logging::plugin
+namespace engine::logging::extend
 {
     void Logging::bind_to_lua(sol::state_view &p_lua)
     {
@@ -23,10 +23,6 @@ namespace engine::logging::plugin
             sol::constructors<logging::Logging()>(),
             "load",
             &logging::Logging::load,
-#ifdef ENGINE_PRO
-            "plugins",
-            &Logging::plugins,
-#endif
             "setup",
             &logging::Logging::setup,
             "info",
@@ -46,4 +42,4 @@ namespace engine::logging::plugin
                 &logging::Logging::error));
     }
 
-} // namespace engine::logging::plugin
+} // namespace engine::logging::extend

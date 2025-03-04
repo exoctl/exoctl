@@ -4,16 +4,16 @@
 
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::bridge::plugin
+namespace engine::magic::extend
 {
-    class Bridge : public interface::ISubPlugins<Bridge>
+    class Magic : public interface::ISubPlugins<Magic>
     {
       public:
         void _plugins() override;
 
       private:
-        void bind_bridge();
+        void bind_magic();
     };
-} // namespace engine::bridge::plugin
+} // namespace engine::magic::extend
 
 #endif

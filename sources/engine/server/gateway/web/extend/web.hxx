@@ -5,7 +5,7 @@
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::server::gateway::web::plugin
+namespace engine::server::gateway::web::extend
 {
     class Web : public interface::ISubPlugins<Web>
     {
@@ -14,6 +14,6 @@ namespace engine::server::gateway::web::plugin
 
       private:
     };
-} // namespace engine::server::gateway::web::plugin
+} // namespace engine::server::gateway::web::extend
 
 #endif

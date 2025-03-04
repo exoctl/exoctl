@@ -2,7 +2,7 @@
 
 #include <crow.h>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/gateway/web/plugin/web.hxx>
+#include <engine/server/gateway/web/extend/web.hxx>
 #include <engine/server/gateway/websocket/middlewares/jwtauth.hxx>
 #include <engine/server/server.hxx>
 #include <functional>
@@ -19,7 +19,7 @@ namespace engine::server::gateway
         using on_request_callback =
             std::function<crow::response(const crow::request &)>;
 
-        friend class web::plugin::Web;
+        friend class web::extend::Web;
 
         Web() = default;
         ~Web() = default;

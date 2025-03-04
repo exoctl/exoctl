@@ -13,7 +13,7 @@
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/plugin/server.hxx>
+#include <engine/server/extend/server.hxx>
 #include <memory>
 
 namespace engine
@@ -28,7 +28,7 @@ namespace engine
             std::shared_ptr<App> m_app;
 
           public:
-            friend class engine::server::plugin::Server;
+            friend class engine::server::extend::Server;
 
             Server();
             ~Server() = default;

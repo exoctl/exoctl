@@ -5,12 +5,18 @@ namespace engine
 {
     namespace bridge
     {
+        Bridge::Bridge() : m_data(std::make_unique<bridge::endpoints::Data>())
+        {
+        }
+
         void Bridge::setup(server::Server &p_server)
         {
             m_server = &p_server;
             m_analysis =
                 std::make_unique<bridge::endpoints::Analysis>(*m_server);
-            m_data = std::make_unique<bridge::endpoints::Data>(*m_server);
+
+            m_data->setup(*m_server);
+
             m_reverse = std::make_unique<bridge::endpoints::Reverse>(*m_server);
             m_parser = std::make_unique<bridge::endpoints::Parser>(*m_server);
 #ifdef ENGINE_PRO
@@ -36,7 +42,7 @@ namespace engine
 #ifdef ENGINE_PRO
         void Bridge::register_plugins()
         {
-            m_data->register_plugins();
+            bridge::endpoints::Data::plugins();
             m_analysis->register_plugins();
 
             Bridge::bind_to_lua(plugins::Plugins::lua.state);

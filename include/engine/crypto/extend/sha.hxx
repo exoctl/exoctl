@@ -4,16 +4,16 @@
 
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::bridge::plugin
+namespace engine::crypto::extend
 {
-    class Bridge : public interface::ISubPlugins<Bridge>
+    class Sha : public interface::ISubPlugins<Sha>
     {
       public:
         void _plugins() override;
 
       private:
-        void bind_bridge();
+        void bind_sha();
     };
-} // namespace engine::bridge::plugin
+} // namespace engine::crypto::plugin
 
 #endif

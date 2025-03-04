@@ -33,10 +33,12 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
 
             security::av::clamav::record::scan::Options scanopts;
             scanopts.general = CL_SCAN_GENERAL_ALLMATCHES |
-                               CL_SCAN_GENERAL_HEURISTIC_PRECEDENCE |
+                               CL_SCAN_GENERAL_HEURISTICS |
                                CL_SCAN_GENERAL_COLLECT_METADATA;
-            scanopts.parse = CL_SCAN_PARSE_ARCHIVE;
+            scanopts.parse = ~0;
             scanopts.heuristic = CL_SCAN_HEURISTIC_MACROS;
+            scanopts.dev =
+                CL_SCAN_DEV_COLLECT_PERFORMANCE_INFO | CL_SCAN_DEV_COLLECT_SHA;
 
             m_clamav.scan_fast_bytes(
                 p_buffer,

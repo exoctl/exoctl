@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/parser/json/extend/json.hxx>
 #include <optional>
 #include <rapidjson/allocators.h>
 #include <rapidjson/document.h>
@@ -14,10 +15,9 @@ namespace engine
 {
     namespace parser
     {
+        class Json;
+
         class Json
-#ifdef ENGINE_PRO
-            : public interface::ISubPlugins<Json>
-#endif
         {
           public:
             Json();
@@ -32,9 +32,8 @@ namespace engine
                 return *this;
             }
 
-#ifdef ENGINE_PRO
-            void _plugins() override;
-#endif
+            friend class extend::Json;
+            
             [[nodiscard]] std::string to_string() const;
 
             template <typename T>

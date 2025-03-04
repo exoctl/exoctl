@@ -3,12 +3,12 @@
 #include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::logging::plugin
+namespace engine::configuration::extend
 {
-    class Logging : public interface::IBind
+    class Configuration : public interface::IBind
 #ifdef ENGINE_PRO
         ,
-                    public interface::ISubPlugins<Logging>
+                          public interface::ISubPlugins<Configuration>
 #endif
     {
       public:
@@ -19,6 +19,6 @@ namespace engine::logging::plugin
 #endif
 
       private:
-        void bind_logging(sol::state_view &);
+        void bind_configuration(sol::state_view &);
     };
-} // namespace engine::logging::plugin
+} // namespace engine::configuration::extend

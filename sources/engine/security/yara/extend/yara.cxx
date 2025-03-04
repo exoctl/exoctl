@@ -2,10 +2,10 @@
 
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/security/yara/plugin/yara.hxx>
+#include <engine/security/yara/extend/yara.hxx>
 #include <engine/security/yara/yara.hxx>
 
-namespace engine::security::yara::plugin
+namespace engine::security::yara::extend
 {
     void Yara::bind_import()
     {
@@ -267,6 +267,6 @@ namespace engine::security::yara::plugin
         Yara::bind_data();
         Yara::bind_yara();
     }
-} // namespace engine::security::yara::plugin
+} // namespace engine::security::yara::extend
 
 #endif
