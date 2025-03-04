@@ -1,19 +1,19 @@
 #pragma once
 
 // clang-format off
-#include <engine/bridge/endpoints/parser.hxx>
+#include <engine/bridge/endpoints/parser/parser.hxx>
 // clang-format on
-#include <engine/bridge/endpoints/analysis.hxx>
-#include <engine/bridge/endpoints/data.hxx>
+#include <engine/bridge/endpoints/analysis/analysis.hxx>
+#include <engine/bridge/endpoints/data/data.hxx>
 #include <engine/bridge/entitys.hxx>
 
 #ifdef ENGINE_PRO
-#include <engine/bridge/endpoints/plugins.hxx>
+#include <engine/bridge/endpoints/plugins/plugins.hxx>
 #endif
 
 #include <engine/bridge/extend/bridge.hxx>
 
-#include <engine/bridge/endpoints/reverse.hxx>
+#include <engine/bridge/endpoints/reverse/reverse.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 #include <vector>
@@ -27,7 +27,7 @@ namespace engine
         class Bridge
         {
           public:
-            Bridge();
+            Bridge() = default;
             ~Bridge() = default;
 
             friend class extend::Bridge;

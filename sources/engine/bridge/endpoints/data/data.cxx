@@ -1,4 +1,4 @@
-#include <engine/bridge/endpoints/data.hxx>
+#include <engine/bridge/endpoints/data/data.hxx>
 
 namespace engine::bridge::endpoints
 {

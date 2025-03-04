@@ -1,4 +1,4 @@
-#include <engine/bridge/endpoints/reverse.hxx>
+#include <engine/bridge/endpoints/reverse/reverse.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 

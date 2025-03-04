@@ -1,4 +1,4 @@
-#include <engine/bridge/endpoints/analysis.hxx>
+#include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/security/yara/exception.hxx>

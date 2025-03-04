@@ -1,6 +1,6 @@
 #ifdef ENGINE_PRO
 
-#include <engine/bridge/endpoints/plugins.hxx>
+#include <engine/bridge/endpoints/plugins/plugins.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 

@@ -13,14 +13,10 @@ namespace engine
         std::shared_ptr<bridge::endpoints::Data> Bridge::data;
         std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis;
 
-        Bridge::Bridge()
-        {
-        }
 
         void Bridge::setup(server::Server &p_server)
         {
             m_server = &p_server;
-
             analysis = std::make_shared<bridge::endpoints::Analysis>();
             data = std::make_shared<bridge::endpoints::Data>();
 
