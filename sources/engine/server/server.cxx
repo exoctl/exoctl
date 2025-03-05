@@ -21,10 +21,11 @@ namespace engine
                 config->get("server.name").value<std::string>().value());
             bindaddr.assign(
                 config->get("server.bindaddr").value<std::string>().value());
-            ssl_certificate_path.assign(
-                config->get("server.ssl_certificate_path")
-                    .value<std::string>()
-                    .value());
+            certfile.assign(config->get("server.ssl.certfile")
+                                .value<std::string>()
+                                .value());
+            keyfile.assign(
+                config->get("server.ssl.keyfile").value<std::string>().value());
             concurrency =
                 config->get("server.threads").value<int64_t>().value();
             port = config->get("server.port").value<int64_t>().value();
@@ -38,11 +39,8 @@ namespace engine
 
         std::future<void> Server::run_async()
         {
-            return m_app
-                ->bindaddr(bindaddr)
-#if CROW_OPENSSL
-                .ssl_file(ssl_certificate_path)
-#endif
+            return m_app->bindaddr(bindaddr)
+                .ssl_file(certfile, keyfile)
                 .port(port)
                 .concurrency(concurrency)
                 .server_name(name)
@@ -56,16 +54,18 @@ namespace engine
                 log = p_server.log;
                 m_app = p_server.m_app;
 
+                certfile.assign(config->get("server.ssl.certfile")
+                                    .value<std::string>()
+                                    .value());
+                keyfile.assign(config->get("server.ssl.keyfile")
+                                   .value<std::string>()
+                                   .value());
                 name.assign(p_server.config->get("server.name")
                                 .value<std::string>()
                                 .value());
                 bindaddr.assign(p_server.config->get("server.bindaddr")
                                     .value<std::string>()
                                     .value());
-                ssl_certificate_path.assign(
-                    p_server.config->get("server.ssl_certificate_path")
-                        .value<std::string>()
-                        .value());
                 concurrency = p_server.config->get("server.threads")
                                   .value<int64_t>()
                                   .value();

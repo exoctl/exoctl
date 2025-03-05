@@ -3,10 +3,6 @@
 #define CROW_ENFORCE_WS_SPEC
 #define CROW_MAIN
 
-#if CROW_OPENSSL
-#define CROW_ENABLE_SSL
-#endif
-
 #include <crow.h>
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
@@ -43,7 +39,8 @@ namespace engine
             std::string bindaddr;
             std::string name;
             unsigned short port;
-            std::string ssl_certificate_path;
+            std::string certfile;
+            std::string keyfile;
             std::future<void> run_async();
 
             void tick(std::chrono::milliseconds d, std::function<void()> f);

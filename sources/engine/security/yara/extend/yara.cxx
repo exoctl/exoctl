@@ -102,8 +102,9 @@ namespace engine::security::yara::extend
                 stream.read =
                     [](void *ptr, size_t size, size_t count, void *) -> size_t {
                     if (!lua_read_func.valid()) {
-                        return 0;
+                        throw plugins::exception::Runtime("Callback not valid");
                     }
+
                     sol::protected_function_result result = lua_read_func(
                         std::string(static_cast<const char *>(ptr),
                                     size * count),
@@ -125,8 +126,9 @@ namespace engine::security::yara::extend
                                   const size_t count,
                                   void *) -> size_t {
                     if (!lua_write_func.valid()) {
-                        return 0;
+                        throw plugins::exception::Runtime("Callback not valid");
                     }
+
                     sol::protected_function_result result = lua_write_func(
                         std::string(static_cast<const char *>(ptr),
                                     size * count),
