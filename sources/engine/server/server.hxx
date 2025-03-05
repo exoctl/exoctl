@@ -38,6 +38,7 @@ namespace engine
             unsigned short concurrency;
             std::string bindaddr;
             std::string name;
+            bool ssl_enable;
             unsigned short port;
             std::string certfile;
             std::string keyfile;

@@ -113,7 +113,13 @@ namespace engine::server::extend
             "bindaddr",
             sol::readonly(&server::Server::bindaddr),
             "concurrency",
-            sol::readonly(&server::Server::concurrency));
+            sol::readonly(&server::Server::concurrency),
+            "ssl_enable",
+            sol::readonly(&server::Server::ssl_enable),
+            "certfile",
+            sol::readonly(&server::Server::certfile),
+            "keyfile",
+            sol::readonly(&server::Server::keyfile));
     }
 
 #ifdef ENGINE_PRO

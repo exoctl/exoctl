@@ -24,6 +24,7 @@ namespace engine
             certfile.assign(config->get("server.ssl.certfile")
                                 .value<std::string>()
                                 .value());
+            ssl_enable = config->get("server.ssl.enable").value<bool>().value();
             keyfile.assign(
                 config->get("server.ssl.keyfile").value<std::string>().value());
             concurrency =
@@ -39,12 +40,16 @@ namespace engine
 
         std::future<void> Server::run_async()
         {
-            return m_app->bindaddr(bindaddr)
-                .ssl_file(certfile, keyfile)
+            m_app->bindaddr(bindaddr)
                 .port(port)
                 .concurrency(concurrency)
-                .server_name(name)
-                .run_async();
+                .server_name(name);
+
+            if (ssl_enable) {
+                m_app->ssl_file(certfile, keyfile);
+            }
+
+            return m_app->run_async();
         }
 
         Server &Server::operator=(const Server &p_server)
@@ -54,10 +59,13 @@ namespace engine
                 log = p_server.log;
                 m_app = p_server.m_app;
 
-                certfile.assign(config->get("server.ssl.certfile")
+                ssl_enable = p_server.config->get("server.ssl.enable")
+                                 .value<bool>()
+                                 .value();
+                certfile.assign(p_server.config->get("server.ssl.certfile")
                                     .value<std::string>()
                                     .value());
-                keyfile.assign(config->get("server.ssl.keyfile")
+                keyfile.assign(p_server.config->get("server.ssl.keyfile")
                                    .value<std::string>()
                                    .value());
                 name.assign(p_server.config->get("server.name")
