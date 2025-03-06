@@ -17,6 +17,7 @@ namespace engine
     namespace server
     {
         class Server; // Forward declaration Server plugin
+        
         using App = crow::App<>;
         class Server
         {
@@ -44,7 +45,7 @@ namespace engine
             std::string keyfile;
             std::future<void> run_async();
 
-            void tick(std::chrono::milliseconds d, std::function<void()> f);
+            void tick(std::chrono::milliseconds, std::function<void()>);
             void stop();
         };
     } // namespace server

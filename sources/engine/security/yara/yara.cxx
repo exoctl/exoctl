@@ -41,7 +41,7 @@ namespace engine
             }
         }
 
-        void Yara::unload_stream_rules()
+        void Yara::unload_rules()
         {
             if (!IS_NULL(m_yara_rules)) {
                 if (yr_rules_destroy(m_yara_rules) != ERROR_SUCCESS) {
@@ -95,12 +95,22 @@ namespace engine
             }
         }
 
-        const int Yara::load_stream_rules(YR_STREAM &p_stream)
+        const int Yara::load_rules_file(const char *p_file)
+        {
+            return yr_rules_load(p_file, &m_yara_rules);
+        }
+
+        const int Yara::save_rules_file(const char *p_file)
+        {
+            return yr_rules_save(m_yara_rules, p_file);
+        }
+
+        const int Yara::load_rules_stream(YR_STREAM &p_stream)
         {
             return yr_rules_load_stream(&p_stream, &m_yara_rules);
         }
 
-        const int Yara::save_stream_rules(YR_STREAM &p_stream)
+        const int Yara::save_rules_stream(YR_STREAM &p_stream)
         {
             return yr_rules_save_stream(m_yara_rules, &p_stream);
         }
@@ -112,10 +122,10 @@ namespace engine
             }
 
             Yara::unload_compiler();
-            Yara::unload_stream_rules();
+            Yara::unload_rules();
         }
 
-        const int Yara::load_rule_file(const std::string &p_path,
+        const int Yara::set_rule_file(const std::string &p_path,
                                        const std::string &p_yrname,
                                        const std::string &p_yrns) const
         {
@@ -130,7 +140,7 @@ namespace engine
             return error_success;
         }
 
-        const int Yara::load_rule_buff(const std::string &p_rule,
+        const int Yara::set_rule_buff(const std::string &p_rule,
                                        const std::string &p_yrns) const
         {
             rules_loaded_count++;
@@ -163,7 +173,7 @@ namespace engine
                     continue;
                 }
                 if (entry_name.extension() == ".yar") {
-                    if (Yara::load_rule_file(full_path,
+                    if (Yara::set_rule_file(full_path,
                                              entry_name,
                                              replace_slashes_with_dots(
                                                  p_path)) != ERROR_SUCCESS) {
@@ -173,7 +183,7 @@ namespace engine
                             std::string(full_path));
                     }
                 } else if (entry->d_type == DT_DIR) {
-                    load_rules_folder(full_path);
+                    Yara::load_rules_folder(full_path);
                 }
             }
             closedir(dir);

@@ -58,9 +58,12 @@ namespace engine
             void tags_foreach(YR_RULE *,
                               const std::function<void(const char *)> &);
 
-            void unload_stream_rules();
-            [[nodiscard]] const int load_stream_rules(YR_STREAM &);
-            [[nodiscard]] const int save_stream_rules(YR_STREAM &);
+            const int load_rules_file(const char *);
+            const int save_rules_file(const char *);
+
+            void unload_rules();
+            [[nodiscard]] const int load_rules_stream(YR_STREAM &);
+            [[nodiscard]] const int save_rules_stream(YR_STREAM &);
             [[nodiscard]] const int load_compiler();
             void unload_compiler();
 
@@ -69,9 +72,9 @@ namespace engine
             /* load rules if extension file '.yar'*/
             void load_rules_folder(const std::string & /* path */) const;
 
-            [[nodiscard]] const int load_rule_buff(const std::string &,
-                                                   const std::string &) const;
-            [[nodiscard]] const int load_rule_file(const std::string &,
+            [[nodiscard]] const int set_rule_buff(const std::string &,
+                                                  const std::string &) const;
+            [[nodiscard]] const int set_rule_file(const std::string &,
                                                    const std::string &,
                                                    const std::string &) const;
 

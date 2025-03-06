@@ -99,23 +99,30 @@ namespace engine::security::yara::extend
             "read",
             [](YR_STREAM &stream, sol::function func) {
                 static sol::function lua_read_func = func;
-                stream.read =
-                    [](void *ptr, size_t size, size_t count, void *) -> size_t {
+                stream.read = [](void *ptr,
+                                 size_t size,
+                                 size_t count,
+                                 void *user_data) -> size_t {
                     if (!lua_read_func.valid()) {
                         throw plugins::exception::Runtime("Callback not valid");
                     }
 
-                    sol::protected_function_result result = lua_read_func(
-                        std::string(static_cast<const char *>(ptr),
-                                    size * count),
-                        size,
-                        count);
+                    const size_t total_size = size * count;
+
+                    sol::protected_function_result result =
+                        lua_read_func(total_size);
                     if (!result.valid()) {
                         sol::error err = result;
                         throw plugins::exception::Runtime(
-                            fmt::format("Lua callback error : {}", err.what()));
+                            fmt::format("Lua callback error: {}", err.what()));
                     }
-                    return result;
+
+                    const std::string data = result.get<std::string>();
+                    size_t bytes_read = std::min(total_size, data.size());
+
+                    std::memcpy(ptr, data.data(), bytes_read);
+
+                    return bytes_read / size;
                 };
             },
             "write",
@@ -129,17 +136,19 @@ namespace engine::security::yara::extend
                         throw plugins::exception::Runtime("Callback not valid");
                     }
 
-                    sol::protected_function_result result = lua_write_func(
-                        std::string(static_cast<const char *>(ptr),
-                                    size * count),
-                        size,
-                        count);
-                    if (!result.valid()) {
-                        sol::error err = result;
-                        throw plugins::exception::Runtime(fmt::format(
-                            "Lua callback error in : {}", err.what()));
-                    }
-                    return result;
+                    const size_t total_size = size * count;
+
+                    sol::protected_function_result result =
+                        lua_write_func(std::string(
+                            static_cast<const char *>(ptr), total_size));
+
+                    // if (!result.valid()) {
+                    //     sol::error err = result;
+                    //     throw plugins::exception::Runtime(fmt::format(
+                    //         "Lua callback error in : {}", err.what()));
+                    // }
+
+                    return total_size / size;
                 };
             });
     }
@@ -161,10 +170,10 @@ namespace engine::security::yara::extend
         plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
             "Yara",
             sol::constructors<engine::security::Yara()>(),
-            "unload_stream_rules",
-            &engine::security::Yara::unload_stream_rules,
-            "load_stream_rules",
-            &engine::security::Yara::load_stream_rules,
+            "unload_rules",
+            &engine::security::Yara::unload_rules,
+            "load_rules_stream",
+            &engine::security::Yara::load_rules_stream,
             "rules_foreach",
             &engine::security::Yara::rules_foreach,
             "metas_foreach",
@@ -173,8 +182,8 @@ namespace engine::security::yara::extend
             &engine::security::Yara::tags_foreach,
             "strings_foreach",
             &engine::security::Yara::strings_foreach,
-            "save_stream_rules",
-            &engine::security::Yara::save_stream_rules,
+            "save_rules_stream",
+            &engine::security::Yara::save_rules_stream,
             "load_compiler",
             &engine::security::Yara::load_compiler,
             "unload_compiler",
@@ -252,10 +261,14 @@ namespace engine::security::yara::extend
             &engine::security::Yara::scan_fast_bytes,
             "rules_loaded_count",
             &engine::security::Yara::rules_loaded_count,
-            "load_rule_file",
-            &engine::security::Yara::load_rule_file,
-            "load_rule_buff",
-            &engine::security::Yara::load_rule_buff);
+            "load_rules_file",
+            &engine::security::Yara::load_rules_file,
+            "set_rule_buff",
+            &engine::security::Yara::set_rule_buff,
+            "set_rule_file",
+            &engine::security::Yara::set_rule_file,
+            "save_rules_file",
+            &engine::security::Yara::save_rules_file);
     }
 
     void Yara::_plugins()
