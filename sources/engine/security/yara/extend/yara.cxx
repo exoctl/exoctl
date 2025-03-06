@@ -129,26 +129,27 @@ namespace engine::security::yara::extend
             [](YR_STREAM &stream, sol::function func) {
                 static sol::function lua_write_func = func;
                 stream.write = [](const void *ptr,
-                                  const size_t size,
-                                  const size_t count,
-                                  void *) -> size_t {
+                                  size_t size,
+                                  size_t count,
+                                  void *user_data) -> size_t {
                     if (!lua_write_func.valid()) {
                         throw plugins::exception::Runtime("Callback not valid");
                     }
 
                     const size_t total_size = size * count;
 
+                    std::string data(static_cast<const char *>(ptr),
+                                     total_size);
+
                     sol::protected_function_result result =
-                        lua_write_func(std::string(
-                            static_cast<const char *>(ptr), total_size));
+                        lua_write_func(data);
+                    if (!result.valid()) {
+                        sol::error err = result;
+                        throw plugins::exception::Runtime(
+                            fmt::format("Lua callback error: {}", err.what()));
+                    }
 
-                    // if (!result.valid()) {
-                    //     sol::error err = result;
-                    //     throw plugins::exception::Runtime(fmt::format(
-                    //         "Lua callback error in : {}", err.what()));
-                    // }
-
-                    return total_size / size;
+                    return count;
                 };
             });
     }
