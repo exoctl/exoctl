@@ -46,7 +46,11 @@ namespace engine
                 .server_name(name);
 
             if (ssl_enable) {
-                m_app->ssl_file(certfile, keyfile);
+                if (!keyfile.empty()) {
+                    m_app->ssl_file(certfile, keyfile);
+                } else {
+                    m_app->ssl_file(certfile);
+                }
             }
 
             return m_app->run_async();

@@ -7,7 +7,7 @@
 #include <engine/server/server.hxx>
 #include <memory>
 
-#define BASE_REV API_PREFIX "/rev"
+#define BASE_REV API_PREFIX "/reverse"
 
 namespace engine::bridge::endpoints
 {

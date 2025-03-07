@@ -1,5 +1,5 @@
-# Engine - Skull
+# Engine - Infinity
 
 ![](assets/banner.png)
 
-Engine skull for reverse engineering and analyzing derived file formats
+Engine Infinity for reverse engineering and analyzing derived file formats

@@ -1,7 +1,7 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
 set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
-set(ENGINE_PRO ON BOOL "Enable Skull Pro flags")
+set(ENGINE_PRO ON BOOL "Enable Infinity Pro flags")
 
 # Include directories
 include_directories(
@@ -34,13 +34,13 @@ file(GLOB_RECURSE SOURCES
     *.cxx
 )
 
-add_library(skull SHARED ${SOURCES})
+add_library(infinity SHARED ${SOURCES})
 
 # Add source files to the target
-target_sources(skull PRIVATE ${SOURCES})
+target_sources(infinity PRIVATE ${SOURCES})
 
 # Link libraries
-target_link_libraries(skull PRIVATE
+target_link_libraries(infinity PRIVATE
     Crow::Crow
     liblua
     yara
@@ -63,13 +63,13 @@ target_link_libraries(skull PRIVATE
 # Add ENGINE_PRO flag if enabled
 if(ENGINE_PRO)
     message(STATUS "Building with ENGINE_PRO enabled")
-    target_compile_definitions(skull PRIVATE -DENGINE_PRO)
+    target_compile_definitions(infinity PRIVATE -DENGINE_PRO)
 endif()
 
-# Compiler flags for optimizations, debugging, and Skull Pro
+# Compiler flags for optimizations, debugging, and Infinity Pro
 if(FLAGS_OPTIMIZATIONS)
     message(STATUS "Building with optimizations enabled")
-    target_compile_options(skull PRIVAT
+    target_compile_options(infinity PRIVATE
         -O2
         -fmodules-ts
         -ftree-vectorize
@@ -87,7 +87,7 @@ if(FLAGS_OPTIMIZATIONS)
     )
 elseif(FLAGS_DEBUG)
     message(STATUS "Building with debug flags enabled")
-    target_compile_options(skull PRIVATE
+    target_compile_options(infinity PRIVATE
         -ggdb3
         -ldl
         -fPIC

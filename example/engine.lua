@@ -1,6 +1,6 @@
 package.cpath = "build/sources/?.so;" .. package.cpath
 
-require("libskull")
+require("libinfinity")
 
 config = Configuration.new()
 logging = Logging.new()
