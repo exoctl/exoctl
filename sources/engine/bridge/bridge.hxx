@@ -29,9 +29,9 @@ namespace engine
           public:
             Bridge() = default;
             ~Bridge() = default;
-
+#ifdef ENGINE_PRO
             friend class extend::Bridge;
-
+#endif
             void load();
             void setup(server::Server &);
 

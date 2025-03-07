@@ -21,9 +21,9 @@ namespace engine
             Logging &operator=(const Logging &);
             void setup(const configuration::Configuration &);
             void load();
-
+#ifdef ENGINE_PRO
             friend class extend::Logging;
-
+#endif
             template <typename... Args>
             void warn(fmt::format_string<Args...> p_msg, Args &&...p_args)
             {

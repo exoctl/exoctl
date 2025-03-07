@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
@@ -39,5 +37,3 @@ namespace engine
         };
     } // namespace plugins
 } // namespace engine
-
-#endif

@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iexception.hxx>
@@ -42,5 +40,3 @@ namespace engine
         } // namespace exception
     } // namespace plugins
 } // namespace engine
-
-#endif

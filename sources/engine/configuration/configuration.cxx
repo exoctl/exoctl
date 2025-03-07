@@ -1,6 +1,7 @@
 #include <engine/configuration/configuration.hxx>
 #include <engine/configuration/exception.hxx>
 #include <engine/plugins/plugins.hxx>
+#include <fmt/core.h>
 
 namespace engine
 {

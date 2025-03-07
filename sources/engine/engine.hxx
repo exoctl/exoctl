@@ -26,7 +26,10 @@ namespace engine
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_logging;
+#ifdef ENGINE_PRO
         plugins::Plugins m_plugins;
+#endif
+
         server::Server m_server;
 
         emergency::Emergency m_emergency;

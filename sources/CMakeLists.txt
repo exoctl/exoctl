@@ -1,7 +1,6 @@
 # Configuration flags
-set(FLAGS_OPTIMIZATIONS OFF CACHE BOOL "Enable optimization flags")
-set(FLAGS_DEBUG ON CACHE BOOL "Enable debug flags")
-set(ENGINE_PRO ON BOOL "Enable Infinity Pro flags")
+set(FLAGS_OPTIMIZATIONS ON)
+set(ENGINE_PRO OFF)
 
 # Include directories
 include_directories(
@@ -61,14 +60,14 @@ target_link_libraries(infinity PRIVATE
 )
 
 # Add ENGINE_PRO flag if enabled
-if(ENGINE_PRO)
-    message(STATUS "Building with ENGINE_PRO enabled")
+if(${ENGINE_PRO})
+    message(STATUS "[infinity] -- Building with ENGINE_PRO enabled")
     target_compile_definitions(infinity PRIVATE -DENGINE_PRO)
 endif()
 
 # Compiler flags for optimizations, debugging, and Infinity Pro
-if(FLAGS_OPTIMIZATIONS)
-    message(STATUS "Building with optimizations enabled")
+if(${FLAGS_OPTIMIZATIONS})
+    message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS enabled")
     target_compile_options(infinity PRIVATE
         -O2
         -fmodules-ts
@@ -85,8 +84,8 @@ if(FLAGS_OPTIMIZATIONS)
         -fdelete-null-pointer-checks
         -fdelete-dead-exceptions
     )
-elseif(FLAGS_DEBUG)
-    message(STATUS "Building with debug flags enabled")
+else()
+    message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS flags disabled")
     target_compile_options(infinity PRIVATE
         -ggdb3
         -ldl

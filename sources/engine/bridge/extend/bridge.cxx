@@ -1,4 +1,3 @@
-#ifdef ENGINE_PRO
 #include <engine/bridge/bridge.hxx>
 #include <engine/bridge/extend/bridge.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -23,7 +22,8 @@ namespace engine::bridge::extend
     {
         Bridge::bind_bridge(p_lua);
     }
-
+    
+#ifdef ENGINE_PRO
     void Bridge::_plugins()
     {
         bridge::endpoints::Data::plugins();
@@ -31,5 +31,5 @@ namespace engine::bridge::extend
 
         Bridge::bind_bridge(plugins::Plugins::lua.state);
     }
-} // namespace engine::bridge::extend
 #endif
+} // namespace engine::bridge::extend

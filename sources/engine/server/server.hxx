@@ -25,8 +25,9 @@ namespace engine
             std::shared_ptr<App> m_app;
 
           public:
+#ifdef ENGINE_PRO
             friend class engine::server::extend::Server;
-
+#endif
             Server();
             ~Server() = default;
             Server &operator=(const Server &);

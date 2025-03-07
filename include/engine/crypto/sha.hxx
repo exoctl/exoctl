@@ -16,9 +16,9 @@ namespace engine
           public:
             Sha();
             ~Sha();
-
+            #ifdef ENGINE_PRO
             friend class extend::Sha;
-
+#endif
             [[nodiscard]] const std::string gen_sha256_hash(
                 const std::string &);
             [[nodiscard]] const std::string gen_sha1_hash(const std::string &);

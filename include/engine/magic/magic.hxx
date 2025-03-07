@@ -14,8 +14,9 @@ namespace engine::magic
         Magic();
         ~Magic();
 
+#ifdef ENGINE_PRO
         friend class extend::Magic;
-
+#endif
         void load_mime(const std::string &buffer);
 
         std::string mime;

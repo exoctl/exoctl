@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/plugins/exception.hxx>
 
 namespace engine
@@ -41,5 +39,3 @@ namespace engine
         } // namespace exception
     } // namespace plugins
 } // namespace engine
-
-#endif

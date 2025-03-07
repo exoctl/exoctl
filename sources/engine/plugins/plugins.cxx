@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
 #include <engine/plugins/exception.hxx>
@@ -115,5 +113,3 @@ namespace engine
         }
     } // namespace plugins
 } // namespace engine
-
-#endif

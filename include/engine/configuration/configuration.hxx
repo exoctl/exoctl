@@ -20,7 +20,7 @@ namespace engine
             Configuration &operator=(const Configuration &);
 
             friend class extend::Configuration;
-
+            
             void setup(const std::string &);
             void load();
 
