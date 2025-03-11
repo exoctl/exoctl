@@ -1,6 +1,8 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS ON)
 set(ENGINE_PRO OFF)
+set(LIB_VERSION 1.0.0)  # Defina a versão da biblioteca
+set(LIB_SOVERSION 1)    # Versão da ABI (geralmente o primeiro número da versão)
 
 # Include directories
 include_directories(
@@ -34,6 +36,10 @@ file(GLOB_RECURSE SOURCES
 )
 
 add_library(infinity SHARED ${SOURCES})
+set_target_properties(infinity PROPERTIES
+    VERSION ${LIB_VERSION}
+    SOVERSION ${LIB_SOVERSION}
+)
 
 # Add source files to the target
 target_sources(infinity PRIVATE ${SOURCES})

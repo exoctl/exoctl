@@ -26,10 +26,6 @@ namespace engine
         class Lua
         {
           public:
-            template <typename... Args> Lua(Args &&...args)
-            {
-                state.open_libraries(std::forward<Args>(args)...);
-            }
             Lua() = default;
             ~Lua() = default;
             sol::state state;

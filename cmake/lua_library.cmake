@@ -7,7 +7,7 @@ ExternalProject_Add(lua
     GIT_REPOSITORY "" 
     SOURCE_DIR ${LUA_SOURCE_DIR}
     CONFIGURE_COMMAND "" 
-    BUILD_COMMAND make
+    BUILD_COMMAND make MYCFLAGS="-fPIC"
     BUILD_ALWAYS true 
     BUILD_IN_SOURCE true  
     INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${LUA_BUILD_DIR} &&
