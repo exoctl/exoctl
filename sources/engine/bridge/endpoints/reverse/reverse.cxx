@@ -24,17 +24,22 @@ namespace engine::bridge::endpoints
     {
         m_server.log->info("Preparing gateway rev routes ...");
 
-        m_capstone_x64_little =
-            std::make_unique<focades::reverse::disassembly::capstone::Capstone>(
-                CS_ARCH_X86,
-                static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
+        m_capstone_x64_little = std::make_unique<
+            focades::reverse::disassembly::capstone::Capstone>();
 
-        m_capstone_arm64_little =
-            std::make_unique<focades::reverse::disassembly::capstone::Capstone>(
-                CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN);
-        m_capstone_arm64_big =
-            std::make_unique<focades::reverse::disassembly::capstone::Capstone>(
-                CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
+        m_capstone_x64_little->setup(
+            CS_ARCH_X86,
+            static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
+
+        m_capstone_arm64_little = std::make_unique<
+            focades::reverse::disassembly::capstone::Capstone>();
+
+        m_capstone_arm64_little->setup(CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN);
+
+        m_capstone_arm64_big = std::make_unique<
+            focades::reverse::disassembly::capstone::Capstone>();
+
+        m_capstone_arm64_big->setup(CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
     }
 
     void Reverse::capstone_x64_little()

@@ -2,20 +2,39 @@ package.cpath = "build/sources/?.so;" .. package.cpath
 
 require("libinfinity")
 
-config = Configuration.new()
-logging = Logging.new()
-engine = Engine.new()
+-- config engine
+local config = Configuration.new()
+local logging = Logging:new()
+local engine = Engine.new()
+local server = Server.new()
+local bridge = Bridge.new()
 
-config.path = "config/engine/engine.conf"
+-- register emergency for receive signals engine
+engine:register_emergency(11, function(sig, siginfo, context)
+    local err =
+        "Engine received an emergency signal 11 (SIGSEGV)"
+    logging:error(err)
+    error(err, 1)
+end)
+
+-- setup and load all config
+config:setup("config/infinity.conf")
 config:load()
-config:register_plugins()
 
-logging.config = config
+logging:setup(config)
 logging:load()
-logging:register_plugins()
 
-engine:setup(config, logging)
-engine:register_plugins()
+-- setup server (function 'run' is active in instance to engine)
+server:setup(config, logging)
+
+bridge:setup(server)
+bridge:load()
+
+engine:setup(config, logging, server)
+if (engine.register_plugins) then
+    engine:register_plugins()
+end
 engine:load()
 
-engine:run()
+engine:run(function() -- running in thread function
+end)

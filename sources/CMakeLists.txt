@@ -1,8 +1,8 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS ON)
-set(ENGINE_PRO OFF)
-set(LIB_VERSION 1.0.0)  # Defina a versão da biblioteca
-set(LIB_SOVERSION 1)    # Versão da ABI (geralmente o primeiro número da versão)
+set(ENGINE_PRO ON)
+set(LIB_VERSION 1.0.0)
+set(LIB_SOVERSION 1)
 
 # Include directories
 include_directories(
