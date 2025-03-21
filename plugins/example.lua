@@ -23,52 +23,30 @@ end)
 --     return 1
 -- end)
 
-print(_analysis.scan.yara.rules_loaded_count)
-
-_analysis.scan.yara:scan_bytes("buffer", function(message, data)
+yara:scan_bytes("buffer", function(message, data)
     if (message == 1) then
         local rule = data
         print(rule.identifier)
         print(rule.ns.name)
     elseif (message == 3) then
-        print("Scan acabou !!")
+        print("AAAAAAAAAAA")
     end
     return 0
-end, 1)
+end, 2)
+
+yara:scan_bytes("buffer", function(message, data)
+    if (message == 1) then
+        local rule = data
+        print(rule.identifier)
+        print(rule.ns.name)
+    elseif (message == 3) then
+        print("FUNCIONAA")
+    end
+    return 0
+end, 2)
 
 
 -- print("save = ", yara:save_rules_stream(yr))
-
-Web.new(_engine.server, "/engine", function(req)
-    if (req.keep_alive) then
-        local json = Json:new()
-        _analysis.scan.yara:rules_foreach(function(rule)
-            _analysis.scan.yara:metas_foreach(rule, function(meta)
-                local value = function()
-                    if (meta.type ~= 2) then
-                        return meta.integer
-                    else
-                        return meta.string
-                    end
-                end
-
-                _engine.logging:info(meta.identifier .. " = " .. value())
-            end)
-
-            local rules = Json:new()
-            rules:add("name", rule.identifier)
-            rules:add("ns.name", rule.ns.name)
-
-            json:add(rule.identifier, rules)
-        end)
-
-        local res = Response.new(200, "application/json", json:to_string())
-
-        res:add_header("Jwt", "Token")
-
-        return res
-    end
-end, HTTPMethod.Get)
 
 local engine_json = Json:new()
 

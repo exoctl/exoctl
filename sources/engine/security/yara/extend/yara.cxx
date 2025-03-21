@@ -98,19 +98,22 @@ namespace engine::security::yara::extend
             sol::constructors<YR_STREAM()>(),
             "read",
             [](YR_STREAM &stream, sol::function func) {
-                static sol::function lua_read_func = func;
+                stream.user_data = static_cast<void *>(&func);
                 stream.read = [](void *ptr,
                                  size_t size,
                                  size_t count,
                                  void *user_data) -> size_t {
-                    if (!lua_read_func.valid()) {
+                    auto *lua_read_func =
+                        static_cast<sol::function *>(user_data);
+
+                    if (!lua_read_func) {
                         throw plugins::exception::Runtime("Callback not valid");
                     }
 
                     const size_t total_size = size * count;
 
                     sol::protected_function_result result =
-                        lua_read_func(total_size);
+                        (*lua_read_func)(total_size);
                     if (!result.valid()) {
                         sol::error err = result;
                         throw plugins::exception::Runtime(
@@ -127,12 +130,15 @@ namespace engine::security::yara::extend
             },
             "write",
             [](YR_STREAM &stream, sol::function func) {
-                static sol::function lua_write_func = func;
+                stream.user_data = static_cast<void *>(&func);
                 stream.write = [](const void *ptr,
                                   size_t size,
                                   size_t count,
                                   void *user_data) -> size_t {
-                    if (!lua_write_func.valid()) {
+                    auto *lua_write_func =
+                        static_cast<sol::function *>(user_data);
+
+                    if (!lua_write_func) {
                         throw plugins::exception::Runtime("Callback not valid");
                     }
 
@@ -142,7 +148,7 @@ namespace engine::security::yara::extend
                                      total_size);
 
                     sol::protected_function_result result =
-                        lua_write_func(data);
+                        (*lua_write_func)(data);
                     if (!result.valid()) {
                         sol::error err = result;
                         throw plugins::exception::Runtime(
@@ -201,38 +207,42 @@ namespace engine::security::yara::extend
                 if (!func.valid()) {
                     return;
                 }
-
-                static sol::function scan_bytes_func = func;
                 self.scan_bytes(
                     buffer,
                     +[](YR_SCAN_CONTEXT *context,
                         int message,
                         void *message_data,
                         void *user_data) -> int {
+                        auto *scan_bytes_func =
+                            static_cast<sol::function *>(user_data);
+                        if (!scan_bytes_func || !scan_bytes_func->valid()) {
+                            return CALLBACK_CONTINUE;
+                        }
+
                         sol::protected_function_result result;
                         switch (message) {
                             case CALLBACK_MSG_RULE_NOT_MATCHING:
                             case CALLBACK_MSG_RULE_MATCHING: {
                                 const YR_RULE *rule =
                                     reinterpret_cast<YR_RULE *>(message_data);
-                                result = scan_bytes_func(message, rule);
+                                result = (*scan_bytes_func)(message, rule);
                                 break;
                             }
                             case CALLBACK_MSG_SCAN_FINISHED:
-                                result = scan_bytes_func(message,
-                                                         sol::type::lua_nil);
+                                result =
+                                    (*scan_bytes_func)(message, sol::lua_nil);
                                 break;
                             case CALLBACK_MSG_TOO_MANY_MATCHES: {
                                 const YR_STRING *string =
                                     reinterpret_cast<YR_STRING *>(message_data);
-                                result = scan_bytes_func(message, string);
+                                result = (*scan_bytes_func)(message, string);
                                 break;
                             }
                             case CALLBACK_MSG_CONSOLE_LOG: {
                                 const char *log =
                                     reinterpret_cast<const char *>(
                                         message_data);
-                                result = scan_bytes_func(message, log);
+                                result = (*scan_bytes_func)(message, log);
                                 break;
                             }
                             case CALLBACK_MSG_IMPORT_MODULE: {
@@ -240,22 +250,24 @@ namespace engine::security::yara::extend
                                     reinterpret_cast<YR_MODULE_IMPORT *>(
                                         message_data);
                                 result =
-                                    scan_bytes_func(message, module_import);
+                                    (*scan_bytes_func)(message, module_import);
                                 break;
                             }
                             default:
-                                result = scan_bytes_func(message);
+                                result = (*scan_bytes_func)(message);
                                 break;
                         }
+
                         if (!result.valid()) {
                             sol::error err = result;
                             throw plugins::exception::Runtime(fmt::format(
-                                "Lua callback error in : {}\n", err.what()));
+                                "Lua callback error in scan_bytes: {}\n",
+                                err.what()));
                             return CALLBACK_ABORT;
                         }
                         return result;
                     },
-                    nullptr,
+                    static_cast<void *>(&func),
                     flags);
             },
             "scan_fast_bytes",
