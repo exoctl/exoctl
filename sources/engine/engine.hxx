@@ -12,6 +12,7 @@
 #include <engine/security/av/clamav/_/log.hxx>
 #include <engine/server/_/log/log.hxx>
 #include <engine/server/server.hxx>
+#include <engine/version/version.hxx>
 #include <functional>
 #include <unordered_map>
 
@@ -26,6 +27,7 @@ namespace engine
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_logging;
+        version::Version m_version;
 #ifdef ENGINE_PRO
         plugins::Plugins m_plugins;
 #endif

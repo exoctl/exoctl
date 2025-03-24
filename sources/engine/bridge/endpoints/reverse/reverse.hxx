@@ -2,12 +2,12 @@
 
 #include <engine/bridge/focades/reverse/disassembly/capstone/capstone.hxx>
 #include <engine/interfaces/iendpoint.hxx>
-#include <engine/server/gateway/map/map.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 
-#define BASE_REV API_PREFIX "/reverse"
+#define BASE_REV API_PREFIX("reverse")
 
 namespace engine::bridge::endpoints
 {
@@ -22,7 +22,7 @@ namespace engine::bridge::endpoints
 
       private:
         server::Server &m_server;
-        mutable engine::server::gateway::Map m_map;
+        mutable map::Map m_map;
 
         std::unique_ptr<engine::server::gateway::WebSocket>
             m_socket_capstone_x64_little;

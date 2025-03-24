@@ -4,22 +4,7 @@ set(ENGINE_PRO ON)
 set(LIB_VERSION 1.0.0)
 set(LIB_SOVERSION 1)
 
-# Include directories
-include_directories(
-    ../include
-    ../libraries
-    ../sources
-    ../
-    ../libraries/sol2/include
-    ../libraries/lua
-    ../libraries/tomlplusplus/include
-    ../libraries/rapidjson/include
-    ../libraries/lief/include
-    ../libraries/capstone-engine/include
-    ../libraries/signatures/include
-    ../libraries/llama/include
-    ../libraries/llama/ggml/include
-)
+include(../include/CMakeLists.txt)
 
 # Source files
 file(GLOB_RECURSE SOURCES
@@ -31,6 +16,7 @@ file(GLOB_RECURSE SOURCES
     engine/parser/*/*.cxx
     engine/parser/*.cxx
     engine/database/*.cxx
+    engine/version/*/*.cxx
     engine/*.cxx
     *.cxx
 )

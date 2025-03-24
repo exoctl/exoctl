@@ -1,0 +1,18 @@
+#ifdef ENGINE_PRO
+#pragma once
+
+#include <engine/interfaces/iplugins.hxx>
+
+namespace engine::version::extend
+{
+    class Version : public interface::ISubPlugins<Version>
+    {
+      public:
+        void _plugins() override;
+
+      private:
+        void bind_version();
+    };
+} // namespace engine::version::extend
+
+#endif

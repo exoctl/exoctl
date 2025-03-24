@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/version.hxx>
+#include <engine/version/version.hxx>
 #include <functional>
 #include <map>
 #include <string>
@@ -8,14 +8,14 @@
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define VERSION_PREFIX "/v" TOSTRING(ENGINE_VERSION_MAJOR)
-#define API_PREFIX VERSION_PREFIX "/engine"
+#define VERSION_PREFIX "/v" TOSTRING(MAJOR)
+#define API_PREFIX(endpoint) VERSION_PREFIX "/engine/" endpoint
 
 namespace engine
 {
-    namespace server
+    namespace bridge
     {
-        namespace gateway
+        namespace map
         {
             class Map
             {
@@ -33,6 +33,6 @@ namespace engine
                 const std::string m_base;
                 std::map<std::string, std::function<void()>> m_routes;
             };
-        } // namespace gateway
-    } // namespace server
+        } // namespace map
+    } // namespace bridge
 } // namespace engine

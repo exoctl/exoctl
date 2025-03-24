@@ -7,7 +7,7 @@ local yara <const> = Yara:new()
 local config <const> = Configuration:new()
 local logging <const> = Logging:new()
 
-local message_yara <const> = {
+local flags_yara <const> = {
     CALLBACK_MSG_RULE_MATCHING = 1,
     CALLBACK_CONTINUE = 0,
     SCAN_FLAGS_FAST_MODE = 1,
@@ -62,14 +62,16 @@ load_rules()
 yara:save_rules_file(rules_save_stream)
 
 
--- Set up periodic tick
-engine.server:tick(tick_time * 1000, function()
+local ftick <const> = function()
     logging:debug(("Maintaining rules, loading rules from folder '{%s}' ..."):format(rules_folder))
-    
+
     reload_yara()
     load_rules()
     yara:load_rules_file(rules_save_stream)
-end)
+end
+
+-- Set up periodic tick
+engine.server:tick(tick_time * 1000, ftick)
 
 -- ========================
 -- API Endpoints
@@ -121,20 +123,20 @@ create_route("/scan", HTTPMethod.Post, function(req)
     local rules_match = Json:new()
 
     yara:scan_bytes(req.body, function(message, rules)
-        if message == message_yara.CALLBACK_MSG_RULE_MATCHING then
+        if message == flags_yara.CALLBACK_MSG_RULE_MATCHING then
             local rule = Json:new()
             rule:add("identifier", rules.identifier)
             rule:add("namespace", rules.ns.name)
             rule:add("num_atoms", rules.num_atoms)
             rules_match:add(rules.identifier, rule)
 
-            return message_yara.CALLBACK_CONTINUE
-        elseif message == message_yara.CALLBACK_MSG_SCAN_FINISHED then
+            return flags_yara.CALLBACK_CONTINUE
+        elseif message == flags_yara.CALLBACK_MSG_SCAN_FINISHED then
             logging:info(("Scan completed successfully for IP {%s}"):format(req.remote_ip_address))
         end
 
-        return message_yara.CALLBACK_CONTINUE
-    end, message_yara.SCAN_FLAGS_FAST_MODE)
+        return flags_yara.CALLBACK_CONTINUE
+    end, flags_yara.SCAN_FLAGS_FAST_MODE)
 
     local json_response = Json:new()
     json_response:add("sha256", _data.metadata.sha:gen_sha256_hash(req.body))
@@ -148,7 +150,7 @@ end)
 -- ---------------
 
 create_route("/force/tick/yara", HTTPMethod.Post, function(req)
-    reload_yara()
+    ftick()
 end)
 
 -- ---------------
@@ -181,7 +183,7 @@ create_route("/load/yara/rule", HTTPMethod.Post, function(req)
 
         load_rules()
     end)
-    
+
     if compiled_rule then
         print(yara:save_rules_file(rules_save_stream)) -- Backup rules
         local message = Json:new()
