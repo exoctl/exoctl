@@ -21,11 +21,11 @@ namespace engine::version::extend
             "code",
             sol::var(CODE),
             "major",
-            sol::var(MAJOR),
-            "patchlevel",
-            sol::var(PATCHLEVEL),
-            "sublevel",
-            sol::var(SUBLEVEL));
+            sol::var(ENGINE_MAJOR),
+            "minor",
+            sol::var(ENGINE_MINOR),
+            "patch",
+            sol::var(ENGINE_PATCH));
     }
 } // namespace engine::version::extend
 

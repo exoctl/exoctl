@@ -45,19 +45,34 @@ namespace engine::parser::extend
             sol::overload(
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   const std::string &value) { self.add(key, value); },
+                   const std::string &value) {
+                    self.add(key, value);
+                    return self;
+                },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   int64_t value) { self.add(key, value); },
+                   int64_t value) {
+                    self.add(key, value);
+                    return self;
+                },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   engine::parser::Json value) { self.add(key, value); },
+                   engine::parser::Json value) {
+                    self.add(key, value);
+                    return self;
+                },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   bool value) { self.add(key, value); },
+                   bool value) {
+                    self.add(key, value);
+                    return self;
+                },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   double value) { self.add(key, value); },
+                   double value) {
+                    self.add(key, value);
+                    return self;
+                },
                 [](engine::parser::Json &self,
                    const std::string &key,
                    sol::table value) {
@@ -69,6 +84,8 @@ namespace engine::parser::extend
                         }
                     }
                     self.add(key, vec);
+
+                    return self;
                 }));
     }
 
