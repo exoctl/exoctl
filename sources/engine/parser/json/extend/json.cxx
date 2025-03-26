@@ -43,6 +43,7 @@ namespace engine::parser::extend
             }),
             "add",
             sol::overload(
+                // Métodos existentes com key-value
                 [](engine::parser::Json &self,
                    const std::string &key,
                    const std::string &value) {
@@ -84,7 +85,37 @@ namespace engine::parser::extend
                         }
                     }
                     self.add(key, vec);
-
+                    return self;
+                },
+                [](engine::parser::Json &self, const std::string &value) {
+                    self.add(value);
+                    return self;
+                },
+                [](engine::parser::Json &self, int64_t value) {
+                    self.add(value);
+                    return self;
+                },
+                [](engine::parser::Json &self, engine::parser::Json value) {
+                    self.add(value);
+                    return self;
+                },
+                [](engine::parser::Json &self, bool value) {
+                    self.add(value);
+                    return self;
+                },
+                [](engine::parser::Json &self, double value) {
+                    self.add(value);
+                    return self;
+                },
+                [](engine::parser::Json &self, sol::table value) {
+                    std::vector<engine::parser::Json> vec;
+                    for (auto &item : value) {
+                        if (item.second.is<engine::parser::Json>()) {
+                            vec.push_back(
+                                item.second.as<engine::parser::Json>());
+                        }
+                    }
+                    self.add(vec);
                     return self;
                 }));
     }
