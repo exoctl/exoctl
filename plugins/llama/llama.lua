@@ -1,11 +1,11 @@
 -- local llama = Llama:new()
 -- 
 -- local model_config = llama:load_model_default_params()
--- model_config.n_gpu_layers = 1 -- number of layers to store in VRAM
+-- model_config.n_gpu_layers = 1                                               -- number of layers to store in VRAM
 -- 
 -- llama:load_model_file("models/decompiler/llm4decompile.gguf", model_config) -- Optional parameter to pass some custom settings
 -- 
 -- local context_config = llama:load_context_default_params()
--- context_config.n_threads = 10 -- number of threads to use for generation
+-- context_config.n_threads = 10      -- number of threads to use for generation
 -- 
 -- llama:load_context(context_config) -- Optional parameter to pass some custom settings

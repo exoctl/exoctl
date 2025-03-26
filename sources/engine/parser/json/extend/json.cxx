@@ -43,7 +43,6 @@ namespace engine::parser::extend
             }),
             "add",
             sol::overload(
-                // Métodos existentes com key-value
                 [](engine::parser::Json &self,
                    const std::string &key,
                    const std::string &value) {

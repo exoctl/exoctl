@@ -1,10 +1,11 @@
-local MCPServer <const>  = {
+local MCPServer <const> = {
     config = nil,
     logging = nil,
+    jsonrpc = require("plugins.addons.mcp.jsonrpc"),
     server = Server:new()
 }
 
-MCPServer.__index = MCPServer
+MCPServer.__index       = MCPServer
 
 function MCPServer:new()
     return setmetatable({}, MCPServer)
