@@ -118,17 +118,21 @@ end)
 -- ---------------
 -- Route: Perform Yara Scan
 -- ---------------
+print(engine.version:version(1, 1, 0))
 
 create_route("/scan", HTTPMethod.Post, function(req)
     local rules_match = Json:new()
-
     yara:scan_bytes(req.body, function(message, rules)
         if message == flags_yara.CALLBACK_MSG_RULE_MATCHING then
             local rule = Json:new()
             rule:add("identifier", rules.identifier)
             rule:add("namespace", rules.ns.name)
             rule:add("num_atoms", rules.num_atoms)
-            rules_match:add(rules.identifier, rule)
+            if engine.version and engine.version.code >= engine.version:version(1, 1, 0) then
+                rules_match:add(rule)
+            else 
+                rules_match:add(rule.identifier, rule)
+            end
 
             return flags_yara.CALLBACK_CONTINUE
         elseif message == flags_yara.CALLBACK_MSG_SCAN_FINISHED then
@@ -198,36 +202,39 @@ create_route("/load/yara/rule", HTTPMethod.Post, function(req)
     return Response.new(400, "application/json", message:to_string())
 end)
 
-create_route("/disable/yara/rule", HTTPMethod.Post, function(req)
-    local json = Json:new()
-    json:from_string(req.body)
+if engine.version and engine.version.code >= engine.version:version(1, 0, 0) then
 
-    local rule = json:get("rule")
+    create_route("/disable/yara/rule", HTTPMethod.Post, function(req)
+        local json = Json:new()
+        json:from_string(req.body)
 
-    if not rule then
+        local rule = json:get("rule")
+
+        if not rule then
+            local message = Json:new()
+            message:add("message", "Missing required fields: 'rule' are required.")
+
+            return Response.new(400, "application/json", message:to_string())
+        end
+
+        local disabled = false
+
+        yara:rules_foreach(function(rules)
+            if (rules.identifier == rule) then
+                disabled = true
+                yara:rule_disable(rules)
+            end
+        end)
+
         local message = Json:new()
-        message:add("message", "Missing required fields: 'rule' are required.")
+
+        if disabled then
+            message:add("message", "Rule was disabled")
+            return Response.new(200, "application/json", message:to_string())
+        end
+
+        message:add("message", "The rule was not found")
 
         return Response.new(400, "application/json", message:to_string())
-    end
-
-    local disabled = false
-
-    yara:rules_foreach(function(rules)
-        if (rules.identifier == rule) then
-            disabled = true
-            yara:rule_disable(rules)
-        end
     end)
-
-    local message = Json:new()
-
-    if disabled then
-        message:add("message", "Rule was disabled")
-        return Response.new(200, "application/json", message:to_string())
-    end
-
-    message:add("message", "The rule was not found")
-
-    return Response.new(400, "application/json", message:to_string())
-end)
+end

@@ -1,7 +1,7 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS ON)
 set(ENGINE_PRO ON)
-set(LIB_VERSION 1.0.0)
+set(LIB_VERSION 1.1.0)
 set(LIB_SOVERSION 1)
 
 include(../include/CMakeLists.txt)

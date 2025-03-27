@@ -33,7 +33,6 @@ namespace engine
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
         m_server_log.setup(m_configuration, m_logging);
-
         m_server.setup(m_configuration, m_logging);
     }
 

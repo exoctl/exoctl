@@ -2,9 +2,9 @@
 
 #include <engine/version/extend/version.hxx>
 
-#define CODE 256
+#define CODE 257
 #define ENGINE_MAJOR 1
-#define ENGINE_MINOR 0
+#define ENGINE_MINOR 1
 #define ENGINE_PATCH 0
 
 namespace engine
