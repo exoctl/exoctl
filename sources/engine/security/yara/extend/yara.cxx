@@ -177,6 +177,10 @@ namespace engine::security::yara::extend
         plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
             "Yara",
             sol::constructors<engine::security::Yara()>(),
+            "rule_disable",
+            &engine::security::Yara::rule_disable,
+            "rule_enable",
+            &engine::security::Yara::rule_enable,
             "unload_rules",
             &engine::security::Yara::unload_rules,
             "load_rules_stream",

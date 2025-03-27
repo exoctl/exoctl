@@ -184,16 +184,50 @@ create_route("/load/yara/rule", HTTPMethod.Post, function(req)
         load_rules()
     end)
 
+    local message = Json:new()
+
     if compiled_rule then
-        print(yara:save_rules_file(rules_save_stream)) -- Backup rules
-        local message = Json:new()
+        yara:save_rules_file(rules_save_stream) -- Backup rules
         message:add("message", "Rule compiled successfully")
 
         return Response.new(200, "application/json", message:to_string())
     end
 
-    local message = Json:new()
     message:add("message", "The rule was not compiled successfully, check for possible syntax errors")
+
+    return Response.new(400, "application/json", message:to_string())
+end)
+
+create_route("/disable/yara/rule", HTTPMethod.Post, function(req)
+    local json = Json:new()
+    json:from_string(req.body)
+
+    local rule = json:get("rule")
+
+    if not rule then
+        local message = Json:new()
+        message:add("message", "Missing required fields: 'rule' are required.")
+
+        return Response.new(400, "application/json", message:to_string())
+    end
+
+    local disabled = false
+
+    yara:rules_foreach(function(rules)
+        if (rules.identifier == rule) then
+            disabled = true
+            yara:rule_disable(rules)
+        end
+    end)
+
+    local message = Json:new()
+
+    if disabled then
+        message:add("message", "Rule was disabled")
+        return Response.new(200, "application/json", message:to_string())
+    end
+
+    message:add("message", "The rule was not found")
 
     return Response.new(400, "application/json", message:to_string())
 end)
