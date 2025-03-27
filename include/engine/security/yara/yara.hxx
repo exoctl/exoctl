@@ -47,6 +47,8 @@ namespace engine
                             void *,
                             int) const;
 
+            void rule_disable(YR_RULE &);
+            void rule_enable(YR_RULE &);
             void rules_foreach(const std::function<void(const YR_RULE &)> &);
 
             void metas_foreach(YR_RULE *,
@@ -75,8 +77,8 @@ namespace engine
             [[nodiscard]] const int set_rule_buff(const std::string &,
                                                   const std::string &) const;
             [[nodiscard]] const int set_rule_file(const std::string &,
-                                                   const std::string &,
-                                                   const std::string &) const;
+                                                  const std::string &,
+                                                  const std::string &) const;
 
             mutable uint64_t rules_loaded_count;
 

@@ -95,6 +95,47 @@ namespace engine
                 return std::nullopt;
             }
 
+            template <typename T> void add(const T &p_value)
+            {
+                rapidjson::Value v;
+
+                if constexpr (std::is_same_v<T, std::string>) {
+                    v.SetString(p_value.c_str(), m_allocator);
+                } else if constexpr (std::is_same_v<T, const char *>) {
+                    v.SetString(p_value, m_allocator);
+                } else if constexpr (std::is_same_v<T, int>) {
+                    v.SetInt(p_value);
+                } else if constexpr (std::is_same_v<T, uint16_t>) {
+                    v.SetUint(p_value);
+                } else if constexpr (std::is_same_v<T, uint64_t>) {
+                    v.SetUint64(p_value);
+                } else if constexpr (std::is_same_v<T, int16_t>) {
+                    v.SetInt(p_value);
+                } else if constexpr (std::is_same_v<T, int64_t>) {
+                    v.SetInt64(p_value);
+                } else if constexpr (std::is_same_v<T, double>) {
+                    v.SetDouble(p_value);
+                } else if constexpr (std::is_same_v<T, bool>) {
+                    v.SetBool(p_value);
+                } else if constexpr (std::is_same_v<T, Json>) {
+                    v.CopyFrom(p_value.m_document, m_allocator);
+                } else {
+                    throw std::runtime_error("Unsupported type");
+                }
+
+                if (!m_document.IsArray()) {
+                    rapidjson::Value array(rapidjson::kArrayType);
+                    if (m_document.IsObject() && !m_document.ObjectEmpty()) {
+                        array.PushBack(rapidjson::Value().CopyFrom(m_document,
+                                                                   m_allocator),
+                                       m_allocator);
+                    }
+                    m_document.Swap(array);
+                }
+
+                m_document.PushBack(v, m_allocator);
+            }
+
             template <typename T>
             void add(const std::string &p_key, const T &p_value)
             {

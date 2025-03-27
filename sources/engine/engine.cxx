@@ -33,7 +33,6 @@ namespace engine
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
         m_server_log.setup(m_configuration, m_logging);
-
         m_server.setup(m_configuration, m_logging);
     }
 
@@ -65,7 +64,9 @@ namespace engine
             "configuration",
             &Engine::m_configuration,
             "server",
-            &Engine::m_server);
+            &Engine::m_server,
+            "version",
+            &Engine::m_version);
     }
 
 #ifdef ENGINE_PRO
@@ -84,6 +85,7 @@ namespace engine
         magic::extend::Magic::plugins();
         parser::extend::Json::plugins();
         engine::bridge::extend::Bridge::plugins();
+        version::extend::Version::plugins();
     }
 #endif
 

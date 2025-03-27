@@ -15,7 +15,8 @@ namespace engine
         class Capstone
         {
           public:
-            Capstone(cs_arch, cs_mode);
+            Capstone() = default;
+            void setup(const cs_arch, const cs_mode);
             ~Capstone();
 
             void disassembly(
@@ -30,8 +31,8 @@ namespace engine
 
           private:
             csh m_handle;
-            const cs_arch m_arch;
-            const cs_mode m_mode;
+            cs_arch m_arch;
+            cs_mode m_mode;
         };
     } // namespace disassembly
 } // namespace engine

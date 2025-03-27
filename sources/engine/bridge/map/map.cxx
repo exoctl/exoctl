@@ -1,10 +1,10 @@
-#include <engine/server/gateway/map/map.hxx>
+#include <engine/bridge/map/map.hxx>
 
 namespace engine
 {
-    namespace server
+    namespace bridge
     {
-        namespace gateway
+        namespace map
         {
             Map::Map(const std::string &p_base) : m_base(p_base)
             {
@@ -36,6 +36,6 @@ namespace engine
             {
                 return m_base;
             }
-        } // namespace gateway
-    } // namespace server
+        } // namespace map
+    } // namespace bridge
 } // namespace engine
