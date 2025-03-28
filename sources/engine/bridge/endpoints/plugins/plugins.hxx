@@ -3,12 +3,12 @@
 #pragma once
 
 #include <engine/interfaces/iendpoint.hxx>
-#include <engine/server/gateway/map/map.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 
-#define BASE_PLUGINS API_PREFIX "/plugins"
+#define BASE_PLUGINS API_PREFIX("plugins")
 
 namespace engine::bridge::endpoints
 {
@@ -22,7 +22,7 @@ namespace engine::bridge::endpoints
 
       private:
         server::Server &m_server;
-        mutable engine::server::gateway::Map m_map;
+        mutable map::Map m_map;
 
         std::unique_ptr<engine::server::gateway::Web> m_web_plugins;
 

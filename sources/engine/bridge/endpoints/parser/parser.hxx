@@ -6,10 +6,10 @@
 #include <engine/bridge/focades/parser/binary/lief/macho/macho.hxx>
 #include <engine/bridge/focades/parser/binary/lief/pe/pe.hxx>
 #include <engine/interfaces/iendpoint.hxx>
-#include <engine/server/gateway/map/map.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 
-#define BASE_PARSER API_PREFIX "/parser"
+#define BASE_PARSER API_PREFIX("parser")
 
 namespace engine::bridge::endpoints
 {
@@ -24,7 +24,7 @@ namespace engine::bridge::endpoints
 
       private:
         server::Server &m_server;
-        mutable engine::server::gateway::Map m_map;
+        mutable map::Map m_map;
 
         std::unique_ptr<focades::parser::binary::elf::ELF> m_parser_elf;
         std::unique_ptr<engine::server::gateway::WebSocket> m_socket_elf;

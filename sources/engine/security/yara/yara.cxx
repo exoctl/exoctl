@@ -100,6 +100,16 @@ namespace engine
             return yr_rules_load(p_file, &m_yara_rules);
         }
 
+        void Yara::rule_disable(YR_RULE &p_rule)
+        {
+            yr_rule_disable(&p_rule);
+        }
+
+        void Yara::rule_enable(YR_RULE &p_rule)
+        {
+            yr_rule_enable(&p_rule);
+        }
+
         const int Yara::save_rules_file(const char *p_file)
         {
             return yr_rules_save(m_yara_rules, p_file);
@@ -126,8 +136,8 @@ namespace engine
         }
 
         const int Yara::set_rule_file(const std::string &p_path,
-                                       const std::string &p_yrname,
-                                       const std::string &p_yrns) const
+                                      const std::string &p_yrname,
+                                      const std::string &p_yrns) const
         {
             const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
 
@@ -141,7 +151,7 @@ namespace engine
         }
 
         const int Yara::set_rule_buff(const std::string &p_rule,
-                                       const std::string &p_yrns) const
+                                      const std::string &p_yrns) const
         {
             rules_loaded_count++;
             return yr_compiler_add_string(
@@ -174,9 +184,9 @@ namespace engine
                 }
                 if (entry_name.extension() == ".yar") {
                     if (Yara::set_rule_file(full_path,
-                                             entry_name,
-                                             replace_slashes_with_dots(
-                                                 p_path)) != ERROR_SUCCESS) {
+                                            entry_name,
+                                            replace_slashes_with_dots(
+                                                p_path)) != ERROR_SUCCESS) {
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
                             "rule " +

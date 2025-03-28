@@ -7,10 +7,11 @@
 
 namespace engine::bridge::focades::reverse::disassembly::capstone
 {
-    Capstone::Capstone(const cs_arch p_arch, const cs_mode p_mode)
-        : m_capstone(p_arch, p_mode), m_arch(m_capstone.arch_to_string(p_arch)),
-          m_mode(m_capstone.mode_to_string(p_mode))
+    void Capstone::setup(const cs_arch p_arch, const cs_mode p_mode)
     {
+        m_capstone.setup(p_arch, p_mode);
+        m_arch.assign(m_capstone.arch_to_string(p_arch));
+        m_mode.assign(m_capstone.mode_to_string(p_mode));
     }
 
     void Capstone::disassembly(

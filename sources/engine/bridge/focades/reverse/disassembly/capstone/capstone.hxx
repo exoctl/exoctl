@@ -9,9 +9,10 @@ namespace engine::bridge::focades::reverse::disassembly::capstone
     class Capstone
     {
       public:
-        Capstone(const cs_arch, const cs_mode);
+        Capstone() = default;
         ~Capstone() = default;
-
+        
+        void setup(const cs_arch, const cs_mode);
         void disassembly(const std::string &,
                          const std::function<void(capstone::record::DTO *)> &);
 
@@ -19,7 +20,7 @@ namespace engine::bridge::focades::reverse::disassembly::capstone
 
       private:
         ::engine::disassembly::Capstone m_capstone;
-        const std::string m_arch;
-        const std::string m_mode;
+        std::string m_arch;
+        std::string m_mode;
     };
 } // namespace engine::bridge::focades::reverse::disassembly::capstone

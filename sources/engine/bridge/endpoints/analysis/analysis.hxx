@@ -4,12 +4,12 @@
 #include <engine/bridge/focades/analysis/scan/yara/yara.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/server/gateway/map/map.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 
-#define BASE_ANALYSIS API_PREFIX "/analysis"
+#define BASE_ANALYSIS API_PREFIX("analysis")
 
 namespace engine::bridge::endpoints
 {
@@ -32,7 +32,7 @@ namespace engine::bridge::endpoints
 
       private:
         server::Server *m_server;
-        mutable engine::server::gateway::Map m_map;
+        mutable map::Map m_map;
 
         std::unique_ptr<engine::server::gateway::WebSocket> m_socket_scan_yara;
         std::unique_ptr<engine::server::gateway::WebSocket>
