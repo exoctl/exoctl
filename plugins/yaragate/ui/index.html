@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YaraGate | Cloud-based Yara Scanning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input[type="text"],
+        input[type="url"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+        }
+
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-btn {
+            width: 100%;
+            padding: 40px 20px;
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .result-item.match {
+            border-left: 4px solid var(--danger);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        .result-item.no-match {
+            border-left: 4px solid var(--success);
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-primary {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .rules-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .rule-item {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <div class="logo-icon">YG</div>
+                    <span>YaraGate</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Cloud-based Yara Scanning</h1>
+            <p>Scan files against your Yara rules in real-time with our powerful cloud scanning engine. Detect threats
+                faster and more efficiently.</p>
+        </section>
+
+        <div class="card">
+            <div class="form-group">
+                <label for="api-url">YaraGate API Endpoint</label>
+                <input type="url" id="api-url" placeholder="https://your-server.com/api"
+                    value="http://localhost:8080/api">
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" data-tab="scan">Scan File</div>
+                <div class="tab" data-tab="rules">View Rules</div>
+                <div class="tab" data-tab="manage">Manage Rules</div>
+            </div>
+
+            <div class="tab-content active" id="scan-tab">
+                <div class="file-upload">
+                    <div class="file-upload-btn" id="drop-zone">
+                        <p>Drag & drop your file here or click to browse</p>
+                        <p><small>Supports any file type</small></p>
+                        <input type="file" class="file-upload-input" id="file-input">
+                    </div>
+                </div>
+
+                <div class="results" id="results">
+                    <!-- Results will appear here -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="rules-tab">
+                <div class="rules-list" id="rules-list">
+                    <p>Loading rules...</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="manage-tab">
+                <div class="form-group">
+                    <label for="rule-namespace">Namespace</label>
+                    <input type="text" id="rule-namespace" placeholder="Enter namespace">
+                </div>
+                <div class="form-group">
+                    <label for="rule-content">Yara Rule</label>
+                    <textarea id="rule-content" class="file-upload-input" placeholder="Paste your Yara rule here"
+                        rows="8"
+                        style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px;"></textarea>
+                </div>
+                <button class="btn btn-primary" id="add-rule">Add Rule</button>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="disable-rule">Disable Rule</label>
+                    <input type="text" id="disable-rule" placeholder="Enter rule identifier to disable">
+                    <button class="btn btn-secondary" id="disable-rule-btn" style="margin-top: 10px;">Disable
+                        Rule</button>
+                </div>
+                <div class="results" id="manage-results">
+                    <!-- Management results will appear here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2023 YaraGate. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab switching
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+
+                    // Load rules if rules tab is selected
+                    if (tabId === 'rules') {
+                        loadRules();
+                    }
+                });
+            });
+
+            // File upload handling
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop events
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#6366f1';
+                dropZone.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = '#e2e8f0';
+                dropZone.style.backgroundColor = '#f8fafc';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = '#e2e8f0';
+                dropZone.style.backgroundColor = '#f8fafc';
+
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect({ target: fileInput });
+                }
+            });
+
+            // Rule management
+            document.getElementById('add-rule').addEventListener('click', addRule);
+            document.getElementById('disable-rule-btn').addEventListener('click', disableRule);
+
+            // Initial load of rules if rules tab is active by default
+            if (document.querySelector('.tab.active').getAttribute('data-tab') === 'rules') {
+                loadRules();
+            }
+        });
+
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.innerHTML = `<p>Preparing: ${file.name}</p><div class="spinner"></div>`;
+
+            try {
+                // Ler o arquivo como ArrayBuffer (binário puro)
+                const arrayBuffer = await file.arrayBuffer();
+
+                // Enviar diretamente o buffer binário
+                await scanFile(arrayBuffer, file.name);
+
+            } catch (error) {
+                console.error('Error:', error);
+                resetDropZone();
+                showError('Error processing file');
+            }
+        }
+
+        async function scanFile(arrayBuffer, filename) {
+            const apiUrl = document.getElementById('api-url').value;
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+        <div class="result-item">
+            <div class="result-title">
+                <div class="spinner"></div>
+                Scanning: ${filename}
+            </div>
+        </div>
+    `;
+
+            try {
+                // Enviar o ArrayBuffer diretamente como corpo da requisição
+                const response = await fetch(`${apiUrl}/scan`, {
+                    method: 'POST',
+                    body: arrayBuffer  // Envia o binário puro
+                });
+
+                if (!response.ok) throw new Error('API error');
+
+                const data = await response.json();
+                displayResults(data, filename);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Error scanning file. Please check your API URL and try again.');
+            } finally {
+                resetDropZone();
+            }
+        }
+
+        function displayResults(data, filename) {
+            const resultsDiv = document.getElementById('results');
+
+            if (data.rules_match && Object.keys(data.rules_match).length > 0) {
+                resultsDiv.innerHTML = `
+            <div class="result-item match">
+                <div class="result-title">
+                    <span class="badge badge-danger">MATCH FOUND</span>
+                    ${filename}
+                </div>
+                <p>SHA256: ${data.sha256}</p>
+                <p>This file matched ${Object.keys(data.rules_match).length} Yara rules:</p>
+        `;
+
+                for (const [ruleId, ruleData] of Object.entries(data.rules_match)) {
+                    resultsDiv.innerHTML += `
+                <div class="result-item" style="margin-top: 10px;">
+                    <div class="result-title">
+                        <span class="badge badge-warning">RULE</span>
+                        ${ruleData.identifier}
+                    </div>
+                    <div class="rule-meta">
+                        <span>Namespace: ${ruleData.namespace}</span>
+                        <span>Atoms: ${ruleData.num_atoms}</span>
+                    </div>
+                </div>
+            `;
+                }
+
+                resultsDiv.innerHTML += `</div>`;
+            } else {
+                resultsDiv.innerHTML = `
+            <div class="result-item no-match">
+                <div class="result-title">
+                    <span class="badge badge-success">CLEAN</span>
+                    ${filename}
+                </div>
+                <p>SHA256: ${data.sha256}</p>
+                <p>No Yara rules matched this file.</p>
+            </div>
+        `;
+            }
+        }
+
+        function resetDropZone() {
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.innerHTML = `
+        <p>Drag & drop your file here or click to browse</p>
+        <p><small>Supports any file type</small></p>
+        <input type="file" class="file-upload-input" id="file-input">
+    `;
+            // Reatachar o event listener
+            document.getElementById('file-input').addEventListener('change', handleFileSelect);
+        }
+
+        function loadRules() {
+            const apiUrl = document.getElementById('api-url').value;
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const rulesList = document.getElementById('rules-list');
+            rulesList.innerHTML = '<p>Loading rules...</p>';
+
+            fetch(`${apiUrl}/get/rules`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.rules && Object.keys(data.rules).length > 0) {
+                        rulesList.innerHTML = '';
+                        for (const [ruleId, ruleData] of Object.entries(data.rules)) {
+                            const ruleItem = document.createElement('div');
+                            ruleItem.className = 'rule-item';
+
+                            let metaHtml = '';
+                            if (ruleData.meta) {
+                                metaHtml = '<div class="rule-meta">';
+                                for (const [metaKey, metaValue] of Object.entries(ruleData.meta)) {
+                                    metaHtml += `<span>${metaKey}: ${metaValue}</span>`;
+                                }
+                                metaHtml += '</div>';
+                            }
+
+                            ruleItem.innerHTML = `
+                            <div class="rule-name">${ruleData.identifier}</div>
+                            <div class="rule-meta">
+                                <span>Namespace: ${ruleData.namespace}</span>
+                                <span>Atoms: ${ruleData.num_atoms}</span>
+                            </div>
+                            ${metaHtml}
+                        `;
+
+                            rulesList.appendChild(ruleItem);
+                        }
+                    } else {
+                        rulesList.innerHTML = '<p>No rules found.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    rulesList.innerHTML = '<p>Error loading rules. Please check your API URL and try again.</p>';
+                });
+        }
+
+        function addRule() {
+            const apiUrl = document.getElementById('api-url').value;
+            const namespace = document.getElementById('rule-namespace').value;
+            const ruleContent = document.getElementById('rule-content').value;
+            const resultsDiv = document.getElementById('manage-results');
+
+            if (!apiUrl || !namespace || !ruleContent) {
+                showError('Please fill in all fields', resultsDiv);
+                return;
+            }
+
+            fetch(`${apiUrl}/load/yara/rule`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rule: ruleContent,
+                    namespace: namespace
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        resultsDiv.innerHTML = `
+                        <div class="result-item">
+                            <div class="result-title">${data.message}</div>
+                        </div>
+                    `;
+
+                        if (data.message.includes("successfully")) {
+                            // Reload rules if successful
+                            loadRules();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Error adding rule', resultsDiv);
+                });
+        }
+
+        function disableRule() {
+            const apiUrl = document.getElementById('api-url').value;
+            const ruleId = document.getElementById('disable-rule').value;
+            const resultsDiv = document.getElementById('manage-results');
+
+            if (!apiUrl || !ruleId) {
+                showError('Please enter a rule identifier to disable', resultsDiv);
+                return;
+            }
+
+            fetch(`${apiUrl}/disable/yara/rule`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rule: ruleId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        resultsDiv.innerHTML = `
+                        <div class="result-item">
+                            <div class="result-title">${data.message}</div>
+                        </div>
+                    `;
+
+                        if (data.message.includes("disabled")) {
+                            // Reload rules if successful
+                            loadRules();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError('Error disabling rule', resultsDiv);
+                });
+        }
+
+        function showError(message, element = null) {
+            const target = element || document.getElementById('results');
+            target.innerHTML = `
+                <div class="result-item">
+                    <div class="result-title">
+                        <span class="badge badge-danger">ERROR</span>
+                        ${message}
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

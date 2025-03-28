@@ -11,14 +11,15 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/extend/server.hxx>
 #include <memory>
+#include <engine/server/middlewares/cors/cors.hxx>
 
 namespace engine
 {
     namespace server
     {
         class Server; // Forward declaration Server plugin
-        
-        using App = crow::App<>;
+
+        using App = crow::App<middlewares::cors::Cors>;
         class Server
         {
           private:
