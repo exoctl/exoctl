@@ -8,10 +8,14 @@ namespace engine::bridge::endpoints
         : m_server(p_server), m_map(BASE_REV)
     {
         Reverse::prepare();
+        if (p_server.config->get("bridge.endpoint.reverse.enable")
+                .value<bool>()
+                .value()) {
 
-        Reverse::capstone_x64_little();
-        Reverse::capstone_arm64_little();
-        Reverse::capstone_arm64_big();
+            Reverse::capstone_x64_little();
+            Reverse::capstone_arm64_little();
+            Reverse::capstone_arm64_big();
+        }
     }
 
     void Reverse::load() const

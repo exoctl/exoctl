@@ -8,12 +8,16 @@ namespace engine::bridge::endpoints
     {
         Parser::prepare();
 
-        // add new routes
-        Parser::parser_elf();
-        Parser::parser_macho();
-        Parser::parser_pe();
-        Parser::parser_dex();
-        Parser::parser_art();
+        if (p_server.config->get("bridge.endpoint.parser.enable")
+                .value<bool>()
+                .value()) {
+            // add new routes
+            Parser::parser_elf();
+            Parser::parser_macho();
+            Parser::parser_pe();
+            Parser::parser_dex();
+            Parser::parser_art();
+        }
     }
 
     void Parser::load() const

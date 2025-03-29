@@ -9,13 +9,14 @@ namespace engine::server::middlewares::cors
 
     void Cors::load()
     {
-        this->global()
-            .headers("X-Custom-Header", "Upgrade-Insecure-Requests")
-            .methods("POST"_method, "GET"_method)
-            .prefix("/cors")
-            .origin("example.com")
-            .prefix("/nocors")
-            .ignore();
+        this->global().origin(m_config->get("server.middleware.cors.origin")
+                                  .value<std::string>()
+                                  .value());
+        if (!m_config->get("server.middleware.cors.enable")
+                 .value<bool>()
+                 .value()) {
+            this->global().ignore();
+        }
     }
 
 } // namespace engine::server::middlewares::cors

@@ -17,6 +17,8 @@ namespace engine
             config = &p_config;
             log = &p_log;
 
+            m_app->get_middleware<middlewares::cors::Cors>().setup(*config);
+
             name.assign(
                 config->get("server.name").value<std::string>().value());
             bindaddr.assign(
@@ -38,8 +40,14 @@ namespace engine
             m_app->tick(p_milliseconds, p_func);
         }
 
+        void Server::load()
+        {
+            m_app->get_middleware<middlewares::cors::Cors>().load();
+        }
+
         std::future<void> Server::run_async()
         {
+
             m_app->bindaddr(bindaddr)
                 .port(port)
                 .concurrency(concurrency)

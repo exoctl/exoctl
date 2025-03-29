@@ -11,24 +11,21 @@ namespace engine::server::middlewares::cors
         Cors() = default;
         ~Cors() = default;
 
-        inline void setup(configuration::Configuration &);
-        inline void load();
+        void setup(configuration::Configuration &);
+        void load();
 
-        // Adicione os métodos necessários para o middleware
         template <typename Context>
         void before_handle(crow::request &req,
                            crow::response &res,
                            Context &ctx)
         {
-            crow::CORSHandler::before_handle(
-                req, res, ctx);
+            crow::CORSHandler::before_handle(req, res, ctx);
         }
 
         template <typename Context>
         void after_handle(crow::request &req, crow::response &res, Context &ctx)
         {
-            crow::CORSHandler::after_handle(
-                req, res, ctx);
+            crow::CORSHandler::after_handle(req, res, ctx);
         }
 
       private:

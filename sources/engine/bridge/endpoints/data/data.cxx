@@ -10,10 +10,14 @@ namespace engine::bridge::endpoints
 
     void Data::setup(server::Server &p_server)
     {
-        m_server = &p_server;
+        if (p_server.config->get("bridge.endpoint.data.enable")
+                .value<bool>()
+                .value()) {
+            m_server = &p_server;
 
-        // add new routes
-        Data::data_metadata();
+            // add new routes
+            Data::data_metadata();
+        }
     }
 #ifdef ENGINE_PRO
     void Data::_plugins()

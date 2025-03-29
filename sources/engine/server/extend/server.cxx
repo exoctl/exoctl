@@ -100,6 +100,8 @@ namespace engine::server::extend
             &server::Server::setup,
             "run_async",
             &server::Server::run_async,
+            "load",
+            &server::Server::load,            
             "stop",
             &server::Server::stop,
             "tick",

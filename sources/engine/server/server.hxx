@@ -36,7 +36,7 @@ namespace engine
             logging::Logging *log;
 
             void setup(configuration::Configuration &, logging::Logging &);
-
+            
             App &get();
             unsigned short concurrency;
             std::string bindaddr;
@@ -45,9 +45,10 @@ namespace engine
             unsigned short port;
             std::string certfile;
             std::string keyfile;
+            
             std::future<void> run_async();
-
             void tick(std::chrono::milliseconds, std::function<void()>);
+            void load();
             void stop();
         };
     } // namespace server
