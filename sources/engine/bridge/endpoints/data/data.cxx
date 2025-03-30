@@ -10,10 +10,11 @@ namespace engine::bridge::endpoints
 
     void Data::setup(server::Server &p_server)
     {
+        m_server = &p_server;
+        
         if (p_server.config->get("bridge.endpoint.data.enable")
                 .value<bool>()
                 .value()) {
-            m_server = &p_server;
 
             // add new routes
             Data::data_metadata();
@@ -55,7 +56,11 @@ namespace engine::bridge::endpoints
 
     void Data::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
+        if (m_server->config->get("bridge.endpoint.data.enable")
+                .value<bool>()
+                .value()) {
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
     }
 } // namespace engine::bridge::endpoints

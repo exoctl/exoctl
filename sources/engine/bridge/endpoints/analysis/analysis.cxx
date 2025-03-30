@@ -18,12 +18,13 @@ namespace engine::bridge::endpoints
     {
         m_server = &p_server;
 
-        m_scan_yara->setup(*m_server->config);
-        m_scan_av_clamav->setup(*m_server->config);
-
         if (p_server.config->get("bridge.endpoint.analysis.enable")
                 .value<bool>()
                 .value()) {
+
+            m_scan_yara->setup(*m_server->config);
+            m_scan_av_clamav->setup(*m_server->config);
+
             // add new routes
             Analysis::scan();
             Analysis::scan_yara();
@@ -140,29 +141,33 @@ namespace engine::bridge::endpoints
 
     void Analysis::load() const
     {
-        TRY_BEGIN()
-        m_server->log->info("Loading rules yara ...");
-        m_scan_yara->load_rules([&](uint64_t p_total_rules) {
-            m_server->log->info(
-                "Successfully loaded rules. Total Yara rules count: "
-                "{:d}",
-                p_total_rules);
-        });
+        if (m_server->config->get("bridge.endpoint.analysis.enable")
+                .value<bool>()
+                .value()) {
+            TRY_BEGIN()
+            m_server->log->info("Loading rules yara ...");
+            m_scan_yara->load_rules([&](uint64_t p_total_rules) {
+                m_server->log->info(
+                    "Successfully loaded rules. Total Yara rules count: "
+                    "{:d}",
+                    p_total_rules);
+            });
 
-        m_server->log->info("Loading rules clamav ...");
-        m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
-            m_server->log->info(
-                "Successfully loaded rules. Total Clamav rules count: "
-                "{:d}",
-                p_total_rules);
-        });
-        TRY_END()
-        CATCH(security::yara::exception::LoadRules, {
-            m_server->log->error("{}", e.what());
-            throw exception::Abort(e.what());
-        })
+            m_server->log->info("Loading rules clamav ...");
+            m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
+                m_server->log->info(
+                    "Successfully loaded rules. Total Clamav rules count: "
+                    "{:d}",
+                    p_total_rules);
+            });
+            TRY_END()
+            CATCH(security::yara::exception::LoadRules, {
+                m_server->log->error("{}", e.what());
+                throw exception::Abort(e.what());
+            })
 
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
     }
 } // namespace engine::bridge::endpoints

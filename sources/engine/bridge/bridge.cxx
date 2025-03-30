@@ -9,7 +9,8 @@ namespace engine
         std::shared_ptr<bridge::endpoints::Plugins> Bridge::plugins;
 #endif
         std::shared_ptr<bridge::endpoints::Parser> Bridge::parser;
-        std::shared_ptr<bridge::endpoints::Reverse> Bridge::reverse;
+        std::shared_ptr<bridge::endpoints::Reverse> Bridge::reverse(
+            std::make_shared<bridge::endpoints::Reverse>());
         std::shared_ptr<bridge::endpoints::Data> Bridge::data(
             std::make_shared<bridge::endpoints::Data>());
         std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
@@ -19,10 +20,10 @@ namespace engine
         {
             m_server = &p_server;
 
+            reverse->setup(*m_server);
             analysis->setup(*m_server);
             data->setup(*m_server);
 
-            reverse = std::make_shared<bridge::endpoints::Reverse>(*m_server);
             parser = std::make_shared<bridge::endpoints::Parser>(*m_server);
 #ifdef ENGINE_PRO
             plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);
