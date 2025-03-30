@@ -3,10 +3,20 @@
 
 namespace engine::bridge::endpoints
 {
-    Parser::Parser(server::Server &p_server)
-        : m_server(p_server), m_map(BASE_PARSER)
+    Parser::Parser()
+        : m_map(BASE_PARSER),
+          m_parser_elf(std::make_unique<focades::parser::binary::elf::ELF>()),
+          m_parser_macho(
+              std::make_unique<focades::parser::binary::macho::MACHO>()),
+          m_parser_pe(std::make_unique<focades::parser::binary::pe::PE>()),
+          m_parser_dex(std::make_unique<focades::parser::binary::dex::DEX>()),
+          m_parser_art(std::make_unique<focades::parser::binary::art::ART>())
     {
-        Parser::prepare();
+    }
+
+    void Parser::setup(server::Server &p_server)
+    {
+        m_server = &p_server;
 
         if (p_server.config->get("bridge.endpoint.parser.enable")
                 .value<bool>()
@@ -22,20 +32,12 @@ namespace engine::bridge::endpoints
 
     void Parser::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
-    }
-
-    void Parser::prepare()
-    {
-        m_server.log->info("Preparing gateway parser routes ...");
-
-        m_parser_elf = std::make_unique<focades::parser::binary::elf::ELF>();
-        m_parser_macho =
-            std::make_unique<focades::parser::binary::macho::MACHO>();
-        m_parser_pe = std::make_unique<focades::parser::binary::pe::PE>();
-        m_parser_dex = std::make_unique<focades::parser::binary::dex::DEX>();
-        m_parser_art = std::make_unique<focades::parser::binary::art::ART>();
+        if (m_server->config->get("bridge.endpoint.parser.enable")
+                .value<bool>()
+                .value()) {
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
     }
 
     void Parser::parser_pe()
@@ -44,7 +46,7 @@ namespace engine::bridge::endpoints
             m_socket_pe =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_pe->setup(
-                m_server,
+                *m_server,
                 BASE_PARSER "/binary/lief/pe",
                 UINT64_MAX,
                 // on_message_callback
@@ -87,7 +89,7 @@ namespace engine::bridge::endpoints
             m_socket_dex =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_dex->setup(
-                m_server,
+                *m_server,
                 BASE_PARSER "/binary/lief/dex",
                 UINT64_MAX,
                 // on_message_callback
@@ -130,7 +132,7 @@ namespace engine::bridge::endpoints
             m_socket_elf =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_elf->setup(
-                m_server,
+                *m_server,
                 BASE_PARSER "/binary/lief/elf",
                 UINT64_MAX,
                 // on_message_callback
@@ -173,7 +175,7 @@ namespace engine::bridge::endpoints
             m_socket_art =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_art->setup(
-                m_server,
+                *m_server,
                 BASE_PARSER "/binary/lief/art",
                 UINT64_MAX,
                 // on_message_callback
@@ -216,7 +218,7 @@ namespace engine::bridge::endpoints
             m_socket_macho =
                 std::make_unique<engine::server::gateway::WebSocket>();
             m_socket_macho->setup(
-                m_server,
+                *m_server,
                 BASE_PARSER "/binary/lief/macho",
                 UINT64_MAX,
                 // on_message_callback
