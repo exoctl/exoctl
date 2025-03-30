@@ -26,5 +26,8 @@ namespace engine::server::extend
         void bind_response(sol::state_view &);
         void bind_requests(sol::state_view &);
         void bind_server(sol::state_view &);
+        void bind_mustache(sol::state_view &);
+        void bind_rendered(sol::state_view &);
+        void bind_wvalue(sol::state_view&);
     };
 } // namespace engine::server::extend

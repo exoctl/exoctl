@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YaraGate | Cloud-based Yara Scanning</title>
+    <title>YaraGate | Plugin Yara Manager</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -285,6 +285,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -295,9 +296,11 @@
             0% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.05);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -476,6 +479,33 @@
             animation: fadeIn 0.3s ease-out;
         }
 
+
+        /* New server info style */
+        .server-info {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .server-info-icon {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .server-info-text {
+            flex: 1;
+        }
+
+        .server-info strong {
+            color: var(--primary-dark);
+        }
+
+
         footer {
             text-align: center;
             padding: 30px 0;
@@ -514,16 +544,17 @@
 
     <main class="container">
         <section class="hero">
-            <h1>Cloud-based Yara Scanning</h1>
+            <h1>Plug-in Yara Manager Infinity</h1>
             <p>Scan files against your Yara rules in real-time with our powerful cloud scanning engine. Detect threats
                 faster and more efficiently.</p>
         </section>
 
         <div class="card">
-            <div class="form-group">
-                <label for="api-url">YaraGate API Endpoint</label>
-                <input type="url" id="api-url" placeholder="https://your-server.com/api"
-                    value="http://localhost:8081/yaragate">
+            <div class="server-info">
+                <div class="server-info-icon">🖥️</div>
+                <div class="server-info-text" data-server="{{server}}" id="server-info">
+                    Connected to <strong>{{server}}</strong>
+                </div>
             </div>
         </div>
 
@@ -562,7 +593,7 @@
                             <input type="text" id="rule-namespace" placeholder="e.g., malware, phishing">
                             <div class="form-hint">Unique identifier to group rules</div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="disable-rule">Manage Existing Rule</label>
                             <input type="text" id="disable-rule" placeholder="Rule name to disable">
@@ -572,25 +603,24 @@
                             <div class="form-hint">Enter exact rule name</div>
                         </div>
                     </div>
-                    
+
                     <div class="form-column">
                         <div class="form-group">
                             <label for="rule-content">YARA Rule Content</label>
                             <div class="code-editor-container">
                                 <div class="line-numbers" id="line-numbers">1</div>
-                                <textarea id="rule-content" class="code-editor" 
-                                          placeholder="Paste your YARA rule here..." 
-                                          spellcheck="false"></textarea>
+                                <textarea id="rule-content" class="code-editor"
+                                    placeholder="Paste your YARA rule here..." spellcheck="false"></textarea>
                             </div>
                             <div class="form-hint">Supports all YARA 4.x syntax</div>
                         </div>
-                        
+
                         <button class="btn btn-primary" id="add-rule">
                             Add Rule
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="results" id="manage-results">
                     <!-- Results will appear here -->
                 </div>
@@ -605,6 +635,10 @@
     </footer>
 
     <script>
+
+        const server = document.getElementById('server-info').getAttribute('data-server');
+        const apiUrl = server.endsWith('/') ? server.slice(0, -1) : server;
+
         document.addEventListener('DOMContentLoaded', function () {
             // Tab switching
             const tabs = document.querySelectorAll('.tab');
@@ -675,11 +709,11 @@
             const lineNumbers = document.getElementById('line-numbers');
             const lines = textarea.value.split('\n');
             let numbers = '';
-            
+
             for (let i = 1; i <= lines.length; i++) {
                 numbers += i + '\n';
             }
-            
+
             lineNumbers.innerText = numbers;
         }
 
@@ -695,7 +729,7 @@
                 </div>
                 <div class="status-message" id="status-message">Initializing scan...</div>
             `;
-            
+
             // Update progress bar
             document.getElementById('upload-progress').style.width = '30%';
             document.getElementById('status-message').textContent = 'Reading file...';
@@ -703,7 +737,7 @@
             try {
                 // Read file as ArrayBuffer (raw binary)
                 const arrayBuffer = await file.arrayBuffer();
-                
+
                 // Update progress
                 document.getElementById('upload-progress').style.width = '60%';
                 document.getElementById('status-message').textContent = 'Processing file...';
@@ -719,7 +753,6 @@
         }
 
         async function scanFile(arrayBuffer, filename) {
-            const apiUrl = document.getElementById('api-url').value;
             if (!apiUrl) {
                 showError('Please enter a valid API URL');
                 return;
@@ -738,14 +771,14 @@
                     <div class="status-message" id="scan-status">Connecting to scanning engine...</div>
                 </div>
             `;
-            
+
             // Update progress
             document.getElementById('scan-progress').style.width = '30%';
             document.getElementById('scan-status').textContent = 'Uploading file...';
 
             try {
                 // Send the ArrayBuffer directly as request body
-                const response = await fetch(`${apiUrl}/scan`, {
+                const response = await fetch(`${apiUrl}/api/scan`, {
                     method: 'POST',
                     body: arrayBuffer  // Send raw binary
                 });
@@ -842,7 +875,6 @@
         }
 
         function loadRules() {
-            const apiUrl = document.getElementById('api-url').value;
             if (!apiUrl) {
                 showError('Please enter a valid API URL');
                 return;
@@ -851,7 +883,7 @@
             const rulesList = document.getElementById('rules-list');
             rulesList.innerHTML = '<div class="result-item"><div class="result-title"><div class="spinner"></div> Loading rules...</div></div>';
 
-            fetch(`${apiUrl}/get/rules`)
+            fetch(`${apiUrl}/api/get/rules`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to load rules');
@@ -900,7 +932,6 @@
         }
 
         function addRule() {
-            const apiUrl = document.getElementById('api-url').value;
             const namespace = document.getElementById('rule-namespace').value;
             const ruleContent = document.getElementById('rule-content').value;
             const resultsDiv = document.getElementById('manage-results');
@@ -931,7 +962,7 @@
             // Format rule with line numbers for display
             const formattedRule = formatRuleWithLineNumbers(ruleContent);
 
-            fetch(`${apiUrl}/load/yara/rule`, {
+            fetch(`${apiUrl}/api/load/yara/rule`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -944,7 +975,7 @@
                 .then(response => {
                     document.getElementById('rule-progress').style.width = '70%';
                     document.getElementById('rule-status').textContent = 'Processing response...';
-                    
+
                     if (!response.ok) {
                         return response.json().then(err => {
                             throw new Error(err.message || 'Rule compilation failed');
@@ -955,7 +986,7 @@
                 .then(data => {
                     document.getElementById('rule-progress').style.width = '100%';
                     document.getElementById('rule-status').textContent = 'Done!';
-                    
+
                     if (data.message) {
                         const success = data.message.toLowerCase().includes("success");
 
@@ -1023,7 +1054,7 @@
                 </div>
             `;
 
-            fetch(`${apiUrl}/disable/yara/rule`, {
+            fetch(`${apiUrl}/api/disable/yara/rule`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1043,7 +1074,7 @@
                 .then(data => {
                     if (data.message) {
                         const success = data.message.toLowerCase().includes("disabled");
-                        
+
                         resultsDiv.innerHTML = `
                             <div class="result-item ${success ? 'no-match' : 'match'}">
                                 <div class="result-title">
