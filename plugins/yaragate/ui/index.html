@@ -285,7 +285,6 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -296,11 +295,9 @@
             0% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.05);
             }
-
             100% {
                 transform: scale(1);
             }
@@ -479,7 +476,6 @@
             animation: fadeIn 0.3s ease-out;
         }
 
-
         /* New server info style */
         .server-info {
             background-color: var(--light);
@@ -505,6 +501,99 @@
             color: var(--primary-dark);
         }
 
+        /* Namespace folder structure styles */
+        .namespace-folder {
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .folder-header {
+            background-color: #f1f5f9;
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .folder-header:hover {
+            background-color: #e2e8f0;
+        }
+
+        .folder-icon {
+            margin-right: 10px;
+            transition: transform 0.2s;
+        }
+
+        .folder-header.active .folder-icon {
+            transform: rotate(90deg);
+        }
+
+        .folder-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .folder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+
+        .folder-content.expanded {
+            max-height: 2000px; /* Adjust based on your needs */
+        }
+
+        .folder-rule {
+            padding: 12px 15px 12px 35px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s;
+        }
+
+        .folder-rule:last-child {
+            border-bottom: none;
+        }
+
+        .folder-rule:hover {
+            background-color: #f8fafc;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .rule-action-btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            background-color: #f1f5f9;
+            transition: background-color 0.2s;
+        }
+
+        .rule-action-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        .rule-action-btn.disable {
+            color: var(--danger);
+        }
+
+        .rule-action-btn.view {
+            color: var(--primary);
+        }
 
         footer {
             text-align: center;
@@ -518,11 +607,9 @@
             .hero h1 {
                 font-size: 2rem;
             }
-
             .hero p {
                 font-size: 1rem;
             }
-
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -545,8 +632,7 @@
     <main class="container">
         <section class="hero">
             <h1>Plug-in Yara Manager Infinity</h1>
-            <p>Scan files against your Yara rules in real-time with our powerful cloud scanning engine. Detect threats
-                faster and more efficiently.</p>
+            <p>Scan files against your Yara rules in real-time with our powerful scanning engine. Detect threats faster and more efficiently.</p>
         </section>
 
         <div class="card">
@@ -635,7 +721,6 @@
     </footer>
 
     <script>
-
         const server = document.getElementById('server-info').getAttribute('data-server');
         const apiUrl = server.endsWith('/') ? server.slice(0, -1) : server;
 
@@ -892,35 +977,90 @@
                 })
                 .then(data => {
                     if (data.rules && Object.keys(data.rules).length > 0) {
-                        rulesList.innerHTML = '';
-                        let delay = 0;
+                        // Group rules by namespace
+                        const namespaces = {};
                         Object.entries(data.rules).forEach(([ruleId, ruleData]) => {
-                            setTimeout(() => {
-                                const ruleItem = document.createElement('div');
-                                ruleItem.className = 'rule-item';
+                            const namespace = ruleData.namespace || 'default';
+                            if (!namespaces[namespace]) {
+                                namespaces[namespace] = [];
+                            }
+                            namespaces[namespace].push({
+                                id: ruleId,
+                                ...ruleData
+                            });
+                        });
 
+                        // Create folder structure
+                        rulesList.innerHTML = '';
+                        Object.entries(namespaces).forEach(([namespace, rules]) => {
+                            const folderId = `folder-${namespace.replace(/\s+/g, '-')}`;
+                            const folder = document.createElement('div');
+                            folder.className = 'namespace-folder';
+                            folder.innerHTML = `
+                                <div class="folder-header" data-folder="${folderId}">
+                                    <div>
+                                        <span class="folder-icon">▶</span>
+                                        ${namespace}
+                                        <span class="folder-count">${rules.length}</span>
+                                    </div>
+                                </div>
+                                <div class="folder-content" id="${folderId}"></div>
+                            `;
+                            rulesList.appendChild(folder);
+
+                            // Add click handler for folder toggle
+                            folder.querySelector('.folder-header').addEventListener('click', function() {
+                                this.classList.toggle('active');
+                                const content = document.getElementById(this.getAttribute('data-folder'));
+                                content.classList.toggle('expanded');
+                                const icon = this.querySelector('.folder-icon');
+                                icon.textContent = this.classList.contains('active') ? '▼' : '▶';
+                            });
+
+                            // Add rules to folder content
+                            const folderContent = document.getElementById(folderId);
+                            rules.forEach(rule => {
+                                const ruleItem = document.createElement('div');
+                                ruleItem.className = 'folder-rule';
+                                
                                 let metaHtml = '';
-                                if (ruleData.meta) {
+                                if (rule.meta) {
                                     metaHtml = '<div class="rule-meta">';
-                                    for (const [metaKey, metaValue] of Object.entries(ruleData.meta)) {
+                                    for (const [metaKey, metaValue] of Object.entries(rule.meta)) {
                                         metaHtml += `<span>${metaKey}: ${metaValue}</span>`;
                                     }
                                     metaHtml += '</div>';
                                 }
 
                                 ruleItem.innerHTML = `
-                                    <div class="rule-name">${ruleData.identifier}</div>
+                                    <div class="rule-name">${rule.identifier}</div>
                                     <div class="rule-meta">
-                                        <span>Namespace: ${ruleData.namespace}</span>
-                                        <span>Atoms: ${ruleData.num_atoms}</span>
+                                        <span>Atoms: ${rule.num_atoms}</span>
+                                        <span>Tags: ${rule.tags ? rule.tags.join(', ') : 'none'}</span>
                                     </div>
                                     ${metaHtml}
+                                    <div class="rule-actions">
+                                        <button class="rule-action-btn view" data-rule="${rule.id}">View Rule</button>
+                                        <button class="rule-action-btn disable" data-rule="${rule.id}">Disable</button>
+                                    </div>
                                 `;
-
-                                rulesList.appendChild(ruleItem);
-                            }, delay);
-                            delay += 50;
+                                folderContent.appendChild(ruleItem);
+                            });
                         });
+
+                        // Add event listeners for rule actions
+                        document.querySelectorAll('.rule-action-btn.view').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                viewRule(this.getAttribute('data-rule'));
+                            });
+                        });
+
+                        document.querySelectorAll('.rule-action-btn.disable').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                disableRuleById(this.getAttribute('data-rule'));
+                            });
+                        });
+
                     } else {
                         rulesList.innerHTML = '<div class="result-item no-match"><div class="result-title">No rules found</div></div>';
                     }
@@ -928,6 +1068,116 @@
                 .catch(error => {
                     console.error('Error:', error);
                     rulesList.innerHTML = `<div class="result-item match"><div class="result-title"><span class="badge badge-danger">ERROR</span> ${error.message}</div></div>`;
+                });
+        }
+
+        function viewRule(ruleId) {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('manage-results');
+            resultsDiv.innerHTML = `
+                <div class="result-item">
+                    <div class="result-title">
+                        <div class="spinner"></div>
+                        Loading rule: ${ruleId}
+                    </div>
+                </div>
+            `;
+
+            fetch(`${apiUrl}/api/get/rule/${encodeURIComponent(ruleId)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load rule');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.rule) {
+                        resultsDiv.innerHTML = `
+                            <div class="result-item no-match">
+                                <div class="result-title">
+                                    <span class="badge badge-primary">RULE DETAILS</span>
+                                    ${data.rule.identifier}
+                                </div>
+                                <div class="rule-meta">
+                                    <span>Namespace: ${data.rule.namespace}</span>
+                                    <span>Atoms: ${data.rule.num_atoms}</span>
+                                </div>
+                                <div class="rule-preview">
+                                    <div class="preview-header">
+                                        <span>Rule Content:</span>
+                                    </div>
+                                    <pre>${formatRuleWithLineNumbers(data.rule.content)}</pre>
+                                </div>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(`Failed to view rule: ${error.message}`, resultsDiv);
+                });
+        }
+
+        function disableRuleById(ruleId) {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('manage-results');
+            resultsDiv.innerHTML = `
+                <div class="result-item">
+                    <div class="result-title">
+                        <div class="spinner"></div>
+                        Disabling rule: ${ruleId}
+                    </div>
+                </div>
+            `;
+
+            fetch(`${apiUrl}/api/disable/yara/rule`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rule: ruleId
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Failed to disable rule');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.message) {
+                        const success = data.message.toLowerCase().includes("disabled");
+
+                        resultsDiv.innerHTML = `
+                            <div class="result-item ${success ? 'no-match' : 'match'}">
+                                <div class="result-title">
+                                    <span class="badge ${success ? 'badge-success' : 'badge-danger'}">
+                                        ${success ? 'SUCCESS' : 'ERROR'}
+                                    </span>
+                                    ${data.message}
+                                </div>
+                            </div>
+                        `;
+
+                        if (success) {
+                            loadRules();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(`Error disabling rule: ${error.message}`, resultsDiv);
                 });
         }
 
@@ -1024,6 +1274,18 @@
                 });
         }
 
+        function disableRule() {
+            const ruleId = document.getElementById('disable-rule').value;
+            const resultsDiv = document.getElementById('manage-results');
+
+            if (!apiUrl || !ruleId) {
+                showError('Please enter a rule identifier to disable', resultsDiv);
+                return;
+            }
+
+            disableRuleById(ruleId);
+        }
+
         // Function to format rule with line numbers
         function formatRuleWithLineNumbers(ruleContent) {
             const lines = ruleContent.split('\n');
@@ -1033,68 +1295,6 @@
                 const lineNumber = String(index + 1).padStart(maxLineNumberLength, ' ');
                 return `<span class="line-number">${lineNumber}</span> ${line}`;
             }).join('\n');
-        }
-
-        function disableRule() {
-            const apiUrl = document.getElementById('api-url').value;
-            const ruleId = document.getElementById('disable-rule').value;
-            const resultsDiv = document.getElementById('manage-results');
-
-            if (!apiUrl || !ruleId) {
-                showError('Please enter a rule identifier to disable', resultsDiv);
-                return;
-            }
-
-            resultsDiv.innerHTML = `
-                <div class="result-item">
-                    <div class="result-title">
-                        <div class="spinner"></div>
-                        Disabling rule: ${ruleId}
-                    </div>
-                </div>
-            `;
-
-            fetch(`${apiUrl}/api/disable/yara/rule`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    rule: ruleId
-                })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            throw new Error(err.message || 'Failed to disable rule');
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.message) {
-                        const success = data.message.toLowerCase().includes("disabled");
-
-                        resultsDiv.innerHTML = `
-                            <div class="result-item ${success ? 'no-match' : 'match'}">
-                                <div class="result-title">
-                                    <span class="badge ${success ? 'badge-success' : 'badge-danger'}">
-                                        ${success ? 'SUCCESS' : 'ERROR'}
-                                    </span>
-                                    ${data.message}
-                                </div>
-                            </div>
-                        `;
-
-                        if (success) {
-                            loadRules();
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showError(`Error disabling rule: ${error.message}`, resultsDiv);
-                });
         }
 
         function showError(message, element = null) {
@@ -1110,5 +1310,4 @@
         }
     </script>
 </body>
-
 </html>
