@@ -100,6 +100,8 @@ namespace engine::server::extend
             &server::Server::setup,
             "run_async",
             &server::Server::run_async,
+            "load",
+            &server::Server::load,
             "stop",
             &server::Server::stop,
             "tick",
@@ -122,6 +124,79 @@ namespace engine::server::extend
             sol::readonly(&server::Server::keyfile));
     }
 
+    void Server::bind_mustache(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<crow::mustache::template_t>(
+            "Mustache",
+            sol::constructors<crow::mustache::template_t(std::string)>(),
+            "render",
+            sol::overload(
+                [](const crow::mustache::template_t &self) {
+                    return self.render();
+                },
+                [](const crow::mustache::template_t &self,
+                   const crow::json::wvalue &ctx) { return self.render(ctx); }),
+            "render_string",
+            sol::overload(
+                [](const crow::mustache::template_t &self) {
+                    return self.render_string();
+                },
+                [](const crow::mustache::template_t &self,
+                   const crow::json::wvalue &ctx) {
+                    return self.render_string(ctx);
+                }));
+    }
+
+    void Server::bind_wvalue(sol::state_view &lua)
+    {
+        lua.new_usertype<crow::json::wvalue>(
+            "Wvalue",
+            sol::constructors<crow::json::wvalue(),
+                              crow::json::wvalue(std::nullptr_t),
+                              crow::json::wvalue(bool),
+                              crow::json::wvalue(int),
+                              crow::json::wvalue(unsigned int),
+                              crow::json::wvalue(double),
+                              crow::json::wvalue(const char *),
+                              crow::json::wvalue(const std::string &)>(),
+            sol::meta_function::new_index,
+            sol::overload([](crow::json::wvalue &self,
+                             const std::string &key,
+                             const std::string &value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             const char *value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             int value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             double value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             bool value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             std::nullptr_t) { self[key] = nullptr; }),
+
+            sol::meta_function::index,
+            sol::overload([](crow::json::wvalue &self, const std::string &key)
+                              -> crow::json::wvalue & { return self[key]; },
+                          [](crow::json::wvalue &self, int index)
+                              -> crow::json::wvalue & { return self[index]; }));
+    }
+
+    void Server::bind_rendered(sol::state_view &p_lua)
+    {
+        p_lua.new_usertype<crow::mustache::rendered_template>(
+            "Rendered",
+            sol::no_constructor,
+            "body",
+            &crow::mustache::rendered_template::body_,
+            "dump",
+            &crow::mustache::rendered_template::dump);
+    }
+
 #ifdef ENGINE_PRO
     void Server::_plugins()
     {
@@ -129,6 +204,9 @@ namespace engine::server::extend
         Server::bind_response(plugins::Plugins::lua.state);
         Server::bind_requests(plugins::Plugins::lua.state);
         Server::bind_server(plugins::Plugins::lua.state);
+        Server::bind_mustache(plugins::Plugins::lua.state);
+        Server::bind_rendered(plugins::Plugins::lua.state);
+        Server::bind_wvalue(plugins::Plugins::lua.state);
 
         gateway::web::extend::Web::plugins();
     }

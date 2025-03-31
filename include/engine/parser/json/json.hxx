@@ -95,7 +95,7 @@ namespace engine
                 return std::nullopt;
             }
 
-            template <typename T> void add(const T &p_value)
+            template <typename T> Json add(const T &p_value)
             {
                 rapidjson::Value v;
 
@@ -134,10 +134,12 @@ namespace engine
                 }
 
                 m_document.PushBack(v, m_allocator);
+
+                return *this;
             }
 
             template <typename T>
-            void add(const std::string &p_key, const T &p_value)
+            Json add(const std::string &p_key, const T &p_value)
             {
                 rapidjson::Value k(p_key.c_str(), m_allocator);
                 rapidjson::Value v;
@@ -170,12 +172,14 @@ namespace engine
                         array.PushBack(item, m_allocator);
                     }
                     m_document.AddMember(k, array, m_allocator);
-                    return;
+                    return *this;
                 } else {
                     throw std::runtime_error("Unsupported type");
                 }
 
                 m_document.AddMember(k, v, m_allocator);
+
+                return *this;
             }
             void clear();
 

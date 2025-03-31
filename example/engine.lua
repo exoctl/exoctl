@@ -26,6 +26,7 @@ logging:load()
 
 -- setup server (function 'run' is active in instance to engine)
 server:setup(config, logging)
+server:load()
 
 bridge:setup(server)
 bridge:load()

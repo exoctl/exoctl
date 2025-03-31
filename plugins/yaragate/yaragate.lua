@@ -89,7 +89,7 @@ end
 -- Route: Get Yara Rules
 -- ---------------
 
-create_route("/get/rules", HTTPMethod.Get, function(req)
+create_route("/api/get/rules", HTTPMethod.Get, function(req)
     local rules_json = Json:new()
 
     yara:rules_foreach(function(rules)
@@ -120,7 +120,7 @@ end)
 -- ---------------
 print(engine.version:version(1, 1, 0))
 
-create_route("/scan", HTTPMethod.Post, function(req)
+create_route("/api/scan", HTTPMethod.Post, function(req)
     local rules_match = Json:new()
     yara:scan_bytes(req.body, function(message, rules)
         if message == flags_yara.CALLBACK_MSG_RULE_MATCHING then
@@ -130,7 +130,7 @@ create_route("/scan", HTTPMethod.Post, function(req)
             rule:add("num_atoms", rules.num_atoms)
             if engine.version and engine.version.code >= engine.version:version(1, 1, 0) then
                 rules_match:add(rule)
-            else 
+            else
                 rules_match:add(rule.identifier, rule)
             end
 
@@ -161,7 +161,7 @@ end)
 -- Route: Load New Yara Rule
 -- ---------------
 
-create_route("/load/yara/rule", HTTPMethod.Post, function(req)
+create_route("/api/load/yara/rule", HTTPMethod.Post, function(req)
     local json = Json:new()
     json:from_string(req.body)
 
@@ -202,9 +202,19 @@ create_route("/load/yara/rule", HTTPMethod.Post, function(req)
     return Response.new(400, "application/json", message:to_string())
 end)
 
-if engine.version and engine.version.code >= engine.version:version(1, 0, 0) then
+if engine.version and engine.version.code >= engine.version:version(1, 1, 0) then
+    create_route("/ui", HTTPMethod.Get, function(req)
+        local file <close> = io.open("plugins/yaragate/ui/index.html", "r")
+        if (file) then
+            local ctx = Wvalue:new()
+            ctx["server"] = "http://" .. engine.configuration:get("server.bindaddr") ..':'.. engine.configuration:get("server.port")  .. gateway_prefix
+            local mustache = Mustache:new(file:read("*all"))
+            return mustache:render(ctx)
+        end
+    end)
 
-    create_route("/disable/yara/rule", HTTPMethod.Post, function(req)
+
+    create_route("/api/disable/yara/rule", HTTPMethod.Post, function(req)
         local json = Json:new()
         json:from_string(req.body)
 
@@ -230,6 +240,40 @@ if engine.version and engine.version.code >= engine.version:version(1, 0, 0) the
 
         if disabled then
             message:add("message", "Rule was disabled")
+            return Response.new(200, "application/json", message:to_string())
+        end
+
+        message:add("message", "The rule was not found")
+
+        return Response.new(400, "application/json", message:to_string())
+    end)
+
+    create_route("/api/enable/yara/rule", HTTPMethod.Post, function(req)
+        local json = Json:new()
+        json:from_string(req.body)
+
+        local rule = json:get("rule")
+
+        if not rule then
+            local message = Json:new()
+            message:add("message", "Missing required fields: 'rule' are required.")
+
+            return Response.new(400, "application/json", message:to_string())
+        end
+
+        local disabled = false
+
+        yara:rules_foreach(function(rules)
+            if (rules.identifier == rule) then
+                disabled = true
+                yara:rule_enable(rules)
+            end
+        end)
+
+        local message = Json:new()
+
+        if disabled then
+            message:add("message", "Rule was enabled")
             return Response.new(200, "application/json", message:to_string())
         end
 

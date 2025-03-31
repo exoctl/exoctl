@@ -42,10 +42,15 @@ namespace engine::server::gateway::web::extend
                         }
 
                         sol::object callback_response = result;
-                        return callback_response.is<crow::response>()
-                                   ? std::move(
-                                         callback_response.as<crow::response>())
-                                   : crow::response(200);
+                        if (callback_response.is<crow::response>()) {
+                            return std::move(
+                                callback_response.as<crow::response>());
+                        } else if (callback_response.is<crow::mustache::rendered_template>()) {
+                            return std::move(
+                                callback_response.as<crow::mustache::rendered_template>());
+                        }
+
+                        return crow::response(200);
                     },
                     method_list);
 

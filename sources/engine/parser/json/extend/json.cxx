@@ -45,34 +45,19 @@ namespace engine::parser::extend
             sol::overload(
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   const std::string &value) {
-                    self.add(key, value);
-                    return self;
-                },
+                   const std::string &value) { return self.add(key, value); },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   int64_t value) {
-                    self.add(key, value);
-                    return self;
-                },
+                   int64_t value) { return self.add(key, value); },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   engine::parser::Json value) {
-                    self.add(key, value);
-                    return self;
-                },
+                   engine::parser::Json value) { return self.add(key, value); },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   bool value) {
-                    self.add(key, value);
-                    return self;
-                },
+                   bool value) { return self.add(key, value); },
                 [](engine::parser::Json &self,
                    const std::string &key,
-                   double value) {
-                    self.add(key, value);
-                    return self;
-                },
+                   double value) { return self.add(key, value); },
                 [](engine::parser::Json &self,
                    const std::string &key,
                    sol::table value) {
@@ -83,28 +68,22 @@ namespace engine::parser::extend
                                 item.second.as<engine::parser::Json>());
                         }
                     }
-                    self.add(key, vec);
-                    return self;
+                    return self.add(key, vec);
                 },
                 [](engine::parser::Json &self, const std::string &value) {
-                    self.add(value);
-                    return self;
+                    return self.add(value);
                 },
                 [](engine::parser::Json &self, int64_t value) {
-                    self.add(value);
-                    return self;
+                    return self.add(value);
                 },
                 [](engine::parser::Json &self, engine::parser::Json value) {
-                    self.add(value);
-                    return self;
+                    return self.add(value);
                 },
                 [](engine::parser::Json &self, bool value) {
-                    self.add(value);
-                    return self;
+                    return self.add(value);
                 },
                 [](engine::parser::Json &self, double value) {
-                    self.add(value);
-                    return self;
+                    return self.add(value);
                 },
                 [](engine::parser::Json &self, sol::table value) {
                     std::vector<engine::parser::Json> vec;
@@ -114,8 +93,7 @@ namespace engine::parser::extend
                                 item.second.as<engine::parser::Json>());
                         }
                     }
-                    self.add(vec);
-                    return self;
+                    return self.add(vec);
                 }));
     }
 
