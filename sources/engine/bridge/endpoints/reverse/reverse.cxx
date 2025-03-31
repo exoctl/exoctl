@@ -4,42 +4,51 @@
 
 namespace engine::bridge::endpoints
 {
-    Reverse::Reverse(server::Server &p_server)
-        : m_server(p_server), m_map(BASE_REV)
+    Reverse::Reverse()
+        : m_map(BASE_REV),
+          m_capstone_x64_little(
+              std::make_unique<
+                  focades::reverse::disassembly::capstone::Capstone>()),
+          m_capstone_arm64_little(
+              std::make_unique<
+                  focades::reverse::disassembly::capstone::Capstone>()),
+          m_capstone_arm64_big(
+              std::make_unique<
+                  focades::reverse::disassembly::capstone::Capstone>())
     {
-        Reverse::prepare();
+    }
 
-        Reverse::capstone_x64_little();
-        Reverse::capstone_arm64_little();
-        Reverse::capstone_arm64_big();
+    void Reverse::setup(server::Server &p_server)
+    {
+        m_server = &p_server;
+
+        if (p_server.config->get("bridge.endpoint.reverse.enable")
+                .value<bool>()
+                .value()) {
+
+            m_capstone_x64_little->setup(
+                CS_ARCH_X86,
+                static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
+
+            m_capstone_arm64_little->setup(CS_ARCH_ARM64,
+                                           CS_MODE_LITTLE_ENDIAN);
+
+            m_capstone_arm64_big->setup(CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
+
+            Reverse::capstone_x64_little();
+            Reverse::capstone_arm64_little();
+            Reverse::capstone_arm64_big();
+        }
     }
 
     void Reverse::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
-    }
-
-    void Reverse::prepare()
-    {
-        m_server.log->info("Preparing gateway rev routes ...");
-
-        m_capstone_x64_little = std::make_unique<
-            focades::reverse::disassembly::capstone::Capstone>();
-
-        m_capstone_x64_little->setup(
-            CS_ARCH_X86,
-            static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
-
-        m_capstone_arm64_little = std::make_unique<
-            focades::reverse::disassembly::capstone::Capstone>();
-
-        m_capstone_arm64_little->setup(CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN);
-
-        m_capstone_arm64_big = std::make_unique<
-            focades::reverse::disassembly::capstone::Capstone>();
-
-        m_capstone_arm64_big->setup(CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
+        if (m_server->config->get("bridge.endpoint.reverse.enable")
+                .value<bool>()
+                .value()) {
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
     }
 
     void Reverse::capstone_x64_little()
@@ -48,7 +57,7 @@ namespace engine::bridge::endpoints
             m_socket_capstone_x64_little =
                 std::make_unique<server::gateway::WebSocket>();
             m_socket_capstone_x64_little->setup(
-                m_server,
+                *m_server,
                 BASE_REV "/disassembly/capstone/x64/endian/little",
                 UINT64_MAX,
                 // on_message_callback
@@ -83,7 +92,7 @@ namespace engine::bridge::endpoints
             m_socket_capstone_arm64_little =
                 std::make_unique<server::gateway::WebSocket>();
             m_socket_capstone_arm64_little->setup(
-                m_server,
+                *m_server,
                 BASE_REV "/disassembly/capstone/arm64/endian/little",
                 UINT64_MAX,
                 // on_message_callback
@@ -118,7 +127,7 @@ namespace engine::bridge::endpoints
             m_socket_capstone_arm64_big =
                 std::make_unique<server::gateway::WebSocket>();
             m_socket_capstone_arm64_big->setup(
-                m_server,
+                *m_server,
                 BASE_REV "/disassembly/capstone/arm64/endian/big",
                 UINT64_MAX,
                 // on_message_callback

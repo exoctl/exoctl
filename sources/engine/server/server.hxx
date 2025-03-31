@@ -11,14 +11,15 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/extend/server.hxx>
 #include <memory>
+#include <engine/server/middlewares/cors/cors.hxx>
 
 namespace engine
 {
     namespace server
     {
         class Server; // Forward declaration Server plugin
-        
-        using App = crow::App<>;
+
+        using App = crow::App<middlewares::cors::Cors>;
         class Server
         {
           private:
@@ -35,7 +36,7 @@ namespace engine
             logging::Logging *log;
 
             void setup(configuration::Configuration &, logging::Logging &);
-
+            
             App &get();
             unsigned short concurrency;
             std::string bindaddr;
@@ -44,9 +45,10 @@ namespace engine
             unsigned short port;
             std::string certfile;
             std::string keyfile;
+            
             std::future<void> run_async();
-
             void tick(std::chrono::milliseconds, std::function<void()>);
+            void load();
             void stop();
         };
     } // namespace server
