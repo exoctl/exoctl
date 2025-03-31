@@ -147,62 +147,43 @@ namespace engine::server::extend
                 }));
     }
 
-    void Server::bind_wvalue(sol::state_view& lua) {
+    void Server::bind_wvalue(sol::state_view &lua)
+    {
         lua.new_usertype<crow::json::wvalue>(
-            "Wvalue",  
-            sol::constructors<
-                crow::json::wvalue(),
-                crow::json::wvalue(std::nullptr_t),
-                crow::json::wvalue(bool),
-                crow::json::wvalue(int),
-                crow::json::wvalue(unsigned int),
-                crow::json::wvalue(double),
-                crow::json::wvalue(const char*),
-                crow::json::wvalue(const std::string&)
-            >(),
-            
-            sol::meta_function::new_index, sol::overload(
-                [](crow::json::wvalue& self, const std::string& key, const std::string& value) {
-                    self[key] = value;
-                },
-                [](crow::json::wvalue& self, const std::string& key, const char* value) {
-                    self[key] = value;
-                },
-                [](crow::json::wvalue& self, const std::string& key, int value) {
-                    self[key] = value;
-                },
-                [](crow::json::wvalue& self, const std::string& key, double value) {
-                    self[key] = value;
-                },
-                [](crow::json::wvalue& self, const std::string& key, bool value) {
-                    self[key] = value;
-                },
-                [](crow::json::wvalue& self, const std::string& key, std::nullptr_t) {
-                    self[key] = nullptr;
-                }
-            ),
-            
-            sol::meta_function::index, sol::overload(
-                [](crow::json::wvalue& self, const std::string& key) -> crow::json::wvalue& {
-                    return self[key];
-                },
-                [](crow::json::wvalue& self, int index) -> crow::json::wvalue& {
-                    return self[index];
-                }
-            ),
-            
-            "dump", [](const crow::json::wvalue& self) {
-                return self.dump();
-            },
-            
-            "has", [](const crow::json::wvalue& self, const std::string& key) {
-                return self.count(key) > 0;
-            },
-            
-            "size", [](const crow::json::wvalue& self) {
-                return self.size();
-            }
-        );
+            "Wvalue",
+            sol::constructors<crow::json::wvalue(),
+                              crow::json::wvalue(std::nullptr_t),
+                              crow::json::wvalue(bool),
+                              crow::json::wvalue(int),
+                              crow::json::wvalue(unsigned int),
+                              crow::json::wvalue(double),
+                              crow::json::wvalue(const char *),
+                              crow::json::wvalue(const std::string &)>(),
+            sol::meta_function::new_index,
+            sol::overload([](crow::json::wvalue &self,
+                             const std::string &key,
+                             const std::string &value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             const char *value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             int value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             double value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             bool value) { self[key] = value; },
+                          [](crow::json::wvalue &self,
+                             const std::string &key,
+                             std::nullptr_t) { self[key] = nullptr; }),
+
+            sol::meta_function::index,
+            sol::overload([](crow::json::wvalue &self, const std::string &key)
+                              -> crow::json::wvalue & { return self[key]; },
+                          [](crow::json::wvalue &self, int index)
+                              -> crow::json::wvalue & { return self[index]; }));
     }
 
     void Server::bind_rendered(sol::state_view &p_lua)
