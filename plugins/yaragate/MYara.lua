@@ -6,6 +6,7 @@ local MYara = {
         CALLBACK_MSG_SCAN_FINISHED = 3
     },
     yara = nil,
+    saved_rules = {},
     Config = nil,
     Logging = nil
 }
@@ -29,21 +30,37 @@ end
 
 function MYara:reload()
     self.Logging:info("Reload yara ...")
-    --self.yara:unload_rules()
+    self.yara:unload_rules()
     self.yara:unload_compiler()
     self.yara:load_compiler()
 end
 
-function MYara:save_rules_file()
-    local stream <const> = self.Config:get("yaragate.rules.save_stream")
-    self.Logging:info(string.format("Saving yara rules in {%s}", stream))
-    self.yara:save_rules_file(self.Config:get("yaragate.rules.save_stream"))
+function MYara:backup_save_rules()
+    local stream <const> = self.Config:get("yaragate.rules.backup")
+    self.Logging:info(string.format("Saving backup yara rules in {%s}", stream))
+    self.yara:save_rules_file(stream)
 end
 
-function MYara:load_rules_file()
-    local stream <const> = self.Config:get("yaragate.rules.save_stream")
-    self.Logging:info(string.format("Loading yara rules in {%s}", stream))
-    self.yara:load_rules_file(self.Config:get("yaragate.rules.save_stream"))
+function MYara:backup_recover_rules()
+    local stream <const> = self.Config:get("yaragate.rules.backup")
+    self.yara:load_rules_file(stream)
+end
+
+function MYara:load_rules_saved()
+    for index, value in ipairs(self.saved_rules) do
+        self.yara:set_rule_file(value.path, "", value.namespace)
+    end
+end
+
+function MYara:save_rule(rule, namespace)
+    local path <const> = self.Config:get("yaragate.rules.path") .. _data.metadata.sha:gen_sha256_hash(rule) .. ".yar"
+    self.Logging:info(string.format("Saving yara rule in {%s}", path))
+
+    local rule_file <close> = io.open(path, "w")
+    if (rule_file ~= nil) then
+        rule_file:write(rule)
+        table.insert(self.saved_rules, { path = path, namespace = namespace })
+    end
 end
 
 return MYara

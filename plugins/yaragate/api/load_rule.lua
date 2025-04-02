@@ -30,28 +30,29 @@ function LoadRule:load()
         end
 
         -- Reload Yara with new rule
+        self.MYara:backup_save_rules()
         self.MYara:reload()
-        self.MYara:load_rules_file()
         local compiled_rule = true
 
         self.MYara.yara:load_rules(function()
             if (self.MYara.yara:set_rule_buff(rule, namespace) ~= 0) then
                 self.MYara:reload()
-                
                 compiled_rule = false
             end
-            
+            self.MYara:load_rules_saved()
         end)
         
-        self.MYara:load_rules_file()
         local message = Json:new()
-
+        
         if compiled_rule then
-            self.MYara:save_rules_file() -- Backup rules
-
+            self.MYara:backup_save_rules() -- Backup rules
+            self.MYara:save_rule(rule, namespace)
+            
             message:add("message", "Rule compiled successfully")
             return Response.new(200, "application/json", message:to_string())
         end
+
+        self.MYara:backup_recover_rules()
 
         message:add("message", "The rule was not compiled successfully, check for possible syntax errors")
         return Response.new(400, "application/json", message:to_string())
