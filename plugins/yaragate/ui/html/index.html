@@ -1,0 +1,1835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YaraGate | Modern Yara Rule Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #8183f4;
+            --primary-dark: #4f46e5;
+            --secondary: #f43f5e;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --lighter: #ffffff;
+            --gray: #94a3b8;
+            --gray-light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --radius-sm: 4px;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Modern navbar */
+        header {
+            background-color: var(--lighter);
+            box-shadow: var(--shadow-sm);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--lighter);
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(15deg);
+            background-color: var(--primary-dark);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            background-color: var(--gray-light);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: var(--lighter);
+        }
+
+        .nav-link.active:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Hero section */
+        .hero {
+            padding: 80px 0 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(244, 63, 94, 0.05) 100%);
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            padding-bottom: 60px;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--lighter);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+            transition: var(--transition);
+            border: 1px solid var(--gray-light);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            gap: 8px;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--lighter);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--gray-light);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gray-light);
+            transform: translateY(-2px);
+        }
+
+        /* File upload */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload-btn {
+            width: 100%;
+            padding: 60px 20px;
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--radius);
+            text-align: center;
+            background-color: var(--light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* Results */
+        .results {
+            margin-top: 30px;
+        }
+
+        .result-item {
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            animation: fadeIn 0.5s ease-out;
+            border-left: 4px solid transparent;
+        }
+
+        .result-item.match {
+            border-left-color: var(--danger);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        .result-item.no-match {
+            border-left-color: var(--success);
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-primary {
+            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+        }
+
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Rules list */
+        .rules-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .rule-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-light);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        /* Form grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Code editor */
+        .code-editor-container {
+            position: relative;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius);
+            background: var(--light);
+            transition: var(--transition);
+        }
+
+        .code-editor-container:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            padding: 12px 8px;
+            font-family: monospace;
+            color: var(--gray);
+            background: var(--light);
+            border-right: 1px solid var(--gray-light);
+            text-align: right;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px 12px 12px 40px;
+            font-family: monospace;
+            border: none;
+            background: transparent;
+            resize: vertical;
+            line-height: 1.5;
+            tab-size: 4;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 6px;
+        }
+
+        /* Rule preview */
+        .rule-preview {
+            margin-top: 15px;
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border: 1px solid var(--gray-light);
+            animation: fadeIn 0.5s ease-out;
+            overflow-x: auto;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .line-number {
+            color: var(--gray);
+            margin-right: 10px;
+            user-select: none;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            height: 6px;
+            background-color: var(--gray-light);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease-out;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Server info */
+        .server-info {
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .server-info-icon {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .server-info-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .server-info strong {
+            color: var(--primary-dark);
+        }
+
+        /* Namespace folders */
+        .namespace-folder {
+            margin-bottom: 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background-color: var(--lighter);
+        }
+
+        .folder-header {
+            background-color: var(--light);
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .folder-header:hover {
+            background-color: var(--gray-light);
+        }
+
+        .folder-icon {
+            margin-right: 10px;
+            transition: var(--transition);
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .folder-header.active .folder-icon {
+            transform: rotate(90deg);
+            color: var(--primary);
+        }
+
+        .folder-count {
+            background-color: var(--primary);
+            color: var(--lighter);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .folder-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .folder-content.expanded {
+            max-height: 2000px;
+        }
+
+        .folder-rule {
+            padding: 12px 15px 12px 35px;
+            border-bottom: 1px solid var(--light);
+            transition: var(--transition);
+        }
+
+        .folder-rule:last-child {
+            border-bottom: none;
+        }
+
+        .folder-rule:hover {
+            background-color: var(--light);
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .rule-action-btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: none;
+            background-color: var(--light);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rule-action-btn i {
+            font-size: 0.7rem;
+        }
+
+        .rule-action-btn:hover {
+            background-color: var(--gray-light);
+        }
+
+        .rule-action-btn.disable {
+            color: var(--danger);
+        }
+
+        .rule-action-btn.view {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray-light);
+            background-color: var(--lighter);
+            margin-top: auto;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 0;
+            }
+            
+            .nav-links {
+                width: 100%;
+                overflow-x: auto;
+                padding: 10px 0;
+                justify-content: center;
+            }
+            
+            .nav-link {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Utility classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-muted {
+            color: var(--gray);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <a href="#" class="logo" id="home-link">
+                    <div class="logo-icon">YG</div>
+                    <span>YaraGate</span>
+                </a>
+                
+                <div class="nav-links">
+                    <a href="#" class="nav-link active" id="scan-link">
+                        <i class="fas fa-search"></i>
+                        <span>Scan File</span>
+                    </a>
+                    <a href="#" class="nav-link" id="rules-link">
+                        <i class="fas fa-list"></i>
+                        <span>View Rules</span>
+                    </a>
+                    <a href="#" class="nav-link" id="manage-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Manage Rules</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero" id="hero-section">
+            <h1>Modern Yara Rule Management</h1>
+            <p>Efficiently scan files and manage your Yara rules with our intuitive platform. Detect threats faster with real-time scanning.</p>
+        </section>
+
+        <div class="card">
+            <div class="server-info">
+                <div class="server-info-icon"><i class="fas fa-server"></i></div>
+                <div class="server-info-text" data-server="{{server}}" id="server-info">
+                    Connected to <strong>{{server}}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scan File Section -->
+        <div class="card" id="scan-section">
+            <div class="card-title">
+                <i class="fas fa-search"></i>
+                <span>File Scanner</span>
+            </div>
+            
+            <div class="file-upload">
+                <div class="file-upload-btn" id="drop-zone">
+                    <p><i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i></p>
+                    <p>Drag & drop your file here or click to browse</p>
+                    <p class="text-muted">Supports any file type</p>
+                    <input type="file" class="file-upload-input" id="file-input">
+                </div>
+            </div>
+
+            <div class="results" id="results">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+
+        <!-- View Rules Section -->
+        <div class="card hidden" id="rules-section">
+            <div class="card-title">
+                <i class="fas fa-list"></i>
+                <span>Yara Rules</span>
+            </div>
+            
+            <div class="rules-list" id="rules-list">
+                <p>Loading rules...</p>
+            </div>
+        </div>
+
+        <!-- Manage Rules Section -->
+        <div class="card hidden" id="manage-section">
+            <div class="card-title">
+                <i class="fas fa-cog"></i>
+                <span>Rule Management</span>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="rule-namespace">Namespace</label>
+                        <input type="text" id="rule-namespace" placeholder="e.g., malware, phishing">
+                        <div class="form-hint">Unique identifier to group rules</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="disable-rule">Manage Existing Rule</label>
+                        <input type="text" id="disable-rule" placeholder="Rule name to disable">
+                        <button class="btn btn-secondary" id="disable-rule-btn">
+                            <i class="fas fa-toggle-off"></i>
+                            Disable Rule
+                        </button>
+                        <div class="form-hint">Enter exact rule name</div>
+                    </div>
+                </div>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="rule-content">YARA Rule Content</label>
+                        <div class="code-editor-container">
+                            <div class="line-numbers" id="line-numbers">1</div>
+                            <textarea id="rule-content" class="code-editor"
+                                placeholder="Paste your YARA rule here..." spellcheck="false"></textarea>
+                        </div>
+                        <div class="form-hint">Supports all YARA 4.x syntax</div>
+                    </div>
+
+                    <button class="btn btn-primary" id="add-rule">
+                        <i class="fas fa-plus"></i>
+                        Add Rule
+                    </button>
+                </div>
+            </div>
+
+            <div class="results" id="manage-results">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2023 YaraGate. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Função para sanitizar strings e prevenir XSS
+        function sanitizeString(str) {
+            if (!str) return '';
+            
+            // Cria um elemento temporário e usa textContent para escape automático
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Função para validar namespace
+        function isValidNamespace(namespace) {
+            return /^[a-zA-Z0-9_-]+$/.test(namespace);
+        }
+
+        // Função para validar nome de regra
+        function isValidRuleName(ruleName) {
+            return /^[a-zA-Z0-9_\-\.]+$/.test(ruleName);
+        }
+
+        const server = document.getElementById('server-info').getAttribute('data-server');
+        const apiUrl = server.endsWith('/') ? server.slice(0, -1) : server;
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Set the corresponding nav link as active
+            document.getElementById(`${sectionId.replace('-section', '-link')}`).classList.add('active');
+            
+            // Load rules if rules section is shown
+            if (sectionId === 'rules-section') {
+                loadRules();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Setup navigation
+            document.getElementById('home-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('scan-section');
+            });
+            
+            document.getElementById('scan-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('scan-section');
+            });
+            
+            document.getElementById('rules-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('rules-section');
+            });
+            
+            document.getElementById('manage-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('manage-section');
+            });
+
+            // File upload handling
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop events
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary)';
+                dropZone.style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = 'var(--gray-light)';
+                dropZone.style.backgroundColor = 'var(--light)';
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--gray-light)';
+                dropZone.style.backgroundColor = 'var(--light)';
+
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect({ target: fileInput });
+                }
+            });
+
+            // Rule management
+            document.getElementById('add-rule').addEventListener('click', addRule);
+            document.getElementById('disable-rule-btn').addEventListener('click', disableRule);
+
+            // Update line numbers while typing
+            document.getElementById('rule-content').addEventListener('input', updateLineNumbers);
+
+            // Show scan section by default
+            showSection('scan-section');
+        });
+
+        function updateLineNumbers() {
+            const textarea = document.getElementById('rule-content');
+            const lineNumbers = document.getElementById('line-numbers');
+            const lines = textarea.value.split('\n');
+            let numbers = '';
+
+            for (let i = 1; i <= lines.length; i++) {
+                numbers += i + '\n';
+            }
+
+            lineNumbers.textContent = numbers;
+        }
+
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const dropZone = document.getElementById('drop-zone');
+            const sanitizedFilename = sanitizeString(file.name);
+            
+            // Clear drop zone and show upload status
+            dropZone.innerHTML = '';
+            
+            const icon = document.createElement('p');
+            icon.innerHTML = '<i class="fas fa-file-upload" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>';
+            dropZone.appendChild(icon);
+            
+            const filename = document.createElement('p');
+            filename.textContent = `Preparing: ${sanitizedFilename}`;
+            dropZone.appendChild(filename);
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progress = document.createElement('div');
+            progress.className = 'progress';
+            progress.id = 'upload-progress';
+            progressBar.appendChild(progress);
+            dropZone.appendChild(progressBar);
+            
+            const status = document.createElement('div');
+            status.className = 'status-message';
+            status.id = 'status-message';
+            status.textContent = 'Initializing scan...';
+            dropZone.appendChild(status);
+
+            // Update progress bar
+            document.getElementById('upload-progress').style.width = '30%';
+            document.getElementById('status-message').textContent = 'Reading file...';
+
+            try {
+                // Read file as ArrayBuffer (raw binary)
+                const arrayBuffer = await file.arrayBuffer();
+
+                // Update progress
+                document.getElementById('upload-progress').style.width = '60%';
+                document.getElementById('status-message').textContent = 'Processing file...';
+
+                // Send the binary buffer directly
+                await scanFile(arrayBuffer, sanitizedFilename);
+
+            } catch (error) {
+                console.error('Error:', error);
+                resetDropZone();
+                showError('Error processing file');
+            }
+        }
+
+        async function scanFile(arrayBuffer, filename) {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            
+            const resultTitle = document.createElement('div');
+            resultTitle.className = 'result-title';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            resultTitle.appendChild(spinner);
+            
+            const titleText = document.createTextNode(` Scanning: ${filename}`);
+            resultTitle.appendChild(titleText);
+            resultItem.appendChild(resultTitle);
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progress = document.createElement('div');
+            progress.className = 'progress';
+            progress.id = 'scan-progress';
+            progressBar.appendChild(progress);
+            resultItem.appendChild(progressBar);
+            
+            const status = document.createElement('div');
+            status.className = 'status-message';
+            status.id = 'scan-status';
+            status.textContent = 'Connecting to scanning engine...';
+            resultItem.appendChild(status);
+            
+            resultsDiv.appendChild(resultItem);
+
+            // Update progress
+            document.getElementById('scan-progress').style.width = '30%';
+            document.getElementById('scan-status').textContent = 'Uploading file...';
+
+            try {
+                // Send the ArrayBuffer directly as request body
+                const response = await fetch(`${apiUrl}/api/scan`, {
+                    method: 'POST',
+                    body: arrayBuffer  // Send raw binary
+                });
+
+                // Update progress
+                document.getElementById('scan-progress').style.width = '70%';
+                document.getElementById('scan-status').textContent = 'Analyzing with YARA rules...';
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'API returned an error');
+                }
+
+                // Update progress
+                document.getElementById('scan-progress').style.width = '90%';
+                document.getElementById('scan-status').textContent = 'Finalizing results...';
+
+                const data = await response.json();
+                displayResults(data, filename);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError(`Scan failed: ${error.message}`);
+            } finally {
+                resetDropZone();
+            }
+        }
+
+        function displayResults(data, filename) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            if (data.rules_match && Object.keys(data.rules_match).length > 0) {
+                const mainResult = document.createElement('div');
+                mainResult.className = 'result-item match';
+                
+                const title = document.createElement('div');
+                title.className = 'result-title';
+                
+                const badge = document.createElement('span');
+                badge.className = 'badge badge-danger';
+                badge.textContent = 'MATCH FOUND';
+                title.appendChild(badge);
+                
+                const titleText = document.createTextNode(` ${filename}`);
+                title.appendChild(titleText);
+                mainResult.appendChild(title);
+                
+                const sha256 = document.createElement('p');
+                sha256.textContent = `SHA256: ${sanitizeString(data.sha256)}`;
+                mainResult.appendChild(sha256);
+                
+                const desc = document.createElement('p');
+                desc.textContent = `This file matched ${Object.keys(data.rules_match).length} YARA rules:`;
+                mainResult.appendChild(desc);
+                
+                resultsDiv.appendChild(mainResult);
+
+                // Add each rule match with slight delay for animation
+                let delay = 100;
+                Object.entries(data.rules_match).forEach(([ruleId, ruleData]) => {
+                    setTimeout(() => {
+                        const ruleItem = document.createElement('div');
+                        ruleItem.className = 'result-item';
+                        ruleItem.style.marginTop = '10px';
+                        ruleItem.style.animation = 'fadeIn 0.3s ease-out';
+                        
+                        const ruleTitle = document.createElement('div');
+                        ruleTitle.className = 'result-title';
+                        
+                        const ruleBadge = document.createElement('span');
+                        ruleBadge.className = 'badge badge-warning';
+                        ruleBadge.textContent = 'RULE';
+                        ruleTitle.appendChild(ruleBadge);
+                        
+                        const ruleText = document.createTextNode(` ${sanitizeString(ruleData.identifier)}`);
+                        ruleTitle.appendChild(ruleText);
+                        ruleItem.appendChild(ruleTitle);
+                        
+                        const ruleMeta = document.createElement('div');
+                        ruleMeta.className = 'rule-meta';
+                        
+                        const namespaceSpan = document.createElement('span');
+                        namespaceSpan.textContent = `Namespace: ${sanitizeString(ruleData.namespace)}`;
+                        ruleMeta.appendChild(namespaceSpan);
+                        
+                        const atomsSpan = document.createElement('span');
+                        atomsSpan.textContent = `Atoms: ${sanitizeString(ruleData.num_atoms)}`;
+                        ruleMeta.appendChild(atomsSpan);
+                        
+                        ruleItem.appendChild(ruleMeta);
+                        resultsDiv.appendChild(ruleItem);
+                    }, delay);
+                    delay += 100;
+                });
+
+            } else {
+                const cleanResult = document.createElement('div');
+                cleanResult.className = 'result-item no-match';
+                
+                const title = document.createElement('div');
+                title.className = 'result-title';
+                
+                const badge = document.createElement('span');
+                badge.className = 'badge badge-success';
+                badge.textContent = 'CLEAN';
+                title.appendChild(badge);
+                
+                const titleText = document.createTextNode(` ${filename}`);
+                title.appendChild(titleText);
+                cleanResult.appendChild(title);
+                
+                const sha256 = document.createElement('p');
+                sha256.textContent = `SHA256: ${sanitizeString(data.sha256)}`;
+                cleanResult.appendChild(sha256);
+                
+                const desc = document.createElement('p');
+                desc.textContent = 'No YARA rules matched this file.';
+                cleanResult.appendChild(desc);
+                
+                resultsDiv.appendChild(cleanResult);
+            }
+        }
+
+        function resetDropZone() {
+            setTimeout(() => {
+                const dropZone = document.getElementById('drop-zone');
+                if (dropZone) {
+                    dropZone.innerHTML = '';
+                    
+                    const icon = document.createElement('p');
+                    icon.innerHTML = '<i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px;"></i>';
+                    dropZone.appendChild(icon);
+                    
+                    const p1 = document.createElement('p');
+                    p1.textContent = 'Drag & drop your file here or click to browse';
+                    dropZone.appendChild(p1);
+                    
+                    const p2 = document.createElement('p');
+                    p2.className = 'text-muted';
+                    p2.textContent = 'Supports any file type';
+                    dropZone.appendChild(p2);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.className = 'file-upload-input';
+                    input.id = 'file-input';
+                    dropZone.appendChild(input);
+                    
+                    // Reattach the event listener
+                    document.getElementById('file-input').addEventListener('change', handleFileSelect);
+                }
+            }, 1000);
+        }
+
+        function loadRules() {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const rulesList = document.getElementById('rules-list');
+            rulesList.innerHTML = '';
+            
+            const loadingItem = document.createElement('div');
+            loadingItem.className = 'result-item';
+            
+            const loadingTitle = document.createElement('div');
+            loadingTitle.className = 'result-title';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            loadingTitle.appendChild(spinner);
+            
+            const loadingText = document.createTextNode(' Loading rules...');
+            loadingTitle.appendChild(loadingText);
+            loadingItem.appendChild(loadingTitle);
+            
+            rulesList.appendChild(loadingItem);
+
+            fetch(`${apiUrl}/api/get/rules`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load rules');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.rules && Object.keys(data.rules).length > 0) {
+                        // Group rules by namespace
+                        const namespaces = {};
+                        Object.entries(data.rules).forEach(([ruleId, ruleData]) => {
+                            const namespace = ruleData.namespace || 'default';
+                            if (!namespaces[namespace]) {
+                                namespaces[namespace] = [];
+                            }
+                            namespaces[namespace].push({
+                                id: ruleId,
+                                ...ruleData
+                            });
+                        });
+
+                        // Create folder structure
+                        rulesList.innerHTML = '';
+                        Object.entries(namespaces).forEach(([namespace, rules]) => {
+                            const folderId = `folder-${namespace.replace(/\s+/g, '-')}`;
+                            const folder = document.createElement('div');
+                            folder.className = 'namespace-folder';
+                            
+                            const folderHeader = document.createElement('div');
+                            folderHeader.className = 'folder-header';
+                            folderHeader.setAttribute('data-folder', folderId);
+                            
+                            const headerContent = document.createElement('div');
+                            
+                            const folderIcon = document.createElement('span');
+                            folderIcon.className = 'folder-icon';
+                            folderIcon.innerHTML = '<i class="fas fa-caret-right"></i>';
+                            headerContent.appendChild(folderIcon);
+                            
+                            const namespaceText = document.createTextNode(` ${sanitizeString(namespace)}`);
+                            headerContent.appendChild(namespaceText);
+                            
+                            const folderCount = document.createElement('span');
+                            folderCount.className = 'folder-count';
+                            folderCount.textContent = rules.length;
+                            headerContent.appendChild(folderCount);
+                            
+                            folderHeader.appendChild(headerContent);
+                            folder.appendChild(folderHeader);
+                            
+                            const folderContent = document.createElement('div');
+                            folderContent.className = 'folder-content';
+                            folderContent.id = folderId;
+                            folder.appendChild(folderContent);
+                            
+                            rulesList.appendChild(folder);
+
+                            // Add click handler for folder toggle
+                            folderHeader.addEventListener('click', function() {
+                                this.classList.toggle('active');
+                                const content = document.getElementById(this.getAttribute('data-folder'));
+                                content.classList.toggle('expanded');
+                                const icon = this.querySelector('.folder-icon i');
+                                icon.classList.toggle('fa-caret-right');
+                                icon.classList.toggle('fa-caret-down');
+                            });
+
+                            // Add rules to folder content
+                            rules.forEach(rule => {
+                                const ruleItem = document.createElement('div');
+                                ruleItem.className = 'folder-rule';
+                                
+                                const ruleName = document.createElement('div');
+                                ruleName.className = 'rule-name';
+                                ruleName.textContent = sanitizeString(rule.identifier);
+                                ruleItem.appendChild(ruleName);
+                                
+                                const ruleMeta = document.createElement('div');
+                                ruleMeta.className = 'rule-meta';
+                                
+                                const atomsSpan = document.createElement('span');
+                                atomsSpan.textContent = `Atoms: ${sanitizeString(rule.num_atoms)}`;
+                                ruleMeta.appendChild(atomsSpan);
+                                
+                                const tagsSpan = document.createElement('span');
+                                tagsSpan.textContent = `Tags: ${rule.tags ? sanitizeString(rule.tags.join(', ')) : 'none'}`;
+                                ruleMeta.appendChild(tagsSpan);
+                                
+                                ruleItem.appendChild(ruleMeta);
+                                
+                                // Add meta information if exists
+                                if (rule.meta) {
+                                    const metaDiv = document.createElement('div');
+                                    metaDiv.className = 'rule-meta';
+                                    
+                                    for (const [metaKey, metaValue] of Object.entries(rule.meta)) {
+                                        const metaSpan = document.createElement('span');
+                                        metaSpan.textContent = `${sanitizeString(metaKey)}: ${sanitizeString(metaValue)}`;
+                                        metaDiv.appendChild(metaSpan);
+                                    }
+                                    
+                                    ruleItem.appendChild(metaDiv);
+                                }
+                                
+                                const ruleActions = document.createElement('div');
+                                ruleActions.className = 'rule-actions';
+                                
+                                const viewBtn = document.createElement('button');
+                                viewBtn.className = 'rule-action-btn view';
+                                viewBtn.setAttribute('data-rule', sanitizeString(rule.id));
+                                viewBtn.innerHTML = '<i class="far fa-eye"></i> View';
+                                ruleActions.appendChild(viewBtn);
+                                
+                                const disableBtn = document.createElement('button');
+                                disableBtn.className = 'rule-action-btn disable';
+                                disableBtn.setAttribute('data-rule', sanitizeString(rule.id));
+                                disableBtn.innerHTML = '<i class="fas fa-toggle-off"></i> Disable';
+                                ruleActions.appendChild(disableBtn);
+                                
+                                ruleItem.appendChild(ruleActions);
+                                folderContent.appendChild(ruleItem);
+                            });
+                        });
+
+                        // Add event listeners for rule actions
+                        document.querySelectorAll('.rule-action-btn.view').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                viewRule(this.getAttribute('data-rule'));
+                            });
+                        });
+
+                        document.querySelectorAll('.rule-action-btn.disable').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                disableRuleById(this.getAttribute('data-rule'));
+                            });
+                        });
+
+                    } else {
+                        rulesList.innerHTML = '';
+                        
+                        const noRulesItem = document.createElement('div');
+                        noRulesItem.className = 'result-item no-match';
+                        
+                        const noRulesTitle = document.createElement('div');
+                        noRulesTitle.className = 'result-title';
+                        noRulesTitle.textContent = 'No rules found';
+                        
+                        noRulesItem.appendChild(noRulesTitle);
+                        rulesList.appendChild(noRulesItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    rulesList.innerHTML = '';
+                    
+                    const errorItem = document.createElement('div');
+                    errorItem.className = 'result-item match';
+                    
+                    const errorTitle = document.createElement('div');
+                    errorTitle.className = 'result-title';
+                    
+                    const errorBadge = document.createElement('span');
+                    errorBadge.className = 'badge badge-danger';
+                    errorBadge.textContent = 'ERROR';
+                    errorTitle.appendChild(errorBadge);
+                    
+                    const errorText = document.createTextNode(` ${sanitizeString(error.message)}`);
+                    errorTitle.appendChild(errorText);
+                    
+                    errorItem.appendChild(errorTitle);
+                    rulesList.appendChild(errorItem);
+                });
+        }
+
+        function viewRule(ruleId) {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('manage-results');
+            resultsDiv.innerHTML = '';
+            
+            const loadingItem = document.createElement('div');
+            loadingItem.className = 'result-item';
+            
+            const loadingTitle = document.createElement('div');
+            loadingTitle.className = 'result-title';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            loadingTitle.appendChild(spinner);
+            
+            const loadingText = document.createTextNode(` Loading rule: ${sanitizeString(ruleId)}`);
+            loadingTitle.appendChild(loadingText);
+            loadingItem.appendChild(loadingTitle);
+            
+            resultsDiv.appendChild(loadingItem);
+
+            fetch(`${apiUrl}/api/get/rule/${encodeURIComponent(ruleId)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load rule');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.rule) {
+                        resultsDiv.innerHTML = '';
+                        
+                        const ruleItem = document.createElement('div');
+                        ruleItem.className = 'result-item no-match';
+                        
+                        const title = document.createElement('div');
+                        title.className = 'result-title';
+                        
+                        const badge = document.createElement('span');
+                        badge.className = 'badge badge-primary';
+                        badge.textContent = 'RULE DETAILS';
+                        title.appendChild(badge);
+                        
+                        const titleText = document.createTextNode(` ${sanitizeString(data.rule.identifier)}`);
+                        title.appendChild(titleText);
+                        ruleItem.appendChild(title);
+                        
+                        const meta = document.createElement('div');
+                        meta.className = 'rule-meta';
+                        
+                        const namespaceSpan = document.createElement('span');
+                        namespaceSpan.textContent = `Namespace: ${sanitizeString(data.rule.namespace)}`;
+                        meta.appendChild(namespaceSpan);
+                        
+                        const atomsSpan = document.createElement('span');
+                        atomsSpan.textContent = `Atoms: ${sanitizeString(data.rule.num_atoms)}`;
+                        meta.appendChild(atomsSpan);
+                        
+                        ruleItem.appendChild(meta);
+                        
+                        const preview = document.createElement('div');
+                        preview.className = 'rule-preview';
+                        
+                        const previewHeader = document.createElement('div');
+                        previewHeader.className = 'preview-header';
+                        
+                        const headerText = document.createElement('span');
+                        headerText.textContent = 'Rule Content:';
+                        previewHeader.appendChild(headerText);
+                        preview.appendChild(previewHeader);
+                        
+                        const pre = document.createElement('pre');
+                        pre.innerHTML = formatRuleWithLineNumbers(data.rule.content);
+                        preview.appendChild(pre);
+                        
+                        ruleItem.appendChild(preview);
+                        resultsDiv.appendChild(ruleItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(`Failed to view rule: ${sanitizeString(error.message)}`, resultsDiv);
+                });
+        }
+
+        function disableRuleById(ruleId) {
+            if (!apiUrl) {
+                showError('Please enter a valid API URL');
+                return;
+            }
+
+            const resultsDiv = document.getElementById('manage-results');
+            resultsDiv.innerHTML = '';
+            
+            const loadingItem = document.createElement('div');
+            loadingItem.className = 'result-item';
+            
+            const loadingTitle = document.createElement('div');
+            loadingTitle.className = 'result-title';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            loadingTitle.appendChild(spinner);
+            
+            const loadingText = document.createTextNode(` Disabling rule: ${sanitizeString(ruleId)}`);
+            loadingTitle.appendChild(loadingText);
+            loadingItem.appendChild(loadingTitle);
+            
+            resultsDiv.appendChild(loadingItem);
+
+            fetch(`${apiUrl}/api/disable/yara/rule`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rule: ruleId
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Failed to disable rule');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.message) {
+                        const success = data.message.toLowerCase().includes("disabled");
+                        resultsDiv.innerHTML = '';
+                        
+                        const resultItem = document.createElement('div');
+                        resultItem.className = success ? 'result-item no-match' : 'result-item match';
+                        
+                        const title = document.createElement('div');
+                        title.className = 'result-title';
+                        
+                        const badge = document.createElement('span');
+                        badge.className = success ? 'badge badge-success' : 'badge badge-danger';
+                        badge.textContent = success ? 'SUCCESS' : 'ERROR';
+                        title.appendChild(badge);
+                        
+                        const messageText = document.createTextNode(` ${sanitizeString(data.message)}`);
+                        title.appendChild(messageText);
+                        resultItem.appendChild(title);
+                        
+                        resultsDiv.appendChild(resultItem);
+
+                        if (success) {
+                            loadRules();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(`Error disabling rule: ${sanitizeString(error.message)}`, resultsDiv);
+                });
+        }
+
+        function addRule() {
+            const namespaceInput = document.getElementById('rule-namespace');
+            const ruleContentInput = document.getElementById('rule-content');
+            
+            const namespace = namespaceInput.value.trim();
+            const ruleContent = ruleContentInput.value.trim();
+            const resultsDiv = document.getElementById('manage-results');
+
+            // Validação dos inputs
+            if (!apiUrl) {
+                showError('Please enter a valid API URL', resultsDiv);
+                return;
+            }
+            
+            if (!namespace) {
+                showError('Please enter a namespace', resultsDiv);
+                namespaceInput.focus();
+                return;
+            }
+            
+            if (!isValidNamespace(namespace)) {
+                showError('Namespace can only contain letters, numbers, underscores and hyphens', resultsDiv);
+                namespaceInput.focus();
+                return;
+            }
+            
+            if (!ruleContent) {
+                showError('Please enter YARA rule content', resultsDiv);
+                ruleContentInput.focus();
+                return;
+            }
+
+            // Add visual feedback during submission
+            resultsDiv.innerHTML = '';
+            
+            const loadingItem = document.createElement('div');
+            loadingItem.className = 'result-item';
+            
+            const loadingTitle = document.createElement('div');
+            loadingTitle.className = 'result-title';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            loadingTitle.appendChild(spinner);
+            
+            const loadingText = document.createTextNode(' Compiling YARA rule...');
+            loadingTitle.appendChild(loadingText);
+            loadingItem.appendChild(loadingTitle);
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            const progress = document.createElement('div');
+            progress.className = 'progress';
+            progress.id = 'rule-progress';
+            progressBar.appendChild(progress);
+            loadingItem.appendChild(progressBar);
+            
+            const status = document.createElement('div');
+            status.className = 'status-message';
+            status.id = 'rule-status';
+            status.textContent = 'Validating rule syntax...';
+            loadingItem.appendChild(status);
+            
+            resultsDiv.appendChild(loadingItem);
+
+            // Update progress
+            document.getElementById('rule-progress').style.width = '30%';
+            document.getElementById('rule-status').textContent = 'Preparing to send...';
+
+            // Format rule with line numbers for display
+            const formattedRule = formatRuleWithLineNumbers(ruleContent);
+
+            fetch(`${apiUrl}/api/load/yara/rule`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rule: ruleContent,
+                    namespace: namespace
+                })
+            })
+                .then(response => {
+                    document.getElementById('rule-progress').style.width = '70%';
+                    document.getElementById('rule-status').textContent = 'Processing response...';
+
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Rule compilation failed');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('rule-progress').style.width = '100%';
+                    document.getElementById('rule-status').textContent = 'Done!';
+
+                    if (data.message) {
+                        const success = data.message.toLowerCase().includes("success");
+                        resultsDiv.innerHTML = '';
+                        
+                        const resultItem = document.createElement('div');
+                        resultItem.className = success ? 'result-item no-match' : 'result-item match';
+                        
+                        const title = document.createElement('div');
+                        title.className = 'result-title';
+                        
+                        const badge = document.createElement('span');
+                        badge.className = success ? 'badge badge-success' : 'badge badge-danger';
+                        badge.textContent = success ? 'SUCCESS' : 'ERROR';
+                        title.appendChild(badge);
+                        
+                        const messageText = document.createTextNode(` ${sanitizeString(data.message)}`);
+                        title.appendChild(messageText);
+                        resultItem.appendChild(title);
+                        
+                        if (success) {
+                            const preview = document.createElement('div');
+                            preview.className = 'rule-preview';
+                            
+                            const previewHeader = document.createElement('div');
+                            previewHeader.className = 'preview-header';
+                            
+                            const namespaceSpan = document.createElement('span');
+                            namespaceSpan.textContent = `Namespace: ${sanitizeString(namespace)}`;
+                            previewHeader.appendChild(namespaceSpan);
+                            
+                            const previewText = document.createElement('span');
+                            previewText.textContent = 'Rule Preview:';
+                            previewHeader.appendChild(previewText);
+                            preview.appendChild(previewHeader);
+                            
+                            const pre = document.createElement('pre');
+                            pre.innerHTML = formattedRule;
+                            preview.appendChild(pre);
+                            
+                            resultItem.appendChild(preview);
+                            
+                            loadRules();
+                            // Clear fields after success
+                            document.getElementById('rule-content').value = '';
+                            updateLineNumbers();
+                        }
+                        
+                        resultsDiv.appendChild(resultItem);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showError(`Failed to add rule: ${sanitizeString(error.message)}`, resultsDiv);
+                });
+        }
+
+        function disableRule() {
+            const ruleIdInput = document.getElementById('disable-rule');
+            const ruleId = ruleIdInput.value.trim();
+            const resultsDiv = document.getElementById('manage-results');
+
+            if (!apiUrl) {
+                showError('Please enter a valid API URL', resultsDiv);
+                return;
+            }
+            
+            if (!ruleId) {
+                showError('Please enter a rule identifier to disable', resultsDiv);
+                ruleIdInput.focus();
+                return;
+            }
+            
+            if (!isValidRuleName(ruleId)) {
+                showError('Rule name can only contain letters, numbers, underscores, hyphens and dots', resultsDiv);
+                ruleIdInput.focus();
+                return;
+            }
+
+            disableRuleById(ruleId);
+        }
+
+        // Function to format rule with line numbers
+        function formatRuleWithLineNumbers(ruleContent) {
+            const lines = ruleContent.split('\n');
+            const maxLineNumberLength = String(lines.length).length;
+
+            return lines.map((line, index) => {
+                const lineNumber = String(index + 1).padStart(maxLineNumberLength, ' ');
+                return `<span class="line-number">${lineNumber}</span> ${sanitizeString(line)}`;
+            }).join('\n');
+        }
+
+        function showError(message, element = null) {
+            const target = element || document.getElementById('results');
+            target.innerHTML = '';
+            
+            const errorItem = document.createElement('div');
+            errorItem.className = 'result-item match';
+            
+            const errorTitle = document.createElement('div');
+            errorTitle.className = 'result-title';
+            
+            const errorBadge = document.createElement('span');
+            errorBadge.className = 'badge badge-danger';
+            errorBadge.textContent = 'ERROR';
+            errorTitle.appendChild(errorBadge);
+            
+            const errorText = document.createTextNode(` ${sanitizeString(message)}`);
+            errorTitle.appendChild(errorText);
+            
+            errorItem.appendChild(errorTitle);
+            target.appendChild(errorItem);
+        }
+    </script>
+</body>
+</html>
