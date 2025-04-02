@@ -5,6 +5,7 @@ local MYara = {
         SCAN_FLAGS_FAST_MODE = 1,
         CALLBACK_MSG_SCAN_FINISHED = 3
     },
+    reset_time = nil,
     yara = nil,
     saved_rules = {},
     Config = nil,
@@ -21,11 +22,12 @@ end
 function MYara:setup(config, logging)
     self.Logging = logging
     self.Config = config
+    self.reset_time = self.Config:get("yaragate.rules.destroy.server.tick_time")
     self.yara = Yara:new()
 end
 
 function MYara:load()
-    self.yara:load_rules()
+    self.yara:load_rules() -- compiler rules initial
 end
 
 function MYara:reload()
@@ -37,12 +39,13 @@ end
 
 function MYara:backup_save_rules()
     local stream <const> = self.Config:get("yaragate.rules.backup")
-    self.Logging:info(string.format("Saving backup yara rules in {%s}", stream))
+    self.Logging:info(string.format("Saving backup yara rules to {%s}", stream))
     self.yara:save_rules_file(stream)
 end
 
 function MYara:backup_recover_rules()
     local stream <const> = self.Config:get("yaragate.rules.backup")
+    self.Logging:info(string.format("Loading backup yara rules {%s}", stream))
     self.yara:load_rules_file(stream)
 end
 
@@ -61,6 +64,14 @@ function MYara:save_rule(rule, namespace)
         rule_file:write(rule)
         table.insert(self.saved_rules, { path = path, namespace = namespace })
     end
+end
+
+function MYara:reset_rules()
+    for index, value in ipairs(self.saved_rules) do
+        self.Logging:info(string.format("Reseting the rule {%s}", value.path))
+        os.remove(value.path)
+    end
+    self.saved_rules = {}
 end
 
 return MYara

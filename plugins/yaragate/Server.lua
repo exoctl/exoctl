@@ -22,4 +22,8 @@ function Server:create_route(route, methods, handler)
     end, methods)
 end
 
+function Server:create_tick(time, func)
+    _engine.server:tick(time, func)
+end
+
 return Server

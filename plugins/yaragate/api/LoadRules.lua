@@ -1,18 +1,18 @@
-local LoadRule = { Server = nil, MYara = nil }
+local LoadRules = { Server = nil, MYara = nil }
 
-function LoadRule:new()
+function LoadRules:new()
     local obj = { methods = {} }
     setmetatable(obj, self)
     self.__index = self
     return obj
 end
 
-function LoadRule:setup(server, myara)
+function LoadRules:setup(server, myara)
     self.Server = server
     self.MYara = myara
 end
 
-function LoadRule:load()
+function LoadRules:load()
     self.Server:create_route("/api/load/yara/rule", HTTPMethod.Post, function(req)
         local json = Json:new()
 
@@ -32,6 +32,7 @@ function LoadRule:load()
         -- Reload Yara with new rule
         self.MYara:backup_save_rules()
         self.MYara:reload()
+        
         local compiled_rule = true
 
         self.MYara.yara:load_rules(function()
@@ -59,4 +60,4 @@ function LoadRule:load()
     end)
 end
 
-return LoadRule
+return LoadRules
