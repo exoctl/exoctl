@@ -8,42 +8,67 @@ function EnableRules:new()
 end
 
 function EnableRules:setup(server, myara)
+    assert(type(server) == "table", "Invalid server instance")
+    assert(type(myara) == "table", "Invalid MYara instance")
+
     self.Server = server
     self.MYara = myara
 end
 
 function EnableRules:load()
     self.Server:create_route("/api/enable/yara/rule", HTTPMethod.Post, function(req)
-        local json = Json:new()
-        
-        json:from_string(req.body)
-        local rule = json:get("rule")
+        local success, response = pcall(function()
+            local json = Json:new()
 
-        if not rule then
-            local message = Json:new()
-            message:add("message", "Missing required fields: 'rule' are required.")
-            return Response.new(400, "application/json", message:to_string())
-        end
-        
-        local disabled = false
-        
-        self.MYara.yara:rules_foreach(function(rules)
-            if (rules.identifier == rule) then
-                disabled = true
-                self.MYara.yara:rule_enable(rules)
+            if not req.body or req.body == "" then
+                return self:create_error_response(400, "Invalid request body")
             end
+
+            local parse_success, err = pcall(function() json:from_string(req.body) end)
+            if not parse_success then
+                return self:create_error_response(400, "Invalid JSON format")
+            end
+
+            local rule = json:get("rule")
+            if not rule or type(rule) ~= "string" or rule == "" then
+                return self:create_error_response(400, "Missing or invalid field: 'rule' is required")
+            end
+
+            if not self.MYara or not self.MYara.is_life then
+                return self:create_error_response(500, "Yara engine is not initialized")
+            end
+
+            local rule_found = false
+
+            self.MYara.yara:rules_foreach(function(rules)
+                if rules and rules.identifier == rule then
+                    rule_found = true
+                    self.MYara.yara:rule_enable(rules)
+                end
+            end)
+
+            local message = Json:new()
+
+            if rule_found then
+                message:add("message", "Rule was enabled successfully")
+                return Response.new(200, "application/json", message:to_string())
+            end
+
+            return self:create_error_response(404, "Rule not found")
         end)
-        
-        local message = Json:new()
-        
-        if disabled then
-            message:add("message", "Rule was enabled")
-            return Response.new(200, "application/json", message:to_string())
+
+        if not success then
+            return self:create_error_response(500, "Internal Server Error")
         end
-        
-        message:add("message", "The rule was not found")
-        return Response.new(400, "application/json", message:to_string())
+
+        return response
     end)
+end
+
+function EnableRules:create_error_response(status, message)
+    local json = Json:new()
+    json:add("message", message)
+    return Response.new(status, "application/json", json:to_string())
 end
 
 return EnableRules

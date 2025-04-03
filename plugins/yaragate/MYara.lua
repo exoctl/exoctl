@@ -9,7 +9,8 @@ local MYara = {
     yara = nil,
     saved_rules = {},
     Config = nil,
-    Logging = nil
+    Logging = nil,
+    is_life = nil,
 }
 
 function MYara:new()
@@ -20,6 +21,7 @@ function MYara:new()
 end
 
 function MYara:setup(config, logging)
+    self.is_life = false
     self.Logging = logging
     self.Config = config
     self.reset_time = self.Config:get("yaragate.rules.destroy.server.tick_time")
@@ -27,10 +29,12 @@ function MYara:setup(config, logging)
 end
 
 function MYara:load()
-    self.yara:load_rules() -- compiler rules initial
+    self.yara:load_rules()
+    self.is_life = true
 end
 
 function MYara:reload()
+    self.is_life = false
     self.Logging:info("Reload yara ...")
     self.yara:unload_rules()
     self.yara:unload_compiler()
@@ -51,7 +55,7 @@ end
 
 function MYara:load_rules_saved()
     for index, value in ipairs(self.saved_rules) do
-        self.yara:set_rule_file(value.path, "", value.namespace)
+        self.yara:set_rule_file(value.path, nil, value.namespace)
     end
 end
 

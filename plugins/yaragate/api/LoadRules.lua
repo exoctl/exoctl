@@ -8,56 +8,74 @@ function LoadRules:new()
 end
 
 function LoadRules:setup(server, myara)
+    assert(type(server) == "table", "Invalid server instance")
+    assert(type(myara) == "table", "Invalid MYara instance")
+    
     self.Server = server
     self.MYara = myara
 end
 
 function LoadRules:load()
     self.Server:create_route("/api/load/yara/rule", HTTPMethod.Post, function(req)
-        local json = Json:new()
+        local success, response = pcall(function()
+            local json = Json:new()
+            
+            if not req.body or #req.body == 0 then
+                return self:create_error_response(400, "Empty request body")
+            end
+            
+            local parse_success = pcall(function() json:from_string(req.body) end)
+            if not parse_success then
+                return self:create_error_response(400, "Invalid JSON format")
+            end
 
-        json:from_string(req.body)
+            local rule = json:get("rule")
+            local namespace = json:get("namespace")
 
-        local rule = json:get("rule")
-        local namespace = json:get("namespace")
+            if type(rule) ~= "string" or type(namespace) ~= "string" or #rule == 0 or #namespace == 0 then
+                return self:create_error_response(400, "Invalid or missing 'rule' and 'namespace'")
+            end
 
-        if not rule or not namespace then
-            local message = Json:new()
+            self.MYara:backup_save_rules()
+            self.MYara:reload()
 
-            message:add("message", "Missing required fields: 'rule' and 'namespace' are required.")
-
-            return Response.new(400, "application/json", message:to_string())
-        end
-
-        -- Reload Yara with new rule
-        self.MYara:backup_save_rules()
-        self.MYara:reload()
-        
-        local compiled_rule = true
-
-        self.MYara.yara:load_rules(function()
-            if (self.MYara.yara:set_rule_buff(rule, namespace) ~= 0) then
+            local compiled_rule = true
+            
+            self.MYara:load_rules_saved()
+            if self.MYara.yara:set_rule_buff(rule, namespace) ~= 0 then
                 self.MYara:reload()
                 compiled_rule = false
             end
-            self.MYara:load_rules_saved()
-        end)
-        
-        local message = Json:new()
-        
-        if compiled_rule then
-            self.MYara:backup_save_rules() -- Backup rules
-            self.MYara:save_rule(rule, namespace)
             
-            message:add("message", "Rule compiled successfully")
-            return Response.new(200, "application/json", message:to_string())
+            self.MYara:load()
+
+            local message = Json:new()
+
+            if compiled_rule then
+                
+                self.MYara:save_rule(rule, namespace)
+                self.MYara:backup_save_rules()
+                
+                message:add("message", "Rule compiled successfully")
+                return Response.new(200, "application/json", message:to_string())
+            end
+
+            self.MYara:backup_recover_rules()
+            return self:create_error_response(400, "Rule compilation failed. Check syntax.")
+        end)
+
+        if not success then
+            return self:create_error_response(500, "Internal Server Error")
         end
 
-        self.MYara:backup_recover_rules()
-
-        message:add("message", "The rule was not compiled successfully, check for possible syntax errors")
-        return Response.new(400, "application/json", message:to_string())
+        return response
     end)
+end
+
+function LoadRules:create_error_response(status, message)
+    local json = Json:new()
+    json:add("message", message)
+    return Response.new(status, "application/json", json:to_string())
 end
 
 return LoadRules
