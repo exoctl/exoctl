@@ -13,10 +13,10 @@ function GetResetRules:setup(server, myara)
 end
 
 function GetResetRules:load()
+    local response = Json:new()
     self.Server:create_route("/api/get/reset/rules", HTTPMethod.Get, function(req)
-        local response = Json:new()
         response:add("reset_time", self.MYara.reset_time)
-        return Response.new(200, "application/json", response:to_string())
+        return Response:new(200, "application/json", response:to_string())
     end)
 end
 

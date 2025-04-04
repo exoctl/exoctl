@@ -61,7 +61,7 @@ endif()
 if(${FLAGS_OPTIMIZATIONS})
     message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS enabled")
     target_compile_options(infinity PRIVATE
-        -O2
+        -O1
         -fmodules-ts
         -ftree-vectorize
         -mavx
@@ -71,10 +71,6 @@ if(${FLAGS_OPTIMIZATIONS})
         -fmodules-ts
         -shared
         -DCROW_ENABLE_SSL
-        -fno-stack-protector
-        -march=native
-        -fdelete-null-pointer-checks
-        -fdelete-dead-exceptions
     )
 else()
     message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS flags disabled")

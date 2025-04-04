@@ -1,0 +1,1 @@
+rule aa  { condition : true }

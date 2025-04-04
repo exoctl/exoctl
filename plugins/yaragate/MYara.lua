@@ -51,6 +51,7 @@ function MYara:backup_recover_rules()
     local stream <const> = self.Config:get("yaragate.rules.backup")
     self.Logging:info(string.format("Loading backup yara rules {%s}", stream))
     self.yara:load_rules_file(stream)
+    self.is_life = true
 end
 
 function MYara:load_rules_saved()
@@ -76,6 +77,9 @@ function MYara:reset_rules()
         os.remove(value.path)
     end
     self.saved_rules = {}
+
+    self:reload()
+    self:load()
 end
 
 return MYara

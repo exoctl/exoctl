@@ -4,18 +4,18 @@
 
 local config <const> = Configuration:new()
 local logging <const> = Logging:new()
-local server <const> = require("plugins.yaragate.Server")
+local server <const> = require("plugins.yaragate.Server"):new()
 local api <const> = {
-    get_rules = require("plugins.yaragate.api.GetRules"),
-    scan = require("plugins.yaragate.api.Scan"),
-    disable_rules = require("plugins.yaragate.api.DisableRules"),
-    enable_rules = require("plugins.yaragate.api.EnableRules"),
-    load_rule = require("plugins.yaragate.api.LoadRules"),
-    get_reset_rules = require("plugins.yaragate.api.GetResetRules")
+    get_rules = require("plugins.yaragate.api.GetRules"):new(),
+    scan = require("plugins.yaragate.api.Scan"):new(),
+    disable_rules = require("plugins.yaragate.api.DisableRules"):new(),
+    enable_rules = require("plugins.yaragate.api.EnableRules"):new(),
+    load_rule = require("plugins.yaragate.api.LoadRules"):new(),
+    get_reset_rules = require("plugins.yaragate.api.GetResetRules"):new()
 }
 
-local yara <const> = require("plugins.yaragate.MYara")
-local ui <const> = require("plugins.yaragate.ui.Ui")
+local yara <const> = require("plugins.yaragate.MYara"):new()
+local ui <const> = require("plugins.yaragate.ui.Ui"):new()
 
 
 -- ========================
