@@ -16,9 +16,8 @@ function EnableRules:setup(server, myara)
 end
 
 function EnableRules:load()
+    local json = Json:new()
     self.Server:create_route("/api/enable/yara/rule", HTTPMethod.Post, function(req)
-        local json = Json:new()
-
         if not req.body or req.body == "" then
             return self:create_error_response(400, "Invalid request body")
         end

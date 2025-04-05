@@ -16,8 +16,8 @@ function LoadRules:setup(server, myara)
 end
 
 function LoadRules:load()
+    local json = Json:new()
     self.Server:create_route("/api/load/yara/rule", HTTPMethod.Post, function(req)
-        local json = Json:new()
 
         if not req.body or #req.body == 0 then
             return self:create_error_response(400, "Empty request body")

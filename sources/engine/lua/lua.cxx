@@ -25,13 +25,11 @@ namespace engine::lua
             return random_name;
         };
 
-        const std::string m_script_name = generate_random_name();
-
         if (!state.load(p_buff.c_str()).valid()) {
             return false;
         }
 
-        scripts.push_back({m_script_name, p_buff, record::script::SCRIPT_BUFF});
+        scripts.push_back({generate_random_name(), p_buff, record::script::SCRIPT_BUFF});
         return true;
     }
 
@@ -81,14 +79,16 @@ namespace engine::lua
 
     void Lua::run()
     {
+        environment = std::make_shared<sol::environment>(state, sol::create, state.globals());
+
         for (const auto &plugin : scripts) {
             TRY_BEGIN()
             if (plugin.type == record::script::SCRIPT_FILE) {
-                state.safe_script_file(plugin.path, sol::script_pass_on_error);
+                state.script_file(plugin.path, *environment);
             } else if (plugin.type == record::script::SCRIPT_BUFF) {
-                state.safe_script(plugin.path, sol::script_pass_on_error);
+                state.script(plugin.path, *environment);
             } else {
-                state.safe_script(plugin.path, sol::script_pass_on_error);
+                state.script(plugin.path, *environment);
             }
             TRY_END()
             CATCH(sol::error, { throw exception::Run(e.what()); })
