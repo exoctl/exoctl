@@ -4,9 +4,12 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
 #include <engine/server/gateway/web/web.hxx>
+#include <mutex>
 
 namespace engine::server::gateway::web::extend
 {
+    static std::mutex lua_mutex;
+    
     void Web::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<Web>(
@@ -14,7 +17,7 @@ namespace engine::server::gateway::web::extend
             "new",
             sol::factories([](Server &server,
                               const std::string &url,
-                              sol::function callback,
+                              const sol::protected_function callback,
                               sol::variadic_args methods) {
                 std::vector<crow::HTTPMethod> method_list;
                 method_list.reserve(methods.size());
@@ -26,6 +29,8 @@ namespace engine::server::gateway::web::extend
                     }
                 }
 
+                std::lock_guard<std::mutex> lock(lua_mutex);
+
                 auto instance = std::make_shared<gateway::Web>();
                 instance->setup(
                     server,
@@ -35,10 +40,11 @@ namespace engine::server::gateway::web::extend
                             return crow::response(500, "Invalid callback");
                         }
 
-                        sol::protected_function_result result = callback(req);
+                        sol::protected_function_result result =
+                            callback(req);
                         if (!result.valid()) {
-                            sol::error err = result;
-                            return crow::response(500, err.what());
+                            return crow::response(500,
+                                                  sol::error(result).what());
                         }
 
                         sol::object callback_response = result;

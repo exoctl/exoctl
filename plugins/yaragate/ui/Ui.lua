@@ -1,4 +1,4 @@
-local Ui = { Server = nil, Config = nil, Logging = nil }
+local Ui = { Server = nil, Config = nil, Logging = nil, }
 
 function Ui:new()
     local obj = { methods = {} }
@@ -15,13 +15,15 @@ end
 
 function Ui:load()
     if (self.Config:get("yaragate.activate.ui")) then
+        local file <close> = io.open("plugins/yaragate/ui/html/index.html", "r")
+        local buffer = nil
+        if (file) then
+            buffer = file:read("*all")
+        end
         self.Server:create_route("/ui", HTTPMethod.Get, function(req)
             if self.Config:get("yaragate.activate.ui") then
-                local file <close> = io.open("plugins/yaragate/ui/html/index.html", "r")
-                if (file) then
-                    local mustache = Mustache:new(file:read("*all"))
-                    return mustache:render()
-                end
+                local mustache = Mustache:new(buffer)
+                return mustache:render()
             end
         end)
     end

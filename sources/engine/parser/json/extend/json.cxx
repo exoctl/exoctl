@@ -10,6 +10,7 @@ namespace engine::parser::extend
     {
         plugins::Plugins::lua.state.new_usertype<parser::Json>(
             "Json",
+            "new",
             sol::constructors<Json(), Json(const parser::Json &)>(),
             "from_string",
             &parser::Json::from_string,

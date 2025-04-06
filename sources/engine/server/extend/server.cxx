@@ -50,6 +50,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::response>(
             "Response",
+            "new",
             sol::constructors<crow::response(int, std::string),
                               crow::response(std::string),
                               crow::response(std::string, std::string),
@@ -69,6 +70,8 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::request>(
             "Requests",
+            "new",
+            sol::no_constructor,
             "method",
             sol::readonly(&crow::request::method),
             "raw_url",
@@ -95,6 +98,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<server::Server>(
             "Server",
+            "new",
             sol::constructors<server::Server()>(),
             "setup",
             &server::Server::setup,
@@ -105,10 +109,22 @@ namespace engine::server::extend
             "stop",
             &server::Server::stop,
             "tick",
-            sol::overload([](server::Server &self,
+            sol::factories([](server::Server &self,
                              int32_t milliseconds,
-                             sol::function callback) {
-                self.tick(std::chrono::milliseconds(milliseconds), callback);
+                             const sol::protected_function callback) {
+                if (!callback.valid()) {
+                    throw plugins::exception::Runtime("Callback not valid");
+                }
+
+                static std::mutex lua_mutex;
+                std::lock_guard<std::mutex> lock(lua_mutex);
+
+                try {
+                    self.tick(std::chrono::milliseconds(milliseconds),
+                              callback);
+                } catch (const std::exception &e) {
+                    throw plugins::exception::Runtime(e.what());
+                }
             }),
             "port",
             sol::readonly(&server::Server::port),
@@ -128,6 +144,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::mustache::template_t>(
             "Mustache",
+            "new",
             sol::constructors<crow::mustache::template_t(std::string)>(),
             "render",
             sol::overload(

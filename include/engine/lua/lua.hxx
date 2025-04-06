@@ -18,7 +18,6 @@ extern "C" {
 #include <tuple>
 #include <type_traits>
 #include <vector>
-#include <memory>
 
 namespace engine
 {
@@ -30,14 +29,15 @@ namespace engine
             Lua() = default;
             ~Lua() = default;
             sol::state state;
-            std::shared_ptr<sol::environment> environment;
 
             [[nodiscard]] const sol::lib from_lib(const std::string &name);
             [[nodiscard]] const bool load_script_file(const std::string &,
-                                                      const std::string &);
-            [[nodiscard]] const bool load_script_buff(const std::string &);
-            void run();
+                                                      const std::string &,
+                                                      const sol::environment &);
 
+            [[nodiscard]] const bool load_script_buff(const std::string &,
+                                                      const sol::environment &);
+            void run();
             std::vector<record::script::Script> scripts;
 
           private:

@@ -20,6 +20,7 @@ namespace engine::logging::extend
     {
         p_lua.new_usertype<logging::Logging>(
             "Logging",
+            "new",
             sol::constructors<logging::Logging()>(),
             "load",
             &logging::Logging::load,

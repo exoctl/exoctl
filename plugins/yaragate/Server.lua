@@ -16,7 +16,7 @@ function Server:create_route(route, methods, handler)
     Web.new(_engine.server, self.Config:get("yaragate.gateway.prefix") .. route, function(req)
         self.Logging:info(("Request received: method={%s}, url={%s}, remote_ip={%s}, http_version={%d.%d}, keep_alive={%s}")
             :format(req.method, req.url, req.remote_ip_address, req.http_ver_major, req.http_ver_minor,
-                tostring(req.keep_alive))
+                req.keep_alive)
         )
         return handler(req)
     end, methods)

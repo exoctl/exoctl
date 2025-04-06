@@ -62,7 +62,7 @@ ui:load()
 local time <const> = config:get("yaragate.rules.destroy.server.tick_time")
 local destroy <const> = config:get("yaragate.rules.destroy.enabled")
 if (destroy) then
-    server:create_tick(60 * 1000, function()
+    server:create_tick(1000 * 60, function()
         logging:debug("Calling tick for reset " .. tostring(yara.reset_time))
         yara.reset_time = yara.reset_time - 1
         if (yara.reset_time == 0) then
