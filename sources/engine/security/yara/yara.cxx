@@ -109,13 +109,11 @@ namespace engine
 
         void Yara::rule_disable(YR_RULE &p_rule)
         {
-            std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
             yr_rule_disable(&p_rule);
         }
 
         void Yara::rule_enable(YR_RULE &p_rule)
         {
-            std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
             yr_rule_enable(&p_rule);
         }
 
