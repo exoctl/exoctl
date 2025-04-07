@@ -8,14 +8,14 @@
 
 namespace engine::server::gateway::web::extend
 {
-    static std::mutex lua_mutex;
-    
+    static std::mutex web_mutex;
+
     void Web::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<Web>(
             "Web",
             "new",
-            sol::factories([](Server &server,
+            sol::overload([](Server &server,
                               const std::string &url,
                               const sol::protected_function callback,
                               sol::variadic_args methods) {
@@ -29,25 +29,25 @@ namespace engine::server::gateway::web::extend
                     }
                 }
 
-                std::lock_guard<std::mutex> lock(lua_mutex);
-
                 auto instance = std::make_shared<gateway::Web>();
                 instance->setup(
                     server,
                     url,
                     [callback](const crow::request &req) -> crow::response {
+                        std::lock_guard<std::mutex> lock(web_mutex);
+
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
 
-                        sol::protected_function_result result =
-                            callback(req);
+                        sol::protected_function_result result = callback(req);
+
                         if (!result.valid()) {
                             return crow::response(500,
                                                   sol::error(result).what());
                         }
 
-                        sol::object callback_response = result;
+                        const sol::object callback_response = result;
                         if (callback_response.is<crow::response>()) {
                             return static_cast<crow::response &&>(
                                 callback_response.as<crow::response>());

@@ -5,6 +5,8 @@
 
 namespace engine::server::extend
 {
+    static std::mutex tick_mutex;
+
     void Server::bind_http_methods(sol::state_view &p_lua)
     {
         p_lua.new_enum<crow::HTTPMethod>(
@@ -109,22 +111,18 @@ namespace engine::server::extend
             "stop",
             &server::Server::stop,
             "tick",
-            sol::factories([](server::Server &self,
-                             int32_t milliseconds,
-                             const sol::protected_function callback) {
+            sol::overload([](server::Server &server,
+                              int32_t milliseconds,
+                              const sol::protected_function callback) {
                 if (!callback.valid()) {
                     throw plugins::exception::Runtime("Callback not valid");
                 }
 
-                static std::mutex lua_mutex;
-                std::lock_guard<std::mutex> lock(lua_mutex);
-
-                try {
-                    self.tick(std::chrono::milliseconds(milliseconds),
-                              callback);
-                } catch (const std::exception &e) {
-                    throw plugins::exception::Runtime(e.what());
-                }
+                server.tick(std::chrono::milliseconds(milliseconds),
+                            [callback]() {
+                                std::lock_guard<std::mutex> lock(tick_mutex);
+                                callback();
+                            });
             }),
             "port",
             sol::readonly(&server::Server::port),

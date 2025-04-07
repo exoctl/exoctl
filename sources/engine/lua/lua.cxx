@@ -87,11 +87,14 @@ namespace engine::lua
         for (const auto &plugin : scripts) {
             TRY_BEGIN()
             if (plugin.type == record::script::SCRIPT_FILE) {
-                state.safe_script_file(plugin.path, plugin.env);
+                state.safe_script_file(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             } else if (plugin.type == record::script::SCRIPT_BUFF) {
-                state.safe_script(plugin.path, plugin.env);
+                state.safe_script(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             } else {
-                state.safe_script(plugin.path, plugin.env);
+                state.safe_script(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             }
             TRY_END()
             CATCH(sol::error, { throw exception::Run(e.what()); })
