@@ -112,8 +112,8 @@ namespace engine::server::extend
             &server::Server::stop,
             "tick",
             sol::overload([](server::Server &server,
-                              int32_t milliseconds,
-                              const sol::protected_function callback) {
+                             int32_t milliseconds,
+                             const sol::protected_function callback) {
                 if (!callback.valid()) {
                     throw plugins::exception::Runtime("Callback not valid");
                 }
