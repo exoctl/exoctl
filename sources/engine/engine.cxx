@@ -72,7 +72,7 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-        plugins::Plugins::lua.state["_engine"] = this;
+       plugins::Plugins::lua.state["_engine"] = this;
 
         Engine::bind_to_lua(plugins::Plugins::lua.state);
 

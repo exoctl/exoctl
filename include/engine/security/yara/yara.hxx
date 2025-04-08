@@ -5,6 +5,7 @@
 #include <engine/security/yara/extend/yara.hxx>
 #include <filesystem>
 #include <functional>
+#include <shared_mutex>
 #include <stack>
 #include <string>
 #include <yara.h>
@@ -80,9 +81,19 @@ namespace engine
                                                   const std::string &,
                                                   const std::string &) const;
 
-            mutable uint64_t rules_loaded_count;
+            mutable std::atomic<int> rules_loaded_count;
 
           private:
+            mutable std::mutex m_compiler_mutex;
+            mutable std::shared_mutex m_rules_mutex;
+
+            template <typename Callback>
+            void execute_safely(Callback &&cb) const
+            {
+                std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+                cb();
+            }
+
             YR_COMPILER *m_yara_compiler;
             mutable YR_RULES *m_yara_rules;
             void compiler_rules() const;

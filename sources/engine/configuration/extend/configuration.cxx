@@ -1,7 +1,7 @@
+#include <engine/configuration/configuration.hxx>
 #include <engine/configuration/extend/configuration.hxx>
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/configuration/configuration.hxx>
 #include <fmt/core.h>
 
 namespace engine::configuration::extend
@@ -10,6 +10,7 @@ namespace engine::configuration::extend
     {
         p_lua.new_usertype<configuration::Configuration>(
             "Configuration",
+            "new",
             sol::constructors<configuration::Configuration()>(),
             "load",
             &configuration::Configuration::load,

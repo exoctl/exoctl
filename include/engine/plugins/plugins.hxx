@@ -22,6 +22,7 @@ namespace engine
             void load_plugin_buff(const std::string &);
             void load_plugin_file(const std::filesystem::path &);
             void load_plugins_folder(const std::string &);
+            static const int plugins_panic(lua_State *);
 
             void load();
             std::future<void> run_async();
@@ -29,8 +30,8 @@ namespace engine
             static lua::Lua lua;
 
           private:
-            configuration::Configuration m_config;
-            logging::Logging m_log;
+            static configuration::Configuration m_config;
+            static logging::Logging m_log;
 
             void run_plugins_thread();
             void load_libraries();

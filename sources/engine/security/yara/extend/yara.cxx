@@ -11,6 +11,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_MODULE_IMPORT>(
             "Import",
+            "new",
             sol::constructors<YR_MODULE_IMPORT()>(),
             "module_name",
             sol::readonly(&YR_MODULE_IMPORT::module_name));
@@ -20,6 +21,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_STRING>(
             "String",
+            "new",
             sol::constructors<YR_STRING()>(),
             "flags",
             sol::readonly(&YR_STRING::flags),
@@ -44,6 +46,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_NAMESPACE>(
             "Namespace",
+            "new",
             sol::constructors<YR_NAMESPACE()>(),
             "name",
             sol::readonly(&YR_NAMESPACE::name),
@@ -55,6 +58,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_META>(
             "Meta",
+            "new",
             sol::constructors<YR_META()>(),
             "flags",
             sol::readonly(&YR_META::flags),
@@ -72,6 +76,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_RULE>(
             "Rule",
+            "new",
             sol::constructors<YR_RULE()>(),
             "flags",
             sol::readonly(&YR_RULE::flags),
@@ -95,6 +100,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<YR_STREAM>(
             "Stream",
+            "new",
             sol::constructors<YR_STREAM()>(),
             "read",
             [](YR_STREAM &stream, sol::function func) {
@@ -176,6 +182,7 @@ namespace engine::security::yara::extend
     {
         plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
             "Yara",
+            "new",
             sol::constructors<engine::security::Yara()>(),
             "rule_disable",
             &engine::security::Yara::rule_disable,

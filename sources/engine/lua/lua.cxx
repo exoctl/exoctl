@@ -11,7 +11,8 @@
 
 namespace engine::lua
 {
-    const bool Lua::load_script_buff(const std::string &p_buff)
+    const bool Lua::load_script_buff(const std::string &p_buff,
+                                     const sol::environment &p_env)
     {
         auto generate_random_name = []() {
             std::random_device rd;
@@ -25,13 +26,14 @@ namespace engine::lua
             return random_name;
         };
 
-        const std::string m_script_name = generate_random_name();
-
         if (!state.load(p_buff.c_str()).valid()) {
             return false;
         }
 
-        scripts.push_back({m_script_name, p_buff, record::script::SCRIPT_BUFF});
+        scripts.push_back({generate_random_name(),
+                           p_buff,
+                           record::script::SCRIPT_BUFF,
+                           p_env});
         return true;
     }
 
@@ -67,7 +69,8 @@ namespace engine::lua
     }
 
     const bool Lua::load_script_file(const std::string &p_script_name,
-                                     const std::string &p_script_path)
+                                     const std::string &p_script_path,
+                                     const sol::environment &p_env)
     {
 
         if (!state.load_file(p_script_path.c_str()).valid()) {
@@ -75,7 +78,7 @@ namespace engine::lua
         }
 
         scripts.push_back(
-            {p_script_path, p_script_name, record::script::SCRIPT_FILE});
+            {p_script_path, p_script_name, record::script::SCRIPT_FILE, p_env});
         return true;
     }
 
@@ -84,11 +87,14 @@ namespace engine::lua
         for (const auto &plugin : scripts) {
             TRY_BEGIN()
             if (plugin.type == record::script::SCRIPT_FILE) {
-                state.safe_script_file(plugin.path, sol::script_pass_on_error);
+                state.safe_script_file(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             } else if (plugin.type == record::script::SCRIPT_BUFF) {
-                state.safe_script(plugin.path, sol::script_pass_on_error);
+                state.safe_script(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             } else {
-                state.safe_script(plugin.path, sol::script_pass_on_error);
+                state.safe_script(
+                    plugin.path, plugin.env, sol::script_pass_on_error);
             }
             TRY_END()
             CATCH(sol::error, { throw exception::Run(e.what()); })

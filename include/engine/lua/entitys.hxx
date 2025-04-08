@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <sol/sol.hpp>
 
 namespace engine::lua::record::script
 {
@@ -14,5 +15,6 @@ namespace engine::lua::record::script
         std::string path;
         std::string name;
         Type type;
+        sol::environment env;
     };
 } // namespace engine::lua::record::script
