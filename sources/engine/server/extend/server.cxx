@@ -5,6 +5,8 @@
 
 namespace engine::server::extend
 {
+    static std::mutex tick_mutex;
+
     void Server::bind_http_methods(sol::state_view &p_lua)
     {
         p_lua.new_enum<crow::HTTPMethod>(
@@ -50,6 +52,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::response>(
             "Response",
+            "new",
             sol::constructors<crow::response(int, std::string),
                               crow::response(std::string),
                               crow::response(std::string, std::string),
@@ -69,6 +72,8 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::request>(
             "Requests",
+            "new",
+            sol::no_constructor,
             "method",
             sol::readonly(&crow::request::method),
             "raw_url",
@@ -95,6 +100,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<server::Server>(
             "Server",
+            "new",
             sol::constructors<server::Server()>(),
             "setup",
             &server::Server::setup,
@@ -105,10 +111,18 @@ namespace engine::server::extend
             "stop",
             &server::Server::stop,
             "tick",
-            sol::overload([](server::Server &self,
+            sol::overload([](server::Server &server,
                              int32_t milliseconds,
-                             sol::function callback) {
-                self.tick(std::chrono::milliseconds(milliseconds), callback);
+                             const sol::protected_function callback) {
+                if (!callback.valid()) {
+                    throw plugins::exception::Runtime("Callback not valid");
+                }
+
+                server.tick(std::chrono::milliseconds(milliseconds),
+                            [callback]() {
+                                std::lock_guard<std::mutex> lock(tick_mutex);
+                                callback();
+                            });
             }),
             "port",
             sol::readonly(&server::Server::port),
@@ -128,6 +142,7 @@ namespace engine::server::extend
     {
         p_lua.new_usertype<crow::mustache::template_t>(
             "Mustache",
+            "new",
             sol::constructors<crow::mustache::template_t(std::string)>(),
             "render",
             sol::overload(

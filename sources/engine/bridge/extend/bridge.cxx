@@ -22,7 +22,7 @@ namespace engine::bridge::extend
     {
         Bridge::bind_bridge(p_lua);
     }
-    
+
 #ifdef ENGINE_PRO
     void Bridge::_plugins()
     {

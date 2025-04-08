@@ -3,6 +3,7 @@
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <fmt/core.h>
+#include <functional>
 #include <future>
 #include <sys/types.h>
 
@@ -11,12 +12,17 @@ namespace engine
     namespace plugins
     {
         lua::Lua Plugins::lua;
+        configuration::Configuration Plugins::m_config;
+        logging::Logging Plugins::m_log;
 
         void Plugins::setup(configuration::Configuration &p_config,
                             logging::Logging &p_log)
         {
             m_config = p_config;
             m_log = p_log;
+
+            lua.state.set_panic(
+                reinterpret_cast<lua_CFunction>(&Plugins::plugins_panic));
 
             if (!m_config.get("plugins.enable").value<bool>().value())
                 m_log.warn("Plugins not enabled");
@@ -54,8 +60,15 @@ namespace engine
         void Plugins::load_plugin_file(const std::filesystem::path &p_path)
         {
             if (p_path.extension() == ".lua") {
-                m_log.info("Loading plugin lua '{}'", p_path.c_str());
-                if (!lua.load_script_file(p_path.filename(), p_path)) {
+
+                m_log.info(
+                    "Loading and creating environment for the plugin '{}'",
+                    p_path.c_str());
+
+                const sol::environment env(
+                    lua.state, sol::create, lua.state.globals());
+
+                if (!lua.load_script_file(p_path.filename(), p_path, env)) {
                     m_log.error("Falied to load plugin '{}'", p_path.c_str());
                 }
             }
@@ -79,6 +92,32 @@ namespace engine
             m_log.info("Launching plugins async...");
             return std::async(
                 std::launch::async, &Plugins::run_plugins_thread, this);
+        }
+
+        const int Plugins::plugins_panic(lua_State *state)
+        {
+            m_log.error(
+                "Lua is in a panic state and will now abort() the application");
+
+            if (state != nullptr) {
+                const char *error_msg = lua_tostring(state, -1);
+                m_log.error("Error message: '{}'",
+                            error_msg ? error_msg : "Unknown error");
+
+                lua_Debug ar;
+                int level = 0;
+                while (lua_getstack(state, level, &ar)) {
+                    lua_getinfo(state, "Sln", &ar);
+                    m_log.error("#{} -> {}:{} ({})",
+                                level,
+                                ar.short_src,
+                                ar.currentline,
+                                ar.name ? ar.name : "unknown");
+                    level++;
+                }
+            }
+
+            return 0;
         }
 
         void Plugins::run_plugins_thread()

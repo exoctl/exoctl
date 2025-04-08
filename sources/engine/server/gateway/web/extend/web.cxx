@@ -4,17 +4,20 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
 #include <engine/server/gateway/web/web.hxx>
+#include <mutex>
 
 namespace engine::server::gateway::web::extend
 {
+    static std::mutex web_mutex;
+
     void Web::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<Web>(
             "Web",
             "new",
-            sol::factories([](Server &server,
+            sol::overload([](Server &server,
                               const std::string &url,
-                              sol::function callback,
+                              const sol::protected_function callback,
                               sol::variadic_args methods) {
                 std::vector<crow::HTTPMethod> method_list;
                 method_list.reserve(methods.size());
@@ -31,23 +34,28 @@ namespace engine::server::gateway::web::extend
                     server,
                     url,
                     [callback](const crow::request &req) -> crow::response {
+                        std::lock_guard<std::mutex> lock(web_mutex);
+
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
 
                         sol::protected_function_result result = callback(req);
+
                         if (!result.valid()) {
-                            sol::error err = result;
-                            return crow::response(500, err.what());
+                            return crow::response(500,
+                                                  sol::error(result).what());
                         }
 
-                        sol::object callback_response = result;
+                        const sol::object callback_response = result;
                         if (callback_response.is<crow::response>()) {
-                            return std::move(
+                            return static_cast<crow::response &&>(
                                 callback_response.as<crow::response>());
-                        } else if (callback_response.is<crow::mustache::rendered_template>()) {
-                            return std::move(
-                                callback_response.as<crow::mustache::rendered_template>());
+                        } else if (callback_response.is<
+                                       crow::mustache::rendered_template>()) {
+                            return static_cast<crow::response &&>(
+                                callback_response
+                                    .as<crow::mustache::rendered_template>());
                         }
 
                         return crow::response(200);

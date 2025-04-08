@@ -24,7 +24,7 @@ namespace engine
                 ~Map() = default;
 
                 void add_route(const std::string &,
-                               const std::function<void()> &);
+                               const std::function<void()> &&);
                 void get_routes(const std::function<void(const std::string)> &);
                 void call_route(const std::string &);
                 [[nodiscard]] const std::string get_base() const;

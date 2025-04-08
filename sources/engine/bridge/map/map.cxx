@@ -11,7 +11,7 @@ namespace engine
             }
 
             void Map::add_route(const std::string &p_route,
-                                const std::function<void()> &p_handle)
+                                const std::function<void()> &&p_handle)
             {
                 const std::string full_route = m_base + p_route;
                 m_routes[full_route] = p_handle;
