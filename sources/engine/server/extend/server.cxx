@@ -2,12 +2,13 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/extend/server.hxx>
 #include <engine/server/server.hxx>
+#include <thread>
 
 namespace engine::server::extend
 {
     static std::mutex tick_mutex;
 
-    void Server::bind_http_methods(sol::state_view &p_lua)
+    void Server::bind_http_methods(engine::lua::StateView &p_lua)
     {
         p_lua.new_enum<crow::HTTPMethod>(
             "HTTPMethod",
@@ -48,7 +49,7 @@ namespace engine::server::extend
              {"InternalMethodCount", crow::HTTPMethod::InternalMethodCount}});
     }
 
-    void Server::bind_response(sol::state_view &p_lua)
+    void Server::bind_response(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<crow::response>(
             "Response",
@@ -68,7 +69,7 @@ namespace engine::server::extend
             &crow::response::redirect);
     }
 
-    void Server::bind_requests(sol::state_view &p_lua)
+    void Server::bind_requests(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<crow::request>(
             "Requests",
@@ -96,7 +97,7 @@ namespace engine::server::extend
             sol::readonly(&crow::request::upgrade));
     }
 
-    void Server::bind_server(sol::state_view &p_lua)
+    void Server::bind_server(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<server::Server>(
             "Server",
@@ -105,7 +106,11 @@ namespace engine::server::extend
             "setup",
             &server::Server::setup,
             "run_async",
-            &server::Server::run_async,
+            [](server::Server &self) {
+                std::jthread([&self]() {
+                    self.run_async();
+                }).detach();
+            },
             "load",
             &server::Server::load,
             "stop",
@@ -138,7 +143,7 @@ namespace engine::server::extend
             sol::readonly(&server::Server::keyfile));
     }
 
-    void Server::bind_mustache(sol::state_view &p_lua)
+    void Server::bind_mustache(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<crow::mustache::template_t>(
             "Mustache",
@@ -162,7 +167,7 @@ namespace engine::server::extend
                 }));
     }
 
-    void Server::bind_wvalue(sol::state_view &lua)
+    void Server::bind_wvalue(engine::lua::StateView &lua)
     {
         lua.new_usertype<crow::json::wvalue>(
             "Wvalue",
@@ -201,7 +206,7 @@ namespace engine::server::extend
                               -> crow::json::wvalue & { return self[index]; }));
     }
 
-    void Server::bind_rendered(sol::state_view &p_lua)
+    void Server::bind_rendered(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<crow::mustache::rendered_template>(
             "Rendered",
@@ -227,7 +232,7 @@ namespace engine::server::extend
     }
 #endif
 
-    void Server::bind_to_lua(sol::state_view &p_lua)
+    void Server::bind_to_lua(engine::lua::StateView &p_lua)
     {
         Server::bind_server(p_lua);
     }

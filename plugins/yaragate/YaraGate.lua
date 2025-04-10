@@ -11,7 +11,8 @@ local api <const> = {
     disable_rules = require("plugins.yaragate.api.DisableRules"):new(),
     enable_rules = require("plugins.yaragate.api.EnableRules"):new(),
     load_rule = require("plugins.yaragate.api.LoadRules"):new(),
-    get_reset_rules = require("plugins.yaragate.api.GetResetRules"):new()
+    get_reset_rules = require("plugins.yaragate.api.GetResetRules"):new(),
+    get_compiled_rules = require("plugins.yaragate.api.GetCompiledRules"):new()
 }
 
 local yara <const> = require("plugins.yaragate.MYara"):new()
@@ -41,6 +42,9 @@ api.get_rules:load()
 api.enable_rules:setup(server, yara)
 api.enable_rules:load()
 
+api.get_compiled_rules:setup(server, yara)
+api.get_compiled_rules:load()
+
 api.get_reset_rules:setup(server, yara)
 api.get_reset_rules:load()
 
@@ -58,15 +62,11 @@ api.load_rule:load()
 ui:setup(config, logging, server)
 ui:load()
 
-server:create_tick(100, function()
-    logging:debug("Calling tick ..")
-end)
-
 -- tick
 local time <const> = config:get("yaragate.rules.destroy.server.tick_time")
 local destroy <const> = config:get("yaragate.rules.destroy.enabled")
 if (destroy) then
-    server:create_tick(100, function()
+    server:create_tick(60 * 1000, function()
         logging:debug("Calling tick for reset " .. tostring(yara.reset_time))
         yara.reset_time = yara.reset_time - 1
         if (yara.reset_time == 0) then

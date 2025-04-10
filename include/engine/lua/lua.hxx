@@ -23,6 +23,9 @@ namespace engine
 {
     namespace lua
     {
+        using StateView = sol::state_view;
+        using Env = sol::environment;
+
         class Lua
         {
           public:
@@ -33,10 +36,10 @@ namespace engine
             [[nodiscard]] const sol::lib from_lib(const std::string &name);
             [[nodiscard]] const bool load_script_file(const std::string &,
                                                       const std::string &,
-                                                      const sol::environment &);
+                                                      const Env &);
 
             [[nodiscard]] const bool load_script_buff(const std::string &,
-                                                      const sol::environment &);
+                                                      const Env &);
             void run();
             std::vector<record::script::Script> scripts;
 

@@ -6,7 +6,7 @@
 
 namespace engine::configuration::extend
 {
-    void Configuration::bind_configuration(sol::state_view &p_lua)
+    void Configuration::bind_configuration(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<configuration::Configuration>(
             "Configuration",
@@ -118,7 +118,7 @@ namespace engine::configuration::extend
             }));
     }
 
-    void Configuration::bind_to_lua(sol::state_view &p_lua)
+    void Configuration::bind_to_lua(engine::lua::StateView &p_lua)
     {
         Configuration::bind_configuration(p_lua);
     }

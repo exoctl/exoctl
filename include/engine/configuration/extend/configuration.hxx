@@ -12,13 +12,13 @@ namespace engine::configuration::extend
 #endif
     {
       public:
-        void bind_to_lua(sol::state_view &) override;
+        void bind_to_lua(engine::lua::StateView &) override;
 
 #ifdef ENGINE_PRO
         void _plugins() override;
 #endif
 
       private:
-        void bind_configuration(sol::state_view &);
+        void bind_configuration(engine::lua::StateView &);
     };
 } // namespace engine::configuration::extend

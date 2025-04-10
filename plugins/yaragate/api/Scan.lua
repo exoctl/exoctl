@@ -17,40 +17,29 @@ end
 
 function Scan:load()
     self.Server:create_route("/api/scan", HTTPMethod.Post, function(req)
-        if not req.body or req.body == "" then
-            self.Server.Logging:warn("Scan request received with an empty body")
-            return self:create_error_response(400, "Invalid request: empty body")
-        end
-
+        
         local rules_match = Json:new()
+        
+        self.MYara.yara:scan_bytes(req.body, function(message, rules)
+            if message == self.MYara.flags.CALLBACK_MSG_RULE_MATCHING then
+                local rule = Json:new()
+                rule:add("identifier", rules.identifier)
+                rule:add("namespace", rules.ns.name)
+                rule:add("num_atoms", rules.num_atoms)
 
-        local scan_success, scan_err = pcall(function()
-            self.MYara.yara:scan_bytes(req.body, function(message, rules)
-                if message == self.MYara.flags.CALLBACK_MSG_RULE_MATCHING then
-                    local rule = Json:new()
-                    rule:add("identifier", rules.identifier)
-                    rule:add("namespace", rules.ns.name)
-                    rule:add("num_atoms", rules.num_atoms)
-
-                    if _engine.version and _engine.version.code >= _engine.version:version(1, 1, 0) then
-                        rules_match:add(rule)
-                    else
-                        rules_match:add(rule.identifier, rule)
-                    end
-
-                    return self.MYara.flags.CALLBACK_CONTINUE
-                elseif message == self.MYara.flags.CALLBACK_MSG_SCAN_FINISHED then
-                    self.Server.Logging:info(("Scan completed successfully for IP {%s}"):format(req.remote_ip_address))
+                if _engine.version and _engine.version.code >= _engine.version:version(1, 1, 0) then
+                    rules_match:add(rule)
+                else
+                    rules_match:add(rule.identifier, rule)
                 end
 
                 return self.MYara.flags.CALLBACK_CONTINUE
-            end, self.MYara.flags.SCAN_FLAGS_FAST_MODE)
-        end)
+            elseif message == self.MYara.flags.CALLBACK_MSG_SCAN_FINISHED then
+                self.Server.Logging:info(("Scan completed successfully for IP {%s}"):format(req.remote_ip_address))
+            end
 
-        if not scan_success then
-            self.Server.Logging:error("Error during YARA scan: " .. tostring(scan_err))
-            return self:create_error_response(500, "Internal scan error")
-        end
+            return self.MYara.flags.CALLBACK_CONTINUE
+        end, self.MYara.flags.SCAN_FLAGS_FAST_MODE)
 
         local json_response = Json:new()
         local sha256_hash = _data.metadata.sha:gen_sha256_hash(req.body)

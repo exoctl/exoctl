@@ -15,9 +15,9 @@ namespace engine::bridge::extend
 #ifdef ENGINE_PRO
         void _plugins() override;
 #endif
-        void bind_to_lua(sol::state_view &) override;
+        void bind_to_lua(engine::lua::StateView &) override;
 
       private:
-        void bind_bridge(sol::state_view &);
+        void bind_bridge(engine::lua::StateView &);
     };
 } // namespace engine::bridge::extend

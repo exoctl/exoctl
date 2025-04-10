@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <sol/sol.hpp>
+#include <string>
 
 namespace engine::lua::record::script
 {

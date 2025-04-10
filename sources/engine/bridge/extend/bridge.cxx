@@ -4,7 +4,7 @@
 
 namespace engine::bridge::extend
 {
-    void Bridge::bind_bridge(sol::state_view &p_lua)
+    void Bridge::bind_bridge(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<bridge::Bridge>(
             "Bridge",
@@ -18,7 +18,7 @@ namespace engine::bridge::extend
         plugins::Plugins::lua.state["_analysis"] = bridge::Bridge::analysis;
     }
 
-    void Bridge::bind_to_lua(sol::state_view &p_lua)
+    void Bridge::bind_to_lua(engine::lua::StateView &p_lua)
     {
         Bridge::bind_bridge(p_lua);
     }
