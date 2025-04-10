@@ -6,6 +6,7 @@ build*
 *.log
 __pycache__
 .doxyfile*
+rules/*.*
 documentation/doxygen/*
 tests/*.sqlite3
 tests/inspector
@@ -80,3 +81,4 @@ CMakeLists.txt.user*
 # --------
 *.dll
 *.exe
+*.yar

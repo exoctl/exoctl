@@ -139,7 +139,7 @@ namespace engine
 #ifdef ENGINE_PRO
         m_plugins.run_async();
 #endif
-        auto runner = m_server.run_async();
+        m_server.run_async(); /* do not move the output to a variable */
 
         is_running = false;
     }

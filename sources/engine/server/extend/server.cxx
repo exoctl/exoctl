@@ -108,7 +108,7 @@ namespace engine::server::extend
             "run_async",
             [](server::Server &self) {
                 std::jthread([&self]() {
-                    self.run_async();
+                    auto runner = self.run_async();
                 }).detach();
             },
             "load",
