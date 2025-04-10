@@ -33,7 +33,7 @@ namespace engine::memory
             this);
     }
 
-    void Memory::bind_to_lua(sol::state_view &p_lua)
+    void Memory::bind_to_lua(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<record::Segment>(
             "Segment",

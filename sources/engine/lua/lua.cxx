@@ -12,7 +12,7 @@
 namespace engine::lua
 {
     const bool Lua::load_script_buff(const std::string &p_buff,
-                                     const sol::environment &p_env)
+                                     const Env &p_env)
     {
         auto generate_random_name = []() {
             std::random_device rd;
@@ -70,7 +70,7 @@ namespace engine::lua
 
     const bool Lua::load_script_file(const std::string &p_script_name,
                                      const std::string &p_script_path,
-                                     const sol::environment &p_env)
+                                     const Env &p_env)
     {
 
         if (!state.load_file(p_script_path.c_str()).valid()) {

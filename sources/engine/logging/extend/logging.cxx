@@ -4,7 +4,7 @@
 
 namespace engine::logging::extend
 {
-    void Logging::bind_to_lua(sol::state_view &p_lua)
+    void Logging::bind_to_lua(engine::lua::StateView &p_lua)
     {
         Logging::bind_logging(p_lua);
     }
@@ -16,7 +16,7 @@ namespace engine::logging::extend
     }
 #endif
 
-    void Logging::bind_logging(sol::state_view &p_lua)
+    void Logging::bind_logging(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<logging::Logging>(
             "Logging",

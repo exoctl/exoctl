@@ -10,7 +10,7 @@ namespace engine
         {
           public:
             virtual ~IBind() = default;
-            virtual void bind_to_lua(sol::state_view &) = 0;
+            virtual void bind_to_lua(engine::lua::StateView &) = 0;
         };
     } // namespace interface
 } // namespace engine
