@@ -52,7 +52,7 @@ namespace engine
 #ifdef ENGINE_PRO
         void register_plugins() override;
 #endif
-        void bind_to_lua(sol::state_view &) override;
+        void bind_to_lua(engine::lua::StateView &) override;
         void register_emergency(const int,
                                 std::function<void(int, siginfo_t *, void *)>);
         void setup(configuration::Configuration &,

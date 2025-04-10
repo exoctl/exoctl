@@ -36,7 +36,7 @@ namespace engine
         m_server.setup(m_configuration, m_logging);
     }
 
-    void Engine::bind_to_lua(sol::state_view &p_lua)
+    void Engine::bind_to_lua(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<engine::Engine>(
             "Engine",
@@ -72,7 +72,7 @@ namespace engine
 #ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
-       plugins::Plugins::lua.state["_engine"] = this;
+        plugins::Plugins::lua.state["_engine"] = this;
 
         Engine::bind_to_lua(plugins::Plugins::lua.state);
 
@@ -139,7 +139,7 @@ namespace engine
 #ifdef ENGINE_PRO
         m_plugins.run_async();
 #endif
-        m_server.run_async();
+        m_server.run_async(); /* do not move the output to a variable */
 
         is_running = false;
     }

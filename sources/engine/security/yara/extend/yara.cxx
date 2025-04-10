@@ -104,22 +104,30 @@ namespace engine::security::yara::extend
             sol::constructors<YR_STREAM()>(),
             "read",
             [](YR_STREAM &stream, sol::function func) {
-                stream.user_data = static_cast<void *>(&func);
+                auto func_ptr =
+                    std::make_shared<sol::function>(std::move(func));
+
+                stream.user_data = static_cast<void *>(
+                    new std::shared_ptr<sol::function>(func_ptr));
+
                 stream.read = [](void *ptr,
                                  size_t size,
                                  size_t count,
                                  void *user_data) -> size_t {
-                    auto *lua_read_func =
-                        static_cast<sol::function *>(user_data);
-
-                    if (!lua_read_func) {
-                        throw plugins::exception::Runtime("Callback not valid");
+                    if (!user_data) {
+                        throw plugins::exception::Runtime(
+                            "Callback not valid (null user_data)");
                     }
+
+                    auto *func_shared_ptr =
+                        static_cast<std::shared_ptr<sol::function> *>(
+                            user_data);
+                    sol::function &lua_read_func = **func_shared_ptr;
 
                     const size_t total_size = size * count;
 
                     sol::protected_function_result result =
-                        (*lua_read_func)(total_size);
+                        lua_read_func(total_size);
                     if (!result.valid()) {
                         sol::error err = result;
                         throw plugins::exception::Runtime(
@@ -136,25 +144,32 @@ namespace engine::security::yara::extend
             },
             "write",
             [](YR_STREAM &stream, sol::function func) {
-                stream.user_data = static_cast<void *>(&func);
+                auto func_ptr =
+                    std::make_shared<sol::function>(std::move(func));
+
+                stream.user_data = static_cast<void *>(
+                    new std::shared_ptr<sol::function>(func_ptr));
+
                 stream.write = [](const void *ptr,
                                   size_t size,
                                   size_t count,
                                   void *user_data) -> size_t {
-                    auto *lua_write_func =
-                        static_cast<sol::function *>(user_data);
-
-                    if (!lua_write_func) {
-                        throw plugins::exception::Runtime("Callback not valid");
+                    if (!user_data) {
+                        throw plugins::exception::Runtime(
+                            "Callback not valid (null user_data)");
                     }
 
-                    const size_t total_size = size * count;
+                    auto *func_shared_ptr =
+                        static_cast<std::shared_ptr<sol::function> *>(
+                            user_data);
+                    sol::function &lua_write_func = **func_shared_ptr;
 
+                    const size_t total_size = size * count;
                     std::string data(static_cast<const char *>(ptr),
                                      total_size);
 
                     sol::protected_function_result result =
-                        (*lua_write_func)(data);
+                        lua_write_func(data);
                     if (!result.valid()) {
                         sol::error err = result;
                         throw plugins::exception::Runtime(

@@ -20,7 +20,7 @@ namespace engine::memory
         Memory();
         ~Memory() = default;
 
-        void bind_to_lua(sol::state_view &) override;
+        void bind_to_lua(engine::lua::StateView &) override;
         std::vector<record::Segment> segments;
         void update();
         static const void protect(void *, const size_t, const unsigned int);

@@ -12,13 +12,13 @@ namespace engine::logging::extend
 #endif
     {
       public:
-        void bind_to_lua(sol::state_view &) override;
+        void bind_to_lua(engine::lua::StateView &) override;
 
 #ifdef ENGINE_PRO
         void _plugins() override;
 #endif
 
       private:
-        void bind_logging(sol::state_view &);
+        void bind_logging(engine::lua::StateView &);
     };
 } // namespace engine::logging::extend
