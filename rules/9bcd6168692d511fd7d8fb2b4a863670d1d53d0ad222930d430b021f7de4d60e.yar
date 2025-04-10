@@ -1,1 +1,0 @@
-rule malware { condition : true }
