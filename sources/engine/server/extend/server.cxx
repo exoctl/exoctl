@@ -171,6 +171,7 @@ namespace engine::server::extend
     {
         lua.new_usertype<crow::json::wvalue>(
             "Wvalue",
+            "new",
             sol::constructors<crow::json::wvalue(),
                               crow::json::wvalue(std::nullptr_t),
                               crow::json::wvalue(bool),
@@ -198,7 +199,6 @@ namespace engine::server::extend
                           [](crow::json::wvalue &self,
                              const std::string &key,
                              std::nullptr_t) { self[key] = nullptr; }),
-
             sol::meta_function::index,
             sol::overload([](crow::json::wvalue &self, const std::string &key)
                               -> crow::json::wvalue & { return self[key]; },
