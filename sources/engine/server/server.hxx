@@ -10,8 +10,8 @@
 #include <engine/logging/logging.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/extend/server.hxx>
-#include <memory>
 #include <engine/server/middlewares/cors/cors.hxx>
+#include <memory>
 
 namespace engine
 {
@@ -36,7 +36,7 @@ namespace engine
             logging::Logging *log;
 
             void setup(configuration::Configuration &, logging::Logging &);
-            
+
             App &get();
             unsigned short concurrency;
             std::string bindaddr;
@@ -45,7 +45,7 @@ namespace engine
             unsigned short port;
             std::string certfile;
             std::string keyfile;
-            
+
             std::future<void> run_async();
             void tick(std::chrono::milliseconds, std::function<void()>);
             void load();

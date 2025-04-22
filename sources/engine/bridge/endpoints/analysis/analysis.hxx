@@ -2,9 +2,9 @@
 
 #include <engine/bridge/focades/analysis/scan/av/clamav/clamav.hxx>
 #include <engine/bridge/focades/analysis/scan/yara/yara.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 #include <engine/server/server.hxx>
 #include <memory>

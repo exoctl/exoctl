@@ -16,9 +16,9 @@ namespace engine::server::gateway::web::extend
             "Web",
             "new",
             sol::overload([](Server &server,
-                              const std::string &url,
-                              const sol::protected_function callback,
-                              sol::variadic_args methods) {
+                             const std::string &url,
+                             const sol::protected_function callback,
+                             sol::variadic_args methods) {
                 std::vector<crow::HTTPMethod> method_list;
                 method_list.reserve(methods.size());
 

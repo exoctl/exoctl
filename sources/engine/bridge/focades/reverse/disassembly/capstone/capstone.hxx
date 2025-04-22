@@ -11,7 +11,7 @@ namespace engine::bridge::focades::reverse::disassembly::capstone
       public:
         Capstone() = default;
         ~Capstone() = default;
-        
+
         void setup(const cs_arch, const cs_mode);
         void disassembly(const std::string &,
                          const std::function<void(capstone::record::DTO *)> &);

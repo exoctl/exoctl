@@ -16,11 +16,12 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
     void Clamav::load_rules(const std::function<void(unsigned int)> &p_callback)
     {
         m_clamav.load_rules([&]() {
-            m_clamav.set_db_rule_fd(
-                m_config->get("bridge.focade.analysis.av.clamav.database.default_path")
-                    .value<std::string>()
-                    .value(),
-                CL_DB_STDOPT);
+            m_clamav.set_db_rule_fd(m_config
+                                        ->get("bridge.focade.analysis.av."
+                                              "clamav.database.default_path")
+                                        .value<std::string>()
+                                        .value(),
+                                    CL_DB_STDOPT);
         });
 
         if (!IS_NULL(p_callback)) {

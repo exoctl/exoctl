@@ -1,5 +1,5 @@
-#include <engine/logging/logging.hxx>
 #include <engine/logging/extend/logging.hxx>
+#include <engine/logging/logging.hxx>
 #include <engine/plugins/plugins.hxx>
 
 namespace engine::logging::extend

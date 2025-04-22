@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine/bridge/focades/data/metadata/metadata.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>

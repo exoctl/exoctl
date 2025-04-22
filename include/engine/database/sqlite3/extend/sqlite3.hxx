@@ -15,6 +15,6 @@ namespace engine::database::sqlite3::extend
       private:
         void bind_sqlite3();
     };
-} // namespace engine::database::sqlite3
+} // namespace engine::database::sqlite3::extend
 
 // #endif

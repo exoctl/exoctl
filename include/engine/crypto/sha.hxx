@@ -1,9 +1,9 @@
 #pragma once
 
+#include <engine/crypto/extend/sha.hxx>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <string>
-#include <engine/crypto/extend/sha.hxx>
 
 namespace engine
 {
@@ -16,7 +16,7 @@ namespace engine
           public:
             Sha();
             ~Sha();
-            #ifdef ENGINE_PRO
+#ifdef ENGINE_PRO
             friend class extend::Sha;
 #endif
             [[nodiscard]] const std::string gen_sha256_hash(

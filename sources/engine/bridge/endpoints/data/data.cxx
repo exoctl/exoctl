@@ -11,11 +11,12 @@ namespace engine::bridge::endpoints
     void Data::setup(server::Server &p_server)
     {
         m_server = &p_server;
-        
-        if (p_server.config->get("bridge.endpoint.data.enable")
-                .value<bool>()
-                .value()) {
 
+        if (!p_server.config->get("bridge.endpoint.data.enable")
+                 .value<bool>()
+                 .value()) {
+            m_server->log->warn("Gateway data not enabled");
+        } else {
             // add new routes
             Data::data_metadata();
         }

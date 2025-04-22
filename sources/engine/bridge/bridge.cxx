@@ -32,7 +32,7 @@ namespace engine
 
         void Bridge::load()
         {
-            m_server->log->info("Loading Gateways ... ");
+            m_server->log->info("Loading Defaults Gateways ...");
 
             TRY_BEGIN()
 

@@ -7,8 +7,7 @@ namespace engine::database::sqlite3
                         const int p_flags,
                         const char *p_zvfs)
     {
-        if (sqlite3_open_v2(
-                p_path.c_str(), &m_database, p_flags, p_zvfs)) {
+        if (sqlite3_open_v2(p_path.c_str(), &m_database, p_flags, p_zvfs)) {
             throw exception::Initialize(sqlite3_errmsg(m_database));
         }
     }

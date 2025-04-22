@@ -18,10 +18,12 @@ namespace engine::bridge::endpoints
     {
         m_server = &p_server;
 
-        if (p_server.config->get("bridge.endpoint.analysis.enable")
-                .value<bool>()
-                .value()) {
+        if (!p_server.config->get("bridge.endpoint.analysis.enable")
+                 .value<bool>()
+                 .value()) {
+            m_server->log->warn("Gateway analysis not enabled");
 
+        } else {
             m_scan_yara->setup(*m_server->config);
             m_scan_av_clamav->setup(*m_server->config);
 

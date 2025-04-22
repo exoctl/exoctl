@@ -28,6 +28,6 @@ namespace engine::server::extend
         void bind_server(engine::lua::StateView &);
         void bind_mustache(engine::lua::StateView &);
         void bind_rendered(engine::lua::StateView &);
-        void bind_wvalue(sol::state_view&);
+        void bind_wvalue(sol::state_view &);
     };
 } // namespace engine::server::extend

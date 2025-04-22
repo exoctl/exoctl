@@ -14,6 +14,6 @@ namespace engine::crypto::extend
       private:
         void bind_sha();
     };
-} // namespace engine::crypto::plugin
+} // namespace engine::crypto::extend
 
 #endif

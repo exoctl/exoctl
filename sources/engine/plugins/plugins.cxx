@@ -65,7 +65,8 @@ namespace engine
                     "Loading and creating environment for the plugin '{}'",
                     p_path.c_str());
 
-                const engine::lua::Env env(lua.state, sol::create, lua.state.globals());
+                const engine::lua::Env env(
+                    lua.state, sol::create, lua.state.globals());
 
                 if (!lua.load_script_file(p_path.filename(), p_path, env)) {
                     m_log.error("Falied to load plugin '{}'", p_path.c_str());
