@@ -18,6 +18,17 @@ tests/inspector
 *.moc
 *.o
 *.obj
+app/logs
+app/.vscode
+app/compiled-*
+app/AppDir/*.lua
+app/AppDir/*.so*
+app/AppDir/.DirIcon
+app/*.tar.gz
+app/*.so
+app/plugins/*
+app/packages/infinity-engine_amd64/opt/infinity-engine/**/*
+app/*.deb
 *.orig
 *.rej
 *.so

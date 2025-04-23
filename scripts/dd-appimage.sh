@@ -1,0 +1,1 @@
+dd if=/dev/zero of=$1 bs=1 seek=8 count=3 conv=notrunc
