@@ -1,5 +1,3 @@
-# Infinity Engine - Malware Analysis Engine
-
 <p align="center"><img src="assets/banner.png" width=600 alt="Infinity Engine Banner"></p>
 
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
