@@ -1,1 +1,1 @@
-ARCH=x86_64 appimage --no-appstream app/AppDir app
+ARCH=x86_64 appimage --no-appstream app/AppDir app/App
