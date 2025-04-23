@@ -22,14 +22,15 @@ namespace engine::bridge::endpoints
                  .value<bool>()
                  .value()) {
             m_server->log->warn("Gateway parser not enabled");
-        } else {
-            // add new routes
-            Parser::parser_elf();
-            Parser::parser_macho();
-            Parser::parser_pe();
-            Parser::parser_dex();
-            Parser::parser_art();
+            return;
         }
+        
+        // add new routes
+        Parser::parser_elf();
+        Parser::parser_macho();
+        Parser::parser_pe();
+        Parser::parser_dex();
+        Parser::parser_art();
     }
 
     void Parser::load() const

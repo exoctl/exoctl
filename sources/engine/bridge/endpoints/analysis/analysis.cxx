@@ -22,16 +22,16 @@ namespace engine::bridge::endpoints
                  .value<bool>()
                  .value()) {
             m_server->log->warn("Gateway analysis not enabled");
-
-        } else {
-            m_scan_yara->setup(*m_server->config);
-            m_scan_av_clamav->setup(*m_server->config);
-
-            // add new routes
-            Analysis::scan();
-            Analysis::scan_yara();
-            Analysis::scan_av_clamav();
+            return;
         }
+        
+        m_scan_yara->setup(*m_server->config);
+        m_scan_av_clamav->setup(*m_server->config);
+
+        // add new routes
+        Analysis::scan();
+        Analysis::scan_yara();
+        Analysis::scan_av_clamav();
     }
 
 #ifdef ENGINE_PRO

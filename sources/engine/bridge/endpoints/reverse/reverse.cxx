@@ -26,20 +26,20 @@ namespace engine::bridge::endpoints
                  .value<bool>()
                  .value()) {
             m_server->log->warn("Gateway reverse not enabled");
-        } else {
-            m_capstone_x64_little->setup(
-                CS_ARCH_X86,
-                static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
-
-            m_capstone_arm64_little->setup(CS_ARCH_ARM64,
-                                           CS_MODE_LITTLE_ENDIAN);
-
-            m_capstone_arm64_big->setup(CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
-
-            Reverse::capstone_x64_little();
-            Reverse::capstone_arm64_little();
-            Reverse::capstone_arm64_big();
+            return;
         }
+
+        m_capstone_x64_little->setup(
+            CS_ARCH_X86,
+            static_cast<cs_mode>(CS_MODE_64 | CS_MODE_LITTLE_ENDIAN));
+
+        m_capstone_arm64_little->setup(CS_ARCH_ARM64, CS_MODE_LITTLE_ENDIAN);
+
+        m_capstone_arm64_big->setup(CS_ARCH_ARM64, CS_MODE_BIG_ENDIAN);
+
+        Reverse::capstone_x64_little();
+        Reverse::capstone_arm64_little();
+        Reverse::capstone_arm64_big();
     }
 
     void Reverse::load() const

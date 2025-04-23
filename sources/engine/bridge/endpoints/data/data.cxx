@@ -16,10 +16,11 @@ namespace engine::bridge::endpoints
                  .value<bool>()
                  .value()) {
             m_server->log->warn("Gateway data not enabled");
-        } else {
-            // add new routes
-            Data::data_metadata();
+            return;
         }
+
+        // add new routes
+        Data::data_metadata();
     }
 #ifdef ENGINE_PRO
     void Data::_plugins()
