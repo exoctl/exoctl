@@ -14,10 +14,8 @@
 namespace engine::bridge::endpoints
 {
     class Analysis : public interface::IEndpoint
-#ifdef ENGINE_PRO
         ,
                      public interface::ISubPlugins<Analysis>
-#endif
     {
       public:
         Analysis();
@@ -26,9 +24,7 @@ namespace engine::bridge::endpoints
         void setup(server::Server &);
         void load() const override;
 
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
 
       private:
         server::Server *m_server;

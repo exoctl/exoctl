@@ -34,7 +34,6 @@ namespace engine::bridge::endpoints
         Analysis::scan_av_clamav();
     }
 
-#ifdef ENGINE_PRO
     void Analysis::_plugins()
     {
         focades::analysis::scan::yara::Yara::plugins();
@@ -42,7 +41,6 @@ namespace engine::bridge::endpoints
         plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
             "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
     }
-#endif
 
     void Analysis::scan()
     {

@@ -22,14 +22,13 @@ namespace engine::bridge::endpoints
         // add new routes
         Data::data_metadata();
     }
-#ifdef ENGINE_PRO
     void Data::_plugins()
     {
         focades::data::metadata::Metadata::plugins();
         plugins::Plugins::lua.state.new_usertype<endpoints::Data>(
             "Data", "metadata", &endpoints::Data::m_data_metadata);
     }
-#endif
+
 
     void Data::data_metadata()
     {

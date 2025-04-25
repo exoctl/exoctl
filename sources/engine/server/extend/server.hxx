@@ -7,19 +7,17 @@
 namespace engine::server::extend
 {
     class Server : public interface::IBind
-#ifdef ENGINE_PRO
+
         ,
                    public interface::ISubPlugins<Server>
-#endif
+
     {
       public:
         Server() = default;
         ~Server() = default;
         void bind_to_lua(engine::lua::StateView &) override;
 
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
 
       private:
         void bind_http_methods(engine::lua::StateView &);

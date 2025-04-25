@@ -11,9 +11,7 @@
 namespace engine::server::gateway
 {
     class WebSocket
-#ifdef ENGINE_PRO
     // : public interface::ISubPlugins<WebSocket>
-#endif
     {
       public:
         using on_error_callback =

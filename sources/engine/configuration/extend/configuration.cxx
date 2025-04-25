@@ -123,11 +123,8 @@ namespace engine::configuration::extend
         Configuration::bind_configuration(p_lua);
     }
 
-#ifdef ENGINE_PRO
     void Configuration::_plugins()
     {
         Configuration::bind_configuration(plugins::Plugins::lua.state);
     }
-#endif
-
 } // namespace engine::configuration::extend

@@ -217,7 +217,6 @@ namespace engine::server::extend
             &crow::mustache::rendered_template::dump);
     }
 
-#ifdef ENGINE_PRO
     void Server::_plugins()
     {
         Server::bind_http_methods(plugins::Plugins::lua.state);
@@ -230,7 +229,6 @@ namespace engine::server::extend
 
         gateway::web::extend::Web::plugins();
     }
-#endif
 
     void Server::bind_to_lua(engine::lua::StateView &p_lua)
     {

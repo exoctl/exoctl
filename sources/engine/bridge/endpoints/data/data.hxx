@@ -13,18 +13,15 @@
 namespace engine::bridge::endpoints
 {
     class Data : public interface::IEndpoint
-#ifdef ENGINE_PRO
         ,
                  public interface::ISubPlugins<Data>
-#endif
+
     {
       public:
         Data();
         void setup(server::Server &);
         ~Data() = default;
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
         void load() const override;
 
       private:

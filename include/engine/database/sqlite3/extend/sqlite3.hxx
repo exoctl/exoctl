@@ -1,5 +1,3 @@
-// #ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -16,5 +14,3 @@ namespace engine::database::sqlite3::extend
         void bind_sqlite3();
     };
 } // namespace engine::database::sqlite3::extend
-
-// #endif

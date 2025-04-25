@@ -11,17 +11,13 @@
 namespace engine::bridge::focades::data::metadata
 {
     class Metadata
-#ifdef ENGINE_PRO
         : public interface::ISubPlugins<Metadata>
-#endif
     {
       public:
         Metadata() = default;
         ~Metadata() = default;
 
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
 
         void parse(const std::string &,
                    const std::function<void(metadata::record::DTO *)> &);

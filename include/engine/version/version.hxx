@@ -16,9 +16,8 @@ namespace engine
         class Version
         {
           public:
-#ifdef ENGINE_PRO
             friend class version::extend::Version;
-#endif
+
             Version() = default;
             ~Version() = default;
 

@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/bridge/map/map.hxx>
@@ -30,5 +28,3 @@ namespace engine::bridge::endpoints
         void plugins();
     };
 } // namespace engine::bridge::endpoints
-
-#endif

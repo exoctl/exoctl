@@ -9,12 +9,10 @@ namespace engine::logging::extend
         Logging::bind_logging(p_lua);
     }
 
-#ifdef ENGINE_PRO
     void Logging::_plugins()
     {
         Logging::bind_logging(plugins::Plugins::lua.state);
     }
-#endif
 
     void Logging::bind_logging(engine::lua::StateView &p_lua)
     {

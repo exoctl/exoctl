@@ -18,19 +18,13 @@
 
 namespace engine
 {
-    class Engine : public interface::IBind
-#ifdef ENGINE_PRO
-        ,
-                   public interface::IPlugins
-#endif
+    class Engine : public interface::IBind, public interface::IPlugins
     {
       private:
         configuration::Configuration m_configuration;
         logging::Logging m_logging;
         version::Version m_version;
-#ifdef ENGINE_PRO
         plugins::Plugins m_plugins;
-#endif
 
         server::Server m_server;
 
@@ -46,12 +40,10 @@ namespace engine
       public:
         bool is_running;
 
-        ~Engine() = default;
+        ~Engine();
         Engine();
 
-#ifdef ENGINE_PRO
         void register_plugins() override;
-#endif
         void bind_to_lua(engine::lua::StateView &) override;
         void register_emergency(const int,
                                 std::function<void(int, siginfo_t *, void *)>);

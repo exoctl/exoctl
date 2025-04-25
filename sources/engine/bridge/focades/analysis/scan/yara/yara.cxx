@@ -15,13 +15,11 @@ namespace engine::bridge::focades::analysis::scan::yara
         m_config = &p_config;
     }
 
-#ifdef ENGINE_PRO
     void Yara::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<yara::Yara>(
             "YaraAnalysis", "yara", &Yara::m_yara);
     }
-#endif
 
     void Yara::load_rules(const std::function<void(uint64_t)> &p_callback) const
     {

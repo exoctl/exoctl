@@ -18,9 +18,7 @@ namespace engine
             Llama() = default;
             ~Llama();
 
-#ifdef ENGINE_PRO
             friend class extend::Llama;
-#endif
             const bool load_model_file(const char *p_path, ...) override;
             const bool load_context(const struct llama_context_params);
             void load_sampler(const struct llama_sampler_chain_params);

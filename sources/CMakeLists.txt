@@ -1,6 +1,5 @@
 # Configuration flags
 set(FLAGS_OPTIMIZATIONS ON)
-set(ENGINE_PRO ON)
 set(LIB_VERSION 1.1.0)
 set(LIB_SOVERSION 1)
 
@@ -51,13 +50,7 @@ target_link_libraries(infinity PRIVATE
     crypto
 )
 
-# Add ENGINE_PRO flag if enabled
-if(${ENGINE_PRO})
-    message(STATUS "[infinity] -- Building with ENGINE_PRO enabled")
-    target_compile_definitions(infinity PRIVATE -DENGINE_PRO)
-endif()
-
-# Compiler flags for optimizations, debugging, and Infinity Pro
+# Compiler flags for optimizations, debugging, and Infinity
 if(${FLAGS_OPTIMIZATIONS})
     message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS enabled")
     target_compile_options(infinity PRIVATE

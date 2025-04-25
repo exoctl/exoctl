@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
@@ -66,5 +64,3 @@ namespace engine::server::gateway::web::extend
             }));
     }
 } // namespace engine::server::gateway::web::extend
-
-#endif
