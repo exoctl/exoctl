@@ -89,6 +89,15 @@ print(json:to_string())
 > [!NOTE]  
 > For complete examples, visit our [documentation/examples](https://maldecs-organization.gitbook.io/maldeclabs-docs/developer-guide/plugins-lua/examples)
 
+## Associated Projects
+
+You can interact with your engine through the **infinity-cli** and explore various plugins developed by **maldeclabs** and the community via the **infinity-plugins** repository.
+
+- **[infinity-cli](https://github.com/maldeclabs/infinity-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
+- **[infinity-plugins](https://github.com/maldeclabs/infinity-plugins)**: A collection of plugins created by **maldeclabs** and the open-source community, extending the functionality of the engine with new features and integrations.
+
+Feel free to check out these repositories for more information and contributions.
+
 ## Setting Up / Building
 
 To develop the project and perform the build, the following steps are necessary:
