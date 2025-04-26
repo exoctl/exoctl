@@ -1,5 +1,14 @@
 #pragma once
 
+#if defined(__arm__) || defined(__aarch64__) || defined(_M_ARM) ||             \
+    defined(_M_ARM64)
+
+#pragma message(                                                               \
+    "WARNING: This code LLAMA is designed for x86_64 and may not work properly on ARM")
+
+#else
+
+
 #include <engine/interfaces/iai.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/llama/extend/llama.hxx>
@@ -36,3 +45,5 @@ namespace engine
         };
     } // namespace llama
 } // namespace engine
+
+#endif

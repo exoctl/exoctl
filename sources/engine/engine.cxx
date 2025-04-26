@@ -110,7 +110,7 @@ namespace engine
     void Engine::load_emergency()
     {
         for (const auto &entry : m_map_emergencys) {
-            int sig = entry.first;
+            const int sig = entry.first;
             m_emergency.receive_signal(
                 sig, [this, sig](int signal, siginfo_t *info, void *context) {
                     if (m_map_emergencys.contains(sig)) {

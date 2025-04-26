@@ -80,7 +80,7 @@ end, HTTPMethod.Post)
 
 ```lua
 local json = Json:new()
-json:add("engine", "MalDec")
+json:add("engine", "maldeclabs")
 print(json:to_string())
 ```
 
@@ -100,5 +100,4 @@ Feel free to check out these repositories for more information and contributions
 
 ## Setting Up / Building
 
-To develop the project and perform the build, the following steps are necessary:
-
+To develop the project and perform the build, the following steps are necessary verify [documentation/build]()

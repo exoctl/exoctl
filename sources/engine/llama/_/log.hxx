@@ -1,5 +1,8 @@
 #pragma once
 
+#if !defined(__arm__) || !defined(__aarch64__) || !defined(_M_ARM) ||          \
+    !defined(_M_ARM64)
+
 #include <engine/configuration/configuration.hxx>
 #include <engine/llama/llama.hxx>
 #include <engine/logging/logging.hxx>
@@ -26,3 +29,5 @@ namespace engine
         } // namespace _
     } // namespace llama
 } // namespace engine
+
+#endif
