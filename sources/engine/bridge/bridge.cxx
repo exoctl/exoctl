@@ -5,9 +5,7 @@ namespace engine
 {
     namespace bridge
     {
-#ifdef ENGINE_PRO
         std::shared_ptr<bridge::endpoints::Plugins> Bridge::plugins;
-#endif
         std::shared_ptr<bridge::endpoints::Parser> Bridge::parser(
             std::make_shared<bridge::endpoints::Parser>());
         std::shared_ptr<bridge::endpoints::Reverse> Bridge::reverse(
@@ -25,14 +23,12 @@ namespace engine
             analysis->setup(*m_server);
             data->setup(*m_server);
             parser->setup(*m_server);
-#ifdef ENGINE_PRO
             plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);
-#endif
         }
 
         void Bridge::load()
         {
-            m_server->log->info("Loading Gateways ... ");
+            m_server->log->info("Loading Defaults Gateways ...");
 
             TRY_BEGIN()
 
@@ -40,9 +36,7 @@ namespace engine
             parser->load();
             reverse->load();
             analysis->load();
-#ifdef ENGINE_PRO
             plugins->load();
-#endif
 
             TRY_END()
             CATCH(std::bad_alloc, {

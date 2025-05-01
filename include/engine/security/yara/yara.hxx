@@ -21,9 +21,9 @@ namespace engine
           public:
             Yara();
             ~Yara();
-#ifdef ENGINE_PRO
+
             friend class yara::extend::Yara;
-#endif
+
             /**
              * @brief this function realize fast scan using flag
              * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback

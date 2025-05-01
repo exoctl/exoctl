@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/magic/extend/magic.hxx>
 #include <engine/magic/magic.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -22,5 +20,3 @@ namespace engine::magic::extend
         Magic::bind_magic();
     }
 } // namespace engine::magic::extend
-
-#endif

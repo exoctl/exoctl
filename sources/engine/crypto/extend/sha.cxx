@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/crypto/extend/sha.hxx>
 #include <engine/crypto/sha.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -32,5 +30,3 @@ namespace engine::crypto::extend
         Sha::bind_sha();
     }
 } // namespace engine::crypto::extend
-
-#endif

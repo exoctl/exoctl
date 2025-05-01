@@ -18,21 +18,22 @@ namespace engine::bridge::endpoints
     {
         m_server = &p_server;
 
-        if (p_server.config->get("bridge.endpoint.analysis.enable")
-                .value<bool>()
-                .value()) {
-
-            m_scan_yara->setup(*m_server->config);
-            m_scan_av_clamav->setup(*m_server->config);
-
-            // add new routes
-            Analysis::scan();
-            Analysis::scan_yara();
-            Analysis::scan_av_clamav();
+        if (!p_server.config->get("bridge.endpoint.analysis.enable")
+                 .value<bool>()
+                 .value()) {
+            m_server->log->warn("Gateway analysis not enabled");
+            return;
         }
+        
+        m_scan_yara->setup(*m_server->config);
+        m_scan_av_clamav->setup(*m_server->config);
+
+        // add new routes
+        Analysis::scan();
+        Analysis::scan_yara();
+        Analysis::scan_av_clamav();
     }
 
-#ifdef ENGINE_PRO
     void Analysis::_plugins()
     {
         focades::analysis::scan::yara::Yara::plugins();
@@ -40,7 +41,6 @@ namespace engine::bridge::endpoints
         plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
             "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
     }
-#endif
 
     void Analysis::scan()
     {

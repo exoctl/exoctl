@@ -13,7 +13,7 @@ namespace engine
         {
             m_arch = p_arch;
             m_mode = p_mode;
-            
+
             if (cs_open(p_arch, p_mode, &m_handle) != CS_ERR_OK)
                 throw capstone::exception::Initialize(
                     "Failed to initialize Capstone");

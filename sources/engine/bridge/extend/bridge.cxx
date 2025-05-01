@@ -23,7 +23,6 @@ namespace engine::bridge::extend
         Bridge::bind_bridge(p_lua);
     }
 
-#ifdef ENGINE_PRO
     void Bridge::_plugins()
     {
         bridge::endpoints::Data::plugins();
@@ -31,5 +30,4 @@ namespace engine::bridge::extend
 
         Bridge::bind_bridge(plugins::Plugins::lua.state);
     }
-#endif
 } // namespace engine::bridge::extend

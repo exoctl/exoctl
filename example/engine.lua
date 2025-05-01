@@ -18,7 +18,7 @@ engine:register_emergency(11, function(sig, siginfo, context)
 end)
 
 -- setup and load all config
-config:setup("config/infinity.conf")
+config:setup("example/config/infinity.conf")
 config:load()
 
 logging:setup(config)

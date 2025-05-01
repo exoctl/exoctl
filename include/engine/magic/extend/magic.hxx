@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -15,5 +13,3 @@ namespace engine::magic::extend
         void bind_magic();
     };
 } // namespace engine::magic::extend
-
-#endif

@@ -1,0 +1,6 @@
+Package: infinity-engine
+Version: 1.1.0
+Architecture: amd64
+Maintainer: maldeclabs <contact@maldec.io>
+Description: A cutting-edge reverse engineering framework for analyzing file formats
+Depends: lua5.4

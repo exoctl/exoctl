@@ -18,6 +18,11 @@ namespace engine
     {
     }
 
+    Engine::~Engine()
+    {
+        is_running = false;
+    }
+
     void Engine::setup(configuration::Configuration &p_config,
                        logging::Logging &p_log,
                        server::Server &p_server)
@@ -26,9 +31,7 @@ namespace engine
         m_server = p_server;
         m_configuration = p_config;
 
-#ifdef ENGINE_PRO
         m_plugins.setup(m_configuration, m_logging);
-#endif
         m_clamav_log.setup(m_configuration, m_logging);
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
@@ -45,10 +48,8 @@ namespace engine
             sol::readonly(&Engine::is_running),
             "stop",
             &Engine::stop,
-#ifdef ENGINE_PRO
             "register_plugins",
             &Engine::register_plugins,
-#endif
             "setup",
             &Engine::setup,
             "load_emergency",
@@ -69,7 +70,6 @@ namespace engine
             &Engine::m_version);
     }
 
-#ifdef ENGINE_PRO
     void Engine::register_plugins()
     {
         plugins::Plugins::lua.state["_engine"] = this;
@@ -87,14 +87,11 @@ namespace engine
         engine::bridge::extend::Bridge::plugins();
         version::extend::Version::plugins();
     }
-#endif
 
     void Engine::load()
     {
         Engine::load_emergency();
-#ifdef ENGINE_PRO
         m_plugins.load();
-#endif
     }
 
     void Engine::stop()
@@ -113,7 +110,7 @@ namespace engine
     void Engine::load_emergency()
     {
         for (const auto &entry : m_map_emergencys) {
-            int sig = entry.first;
+            const int sig = entry.first;
             m_emergency.receive_signal(
                 sig, [this, sig](int signal, siginfo_t *info, void *context) {
                     if (m_map_emergencys.contains(sig)) {
@@ -136,9 +133,7 @@ namespace engine
             }).detach();
         }
 
-#ifdef ENGINE_PRO
         m_plugins.run_async();
-#endif
         m_server.run_async(); /* do not move the output to a variable */
 
         is_running = false;

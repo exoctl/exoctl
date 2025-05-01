@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/plugins/plugins.hxx>
 #include <engine/version/extend/version.hxx>
 #include <engine/version/version.hxx>
@@ -28,5 +26,3 @@ namespace engine::version::extend
             sol::var(ENGINE_PATCH));
     }
 } // namespace engine::version::extend
-
-#endif

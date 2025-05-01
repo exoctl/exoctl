@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/parser/json/extend/json.hxx>
 #include <engine/parser/json/json.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -103,5 +101,3 @@ namespace engine::parser::extend
         Json::bind_json();
     }
 } // namespace engine::parser::extend
-
-#endif

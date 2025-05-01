@@ -1,0 +1,11 @@
+[Unit]
+Description=Infinity Engine
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/infinity-engine/App
+Environment="INFINITYDIR=/opt/infinity-engine/"
+
+[Install]
+WantedBy=multi-user.target

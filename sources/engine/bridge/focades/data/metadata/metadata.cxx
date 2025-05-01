@@ -6,7 +6,6 @@
 
 namespace engine::bridge::focades::data::metadata
 {
-#ifdef ENGINE_PRO
     void Metadata::_plugins()
     {
         plugins::Plugins::lua.state
@@ -17,7 +16,7 @@ namespace engine::bridge::focades::data::metadata
                 "magic",
                 &Metadata::m_magic);
     }
-#endif
+
     void Metadata::parse(
         const std::string &p_buffer,
         const std::function<void(metadata::record::DTO *)> &p_callback)

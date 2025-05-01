@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -15,5 +13,3 @@ namespace engine::parser::extend
         void bind_json();
     };
 } // namespace engine::parser::extend
-
-#endif

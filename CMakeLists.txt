@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.2)
 
 # Project information
 project(Engine 
-    VERSION 1.0.0 
+    VERSION 1.2.0 
     LANGUAGES CXX
 )
 
@@ -19,7 +19,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries")
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 set(CMAKE_THREAD_LIBS_INIT "-lpthread")
 set(CMAKE_HAVE_THREADS_LIBRARY 1)
-set(CMAKE_USE_PTHREADS_INIT 1)
+set(CMAKE_USE_PTHREADS_INIT 2)
 
 # Feature toggles
 option(BUILD_TESTS "Build test suite" OFF)

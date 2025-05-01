@@ -7,9 +7,7 @@
 #include <engine/bridge/endpoints/data/data.hxx>
 #include <engine/bridge/entitys.hxx>
 
-#ifdef ENGINE_PRO
 #include <engine/bridge/endpoints/plugins/plugins.hxx>
-#endif
 
 #include <engine/bridge/extend/bridge.hxx>
 
@@ -29,15 +27,11 @@ namespace engine
           public:
             Bridge() = default;
             ~Bridge() = default;
-#ifdef ENGINE_PRO
             friend class extend::Bridge;
-#endif
             void load();
             void setup(server::Server &);
 
-#ifdef ENGINE_PRO
             static std::shared_ptr<bridge::endpoints::Plugins> plugins;
-#endif
             static std::shared_ptr<bridge::endpoints::Parser> parser;
             static std::shared_ptr<bridge::endpoints::Reverse> reverse;
             static std::shared_ptr<bridge::endpoints::Data> data;

@@ -11,23 +11,24 @@ namespace engine::bridge::endpoints
     void Data::setup(server::Server &p_server)
     {
         m_server = &p_server;
-        
-        if (p_server.config->get("bridge.endpoint.data.enable")
-                .value<bool>()
-                .value()) {
 
-            // add new routes
-            Data::data_metadata();
+        if (!p_server.config->get("bridge.endpoint.data.enable")
+                 .value<bool>()
+                 .value()) {
+            m_server->log->warn("Gateway data not enabled");
+            return;
         }
+
+        // add new routes
+        Data::data_metadata();
     }
-#ifdef ENGINE_PRO
     void Data::_plugins()
     {
         focades::data::metadata::Metadata::plugins();
         plugins::Plugins::lua.state.new_usertype<endpoints::Data>(
             "Data", "metadata", &endpoints::Data::m_data_metadata);
     }
-#endif
+
 
     void Data::data_metadata()
     {

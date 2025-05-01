@@ -18,9 +18,8 @@ namespace engine::server::gateway
       public:
         using on_request_callback =
             std::function<crow::response(const crow::request &)>;
-#ifdef ENGINE_PRO
         friend class web::extend::Web;
-#endif
+
         Web() = default;
         ~Web() = default;
 
