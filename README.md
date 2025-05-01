@@ -3,7 +3,7 @@
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
 
 <p align="center">
-  <a href="https://maldec.io/infinity-engine">
+  <a href="https://maldec.io">
     <img src="https://img.shields.io/badge/Website-Live-green?style=for-the-badge&logo=google-chrome" alt="Official Website">
   </a>
   <a href="https://maldecs-organization.gitbook.io/maldeclabs-docs">

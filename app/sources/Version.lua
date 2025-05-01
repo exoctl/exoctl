@@ -1,5 +1,5 @@
 local Version = {
-    major = 1, minor = 1, patch = 0
+    major = 1, minor = 2, patch = 0
 }
 
 Version.__index = Version
