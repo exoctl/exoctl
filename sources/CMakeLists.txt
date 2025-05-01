@@ -43,7 +43,6 @@ target_link_libraries(infinity PRIVATE
     capstone
     ssl
     stdc++
-    signatures
     magic
     sol2
     pthread

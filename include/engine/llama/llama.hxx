@@ -1,14 +1,5 @@
 #pragma once
 
-#if defined(__arm__) || defined(__aarch64__) || defined(_M_ARM) ||             \
-    defined(_M_ARM64)
-
-#pragma message(                                                               \
-    "WARNING: This code LLAMA is designed for x86_64 and may not work properly on ARM")
-
-#else
-
-
 #include <engine/interfaces/iai.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/llama/extend/llama.hxx>
@@ -28,6 +19,7 @@ namespace engine
             ~Llama();
 
             friend class extend::Llama;
+
             const bool load_model_file(const char *p_path, ...) override;
             const bool load_context(const struct llama_context_params);
             void load_sampler(const struct llama_sampler_chain_params);
@@ -35,8 +27,8 @@ namespace engine
             // const std::string prompt(const std::string &,
             //                          float = 0.8f,
             //                          float = 0.0f);
-            const struct llama_model_params load_model_default_params();
-            const struct llama_context_params load_context_default_params();
+            static const struct llama_model_params load_model_default_params();
+            static const struct llama_context_params load_context_default_params();
 
           private:
             llama_context *m_context;
@@ -45,5 +37,3 @@ namespace engine
         };
     } // namespace llama
 } // namespace engine
-
-#endif

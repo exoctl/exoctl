@@ -1,7 +1,3 @@
-#if !defined(__arm__) || !defined(__aarch64__) || !defined(_M_ARM) ||          \
-    !defined(_M_ARM64)
-
-
 #include <engine/llama/extend/llama.hxx>
 #include <engine/llama/llama.hxx>
 #include <engine/plugins/plugins.hxx>
@@ -155,5 +151,3 @@ namespace engine::llama::extend
     }
 
 } // namespace engine::llama::extend
-
-#endif

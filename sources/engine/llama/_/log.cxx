@@ -1,6 +1,3 @@
-#if !defined(__arm__) || !defined(__aarch64__) || !defined(_M_ARM) ||          \
-    !defined(_M_ARM64)
-
 #include <engine/llama/_/log.hxx>
 
 namespace engine::llama::_
@@ -69,5 +66,3 @@ namespace engine::llama::_
         }
     }
 } // namespace engine::llama::_
-
-#endif

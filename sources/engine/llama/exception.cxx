@@ -1,6 +1,3 @@
-#if !defined(__arm__) || !defined(__aarch64__) || !defined(_M_ARM) ||          \
-    !defined(_M_ARM64)
-
 #include <engine/llama/exception.hxx>
 
 namespace engine
@@ -20,5 +17,3 @@ namespace engine
         } // namespace exception
     } // namespace llama
 } // namespace engine
-
-#endif

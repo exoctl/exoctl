@@ -9,12 +9,6 @@
   <a href="https://maldecs-organization.gitbook.io/maldeclabs-docs">
     <img src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=gitbook" alt="Documentation">
   </a>
-  <a href="https://discord.gg/BUkcdta9b7">
-    <img src="https://img.shields.io/discord/1121113706621833236?style=for-the-badge&color=7289DA&logo=discord&label=Join%20Our%20Discord" alt="Discord Community">
-  </a>
-  <a href="https://opencollective.com/maldec">
-    <img src="https://img.shields.io/badge/Support-Our_Work-orange?style=for-the-badge&logo=opencollective" alt="Support Maldec">
-  </a>
 </p>
 
 
@@ -100,4 +94,8 @@ Feel free to check out these repositories for more information and contributions
 
 ## Setting Up / Building
 
-To develop the project and perform the build, the following steps are necessary verify [documentation/build]()
+To develop the project and perform the build, the following steps are necessary verify [documentation/build](https://maldecs-organization.gitbook.io/maldeclabs-docs/getting-started/build)
+
+## Contributors
+
+<a href="https://github.com/maldeclabs/infinity-engine/graphs/contributors"><img src="https://opencollective.com/infinity/contributors.svg?width=890"/></a>
