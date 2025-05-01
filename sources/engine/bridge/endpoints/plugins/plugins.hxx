@@ -1,9 +1,7 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
-#include <engine/interfaces/iendpoint.hxx>
 #include <engine/bridge/map/map.hxx>
+#include <engine/interfaces/iendpoint.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
@@ -30,5 +28,3 @@ namespace engine::bridge::endpoints
         void plugins();
     };
 } // namespace engine::bridge::endpoints
-
-#endif

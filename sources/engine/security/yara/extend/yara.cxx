@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #include <engine/plugins/exception.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/extend/yara.hxx>
@@ -322,5 +320,3 @@ namespace engine::security::yara::extend
         Yara::bind_yara();
     }
 } // namespace engine::security::yara::extend
-
-#endif

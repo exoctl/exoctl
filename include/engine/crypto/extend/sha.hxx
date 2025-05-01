@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -14,6 +12,4 @@ namespace engine::crypto::extend
       private:
         void bind_sha();
     };
-} // namespace engine::crypto::plugin
-
-#endif
+} // namespace engine::crypto::extend

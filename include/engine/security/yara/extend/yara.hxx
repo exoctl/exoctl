@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -25,5 +23,3 @@ namespace engine::security::yara::extend
         inline void bind_yara();
     };
 } // namespace engine::security::yara::extend
-
-#endif

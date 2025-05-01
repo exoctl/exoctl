@@ -1,8 +1,6 @@
-#ifdef ENGINE_PRO
+#pragma once
 
 #include <engine/interfaces/iplugins.hxx>
-
-#pragma once
 
 namespace engine::llama::extend
 {
@@ -17,4 +15,3 @@ namespace engine::llama::extend
         void bind_model();
     };
 } // namespace engine::llama::extend
-#endif

@@ -10,20 +10,15 @@
 
 namespace engine::bridge::focades::analysis::scan::yara
 {
-    class Yara
-#ifdef ENGINE_PRO
-        : public interface::ISubPlugins<Yara>
-#endif
+    class Yara : public interface::ISubPlugins<Yara>
+
     {
       public:
         Yara();
         ~Yara() = default;
         void setup(configuration::Configuration &);
 
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
-
         void scan_fast_bytes(const std::string,
                              const std::function<void(yara::record::DTO *)> &);
         void load_rules(const std::function<void(uint64_t)> &) const;

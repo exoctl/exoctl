@@ -1,4 +1,3 @@
-#ifdef ENGINE_PRO
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
@@ -14,5 +13,3 @@ namespace engine::version::extend
         void bind_version();
     };
 } // namespace engine::version::extend
-
-#endif

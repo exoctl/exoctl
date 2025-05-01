@@ -1,9 +1,9 @@
 #pragma once
 
 #include <engine/bridge/focades/data/metadata/metadata.hxx>
+#include <engine/bridge/map/map.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/bridge/map/map.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
@@ -13,18 +13,15 @@
 namespace engine::bridge::endpoints
 {
     class Data : public interface::IEndpoint
-#ifdef ENGINE_PRO
         ,
                  public interface::ISubPlugins<Data>
-#endif
+
     {
       public:
         Data();
         void setup(server::Server &);
         ~Data() = default;
-#ifdef ENGINE_PRO
         void _plugins() override;
-#endif
         void load() const override;
 
       private:

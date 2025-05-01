@@ -1,5 +1,3 @@
-#ifdef ENGINE_PRO
-
 #pragma once
 
 #include <engine/interfaces/ibind.hxx>
@@ -15,5 +13,3 @@ namespace engine::server::gateway::web::extend
       private:
     };
 } // namespace engine::server::gateway::web::extend
-
-#endif

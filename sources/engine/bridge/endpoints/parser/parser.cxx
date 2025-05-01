@@ -18,16 +18,19 @@ namespace engine::bridge::endpoints
     {
         m_server = &p_server;
 
-        if (p_server.config->get("bridge.endpoint.parser.enable")
-                .value<bool>()
-                .value()) {
-            // add new routes
-            Parser::parser_elf();
-            Parser::parser_macho();
-            Parser::parser_pe();
-            Parser::parser_dex();
-            Parser::parser_art();
+        if (!p_server.config->get("bridge.endpoint.parser.enable")
+                 .value<bool>()
+                 .value()) {
+            m_server->log->warn("Gateway parser not enabled");
+            return;
         }
+        
+        // add new routes
+        Parser::parser_elf();
+        Parser::parser_macho();
+        Parser::parser_pe();
+        Parser::parser_dex();
+        Parser::parser_art();
     }
 
     void Parser::load() const

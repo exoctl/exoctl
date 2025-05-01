@@ -31,9 +31,8 @@ namespace engine
                 }
                 return *this;
             }
-#ifdef ENGINE_PRO
             friend class extend::Json;
-#endif
+
             [[nodiscard]] std::string to_string() const;
 
             template <typename T>

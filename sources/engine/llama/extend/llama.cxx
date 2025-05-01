@@ -1,7 +1,5 @@
-#ifdef ENGINE_PRO
-
-#include <engine/llama/llama.hxx>
 #include <engine/llama/extend/llama.hxx>
+#include <engine/llama/llama.hxx>
 #include <engine/plugins/plugins.hxx>
 
 namespace engine::llama::extend
@@ -153,5 +151,3 @@ namespace engine::llama::extend
     }
 
 } // namespace engine::llama::extend
-
-#endif
