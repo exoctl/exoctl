@@ -95,7 +95,3 @@ Feel free to check out these repositories for more information and contributions
 ## Setting Up / Building
 
 To develop the project and perform the build, the following steps are necessary verify [documentation/build](https://maldecs-organization.gitbook.io/maldeclabs-docs/getting-started/build)
-
-## Contributors
-
-<a href="https://github.com/maldeclabs/infinity-engine/graphs/contributors"><img src="https://opencollective.com/infinity/contributors.svg?width=890"/></a>
