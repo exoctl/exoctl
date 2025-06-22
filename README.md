@@ -85,10 +85,10 @@ print(json:to_string())
 
 ## Associated Projects
 
-You can interact with your engine through the **infinity-cli** and explore various plugins developed by **maldeclabs** and the community via the **infinity-plugins** repository.
+You can interact with your engine through the **infinity-cli** and explore various plugins developed by **my** and the community via the **infinity-plugins** repository.
 
-- **[infinity-cli](https://github.com/maldeclabs/infinity-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
-- **[infinity-plugins](https://github.com/maldeclabs/infinity-plugins)**: A collection of plugins created by **maldeclabs** and the open-source community, extending the functionality of the engine with new features and integrations.
+- **[infinity-cli](https://github.com/rem0obb/infinity-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
+- **[infinity-plugins](https://github.com/rem0obb/infinity-plugins)**: A collection of plugins created by **my** and the open-source community, extending the functionality of the engine with new features and integrations.
 
 Feel free to check out these repositories for more information and contributions.
 

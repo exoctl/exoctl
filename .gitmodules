@@ -20,9 +20,6 @@
 [submodule "libraries/capstone-engine"]
 	path = libraries/capstone-engine
 	url = https://github.com/capstone-engine/capstone.git
-[submodule "libraries/signatures"]
-	path = libraries/signatures
-	url = git@github.com:maldeclabs/signatures.git
 [submodule "libraries/rapidjson"]
 	path = libraries/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
@@ -31,7 +28,7 @@
 	url = https://github.com/Thalhammer/jwt-cpp.git
 [submodule "libraries/lief"]
 	path = libraries/lief
-	url = git@github.com:maldeclabs/lief.git
+	url = git@github.com:rem0obb/lief.git
 [submodule "libraries/llama"]
 	path = libraries/llama
 	url = https://github.com/ggerganov/llama.cpp.git
@@ -41,9 +38,6 @@
 [submodule "libraries/lua"]
 	path = libraries/lua
 	url = https://github.com/lua/lua.git
-[submodule "rules/rules-yara"]
-	path = rules/rules-yara
-	url = git@github.com:maldeclabs/rules-yara.git
 [submodule "libraries/sol2"]
 	path = libraries/sol2
 	url = https://github.com/ThePhD/sol2.git
