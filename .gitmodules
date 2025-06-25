@@ -28,7 +28,7 @@
 	url = https://github.com/Thalhammer/jwt-cpp.git
 [submodule "libraries/lief"]
 	path = libraries/lief
-	url = git@github.com:rem0obb/lief.git
+	url = git@github.com:exoctl/lief.git
 [submodule "libraries/llama"]
 	path = libraries/llama
 	url = https://github.com/ggerganov/llama.cpp.git

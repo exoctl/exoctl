@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/banner.png" width=600 alt="Infinity Engine Banner"></p>
+<p align="center"><img src="assets/banner.png" width=250 alt="exoctl Engine Banner"></p>
 
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
 
@@ -74,7 +74,7 @@ end, HTTPMethod.Post)
 
 ```lua
 local json = Json:new()
-json:add("engine", "maldeclabs")
+json:add("engine", "exoctl")
 print(json:to_string())
 ```
 
@@ -85,10 +85,10 @@ print(json:to_string())
 
 ## Associated Projects
 
-You can interact with your engine through the **infinity-cli** and explore various plugins developed by **my** and the community via the **infinity-plugins** repository.
+You can interact with your engine through the **exoctl-cli** and explore various plugins developed by **my** and the community via the **exoctl-plugins** repository.
 
-- **[infinity-cli](https://github.com/rem0obb/infinity-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
-- **[infinity-plugins](https://github.com/rem0obb/infinity-plugins)**: A collection of plugins created by **my** and the open-source community, extending the functionality of the engine with new features and integrations.
+- **[exoctl-cli](https://github.com/exoctl/exoctl-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
+- **[exoctl-plugins](https://github.com/exoctl/exoctl-plugins)**: A collection of plugins created by **my** and the open-source community, extending the functionality of the engine with new features and integrations.
 
 Feel free to check out these repositories for more information and contributions.
 
