@@ -20,17 +20,17 @@ file(GLOB_RECURSE SOURCES
     *.cxx
 )
 
-add_library(infinity SHARED ${SOURCES})
-set_target_properties(infinity PROPERTIES
+add_library(exoctl SHARED ${SOURCES})
+set_target_properties(exoctl PROPERTIES
     VERSION ${LIB_VERSION}
     SOVERSION ${LIB_SOVERSION}
 )
 
 # Add source files to the target
-target_sources(infinity PRIVATE ${SOURCES})
+target_sources(exoctl PRIVATE ${SOURCES})
 
 # Link libraries
-target_link_libraries(infinity PRIVATE
+target_link_libraries(exoctl PRIVATE
     Crow::Crow
     liblua
     yara
@@ -49,10 +49,10 @@ target_link_libraries(infinity PRIVATE
     crypto
 )
 
-# Compiler flags for optimizations, debugging, and Infinity
+# Compiler flags for optimizations, debugging, and exoctl
 if(${FLAGS_OPTIMIZATIONS})
-    message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS enabled")
-    target_compile_options(infinity PRIVATE
+    message(STATUS "[exoctl] -- Building with FLAGS_OPTIMIZATIONS enabled")
+    target_compile_options(exoctl PRIVATE
         -O1
         -fmodules-ts
         -ftree-vectorize
@@ -65,8 +65,8 @@ if(${FLAGS_OPTIMIZATIONS})
         -DCROW_ENABLE_SSL
     )
 else()
-    message(STATUS "[infinity] -- Building with FLAGS_OPTIMIZATIONS flags disabled")
-    target_compile_options(infinity PRIVATE
+    message(STATUS "[exoctl] -- Building with FLAGS_OPTIMIZATIONS flags disabled")
+    target_compile_options(exoctl PRIVATE
         -ggdb3
         -ldl
         -fPIC

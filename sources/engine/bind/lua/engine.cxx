@@ -9,9 +9,9 @@
 #include <vector>
 
 extern "C" {
-int luaopen_libinfinity(lua_State *L)
+int luaopen_libexoctl(lua_State *L)
 {
-    sol::state_view lua(L);
+    engine::lua::StateView lua(L);
 
     std::vector<std::unique_ptr<engine::interface::IBind>> bindings;
 
@@ -29,6 +29,6 @@ int luaopen_libinfinity(lua_State *L)
         bind->bind_to_lua(lua);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 }

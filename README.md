@@ -3,7 +3,7 @@
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
 
 <p align="center">
-  <a href="https://maldec.io">
+  <a href="https://exoctl.com">
     <img src="https://img.shields.io/badge/Website-Live-green?style=for-the-badge&logo=google-chrome" alt="Official Website">
   </a>
   <a href="https://maldecs-organization.gitbook.io/maldeclabs-docs">
@@ -14,7 +14,7 @@
 
 ## Description
 
-A reverse engineering and malware analysis engine with support for plugins in Lua. Designed to automate analysis workflows, handle repetitive tasks, and provide flexible inspection of file formats.
+A malware analysis engine with support for plugins in Lua. Designed to automate analysis workflows, handle repetitive tasks, and provide flexible inspection of file formats.
 
 ## Plugin Examples
 

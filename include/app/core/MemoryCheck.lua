@@ -2,7 +2,7 @@
 local MemoryCheck = { previous_segments = {}, list_suspicious = {} }
 MemoryCheck.__index = MemoryCheck
 
-require("libinfinity")
+require("libexoctl")
 
 local mem = Memory:new()
 

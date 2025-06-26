@@ -6,8 +6,6 @@
 
 namespace engine::server::gateway::web::extend
 {
-    static std::mutex web_mutex;
-
     void Web::_plugins()
     {
         plugins::Plugins::lua.state.new_usertype<Web>(
@@ -32,8 +30,6 @@ namespace engine::server::gateway::web::extend
                     server,
                     url,
                     [callback](const crow::request &req) -> crow::response {
-                        std::lock_guard<std::mutex> lock(web_mutex);
-
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
