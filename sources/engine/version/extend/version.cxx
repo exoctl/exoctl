@@ -17,7 +17,7 @@ namespace engine::version::extend
             "version",
             &version::Version::version,
             "code",
-            sol::var(CODE),
+            sol::var(ENGINE_CODE),
             "major",
             sol::var(ENGINE_MAJOR),
             "minor",

@@ -11,9 +11,7 @@ namespace engine
 {
     namespace security
     {
-        Yara::Yara()
-            : rules_loaded_count(0), m_yara_compiler(nullptr),
-              m_yara_rules(nullptr)
+        Yara::Yara() : m_yara_compiler(nullptr), m_yara_rules(nullptr)
         {
             if (yr_initialize() != ERROR_SUCCESS) {
                 throw yara::exception::Initialize(
@@ -167,7 +165,6 @@ namespace engine
                 m_yara_compiler, rules_fd, p_yrns.c_str(), p_yrname.c_str());
 
             close(rules_fd);
-            rules_loaded_count.fetch_add(1);
             return error_success;
         }
 
@@ -175,7 +172,6 @@ namespace engine
                                       const std::string &p_yrns) const
         {
             std::lock_guard<std::mutex> lock(m_compiler_mutex);
-            rules_loaded_count.fetch_add(1);
             return yr_compiler_add_string(
                 m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
         }

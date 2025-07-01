@@ -296,8 +296,6 @@ namespace engine::security::yara::extend
             },
             "scan_fast_bytes",
             &engine::security::Yara::scan_fast_bytes,
-            "rules_loaded_count",
-            &engine::security::Yara::rules_loaded_count,
             "load_rules_file",
             &engine::security::Yara::load_rules_file,
             "set_rule_buff",

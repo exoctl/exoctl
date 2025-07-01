@@ -15,7 +15,7 @@ namespace engine::bridge::endpoints
 {
     class Analysis : public interface::IEndpoint
         ,
-                     public interface::ISubPlugins<Analysis>
+                     public interface::IPlugins<Analysis>
     {
       public:
         Analysis();

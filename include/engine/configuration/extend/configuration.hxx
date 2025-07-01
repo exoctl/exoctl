@@ -5,11 +5,11 @@
 
 namespace engine::configuration::extend
 {
-    class Configuration : public interface::IBind,
-                          public interface::ISubPlugins<Configuration>
+    class Configuration : public interface::ILuaOpenLibrary,
+                          public interface::IPlugins<Configuration>
     {
       public:
-        void bind_to_lua(engine::lua::StateView &) override;
+        void lua_open_library(engine::lua::StateView &) override;
 
         void _plugins() override;
 

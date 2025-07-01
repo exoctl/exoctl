@@ -1,8 +1,8 @@
-#include <engine/emergency/emergency.hxx>
+#include <engine/signals/signals.hxx>
 
-namespace engine::emergency
+namespace engine::signals
 {
-    const bool Emergency::receive_signal(
+    const bool Signals::receive(
         const int p_signum,
         std::function<void(int, siginfo_t *, void *)> p_handler)
     {
@@ -18,4 +18,4 @@ namespace engine::emergency
         sigemptyset(&sa.sa_mask);
         return sigaction(p_signum, &sa, nullptr) != -1;
     }
-} // namespace engine::emergency
+} // namespace engine::signals

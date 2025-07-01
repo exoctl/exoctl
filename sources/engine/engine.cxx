@@ -28,18 +28,18 @@ namespace engine
                        server::Server &p_server)
     {
         m_logging = p_log;
-        m_server = p_server;
         m_configuration = p_config;
+        m_server = p_server;
 
         m_plugins.setup(m_configuration, m_logging);
         m_clamav_log.setup(m_configuration, m_logging);
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
         m_server_log.setup(m_configuration, m_logging);
-        m_server.setup(m_configuration, m_logging);
+        Engine::_plugins();
     }
 
-    void Engine::bind_to_lua(engine::lua::StateView &p_lua)
+    void Engine::lua_open_library(engine::lua::StateView &p_lua)
     {
         p_lua.new_usertype<engine::Engine>(
             "Engine",
@@ -48,16 +48,10 @@ namespace engine
             sol::readonly(&Engine::is_running),
             "stop",
             &Engine::stop,
-            "register_plugins",
-            &Engine::register_plugins,
             "setup",
             &Engine::setup,
-            "load_emergency",
-            &Engine::load_emergency,
             "run",
             &Engine::run,
-            "register_emergency",
-            &Engine::register_emergency,
             "load",
             &Engine::load,
             "logging",
@@ -70,11 +64,11 @@ namespace engine
             &Engine::m_version);
     }
 
-    void Engine::register_plugins()
+    void Engine::_plugins()
     {
         plugins::Plugins::lua.state["_engine"] = this;
 
-        Engine::bind_to_lua(plugins::Plugins::lua.state);
+        Engine::lua_open_library(plugins::Plugins::lua.state);
 
         server::extend::Server::plugins();
         logging::extend::Logging::plugins();
@@ -90,7 +84,6 @@ namespace engine
 
     void Engine::load()
     {
-        Engine::load_emergency();
         m_plugins.load();
     }
 
@@ -100,42 +93,10 @@ namespace engine
         m_server.stop();
     }
 
-    void Engine::register_emergency(
-        const int p_sig,
-        std::function<void(int, siginfo_t *, void *)> p_handler)
-    {
-        m_map_emergencys[p_sig] = p_handler;
-    }
-
-    void Engine::load_emergency()
-    {
-        for (const auto &entry : m_map_emergencys) {
-            const int sig = entry.first;
-            m_emergency.receive_signal(
-                sig, [this, sig](int signal, siginfo_t *info, void *context) {
-                    if (m_map_emergencys.contains(sig)) {
-                        m_map_emergencys[sig](signal, info, context);
-                    }
-                });
-        }
-    }
-
-    void Engine::run(const std::function<void()> &p_callback)
+    void Engine::run()
     {
         is_running = true;
-
-        if (p_callback) {
-            std::jthread([this, p_callback]() {
-                while (is_running) {
-                    p_callback();
-                    std::this_thread::sleep_for(std::chrono::milliseconds(200));
-                }
-            }).detach();
-        }
-
         m_plugins.run_async();
-        m_server.run_async(); /* do not move the output to a variable */
-
-        is_running = false;
+        m_server.run_async();
     }
 } // namespace engine

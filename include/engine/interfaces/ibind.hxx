@@ -6,11 +6,11 @@ namespace engine
 {
     namespace interface
     {
-        class IBind
+        class ILuaOpenLibrary
         {
           public:
-            virtual ~IBind() = default;
-            virtual void bind_to_lua(engine::lua::StateView &) = 0;
+            virtual ~ILuaOpenLibrary() = default;
+            virtual void lua_open_library(engine::lua::StateView &) = 0;
         };
     } // namespace interface
 } // namespace engine

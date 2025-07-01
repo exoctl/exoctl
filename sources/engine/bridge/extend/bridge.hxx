@@ -5,13 +5,13 @@
 
 namespace engine::bridge::extend
 {
-    class Bridge : public interface::IBind
+    class Bridge : public interface::ILuaOpenLibrary
         ,
-                   public interface::ISubPlugins<Bridge>
+                   public interface::IPlugins<Bridge>
     {
       public:
         void _plugins() override;
-        void bind_to_lua(engine::lua::StateView &) override;
+        void lua_open_library(engine::lua::StateView &) override;
 
       private:
         void bind_bridge(engine::lua::StateView &);

@@ -9,6 +9,7 @@
 #include <stack>
 #include <string>
 #include <yara.h>
+#include <atomic>
 
 namespace engine
 {

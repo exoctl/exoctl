@@ -4,7 +4,7 @@
 
 namespace engine::crypto::extend
 {
-    class Sha : public interface::ISubPlugins<Sha>
+    class Sha : public interface::IPlugins<Sha>
     {
       public:
         void _plugins() override;

@@ -1,17 +1,11 @@
-#include <engine/bridge/bridge.hxx>
 #include <engine/bridge/exception.hxx>
+#include <engine/bridge/bridge.hxx>
 
 namespace engine
 {
     namespace bridge
     {
         std::shared_ptr<bridge::endpoints::Plugins> Bridge::plugins;
-        std::shared_ptr<bridge::endpoints::Parser> Bridge::parser(
-            std::make_shared<bridge::endpoints::Parser>());
-        std::shared_ptr<bridge::endpoints::Reverse> Bridge::reverse(
-            std::make_shared<bridge::endpoints::Reverse>());
-        std::shared_ptr<bridge::endpoints::Data> Bridge::data(
-            std::make_shared<bridge::endpoints::Data>());
         std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
             std::make_shared<bridge::endpoints::Analysis>());
 
@@ -19,10 +13,7 @@ namespace engine
         {
             m_server = &p_server;
 
-            reverse->setup(*m_server);
             analysis->setup(*m_server);
-            data->setup(*m_server);
-            parser->setup(*m_server);
             plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);
         }
 
@@ -32,9 +23,6 @@ namespace engine
 
             TRY_BEGIN()
 
-            data->load();
-            parser->load();
-            reverse->load();
             analysis->load();
             plugins->load();
 

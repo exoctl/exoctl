@@ -4,7 +4,7 @@
 
 namespace engine::database::sqlite3::extend
 {
-    class Sqlite3 : public interface::ISubPlugins<Sqlite3>
+    class Sqlite3 : public interface::IPlugins<Sqlite3>
     {
       public:
         Sqlite3() = default;

@@ -5,12 +5,12 @@
 
 namespace engine::logging::extend
 {
-    class Logging : public interface::IBind
+    class Logging : public interface::ILuaOpenLibrary
         ,
-                    public interface::ISubPlugins<Logging>
+                    public interface::IPlugins<Logging>
     {
       public:
-        void bind_to_lua(engine::lua::StateView &) override;
+        void lua_open_library(engine::lua::StateView &) override;
 
         void _plugins() override;
 

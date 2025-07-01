@@ -120,7 +120,7 @@ namespace engine::server::extend
                              int32_t milliseconds,
                              const sol::protected_function callback) {
                 if (!callback.valid()) {
-                    throw plugins::exception::Runtime("Callback not valid");
+                    throw plugins::exception::Runtime("Invalid callback");
                 }
 
                 server.tick(std::chrono::milliseconds(milliseconds),
@@ -230,7 +230,7 @@ namespace engine::server::extend
         gateway::web::extend::Web::plugins();
     }
 
-    void Server::bind_to_lua(engine::lua::StateView &p_lua)
+    void Server::lua_open_library(engine::lua::StateView &p_lua)
     {
         Server::bind_server(p_lua);
     }

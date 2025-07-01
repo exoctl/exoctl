@@ -1,33 +1,29 @@
 #include <engine/bridge/bridge.hxx>
 #include <engine/configuration/configuration.hxx>
-#include <engine/emergency/emergency.hxx>
 #include <engine/engine.hxx>
 #include <engine/interfaces/ibind.hxx>
 #include <engine/logging/logging.hxx>
-#include <engine/memory/memory.hxx>
 #include <engine/server/server.hxx>
-#include <vector>
 
 extern "C" {
-int luaopen_libexoctl(lua_State *L)
+int luaopen_build_sources_libexoctl(lua_State *L)
 {
     engine::lua::StateView lua(L);
 
-    std::vector<std::unique_ptr<engine::interface::IBind>> bindings;
+    engine::server::extend::Server server;
+    server.lua_open_library(lua);
 
-    bindings.reserve(5);
+    engine::bridge::extend::Bridge bridge;
+    bridge.lua_open_library(lua);
 
-    bindings.push_back(std::make_unique<engine::server::extend::Server>());
-    bindings.push_back(std::make_unique<engine::bridge::extend::Bridge>());
-    bindings.push_back(std::make_unique<engine::memory::Memory>());
-    bindings.push_back(
-        std::make_unique<engine::configuration::extend::Configuration>());
-    bindings.push_back(std::make_unique<engine::logging::extend::Logging>());
-    bindings.push_back(std::make_unique<engine::Engine>());
+    engine::configuration::extend::Configuration config;
+    config.lua_open_library(lua);
 
-    for (auto &bind : bindings) {
-        bind->bind_to_lua(lua);
-    }
+    engine::logging::extend::Logging log;
+    log.lua_open_library(lua);
+
+    engine::Engine engine;
+    engine.lua_open_library(lua);
 
     return EXIT_SUCCESS;
 }

@@ -24,7 +24,7 @@ namespace engine::bridge::endpoints
             m_server->log->warn("Gateway analysis not enabled");
             return;
         }
-        
+
         m_scan_yara->setup(*m_server->config);
         m_scan_av_clamav->setup(*m_server->config);
 
@@ -146,12 +146,7 @@ namespace engine::bridge::endpoints
                 .value()) {
             TRY_BEGIN()
             m_server->log->info("Loading rules yara ...");
-            m_scan_yara->load_rules([&](uint64_t p_total_rules) {
-                m_server->log->info(
-                    "Successfully loaded rules. Total Yara rules count: "
-                    "{:d}",
-                    p_total_rules);
-            });
+            m_scan_yara->load_rules();
 
             m_server->log->info("Loading rules clamav ...");
             m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {

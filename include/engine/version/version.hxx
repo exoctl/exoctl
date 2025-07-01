@@ -2,7 +2,7 @@
 
 #include <engine/version/extend/version.hxx>
 
-#define CODE 258
+#define ENGINE_CODE 258
 #define ENGINE_MAJOR 1
 #define ENGINE_MINOR 2
 #define ENGINE_PATCH 0

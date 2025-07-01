@@ -6,16 +6,16 @@
 
 namespace engine::server::extend
 {
-    class Server : public interface::IBind
+    class Server : public interface::ILuaOpenLibrary
 
         ,
-                   public interface::ISubPlugins<Server>
+                   public interface::IPlugins<Server>
 
     {
       public:
         Server() = default;
         ~Server() = default;
-        void bind_to_lua(engine::lua::StateView &) override;
+        void lua_open_library(engine::lua::StateView &) override;
 
         void _plugins() override;
 

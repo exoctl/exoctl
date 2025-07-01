@@ -4,7 +4,7 @@
 
 namespace engine::security::yara::extend
 {
-    class Yara : public interface::ISubPlugins<Yara>
+    class Yara : public interface::IPlugins<Yara>
     {
       public:
         Yara() = default;

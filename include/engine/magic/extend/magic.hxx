@@ -4,7 +4,7 @@
 
 namespace engine::magic::extend
 {
-    class Magic : public interface::ISubPlugins<Magic>
+    class Magic : public interface::IPlugins<Magic>
     {
       public:
         void _plugins() override;

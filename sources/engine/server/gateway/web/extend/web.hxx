@@ -5,7 +5,7 @@
 
 namespace engine::server::gateway::web::extend
 {
-    class Web : public interface::ISubPlugins<Web>
+    class Web : public interface::IPlugins<Web>
     {
       public:
         void _plugins() override;

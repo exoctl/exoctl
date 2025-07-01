@@ -21,7 +21,7 @@ namespace engine::bridge::focades::analysis::scan::yara
             "YaraAnalysis", "yara", &Yara::m_yara);
     }
 
-    void Yara::load_rules(const std::function<void(uint64_t)> &p_callback) const
+    void Yara::load_rules() const
     {
         m_yara->load_rules([&]() {
             m_yara->load_rules_folder(
@@ -29,10 +29,6 @@ namespace engine::bridge::focades::analysis::scan::yara
                     .value<std::string>()
                     .value());
         });
-
-        if (!IS_NULL(p_callback)) {
-            p_callback(m_yara->rules_loaded_count);
-        }
     }
 
     void Yara::scan_fast_bytes(
