@@ -24,17 +24,16 @@ namespace engine::bridge::focades::data::metadata
         if (!IS_NULL(p_callback)) {
             struct metadata::record::DTO *dto = new metadata::record::DTO;
 
-            m_magic.load_mime(p_buffer);
-            dto->mime_type.assign(m_magic.mime);
+            dto->mime_type.assign(m_magic.mime(p_buffer));
             dto->size = (int) p_buffer.size();
 
-            dto->sha256.assign(m_sha.gen_sha256_hash(p_buffer));
-            dto->sha1.assign(m_sha.gen_sha1_hash(p_buffer));
-            dto->sha512.assign(m_sha.gen_sha512_hash(p_buffer));
-            dto->sha224.assign(m_sha.gen_sha224_hash(p_buffer));
-            dto->sha384.assign(m_sha.gen_sha384_hash(p_buffer));
-            dto->sha3_256.assign(m_sha.gen_sha3_256_hash(p_buffer));
-            dto->sha3_512.assign(m_sha.gen_sha3_512_hash(p_buffer));
+            dto->sha256.assign(m_sha.sha256(p_buffer));
+            dto->sha1.assign(m_sha.sha1(p_buffer));
+            dto->sha512.assign(m_sha.sha512(p_buffer));
+            dto->sha224.assign(m_sha.sha224(p_buffer));
+            dto->sha384.assign(m_sha.sha384(p_buffer));
+            dto->sha3_256.assign(m_sha.sha3_256(p_buffer));
+            dto->sha3_512.assign(m_sha.sha3_512(p_buffer));
 
             time_t current_time = time(0);
             tm *ltm = localtime(&current_time);

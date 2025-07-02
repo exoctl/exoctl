@@ -12,8 +12,8 @@ namespace engine::parser::extend
             sol::constructors<Json(), Json(const parser::Json &)>(),
             "from_string",
             &parser::Json::from_string,
-            "to_string",
-            &parser::Json::to_string,
+            "tostring",
+            &parser::Json::tostring,
             "get",
             sol::overload([](engine::parser::Json &self,
                              const std::string &key) -> sol::object {

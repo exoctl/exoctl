@@ -23,9 +23,6 @@ namespace engine
 {
     namespace lua
     {
-        using StateView = sol::state_view;
-        using Env = sol::environment;
-
         class Lua
         {
           public:

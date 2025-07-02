@@ -29,7 +29,7 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
         }
     }
 
-    void Clamav::scan_fast_bytes(
+    void Clamav::scan(
         const std::string &p_buffer,
         const std::function<void(clamav::record::DTO *)> &p_callback)
     {
@@ -45,7 +45,7 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
             scanopts.dev =
                 CL_SCAN_DEV_COLLECT_PERFORMANCE_INFO | CL_SCAN_DEV_COLLECT_SHA;
 
-            m_clamav.scan_fast_bytes(
+            m_clamav.scan_bytes(
                 p_buffer,
                 scanopts,
                 [&](const security::av::clamav::record::Data *p_data) {

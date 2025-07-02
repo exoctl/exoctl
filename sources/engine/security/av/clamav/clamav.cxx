@@ -39,7 +39,7 @@ namespace engine
                 }
             }
 
-            const void Clamav::scan_fast_bytes(
+            void Clamav::scan_bytes(
                 const std::string &p_buffer,
                 clamav::record::scan::Options p_options,
                 const std::function<void(clamav::record::Data *)> &p_callback)
@@ -55,17 +55,17 @@ namespace engine
                 TRY_END()
                 CATCH(memory::exception::Fd, {
                     throw clamav::exception::Scan(
-                        "scan_fast_bytes() : Scan falied, error : " +
+                        "scan_bytes() : Scan falied, error : " +
                         std::string(e.what()));
                 })
                 CATCH(memory::exception::Write, {
                     throw clamav::exception::Scan(
-                        "scan_fast_bytes() : Scan falied, error : " +
+                        "scan_bytes() : Scan falied, error : " +
                         std::string(e.what()));
                 })
                 CATCH(memory::exception::Ftruncate, {
                     throw clamav::exception::Scan(
-                        "scan_fast_bytes() : Scan falied, error : " +
+                        "scan_bytes() : Scan falied, error : " +
                         std::string(e.what()));
                 })
 

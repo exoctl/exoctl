@@ -83,7 +83,7 @@ namespace engine::server::gateway
         std::lock_guard<std::mutex> _(m_mtx);
         m_context.add(p_conn);
         m_context.broadcast_text(
-            p_conn, websocket::responses::Connected::to_json().to_string());
+            p_conn, websocket::responses::Connected::to_json().tostring());
 
         m_server->log->info(
             "Connection opened {} from IP: '{}',  SubProtocol : "

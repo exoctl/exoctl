@@ -21,7 +21,7 @@ namespace engine
                 ~Clamav();
 
                 void set_db_rule_fd(const std::string &, unsigned int) const;
-                const void scan_fast_bytes(
+                void scan_bytes(
                     const std::string &,
                     clamav::record::scan::Options,
                     const std::function<void(clamav::record::Data *)> &);

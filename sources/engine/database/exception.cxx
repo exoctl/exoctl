@@ -1,6 +1,6 @@
-#include <engine/database/sqlite3/exception.hxx>
+#include <engine/database/exception.hxx>
 
-namespace engine::database::sqlite3::exception
+namespace engine::database::exception
 {
     Initialize::Initialize(const std::string &p_message)
         : m_error_message(p_message)

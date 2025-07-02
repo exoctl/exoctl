@@ -9,20 +9,20 @@ namespace engine::crypto::extend
         plugins::Plugins::lua.state.new_usertype<engine::crypto::Sha>(
             "Sha",
             sol::constructors<engine::crypto::Sha()>(),
-            "gen_sha1_hash",
-            &crypto::Sha::gen_sha1_hash,
-            "gen_sha256_hash",
-            &crypto::Sha::gen_sha256_hash,
-            "gen_sha512_hash",
-            &crypto::Sha::gen_sha512_hash,
-            "gen_sha224_hash",
-            &crypto::Sha::gen_sha224_hash,
-            "gen_sha384_hash",
-            &crypto::Sha::gen_sha384_hash,
-            "gen_sha3_256_hash",
-            &crypto::Sha::gen_sha3_256_hash,
-            "gen_sha3_512_hash",
-            &crypto::Sha::gen_sha3_512_hash);
+            "sha1",
+            &crypto::Sha::sha1,
+            "sha256",
+            &crypto::Sha::sha256,
+            "sha512",
+            &crypto::Sha::sha512,
+            "sha224",
+            &crypto::Sha::sha224,
+            "sha384",
+            &crypto::Sha::sha384,
+            "sha3_256",
+            &crypto::Sha::sha3_256,
+            "sha3_512",
+            &crypto::Sha::sha3_512);
     }
 
     void Sha::_plugins()

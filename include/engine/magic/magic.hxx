@@ -16,9 +16,7 @@ namespace engine::magic
 
         friend class extend::Magic;
 
-        void load_mime(const std::string &buffer);
-
-        std::string mime;
+        const char *mime(const std::string &buffer);
 
       private:
         magic_t m_cookie;

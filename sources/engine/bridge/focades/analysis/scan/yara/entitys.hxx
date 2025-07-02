@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/security/yara/entitys.hxx>
-#include <string>
+#include <vector>
 
 namespace engine::bridge::focades::analysis::scan
 {
@@ -10,9 +10,8 @@ namespace engine::bridge::focades::analysis::scan
         namespace record
         {
             typedef struct DTO {
-                std::string rule;
-                std::string ns;
-                security::yara::type::Scan match_status;
+                std::vector<security::yara::type::Rule> rules;
+                security::yara::type::Scan math_status;
             } DTO;
         } // namespace record
     } // namespace yara

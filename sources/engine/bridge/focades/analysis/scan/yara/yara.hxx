@@ -19,11 +19,11 @@ namespace engine::bridge::focades::analysis::scan::yara
         void setup(configuration::Configuration &);
 
         void _plugins() override;
-        void scan_fast_bytes(const std::string,
-                             const std::function<void(yara::record::DTO *)> &);
+        void scan(const std::string,
+                  const std::function<void(yara::record::DTO *)> &);
         void load_rules() const;
 
-        const engine::parser::Json dto_json(const yara::record::DTO *);
+        // const engine::parser::Json dto_json(const yara::record::DTO *);
 
       private:
         std::shared_ptr<security::Yara> m_yara;

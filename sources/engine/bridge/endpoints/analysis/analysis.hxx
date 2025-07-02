@@ -5,7 +5,7 @@
 #include <engine/bridge/map/map.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/server/gateway/websocket/websocket.hxx>
+#include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 
@@ -13,8 +13,7 @@
 
 namespace engine::bridge::endpoints
 {
-    class Analysis : public interface::IEndpoint
-        ,
+    class Analysis : public interface::IEndpoint,
                      public interface::IPlugins<Analysis>
     {
       public:
@@ -30,10 +29,9 @@ namespace engine::bridge::endpoints
         server::Server *m_server;
         mutable map::Map m_map;
 
-        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_scan_yara;
-        std::unique_ptr<engine::server::gateway::WebSocket>
-            m_socket_scan_av_clamav;
-        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_scan;
+        std::unique_ptr<engine::server::gateway::Web> m_web_scan_yara;
+        std::unique_ptr<engine::server::gateway::Web> m_web_scan_av_clamav;
+        std::unique_ptr<engine::server::gateway::Web> m_web_scan;
 
         std::shared_ptr<focades::analysis::scan::av::clamav::Clamav>
             m_scan_av_clamav;

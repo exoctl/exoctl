@@ -179,18 +179,6 @@ namespace engine::security::yara::extend
             });
     }
 
-    void Yara::bind_data()
-    {
-        plugins::Plugins::lua.state.new_usertype<yara::record::Data>(
-            "Data",
-            "match_status",
-            sol::readonly(&yara::record::Data::match_status),
-            "rule",
-            sol::readonly(&yara::record::Data::rule),
-            "ns",
-            sol::readonly(&yara::record::Data::ns));
-    }
-
     void Yara::bind_yara()
     {
         plugins::Plugins::lua.state.new_usertype<engine::security::Yara>(
@@ -294,8 +282,6 @@ namespace engine::security::yara::extend
                     static_cast<void *>(&func),
                     flags);
             },
-            "scan_fast_bytes",
-            &engine::security::Yara::scan_fast_bytes,
             "load_rules_file",
             &engine::security::Yara::load_rules_file,
             "set_rule_buff",
@@ -314,7 +300,6 @@ namespace engine::security::yara::extend
         Yara::bind_meta();
         Yara::bind_rule();
         Yara::bind_stream();
-        Yara::bind_data();
         Yara::bind_yara();
     }
 } // namespace engine::security::yara::extend

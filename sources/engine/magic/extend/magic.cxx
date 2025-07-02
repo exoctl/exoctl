@@ -9,10 +9,8 @@ namespace engine::magic::extend
         plugins::Plugins::lua.state.new_usertype<magic::Magic>(
             "Magic",
             sol::constructors<magic::Magic()>(),
-            "load_mime",
-            &magic::Magic::load_mime,
             "mime",
-            sol::readonly(&magic::Magic::mime));
+            &magic::Magic::mime);
     }
 
     void Magic::_plugins()

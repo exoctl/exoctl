@@ -2,7 +2,7 @@
 
 #include <engine/interfaces/iexception.hxx>
 
-namespace engine::database::sqlite3::exception
+namespace engine::database::exception
 {
     class Initialize : public interface::IException
     {
@@ -13,4 +13,4 @@ namespace engine::database::sqlite3::exception
         explicit Initialize(const std::string &);
         const char *what() const noexcept override;
     };
-} // namespace engine::database::sqlite3::exception
+} // namespace engine::database::exception

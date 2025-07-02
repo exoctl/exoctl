@@ -16,6 +16,8 @@ namespace engine::configuration::extend
             &configuration::Configuration::load,
             "setup",
             &configuration::Configuration::setup,
+            "tojson",
+            &configuration::Configuration::tojson,
             "get",
             sol::overload([](configuration::Configuration &self,
                              const std::string &section) -> sol::object {
