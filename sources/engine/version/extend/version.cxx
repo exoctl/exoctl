@@ -14,8 +14,8 @@ namespace engine::version::extend
         plugins::Plugins::lua.state.new_usertype<version::Version>(
             "Version",
             sol::constructors<version::Version()>(),
-            "version",
-            &version::Version::version,
+            "check",
+            &version::Version::check,
             "code",
             sol::var(ENGINE_CODE),
             "major",

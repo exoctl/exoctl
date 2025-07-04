@@ -21,7 +21,7 @@ namespace engine
             Version() = default;
             ~Version() = default;
 
-            static const int version(const int a, const int b, const int c);
+            static const int check(const int a, const int b, const int c);
         };
     } // namespace version
 } // namespace engine

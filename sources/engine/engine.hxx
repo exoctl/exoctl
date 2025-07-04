@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
-#include <engine/interfaces/ibind.hxx>
+#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/lua/lua.hxx>

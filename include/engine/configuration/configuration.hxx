@@ -2,7 +2,7 @@
 
 #include <engine/configuration/exception.hxx>
 #include <engine/configuration/extend/configuration.hxx>
-#include <engine/interfaces/ibind.hxx>
+#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/parser/json/json.hxx>
 #include <toml++/toml.hpp>

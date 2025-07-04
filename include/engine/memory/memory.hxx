@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstddef>
-#include <engine/interfaces/ibind.hxx>
+#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/memory/entitys.hxx>
 #include <sys/mman.h>
 #include <vector>
