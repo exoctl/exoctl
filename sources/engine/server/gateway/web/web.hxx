@@ -9,16 +9,14 @@
 #include <string>
 #include <vector>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::web
 {
-    class Web; // Forward declaration Web plugin
-
     class Web
     {
       public:
         using on_request_callback =
             std::function<crow::response(const crow::request &)>;
-        friend class web::extend::Web;
+        friend class extend::Web;
 
         Web() = default;
         ~Web() = default;

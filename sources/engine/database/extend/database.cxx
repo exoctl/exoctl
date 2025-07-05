@@ -9,12 +9,19 @@ namespace engine::database::extend
     {
         p_lua.new_usertype<database::Database>(
             "Database",
-            "new",
             sol::constructors<database::Database()>(),
             "load",
             &database::Database::load,
             "setup",
-            &database::Database::setup);
+            &database::Database::setup,
+            "is_running",
+            sol::property([](const database::Database &p_self) -> const bool {
+                return p_self.is_running.load();
+            }),
+            "sql_queue_size",
+            sol::property([](const database::Database &p_self) -> const size_t {
+                return p_self.sql_queue_size.load();
+            }));
     }
 
     void Database::lua_open_library(engine::lua::StateView &p_lua)

@@ -3,6 +3,7 @@
 #include <engine/bridge/bridge.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/crypto/sha.hxx>
+#include <engine/database/database.hxx>
 #include <engine/engine.hxx>
 #include <engine/exception.hxx>
 #include <engine/llama/llama.hxx>
@@ -25,18 +26,21 @@ namespace engine
 
     void Engine::setup(configuration::Configuration &p_config,
                        logging::Logging &p_log,
-                       server::Server &p_server)
+                       server::Server &p_server,
+                       database::Database &p_database)
     {
         m_logging = p_log;
         m_configuration = p_config;
         m_server = p_server;
+        m_database = &p_database;
 
         m_plugins.setup(m_configuration, m_logging);
         m_clamav_log.setup(m_configuration, m_logging);
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
         m_server_log.setup(m_configuration, m_logging);
-        Engine::_plugins();
+
+        _plugins();
     }
 
     void Engine::lua_open_library(engine::lua::StateView &p_lua)
@@ -60,15 +64,19 @@ namespace engine
             &Engine::m_configuration,
             "server",
             &Engine::m_server,
+            "database",
+            &Engine::m_database,
             "version",
             &Engine::m_version);
     }
 
     void Engine::_plugins()
     {
+        m_logging.info("Engine Loading plugins...");
+
         plugins::Plugins::lua.state["_engine"] = this;
 
-        Engine::lua_open_library(plugins::Plugins::lua.state);
+        lua_open_library(plugins::Plugins::lua.state);
 
         server::extend::Server::plugins();
         logging::extend::Logging::plugins();
@@ -78,8 +86,11 @@ namespace engine
         security::yara::extend::Yara::plugins();
         magic::extend::Magic::plugins();
         parser::extend::Json::plugins();
-        engine::bridge::extend::Bridge::plugins();
+        bridge::extend::Bridge::plugins();
         version::extend::Version::plugins();
+        database::extend::Database::plugins();
+
+        m_logging.info("Plugins ready.");
     }
 
     void Engine::load()

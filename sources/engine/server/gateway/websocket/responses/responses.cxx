@@ -6,7 +6,7 @@ namespace engine::server::gateway::websocket::responses
     {
     }
 
-    const parser::Json Connected::_to_json() const
+    const parser::Json Connected::_tojson() const
     {
         parser::Json json;
 
@@ -36,7 +36,7 @@ namespace engine::server::gateway::websocket::responses
     {
     }
 
-    const parser::Json UnsupportedData::_to_json() const
+    const parser::Json UnsupportedData::_tojson() const
     {
         parser::Json json;
 
@@ -62,7 +62,7 @@ namespace engine::server::gateway::websocket::responses
         return "Message received not supported by the server.";
     }
 
-    const parser::Json InvalidTokenJWT::_to_json() const
+    const parser::Json InvalidTokenJWT::_tojson() const
     {
         parser::Json json;
 
@@ -92,7 +92,7 @@ namespace engine::server::gateway::websocket::responses
     {
     }
 
-    const parser::Json BadRequests::_to_json() const
+    const parser::Json BadRequests::_tojson() const
     {
         parser::Json json;
 
@@ -118,4 +118,4 @@ namespace engine::server::gateway::websocket::responses
         return "Bad requests raw data";
     }
 
-} // namespace engine::server::gateway::websocket::responses
+} // namespace engine::server::gateway::websocket::Websocket::responses

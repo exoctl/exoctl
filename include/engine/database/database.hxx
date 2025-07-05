@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <engine/configuration/configuration.hxx>
 #include <engine/database/extend/database.hxx>
+#include <engine/logging/logging.hxx>
 #include <queue>
 #include <sqlite3.h>
 
@@ -12,24 +13,29 @@ namespace engine::database
     class Database
     {
       public:
-        Database() = default;
+        Database();
         ~Database();
+        Database(const Database &) = delete;
+        Database &operator=(const Database &) = delete;
 
         friend extend::Database;
 
-        void setup(const configuration::Configuration &);
+        void setup(const configuration::Configuration &,
+                   const logging::Logging &);
         void load();
-        [[nodiscard]] const bool is_open() const;
-        [[nodiscard]] const bool is_running() const;
         void exec_query_commit(const std::string &);
         const int exec_query(
             const std::string &,
             const std::function<int(void *, int, char **, char **)> &);
         void close() const;
 
+        std::atomic<bool> is_running;
+        std::atomic<size_t> sql_queue_size;
+
       private:
         ::sqlite3 *m_database;
         configuration::Configuration m_config;
+        logging::Logging m_log;
 
         void worker();
         void enqueue_sql(const std::string &sql);
@@ -40,6 +46,5 @@ namespace engine::database
         std::mutex m_queue_mutex;
         std::condition_variable m_queue_cv;
         std::queue<std::string> m_sql_queue;
-        std::atomic<bool> m_running = true;
     };
 } // namespace engine::database

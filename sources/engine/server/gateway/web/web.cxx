@@ -1,6 +1,6 @@
 #include <engine/server/gateway/web/web.hxx>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::web
 {
     void Web::setup(Server &p_server,
                     const std::string &p_url,
@@ -33,16 +33,15 @@ namespace engine::server::gateway
                         methods[0], methods[1], methods[2], methods[3]);
                     break;
                 case 5:
-                default:
                     route.methods(methods[0],
                                   methods[1],
                                   methods[2],
                                   methods[3],
                                   methods[4]);
                     break;
+                default:
+                    break;
             }
-        } else {
-            route.methods(crow::HTTPMethod::GET);
         }
 
         route(m_on_request);

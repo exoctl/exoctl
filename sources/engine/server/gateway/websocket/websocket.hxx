@@ -8,10 +8,9 @@
 #include <mutex>
 #include <string>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::websocket
 {
     class WebSocket
-    // : public interface::IPlugins<WebSocket>
     {
       public:
         using on_error_callback =

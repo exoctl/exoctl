@@ -29,15 +29,14 @@ namespace engine::bridge::endpoints
         server::Server *m_server;
         mutable map::Map m_map;
 
-        std::unique_ptr<engine::server::gateway::Web> m_web_scan_yara;
-        std::unique_ptr<engine::server::gateway::Web> m_web_scan_av_clamav;
-        std::unique_ptr<engine::server::gateway::Web> m_web_scan;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_yara;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_av_clamav;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan;
 
         std::shared_ptr<focades::analysis::scan::av::clamav::Clamav>
             m_scan_av_clamav;
         std::shared_ptr<focades::analysis::scan::yara::Yara> m_scan_yara;
 
-        void prepare();
         void scan();
         void scan_yara();
         void scan_av_clamav();

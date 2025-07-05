@@ -45,7 +45,7 @@ namespace engine::bridge::endpoints
     void Analysis::scan()
     {
         m_map.add_route("/scan", [&]() {
-            m_web_scan = std::make_unique<server::gateway::Web>();
+            m_web_scan = std::make_unique<server::gateway::web::Web>();
             m_web_scan->setup(*m_server,
                               BASE_ANALYSIS "/scan",
                               [&](const crow::request &req) -> crow::response {
@@ -80,7 +80,7 @@ namespace engine::bridge::endpoints
     void Analysis::scan_av_clamav()
     {
         m_map.add_route("/scan/av/clamav", [&]() {
-            m_web_scan_av_clamav = std::make_unique<server::gateway::Web>();
+            m_web_scan_av_clamav = std::make_unique<server::gateway::web::Web>();
             m_web_scan_av_clamav->setup(
                 *m_server,
                 BASE_ANALYSIS "/scan/av/clamav",
@@ -103,7 +103,7 @@ namespace engine::bridge::endpoints
     void Analysis::scan_yara()
     {
         m_map.add_route("/scan/yara", [&]() {
-            m_web_scan_yara = std::make_unique<server::gateway::Web>();
+            m_web_scan_yara = std::make_unique<server::gateway::web::Web>();
             m_web_scan_yara->setup(
                 *m_server,
                 BASE_ANALYSIS "/scan/yara",

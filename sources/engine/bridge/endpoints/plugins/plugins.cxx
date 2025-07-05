@@ -27,7 +27,7 @@ namespace engine::bridge::endpoints
     void Plugins::plugins()
     {
         m_map.add_route(BASE_PLUGINS, [&]() {
-            m_web_plugins = std::make_unique<engine::server::gateway::Web>();
+            m_web_plugins = std::make_unique<engine::server::gateway::web::Web>();
             m_web_plugins->setup(
                 m_server,
                 BASE_PLUGINS,

@@ -32,4 +32,4 @@ namespace engine::server::gateway::websocket
       private:
         std::unordered_set<crow::websocket::connection *> m_context;
     };
-} // namespace engine::server::gateway::websocket
+} // namespace engine::server::gateway::websocket::Websocket

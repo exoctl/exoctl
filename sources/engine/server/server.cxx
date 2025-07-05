@@ -37,16 +37,28 @@ namespace engine
         void Server::tick(std::chrono::milliseconds p_milliseconds,
                           std::function<void()> p_func)
         {
+            log->info("Registering tick with interval: {}ms",
+                      p_milliseconds.count());
             m_app->tick(p_milliseconds, p_func);
         }
 
         void Server::load()
         {
+            log->info("Server configured with name: {}, address: {}, port: {}, "
+                      "threads: {}, SSL: {}",
+                      name,
+                      bindaddr,
+                      port,
+                      concurrency,
+                      ssl_enable ? "enabled" : "disabled");
+
+            log->info("Loading middlewares...");
             m_app->get_middleware<middlewares::cors::Cors>().load();
         }
 
         std::future<void> Server::run_async()
         {
+            log->info("Preparing to run server asynchronously...");
 
             m_app->bindaddr(bindaddr)
                 .port(port)
@@ -54,6 +66,9 @@ namespace engine
                 .server_name(name);
 
             if (ssl_enable) {
+                log->info("SSL enabled. Certfile: '{}', Keyfile: '{}'",
+                          certfile,
+                          keyfile);
                 if (!keyfile.empty()) {
                     m_app->ssl_file(certfile, keyfile);
                 } else {
@@ -67,8 +82,8 @@ namespace engine
         Server &Server::operator=(const Server &p_server)
         {
             if (this != &p_server) {
-                config = p_server.config;
                 log = p_server.log;
+                config = p_server.config;
                 m_app = p_server.m_app;
 
                 ssl_enable = p_server.config->get("server.ssl.enable")

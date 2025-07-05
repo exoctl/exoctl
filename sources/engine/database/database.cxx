@@ -3,76 +3,70 @@
 
 namespace engine::database
 {
-    void Database::setup(const configuration::Configuration &p_config)
+    Database::Database()
+        : is_running(true), m_database(nullptr),
+          sql_queue_size(0)
     {
+    }
+
+    void Database::setup(const configuration::Configuration &p_config,
+                         const logging::Logging &p_log)
+    {
+        m_log = p_log;
         m_config = p_config;
     }
 
     void Database::load()
     {
+        std::string path =
+            m_config.get("database.path").value<std::string>().value();
+        std::string file =
+            m_config.get("database.file").value<std::string>().value();
+        int flags = m_config.get("database.flags").value<int>().value();
+        std::string zvfs =
+            m_config.get("database.zvfs").value<std::string>().value();
+
+        m_log.info(fmt::format(
+            "Opening Database at '{}{}' with flags {} and zvfs '{}'",
+            path,
+            file,
+            flags,
+            zvfs));
+
         if (sqlite3_open_v2(
-                std::string(
-                    m_config.get("database.filepath")
-                        .value<std::string>()
-                        .value() +
-                    m_config.get("database.name").value<std::string>().value())
-                    .c_str(),
-                &m_database,
-                m_config.get("database.flags").value<int>().value(),
-                m_config.get("database.zvfs")
-                    .value<std::string>()
-                    .value()
-                    .c_str())) {
+                (path + file).c_str(), &m_database, flags, zvfs.c_str())) {
+            m_log.error(fmt::format("Failed to open database: {}",
+                                    sqlite3_errmsg(m_database)));
             throw exception::Initialize(sqlite3_errmsg(m_database));
         }
 
-        m_worker_thread = std::thread(&Database::worker, this);
-    }
+        m_log.info("Database connection opened successfully.");
 
-    const bool Database::is_running() const
-    {
-        return m_running;
+        m_worker_thread = std::thread(&Database::worker, this);
+
+        Database::load_schema();
+        Database::load_migrations();
     }
 
     void Database::load_schema()
     {
-        //     std::string schema_path =
-        //         m_config.get("database.ddl.path").value<std::string>().value();
-        //     std::string schema_file =
-        //         m_config.get("database.ddl.main").value<std::string>().value();
-        //     std::ifstream file(schema_path + "/" + schema_file);
-
-        //     if (!file.is_open())
-        //         throw exception::Initialize("Unable to open schema file");
-
-        //     std::stringstream buffer;
-        //     buffer << file.rdbuf();
-
-        //     enqueue_sql(buffer.str());
+        m_log.info("Loading schema...");
+        // Descomente se quiser ativar o carregamento real
+        // m_log.info(fmt::format("Loading schema from: {}/{}", schema_path,
+        // schema_file));
     }
 
     void Database::load_migrations()
     {
-        // std::string migration_path = m_config.get("database.ddl.migrations")
-        //                                  .value<std::string>()
-        //                                  .value();
-
-        // for (const auto &entry : fs::directory_iterator(migration_path)) {
-        //     if (!entry.is_regular_file())
-        //         continue;
-
-        //     std::ifstream file(entry.path());
-        //     if (!file.is_open())
-        //         continue;
-
-        //     std::stringstream buffer;
-        //     buffer << file.rdbuf();
-        //     enqueue_sql(buffer.str());
+        m_log.info("Loading migrations...");
+        // m_log.info(fmt::format("Scanning migration directory: {}",
+        // migration_path));
     }
-    // namespace engine::database
 
     void Database::enqueue_sql(const std::string &sql)
     {
+        m_log.info(fmt::format("Enqueueing SQL: {}",
+                               sql.substr(0, 100))); // Limitando log
         {
             std::lock_guard<std::mutex> lock(m_queue_mutex);
             m_sql_queue.push(sql);
@@ -82,41 +76,53 @@ namespace engine::database
 
     void Database::worker()
     {
-        while (m_running) {
+        m_log.info("Database Worker thread started running.");
+        while (is_running) {
             std::unique_lock<std::mutex> lock(m_queue_mutex);
             m_queue_cv.wait(
-                lock, [this] { return !m_sql_queue.empty() || !m_running; });
+                lock, [this] { return !m_sql_queue.empty() || !is_running; });
 
             while (!m_sql_queue.empty()) {
-                std::string sql = m_sql_queue.front();
+                const std::string sql = m_sql_queue.front();
                 m_sql_queue.pop();
+                sql_queue_size = m_sql_queue.size();
                 lock.unlock();
 
-                sqlite3_exec(
-                    m_database, sql.c_str(), nullptr, nullptr, nullptr);
+                m_log.info(fmt::format("Executing SQL from queue: {}",
+                                       sql.substr(0, 100)));
+
+                char *errmsg = nullptr;
+                if (sqlite3_exec(
+                        m_database, sql.c_str(), nullptr, nullptr, &errmsg) !=
+                    SQLITE_OK) {
+                    m_log.error(fmt::format("SQLite exec error: {}", errmsg));
+                    sqlite3_free(errmsg);
+                }
 
                 lock.lock();
             }
         }
     }
 
-    const bool Database::is_open() const
-    {
-        return m_database != nullptr;
-    }
-
     void Database::exec_query_commit(const std::string &sql)
     {
-        char *errmsg = nullptr;
-        sqlite3_exec(m_database, "BEGIN;", nullptr, nullptr, nullptr);
-        sqlite3_exec(m_database, sql.c_str(), nullptr, nullptr, &errmsg);
-        sqlite3_exec(m_database, "COMMIT;", nullptr, nullptr, nullptr);
+        // m_log.info("Executing committed SQL query.");
+        // char *errmsg = nullptr;
+        // sqlite3_exec(m_database, "BEGIN;", nullptr, nullptr, nullptr);
+        // if (sqlite3_exec(m_database, sql.c_str(), nullptr, nullptr, &errmsg)
+        // !=
+        //     SQLITE_OK) {
+        //     m_log.error(fmt::format("SQL error: {}", errmsg));
+        //     sqlite3_free(errmsg);
+        // }
+        // sqlite3_exec(m_database, "COMMIT;", nullptr, nullptr, nullptr);
     }
 
     const int Database::exec_query(
         const std::string &p_sql,
         const std::function<int(void *, int, char **, char **)> &p_callback)
     {
+        m_log.info(fmt::format("Executing SQL query: {}", p_sql));
         return sqlite3_exec(
             m_database,
             p_sql.c_str(),
@@ -132,10 +138,11 @@ namespace engine::database
 
     Database::~Database()
     {
-        m_running = false;
+        is_running = false;
         m_queue_cv.notify_all();
-        if (m_worker_thread.joinable())
+        if (m_worker_thread.joinable()) {
             m_worker_thread.join();
+        }
 
         Database::close();
     }

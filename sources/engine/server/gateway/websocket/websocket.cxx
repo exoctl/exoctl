@@ -3,7 +3,7 @@
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::websocket
 {
     void WebSocket::setup(Server &p_server,
                           const std::string &p_url,

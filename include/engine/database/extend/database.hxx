@@ -6,7 +6,7 @@
 namespace engine::database::extend
 {
     class Database : public interface::ILuaOpenLibrary,
-                     interface::IPlugins<Database>
+                     public interface::IPlugins<Database>
     {
       public:
         Database() = default;

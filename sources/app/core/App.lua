@@ -16,16 +16,16 @@ config:load()
 logging:setup(config)
 logging:load()
 
+database:setup(config, logging)
+database:load()
+
 -- setup server (function 'run' is active in instance to engine)
 server:setup(config, logging)
 server:load()
 
-database:setup(config)
-database:load()
-
 bridge:setup(server)
 bridge:load()
 
-engine:setup(config, logging, server)
+engine:setup(config, logging, server, database)
 engine:load()
 engine:run()

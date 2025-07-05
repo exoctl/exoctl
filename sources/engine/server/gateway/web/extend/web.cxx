@@ -6,9 +6,9 @@
 
 namespace engine::server::gateway::web::extend
 {
-    void Web::_plugins()
+    void Web::bind_web()
     {
-        plugins::Plugins::lua.state.new_usertype<Web>(
+        plugins::Plugins::lua.state.new_usertype<web::Web>(
             "Web",
             "new",
             sol::overload([](Server &server,
@@ -25,11 +25,14 @@ namespace engine::server::gateway::web::extend
                     }
                 }
 
-                auto instance = std::make_shared<gateway::Web>();
+                const std::shared_ptr<gateway::web::Web> instance =
+                    std::make_shared<gateway::web::Web>();
+
                 instance->setup(
                     server,
                     url,
-                    [callback](const crow::request &req) -> crow::response {
+                    [callback](
+                        const crow::request &req) -> const crow::response {
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
@@ -59,4 +62,9 @@ namespace engine::server::gateway::web::extend
                 return instance;
             }));
     }
-} // namespace engine::server::gateway::web::extend
+
+    void Web::_plugins()
+    {
+        Web::bind_web();
+    }
+} // namespace engine::server::gateway::web::Web::extend

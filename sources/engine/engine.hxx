@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/configuration/configuration.hxx>
+#include <engine/database/database.hxx>
 #include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
@@ -25,11 +26,11 @@ namespace engine
         configuration::Configuration m_configuration;
         logging::Logging m_logging;
         server::Server m_server;
+        database::Database *m_database;
         plugins::Plugins m_plugins;
         version::Version m_version;
 
-
-        signals::Signals m_signals;
+        // signals::Signals m_signals;
         server::_::Log m_server_log;
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
@@ -46,7 +47,8 @@ namespace engine
 
         void setup(configuration::Configuration &,
                    logging::Logging &,
-                   server::Server &);
+                   server::Server &,
+                  database::Database &);
 
         void load();
         void run();
