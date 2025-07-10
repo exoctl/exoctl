@@ -61,19 +61,19 @@ namespace engine::database
 
     void Database::load_migrations()
     {
-        const std::string root_path =
+        const std::string path =
             m_config.get("database.ddl.path").value<std::string>().value() +
             m_config.get("database.ddl.migrations")
                 .value<std::string>()
                 .value();
 
-        m_log.info(fmt::format("Loading migrations from '{}'", root_path));
+        m_log.info(fmt::format("Loading migrations from '{}'", path));
 
-        auto process_directory = [&](const std::string &p_path,
-                                     auto &&self_ref) -> void {
+        const auto process = [&](const std::string &p_path,
+                                 auto &&self_ref) -> void {
             DIR *dir = opendir(p_path.c_str());
             if (!dir) {
-                throw std::runtime_error(fmt::format(
+                throw exception::Migrations(fmt::format(
                     "Failed to open '{}': {}", p_path, strerror(errno)));
             }
 
@@ -94,13 +94,13 @@ namespace engine::database
                     std::ifstream file(full_path);
                     if (!file.is_open()) {
                         closedir(dir);
-                        throw std::runtime_error(fmt::format(
+                        throw exception::Migrations(fmt::format(
                             "Failed to open migration file '{}'", full_path));
                     }
 
-                    std::stringstream buffer;
-                    buffer << file.rdbuf();
-                    const std::string sql = buffer.str();
+                    const std::string sql(
+                        (std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
 
                     Database::enqueue_sql(sql);
 
@@ -112,7 +112,7 @@ namespace engine::database
             closedir(dir);
         };
 
-        process_directory(root_path, process_directory);
+        process(path, process);
     }
 
     void Database::enqueue_sql(const std::string &sql)
@@ -139,8 +139,9 @@ namespace engine::database
                 sql_queue_size = m_sql_queue.size();
                 lock.unlock();
 
-                m_log.info(fmt::format(
-                    "Executing SQL from queue({}): {} ", sql_queue_size.load(), sql));
+                m_log.info(fmt::format("Executing SQL from queue({}): {} ",
+                                       sql_queue_size.load(),
+                                       sql));
 
                 char *errmsg = nullptr;
                 if (sqlite3_exec(
