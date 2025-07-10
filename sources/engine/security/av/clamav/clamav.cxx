@@ -70,15 +70,9 @@ namespace engine
                 })
 
                 data->virname = nullptr;
-                struct cl_scan_options scanopts =
-                    (cl_scan_options) {.general = p_options.dev,
-                                       .parse = p_options.parse,
-                                       .heuristic = p_options.heuristic,
-                                       .mail = p_options.mail,
-                                       .dev = p_options.dev};
 
                 const cl_error_t ret = cl_scandesc(
-                    fd, "tmp_", &data->virname, nullptr, m_engine, &scanopts);
+                    fd, "tmp_", &data->virname, nullptr, m_engine, &p_options);
 
                 data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
                 data->math_status = [ret]() {

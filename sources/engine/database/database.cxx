@@ -1,11 +1,14 @@
+#include <dirent.h>
 #include <engine/database/database.hxx>
 #include <engine/database/exception.hxx>
+#include <filesystem>
+#include <fmt/core.h>
+#include <sys/types.h>
 
 namespace engine::database
 {
     Database::Database()
-        : is_running(true), m_database(nullptr),
-          sql_queue_size(0)
+        : is_running(true), m_database(nullptr), sql_queue_size(0)
     {
     }
 
@@ -58,15 +61,63 @@ namespace engine::database
 
     void Database::load_migrations()
     {
-        m_log.info("Loading migrations...");
-        // m_log.info(fmt::format("Scanning migration directory: {}",
-        // migration_path));
+        const std::string root_path =
+            m_config.get("database.ddl.path").value<std::string>().value() +
+            m_config.get("database.ddl.migrations")
+                .value<std::string>()
+                .value();
+
+        m_log.info(fmt::format("Loading migrations from '{}'", root_path));
+
+        auto process_directory = [&](const std::string &p_path,
+                                     auto &&self_ref) -> void {
+            DIR *dir = opendir(p_path.c_str());
+            if (!dir) {
+                throw std::runtime_error(fmt::format(
+                    "Failed to open '{}': {}", p_path, strerror(errno)));
+            }
+
+            const struct dirent *entry;
+            while ((entry = readdir(dir)) != nullptr) {
+                const std::filesystem::path entry_name = entry->d_name;
+                const std::string full_path =
+                    fmt::format("{}/{}", p_path, entry_name.c_str());
+
+                if (entry_name == "." || entry_name == "..") {
+                    continue;
+                }
+
+                if (entry_name.extension() == ".sql") {
+                    m_log.info(
+                        fmt::format("Applying migration: {}", full_path));
+
+                    std::ifstream file(full_path);
+                    if (!file.is_open()) {
+                        closedir(dir);
+                        throw std::runtime_error(fmt::format(
+                            "Failed to open migration file '{}'", full_path));
+                    }
+
+                    std::stringstream buffer;
+                    buffer << file.rdbuf();
+                    const std::string sql = buffer.str();
+
+                    Database::enqueue_sql(sql);
+
+                } else if (entry->d_type == DT_DIR) {
+                    self_ref(full_path, self_ref);
+                }
+            }
+
+            closedir(dir);
+        };
+
+        process_directory(root_path, process_directory);
     }
 
     void Database::enqueue_sql(const std::string &sql)
     {
-        m_log.info(fmt::format("Enqueueing SQL: {}",
-                               sql.substr(0, 100))); 
+        m_log.info(fmt::format("Enqueueing SQL: {}", sql));
         {
             std::lock_guard<std::mutex> lock(m_queue_mutex);
             m_sql_queue.push(sql);
@@ -88,8 +139,8 @@ namespace engine::database
                 sql_queue_size = m_sql_queue.size();
                 lock.unlock();
 
-                m_log.info(fmt::format("Executing SQL from queue: {}",
-                                       sql.substr(0, 100)));
+                m_log.info(fmt::format(
+                    "Executing SQL from queue({}): {} ", sql_queue_size.load(), sql));
 
                 char *errmsg = nullptr;
                 if (sqlite3_exec(
@@ -120,15 +171,10 @@ namespace engine::database
 
     const int Database::exec_query(
         const std::string &p_sql,
-        const std::function<int(void *, int, char **, char **)> &p_callback)
+        int (*p_callback)(void *, int, char **, char **))
     {
         m_log.info(fmt::format("Executing SQL query: {}", p_sql));
-        return sqlite3_exec(
-            m_database,
-            p_sql.c_str(),
-            *p_callback.target<int (*)(void *, int, char **, char **)>(),
-            0,
-            nullptr);
+        return sqlite3_exec(m_database, p_sql.c_str(), p_callback, 0, nullptr);
     }
 
     void Database::close() const

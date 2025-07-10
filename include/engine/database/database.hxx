@@ -24,9 +24,8 @@ namespace engine::database
                    const logging::Logging &);
         void load();
         void exec_query_commit(const std::string &);
-        const int exec_query(
-            const std::string &,
-            const std::function<int(void *, int, char **, char **)> &);
+        const int exec_query(const std::string &,
+                             int (*)(void *, int, char **, char **));
         void close() const;
 
         std::atomic<bool> is_running;
@@ -38,7 +37,7 @@ namespace engine::database
         logging::Logging m_log;
 
         void worker();
-        void enqueue_sql(const std::string &sql);
+        void enqueue_sql(const std::string &);
         void load_schema();
         void load_migrations();
 
