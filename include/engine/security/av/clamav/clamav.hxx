@@ -3,6 +3,7 @@
 #include <clamav.h>
 #include <engine/security/av/clamav/entitys.hxx>
 #include <functional>
+#include <mutex>
 #include <string>
 
 namespace engine
@@ -15,6 +16,7 @@ namespace engine
             {
               private:
                 struct cl_engine *m_engine;
+                mutable std::mutex m_mutex;
 
               public:
                 Clamav();

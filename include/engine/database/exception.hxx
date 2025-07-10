@@ -23,4 +23,14 @@ namespace engine::database::exception
         explicit Migrations(const std::string &);
         const char *what() const noexcept override;
     };
+
+    class Schema : public interface::IException
+    {
+      private:
+        const std::string m_error_message;
+
+      public:
+        explicit Schema(const std::string &);
+        const char *what() const noexcept override;
+    };
 } // namespace engine::database::exception

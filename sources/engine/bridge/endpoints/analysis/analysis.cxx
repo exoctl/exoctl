@@ -46,45 +46,54 @@ namespace engine::bridge::endpoints
     {
         m_map.add_route("/scan", [&]() {
             m_web_scan = std::make_unique<server::gateway::web::Web>();
-            m_web_scan->setup(*m_server,
-                              BASE_ANALYSIS "/scan",
-                              [&](const crow::request &req) -> crow::response {
-                                  parser::Json json;
-                                  parser::Json av;
+            m_web_scan->setup(
+                &*m_server,
+                BASE_ANALYSIS "/scan",
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
 
-                                  // TRY_BEGIN()
-                                  // m_scan_av_clamav->scan_fast_bytes(
-                                  //     req.body,
-                                  //     [&](focades::analysis::scan::av::clamav::record::DTO
-                                  //             *p_dto) {
-                                  //         av.add("clamav",
-                                  //         m_scan_av_clamav->dto_json(p_dto));
-                                  //     });
-                                  //
-                                  // json.add("av", av);
-                                  // return crow::response{json.to_string()};
-                                  // TRY_END()
-                                  //
-                                  // CATCH(security::yara::exception::Scan, {
-                                  //    m_server->log->info("Error scan yara
-                                  //    '{}'", e.what()); return
-                                  //    crow::response{500, e.what()};
-                                  //});
+                    parser::Json json;
+                    parser::Json av;
 
-                                  return crow::response(200);
-                              },
-                              {crow::HTTPMethod::POST});
+                    // TRY_BEGIN()
+                    // m_scan_av_clamav->scan_fast_bytes(
+                    //     req.body,
+                    //     [&](focades::analysis::scan::av::clamav::record::DTO
+                    //             *p_dto) {
+                    //         av.add("clamav",
+                    //         m_scan_av_clamav->dto_json(p_dto));
+                    //     });
+                    //
+                    // json.add("av", av);
+                    // return crow::response{json.to_string()};
+                    // TRY_END()
+                    //
+                    // CATCH(security::yara::exception::Scan, {
+                    //    m_server->log->info("Error scan yara
+                    //    '{}'", e.what()); return
+                    //    crow::response{500, e.what()};
+                    //});
+
+                    return crow::response(200);
+                });
         });
     }
 
     void Analysis::scan_av_clamav()
     {
         m_map.add_route("/scan/av/clamav", [&]() {
-            m_web_scan_av_clamav = std::make_unique<server::gateway::web::Web>();
+            m_web_scan_av_clamav =
+                std::make_unique<server::gateway::web::Web>();
             m_web_scan_av_clamav->setup(
-                *m_server,
+                &*m_server,
                 BASE_ANALYSIS "/scan/av/clamav",
-                [&](const crow::request &req) -> crow::response {
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
+
                     parser::Json json;
 
                     m_scan_av_clamav->scan(
@@ -94,9 +103,8 @@ namespace engine::bridge::endpoints
                             json = m_scan_av_clamav->dto_json(p_dto);
                         });
 
-                    return crow::response{json.tostring()};
-                },
-                {crow::HTTPMethod::POST});
+                    return crow::response{"application/json", json.tostring()};
+                });
         });
     }
 
@@ -105,9 +113,13 @@ namespace engine::bridge::endpoints
         m_map.add_route("/scan/yara", [&]() {
             m_web_scan_yara = std::make_unique<server::gateway::web::Web>();
             m_web_scan_yara->setup(
-                *m_server,
+                &*m_server,
                 BASE_ANALYSIS "/scan/yara",
                 [&](const crow::request &req) -> crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
+
                     // TRY_BEGIN()
                     // parser::Json json;
 
@@ -125,8 +137,7 @@ namespace engine::bridge::endpoints
                     //     m_server->log->info("Error scan yara '{}'",
                     //     e.what()); return crow::response{500, e.what()};
                     // });
-                },
-                {crow::HTTPMethod::POST});
+                });
         });
     }
 

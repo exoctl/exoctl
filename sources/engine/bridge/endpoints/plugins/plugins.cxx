@@ -27,11 +27,16 @@ namespace engine::bridge::endpoints
     void Plugins::plugins()
     {
         m_map.add_route(BASE_PLUGINS, [&]() {
-            m_web_plugins = std::make_unique<engine::server::gateway::web::Web>();
+            m_web_plugins =
+                std::make_unique<engine::server::gateway::web::Web>();
             m_web_plugins->setup(
-                m_server,
+                &m_server,
                 BASE_PLUGINS,
-                [&](const crow::request &req) -> crow::response {
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::GET) {
+                        return crow::response{405};
+                    }
+
                     if (m_server.config->get("plugins.enable")
                             .value<bool>()
                             .value()) {

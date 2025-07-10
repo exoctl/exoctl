@@ -12,6 +12,9 @@ namespace engine::server::middlewares::cors
         this->global().origin(m_config->get("server.middleware.cors.origin")
                                   .value<std::string>()
                                   .value());
+        this->global().max_age(m_config->get("server.middleware.cors.max_age")
+                                   .value<uint32_t>()
+                                   .value());
         if (!m_config->get("server.middleware.cors.enable")
                  .value<bool>()
                  .value()) {

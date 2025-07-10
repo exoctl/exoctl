@@ -17,8 +17,6 @@ namespace engine
 {
     namespace server
     {
-        class Server; // Forward declaration Server plugin
-
         using App = crow::App<middlewares::cors::Cors>;
         class Server
         {

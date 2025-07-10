@@ -15,4 +15,4 @@ engine_json:add("engine", engine_fields)
 
 Web.new(_engine.server, "/status", function(req)
     return Response:new(200, "application/json", engine_json:tostring())
-end, HTTPMethod.Get)
+end)

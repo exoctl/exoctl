@@ -5,7 +5,7 @@
 
 namespace engine::server::gateway::websocket
 {
-    void WebSocket::setup(Server &p_server,
+    void WebSocket::setup(Server *p_server,
                           const std::string &p_url,
                           uint64_t p_max_payload,
                           on_message_callback on_message,
@@ -14,7 +14,7 @@ namespace engine::server::gateway::websocket
                           on_open_callback on_open,
                           on_close_callback on_close)
     {
-        m_server = &p_server;
+        m_server = &*p_server;
         m_url = p_url;
         m_on_message = on_message;
         m_on_error = on_error;

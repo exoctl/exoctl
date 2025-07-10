@@ -13,23 +13,12 @@ namespace engine::server::gateway::web::extend
             "new",
             sol::overload([](Server &server,
                              const std::string &url,
-                             const sol::protected_function callback,
-                             sol::variadic_args methods) {
-                std::vector<crow::HTTPMethod> method_list;
-                method_list.reserve(methods.size());
-
-                for (auto method : methods) {
-                    if (method.is<int>()) {
-                        method_list.push_back(
-                            static_cast<crow::HTTPMethod>(method.as<int>()));
-                    }
-                }
-
+                             const sol::protected_function callback) {
                 const std::shared_ptr<gateway::web::Web> instance =
                     std::make_shared<gateway::web::Web>();
 
                 instance->setup(
-                    server,
+                    &server,
                     url,
                     [callback](
                         const crow::request &req) -> const crow::response {
@@ -56,8 +45,7 @@ namespace engine::server::gateway::web::extend
                         }
 
                         return crow::response(200);
-                    },
-                    method_list);
+                    });
 
                 return instance;
             }));
@@ -67,4 +55,4 @@ namespace engine::server::gateway::web::extend
     {
         Web::bind_web();
     }
-} // namespace engine::server::gateway::web::Web::extend
+} // namespace engine::server::gateway::web::extend

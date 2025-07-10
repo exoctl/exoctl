@@ -32,7 +32,7 @@ namespace engine::server::gateway::websocket
                                const std::string &,
                                bool)>;
 
-        void setup(Server &,
+        void setup(Server *,
                    const std::string &,
                    uint64_t,
                    on_message_callback = nullptr,
