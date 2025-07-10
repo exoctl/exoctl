@@ -9,5 +9,5 @@ TEST_F(YaraTest, YaraSetSignatureRuleMemTest)
 
 TEST_F(YaraTest, YaraLoadRulesFolderTest)
 {
-    ASSERT_NO_THROW(yara->load_rules_folder("./"));
+    ASSERT_NO_THROW(yara->set_rules_folder("./"));
 }

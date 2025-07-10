@@ -66,7 +66,7 @@ namespace engine::database
     void Database::enqueue_sql(const std::string &sql)
     {
         m_log.info(fmt::format("Enqueueing SQL: {}",
-                               sql.substr(0, 100))); // Limitando log
+                               sql.substr(0, 100))); 
         {
             std::lock_guard<std::mutex> lock(m_queue_mutex);
             m_sql_queue.push(sql);

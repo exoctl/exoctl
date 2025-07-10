@@ -120,11 +120,6 @@ namespace engine::configuration::extend
             }));
     }
 
-    void Configuration::lua_open_library(engine::lua::StateView &p_lua)
-    {
-        Configuration::bind_configuration(p_lua);
-    }
-
     void Configuration::_plugins()
     {
         Configuration::bind_configuration(plugins::Plugins::lua.state);

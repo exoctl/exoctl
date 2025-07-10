@@ -17,11 +17,6 @@ namespace engine::bridge::extend
         plugins::Plugins::lua.state["_analysis"] = bridge::Bridge::analysis;
     }
 
-    void Bridge::lua_open_library(engine::lua::StateView &p_lua)
-    {
-        Bridge::bind_bridge(p_lua);
-    }
-
     void Bridge::_plugins()
     {
         engine::bridge::endpoints::Analysis::plugins();

@@ -24,11 +24,6 @@ namespace engine::database::extend
             }));
     }
 
-    void Database::lua_open_library(engine::lua::StateView &p_lua)
-    {
-        Database::bind_database(p_lua);
-    }
-
     void Database::_plugins()
     {
         Database::bind_database(plugins::Plugins::lua.state);

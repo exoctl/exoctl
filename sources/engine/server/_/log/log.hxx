@@ -17,7 +17,6 @@ namespace engine
                 ~Log() = default;
 
                 void setup(configuration::Configuration &, logging::Logging &);
-
                 void log(std::string, crow::LogLevel) override;
 
               private:

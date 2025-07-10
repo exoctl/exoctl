@@ -229,9 +229,4 @@ namespace engine::server::extend
 
         gateway::web::extend::Web::plugins();
     }
-
-    void Server::lua_open_library(engine::lua::StateView &p_lua)
-    {
-        Server::bind_server(p_lua);
-    }
 } // namespace engine::server::extend

@@ -24,7 +24,7 @@ namespace engine::bridge::focades::analysis::scan::yara
     void Yara::load_rules() const
     {
         m_yara->load_rules([&]() {
-            m_yara->load_rules_folder(
+            m_yara->set_rules_folder(
                 m_config->get("bridge.focade.analysis.yara.rules.path")
                     .value<std::string>()
                     .value());

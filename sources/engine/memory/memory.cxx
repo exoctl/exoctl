@@ -33,7 +33,7 @@ namespace engine::memory
             this);
     }
 
-    const void Memory::protect(void *p_address,
+    void Memory::protect(void *p_address,
                                const size_t p_len,
                                const unsigned int p_prot)
     {

@@ -1,3 +1,5 @@
+#include <cstdint>
+
 namespace engine::memory::record
 {
     typedef struct Segment {

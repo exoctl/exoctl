@@ -1,6 +1,5 @@
 #pragma once
 
-#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/interfaces/iplugins.hxx>
 
 namespace engine::server::gateway::web::extend

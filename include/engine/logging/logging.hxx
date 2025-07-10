@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <engine/configuration/configuration.hxx>
-#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/extend/logging.hxx>
 #include <spdlog/spdlog.h>

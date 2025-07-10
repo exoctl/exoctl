@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <fmt/core.h>
 #include <include/engine/memory/exception.hxx>
-#include <memory.h>
+#include <memory>
 #include <unistd.h>
 
 namespace engine

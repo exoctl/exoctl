@@ -1,22 +1,17 @@
 #pragma once
 
-#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
 
 namespace engine::server::extend
 {
-    class Server : public interface::ILuaOpenLibrary
-
-        ,
+    class Server :
                    public interface::IPlugins<Server>
 
     {
       public:
         Server() = default;
         ~Server() = default;
-        void lua_open_library(engine::lua::StateView &) override;
-
         void _plugins() override;
 
       private:

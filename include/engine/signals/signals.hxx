@@ -1,7 +1,6 @@
 #pragma once
 
 #include <csignal>
-#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <functional>
 
 namespace engine::signals

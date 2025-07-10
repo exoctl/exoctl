@@ -25,58 +25,28 @@ namespace engine
     }
 
     void Engine::setup(configuration::Configuration &p_config,
-                       logging::Logging &p_log,
-                       server::Server &p_server,
-                       database::Database &p_database)
+                       logging::Logging &p_log)
     {
         m_logging = p_log;
         m_configuration = p_config;
-        m_server = p_server;
-        m_database = &p_database;
 
+        m_database.setup(m_configuration, m_logging);
+        m_server.setup(m_configuration, m_logging);
         m_plugins.setup(m_configuration, m_logging);
         m_clamav_log.setup(m_configuration, m_logging);
         m_llama_log.setup(m_configuration, m_logging);
         m_lief_log.setup(m_configuration, m_logging);
         m_server_log.setup(m_configuration, m_logging);
+        m_bridge.setup(m_server);
 
         _plugins();
     }
 
-    void Engine::lua_open_library(engine::lua::StateView &p_lua)
-    {
-        p_lua.new_usertype<engine::Engine>(
-            "Engine",
-            sol::constructors<engine::Engine()>(),
-            "is_running",
-            sol::readonly(&Engine::is_running),
-            "stop",
-            &Engine::stop,
-            "setup",
-            &Engine::setup,
-            "run",
-            &Engine::run,
-            "load",
-            &Engine::load,
-            "logging",
-            &Engine::m_logging,
-            "configuration",
-            &Engine::m_configuration,
-            "server",
-            &Engine::m_server,
-            "database",
-            &Engine::m_database,
-            "version",
-            &Engine::m_version);
-    }
-
     void Engine::_plugins()
     {
-        m_logging.info("Engine Loading plugins...");
+        m_logging.info("Engine registering plugins...");
 
         plugins::Plugins::lua.state["_engine"] = this;
-
-        lua_open_library(plugins::Plugins::lua.state);
 
         server::extend::Server::plugins();
         logging::extend::Logging::plugins();
@@ -89,12 +59,13 @@ namespace engine
         bridge::extend::Bridge::plugins();
         version::extend::Version::plugins();
         database::extend::Database::plugins();
-
-        m_logging.info("Plugins ready.");
     }
 
     void Engine::load()
     {
+        m_database.load();
+        m_server.load();
+        m_bridge.load();
         m_plugins.load();
     }
 

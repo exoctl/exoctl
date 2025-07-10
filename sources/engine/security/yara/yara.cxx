@@ -5,7 +5,9 @@
 #include <fcntl.h>
 #include <fmt/core.h>
 #include <sys/types.h>
+#include <algorithm>
 #include <unistd.h>
+#include <mutex>
 
 namespace engine
 {
@@ -176,7 +178,7 @@ namespace engine
                 m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
         }
 
-        void Yara::load_rules_folder(const std::string &p_path) const
+        void Yara::set_rules_folder(const std::string &p_path) const
         {
             static std::mutex fs_mutex;
             std::lock_guard<std::mutex> fs_lock(fs_mutex);
@@ -214,7 +216,7 @@ namespace engine
                             std::string(full_path));
                     }
                 } else if (entry->d_type == DT_DIR) {
-                    Yara::load_rules_folder(full_path);
+                    Yara::set_rules_folder(full_path);
                 }
             }
             closedir(dir);

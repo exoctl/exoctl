@@ -1,16 +1,14 @@
 #pragma once
 
-#include <engine/interfaces/iluaopenlibrary.hxx>
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/lua/lua.hxx>
 
 namespace engine::configuration::extend
 {
-    class Configuration : public interface::ILuaOpenLibrary,
+    class Configuration : 
                           public interface::IPlugins<Configuration>
     {
       public:
-        void lua_open_library(engine::lua::StateView &) override;
-
         void _plugins() override;
 
       private:
