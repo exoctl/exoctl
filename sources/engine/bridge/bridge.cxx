@@ -19,7 +19,7 @@ namespace engine
 
         void Bridge::load()
         {
-            m_server->log->info("Loading Defaults Bridges ...");
+            m_server->log->info("Loading Defaults Bridges...");
 
             TRY_BEGIN()
 

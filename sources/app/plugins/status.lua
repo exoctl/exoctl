@@ -1,4 +1,3 @@
-
 local engine_fields = Json:new()
 engine_fields:add("is_running", _engine.is_running)
 

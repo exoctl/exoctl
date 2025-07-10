@@ -1,6 +1,6 @@
 #include <engine/engine.hxx>
 
-int main()
+int main(void)
 {
     const std::string EXOCTLDIR = getenv("EXOCTLDIR");
 

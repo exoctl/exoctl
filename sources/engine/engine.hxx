@@ -1,5 +1,6 @@
 #pragma once
 
+#include <engine/bridge/bridge.hxx>
 #include <engine/configuration/configuration.hxx>
 #include <engine/database/database.hxx>
 #include <engine/llama/_/log.hxx>
@@ -11,7 +12,6 @@
 #include <engine/security/av/clamav/_/log.hxx>
 #include <engine/server/_/log/log.hxx>
 #include <engine/server/server.hxx>
-#include <engine/bridge/bridge.hxx>
 #include <engine/signals/signals.hxx>
 #include <engine/version/version.hxx>
 #include <functional>
@@ -22,14 +22,6 @@ namespace engine
     class Engine : public interface::IPlugins<Engine>
     {
       private:
-        configuration::Configuration m_configuration;
-        logging::Logging m_logging;
-        server::Server m_server;
-        database::Database m_database;
-        plugins::Plugins m_plugins;
-        version::Version m_version;
-        bridge::Bridge m_bridge;
-
         // signals::Signals m_signals;
         server::_::Log m_server_log;
         llama::_::Log m_llama_log;
@@ -39,13 +31,20 @@ namespace engine
       public:
         bool is_running;
 
+        configuration::Configuration configuration;
+        logging::Logging logging;
+        server::Server server;
+        database::Database database;
+        plugins::Plugins plugins;
+        version::Version version;
+        bridge::Bridge bridge;
+
         ~Engine();
         Engine();
 
         void _plugins() override;
 
-        void setup(configuration::Configuration &,
-                   logging::Logging &);
+        void setup(configuration::Configuration &, logging::Logging &);
 
         void load();
         void run();

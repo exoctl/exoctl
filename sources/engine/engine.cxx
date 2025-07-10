@@ -27,24 +27,48 @@ namespace engine
     void Engine::setup(configuration::Configuration &p_config,
                        logging::Logging &p_log)
     {
-        m_logging = p_log;
-        m_configuration = p_config;
+        logging = p_log;
+        configuration = p_config;
 
-        m_database.setup(m_configuration, m_logging);
-        m_server.setup(m_configuration, m_logging);
-        m_plugins.setup(m_configuration, m_logging);
-        m_clamav_log.setup(m_configuration, m_logging);
-        m_llama_log.setup(m_configuration, m_logging);
-        m_lief_log.setup(m_configuration, m_logging);
-        m_server_log.setup(m_configuration, m_logging);
-        m_bridge.setup(m_server);
+        database.setup(configuration, logging);
+        server.setup(configuration, logging);
+        plugins.setup(configuration, logging);
+        m_clamav_log.setup(configuration, logging);
+        m_llama_log.setup(configuration, logging);
+        m_lief_log.setup(configuration, logging);
+        m_server_log.setup(configuration, logging);
+        bridge.setup(server);
 
         _plugins();
     }
 
     void Engine::_plugins()
     {
-        m_logging.info("Engine registering plugins...");
+        logging.info("Engine registering plugins...");
+
+        plugins::Plugins::lua.state.new_usertype<engine::Engine>(
+            "Engine",
+            sol::constructors<engine::Engine()>(),
+            "is_running",
+            sol::readonly(&Engine::is_running),
+            "stop",
+            &Engine::stop,
+            "setup",
+            &Engine::setup,
+            "run",
+            &Engine::run,
+            "load",
+            &Engine::load,
+            "logging",
+            &Engine::logging,
+            "configuration",
+            &Engine::configuration,
+            "server",
+            &Engine::server,
+            "version",
+            &Engine::version,
+            "database",
+            &Engine::database);
 
         plugins::Plugins::lua.state["_engine"] = this;
 
@@ -63,22 +87,22 @@ namespace engine
 
     void Engine::load()
     {
-        m_database.load();
-        m_server.load();
-        m_bridge.load();
-        m_plugins.load();
+        database.load();
+        server.load();
+        bridge.load();
+        plugins.load();
     }
 
     void Engine::stop()
     {
         is_running = false;
-        m_server.stop();
+        server.stop();
     }
 
     void Engine::run()
     {
         is_running = true;
-        m_plugins.run_async();
-        m_server.run_async();
+        plugins.run_async();
+        server.run_async();
     }
 } // namespace engine

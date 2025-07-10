@@ -136,7 +136,7 @@ namespace engine::bridge::endpoints
                 .value<bool>()
                 .value()) {
             TRY_BEGIN()
-            m_server->log->info("Loading rules yara ...");
+            m_server->log->info("Loading rules yara...");
             m_scan_yara->load_rules();
 
             m_server->log->info("Loading rules clamav ...");
