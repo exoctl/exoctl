@@ -17,7 +17,7 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
     {
         m_clamav.set_db_rule_fd(m_config
                                     ->get("bridge.focade.analysis.av."
-                                          "clamav.database.default_path")
+                                          "clamav.database.file")
                                     .value<std::string>()
                                     .value(),
                                 CL_DB_STDOPT);
