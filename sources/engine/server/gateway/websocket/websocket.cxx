@@ -24,11 +24,10 @@ namespace engine::server::gateway::websocket
 
         m_server->log->info("Creating WebSocket route for URL: '{}'", m_url);
 
-        m_server->get()
-            .route_dynamic(m_url)
+        (*m_server).route_dynamic(m_url)
             .middlewares<crow::App<middleware::websocket::JWTAuth>,
                          middleware::websocket::JWTAuth>()
-            .websocket(&m_server->get())
+            .websocket(m_server)
             .max_payload(p_max_payload)
             .onopen([&](crow::websocket::connection &p_conn) {
                 WebSocket::def_open_connection(&p_conn);
@@ -182,4 +181,4 @@ namespace engine::server::gateway::websocket
     //             return instance;
     //         }));
     // }
-} // namespace engine::server::gateway
+} // namespace engine::server::gateway::websocket

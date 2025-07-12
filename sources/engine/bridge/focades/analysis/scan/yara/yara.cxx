@@ -23,12 +23,12 @@ namespace engine::bridge::focades::analysis::scan::yara
 
     void Yara::load_rules() const
     {
-        m_yara->load_rules([&]() {
-            m_yara->set_rules_folder(
-                m_config->get("bridge.focade.analysis.yara.rules.path")
-                    .value<std::string>()
-                    .value());
-        });
+        m_yara->set_rules_folder(
+            m_config->get("bridge.focade.analysis.yara.rules.path")
+                .value<std::string>()
+                .value());
+
+        m_yara->load_rules();
     }
 
     void Yara::scan(const std::string p_buffer,
@@ -52,17 +52,17 @@ namespace engine::bridge::focades::analysis::scan::yara
         }
     }
 
-    //const engine::parser::Json Yara::dto_json(const yara::record::DTO *p_dto)
+    // const engine::parser::Json Yara::dto_json(const yara::record::DTO *p_dto)
     //{
-    //    engine::parser::Json json;
-//
+    //     engine::parser::Json json;
+    //
     //    if (!IS_NULL(p_dto)) {
-//
+    //
     //        json.add("ns", p_dto->ns);
     //        json.add("rule", p_dto->rule);
     //        json.add("match_status", (int) p_dto->match_status);
     //    }
-//
+    //
     //    return json;
     //}
 } // namespace engine::bridge::focades::analysis::scan::yara

@@ -59,7 +59,7 @@ namespace engine
             [[nodiscard]] const int load_compiler();
             void unload_compiler();
 
-            void load_rules(const std::function<void()> &) const;
+            void load_rules() const;
 
             /* load rules if extension file '.yar'*/
             void set_rules_folder(const std::string & /* path */) const;
@@ -77,7 +77,7 @@ namespace engine
             template <typename Callback>
             void execute_safely(Callback &&cb) const
             {
-                std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+                const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
                 cb();
             }
 

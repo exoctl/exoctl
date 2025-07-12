@@ -2,7 +2,7 @@ local engine_fields = Json:new()
 engine_fields:add("is_running", _engine.is_running)
 
 local engine_database = Json:new():add("is_running", _engine.database.is_running):add("sql_queue_size", _engine.database.sql_queue_size)
-local engine_server = Json:new():add("port", _engine.server.port):add("bindaddr", _engine.server.bindaddr):add(
+local engine_server = Json:new():add("port", _engine.server.port):add("bindaddr", _engine.server.baddr):add(
 "concurrency", _engine.server.concurrency):add("ssl_enable", _engine.server.ssl_enable)
 
 engine_fields:add("database", engine_database)

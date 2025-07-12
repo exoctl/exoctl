@@ -7,48 +7,51 @@ namespace engine::server::gateway::web
                     on_request_callback on_request)
     {
         m_server = &*p_server;
-        m_url = p_url;
-        m_on_request = std::move(on_request);
 
-        m_server->log->info("Creating HTTP route for URL: '{}'", m_url);
+        m_server->log->info("Creating HTTP route for URL: '{}'", p_url);
 
-        auto &&route = m_server->get().route_dynamic(m_url);
+        m_route = &m_server->route_dynamic(p_url);
+        Web::active_all_methods();
+        (*m_route)(on_request);
+        m_route->validate();
+    }
+
+    void Web::active_all_methods()
+    {
         // accept all methods
-        route.methods(crow::HTTPMethod::Delete,
-                      crow::HTTPMethod::Get,
-                      crow::HTTPMethod::Head,
-                      crow::HTTPMethod::Post,
-                      crow::HTTPMethod::Put,
-                      crow::HTTPMethod::Connect,
-                      crow::HTTPMethod::Options,
-                      crow::HTTPMethod::Trace,
-                      crow::HTTPMethod::Patch,
-                      crow::HTTPMethod::Purge,
-                      crow::HTTPMethod::Copy,
-                      crow::HTTPMethod::Lock,
-                      crow::HTTPMethod::MkCol,
-                      crow::HTTPMethod::Move,
-                      crow::HTTPMethod::Propfind,
-                      crow::HTTPMethod::Proppatch,
-                      crow::HTTPMethod::Search,
-                      crow::HTTPMethod::Unlock,
-                      crow::HTTPMethod::Bind,
-                      crow::HTTPMethod::Rebind,
-                      crow::HTTPMethod::Unbind,
-                      crow::HTTPMethod::Acl,
-                      crow::HTTPMethod::Report,
-                      crow::HTTPMethod::MkActivity,
-                      crow::HTTPMethod::Checkout,
-                      crow::HTTPMethod::Merge,
-                      crow::HTTPMethod::MSearch,
-                      crow::HTTPMethod::Notify,
-                      crow::HTTPMethod::Subscribe,
-                      crow::HTTPMethod::Unsubscribe,
-                      crow::HTTPMethod::MkCalendar,
-                      crow::HTTPMethod::Link,
-                      crow::HTTPMethod::Unlink,
-                      crow::HTTPMethod::Source);
-        route(m_on_request);
-        route.validate();
+        m_route->methods(crow::HTTPMethod::Delete,
+                         crow::HTTPMethod::Get,
+                         crow::HTTPMethod::Head,
+                         crow::HTTPMethod::Post,
+                         crow::HTTPMethod::Put,
+                         crow::HTTPMethod::Connect,
+                         crow::HTTPMethod::Options,
+                         crow::HTTPMethod::Trace,
+                         crow::HTTPMethod::Patch,
+                         crow::HTTPMethod::Purge,
+                         crow::HTTPMethod::Copy,
+                         crow::HTTPMethod::Lock,
+                         crow::HTTPMethod::MkCol,
+                         crow::HTTPMethod::Move,
+                         crow::HTTPMethod::Propfind,
+                         crow::HTTPMethod::Proppatch,
+                         crow::HTTPMethod::Search,
+                         crow::HTTPMethod::Unlock,
+                         crow::HTTPMethod::Bind,
+                         crow::HTTPMethod::Rebind,
+                         crow::HTTPMethod::Unbind,
+                         crow::HTTPMethod::Acl,
+                         crow::HTTPMethod::Report,
+                         crow::HTTPMethod::MkActivity,
+                         crow::HTTPMethod::Checkout,
+                         crow::HTTPMethod::Merge,
+                         crow::HTTPMethod::MSearch,
+                         crow::HTTPMethod::Notify,
+                         crow::HTTPMethod::Subscribe,
+                         crow::HTTPMethod::Unsubscribe,
+                         crow::HTTPMethod::MkCalendar,
+                         crow::HTTPMethod::Link,
+                         crow::HTTPMethod::Unlink,
+                         crow::HTTPMethod::Source);
     }
 } // namespace engine::server::gateway::web

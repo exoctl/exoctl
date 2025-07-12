@@ -17,7 +17,7 @@ namespace engine
 
             Clamav::Clamav() : m_engine(nullptr), rules_loaded_count(0)
             {
-                std::scoped_lock lock(m_mutex);
+                const std::scoped_lock lock(m_mutex);
 
                 if (cl_init(CL_INIT_DEFAULT) != CL_SUCCESS) {
                     throw clamav::exception::Initialize(
@@ -34,7 +34,7 @@ namespace engine
             void Clamav::set_db_rule_fd(const std::string &p_path,
                                         unsigned int p_dboptions) const
             {
-                std::scoped_lock lock(m_mutex);
+                const std::scoped_lock lock(m_mutex);
 
                 const cl_error_t ret = cl_load(
                     p_path.c_str(), m_engine, &rules_loaded_count, p_dboptions);
@@ -50,7 +50,8 @@ namespace engine
                 clamav::record::scan::Options p_options,
                 const std::function<void(clamav::record::Data *)> &p_callback)
             {
-                auto data = std::make_shared<clamav::record::Data>();
+                std::shared_ptr<engine::security::av::clamav::record::Data>
+                    data = std::make_shared<clamav::record::Data>();
                 int fd = -1;
 
                 TRY_BEGIN()
@@ -97,20 +98,16 @@ namespace engine
                     }
                 }();
 
+                memory::Memory::close(fd);
+
                 if (p_callback) {
                     p_callback(data.get());
                 }
-                
-                memory::Memory::close(fd);
             }
 
-            void Clamav::load_rules(const std::function<void()> &p_callback)
+            void Clamav::load_rules()
             {
-                if (p_callback) {
-                    p_callback();
-                }
-
-                std::scoped_lock lock(m_mutex);
+                const std::scoped_lock lock(m_mutex);
                 const cl_error_t ret = cl_engine_compile(m_engine);
                 if (ret != CL_SUCCESS) {
                     throw clamav::exception::LoadRules(
@@ -122,7 +119,7 @@ namespace engine
 
             Clamav::~Clamav()
             {
-                std::scoped_lock lock(m_mutex);
+                const std::scoped_lock lock(m_mutex);
                 if (m_engine) {
                     cl_engine_free(m_engine);
                     m_engine = nullptr;

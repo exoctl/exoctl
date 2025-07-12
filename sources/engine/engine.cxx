@@ -96,13 +96,13 @@ namespace engine
     void Engine::stop()
     {
         is_running = false;
-        server.stop();
+        server.end();
     }
 
     void Engine::run()
     {
         is_running = true;
         plugins.run_async();
-        server.run_async();
+        server.start();
     }
 } // namespace engine

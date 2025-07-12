@@ -22,10 +22,10 @@ namespace engine::server::gateway::web
         ~Web() = default;
 
         void setup(Server *, const std::string &, on_request_callback);
-
-      private:
+        
+        private:
         Server *m_server;
-        std::string m_url;
-        on_request_callback m_on_request;
+        crow::DynamicRule *m_route;
+        void active_all_methods();
     };
 } // namespace engine::server::gateway::web

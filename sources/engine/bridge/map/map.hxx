@@ -9,8 +9,8 @@
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define VERSION_PREFIX "/v" TOSTRING(ENGINE_MAJOR)
-#define API_PREFIX(endpoint) VERSION_PREFIX "/engine/" endpoint
+#define VERSION_PREFIX "/v" TOSTRING(ENGINE_MAJOR) "/"
+#define API_PREFIX(endpoint) "/engine" VERSION_PREFIX endpoint
 
 namespace engine
 {

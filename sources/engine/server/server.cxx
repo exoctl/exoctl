@@ -7,21 +7,17 @@ namespace engine
 {
     namespace server
     {
-        Server::Server() : m_app(std::make_shared<App>())
-        {
-        }
-
         void Server::setup(configuration::Configuration &p_config,
                            logging::Logging &p_log)
         {
             config = &p_config;
             log = &p_log;
 
-            m_app->get_middleware<middlewares::cors::Cors>().setup(*config);
+            this->get_middleware<middlewares::cors::Cors>().setup(*config);
 
             name.assign(
                 config->get("server.name").value<std::string>().value());
-            bindaddr.assign(
+            baddr.assign(
                 config->get("server.bindaddr").value<std::string>().value());
             certfile.assign(config->get("server.ssl.certfile")
                                 .value<std::string>()
@@ -39,7 +35,7 @@ namespace engine
         {
             log->info("Registering tick with interval: {}ms",
                       p_milliseconds.count());
-            m_app->tick(p_milliseconds, p_func);
+            this->tick(p_milliseconds, p_func);
         }
 
         void Server::load()
@@ -47,20 +43,20 @@ namespace engine
             log->info("Server configured with name: {}, address: {}, port: {}, "
                       "threads: {}, SSL: {}",
                       name,
-                      bindaddr,
+                      baddr,
                       port,
                       concurrency,
                       ssl_enable ? "enabled" : "disabled");
 
             log->info("Loading middlewares...");
-            m_app->get_middleware<middlewares::cors::Cors>().load();
+            this->get_middleware<middlewares::cors::Cors>().load();
         }
 
-        std::future<void> Server::run_async()
+        std::future<void> Server::start()
         {
             log->info("Preparing to run server asynchronously...");
 
-            m_app->bindaddr(bindaddr)
+            this->bindaddr(baddr)
                 .port(port)
                 .concurrency(concurrency)
                 .server_name(name);
@@ -70,13 +66,13 @@ namespace engine
                           certfile,
                           keyfile);
                 if (!keyfile.empty()) {
-                    m_app->ssl_file(certfile, keyfile);
+                    this->ssl_file(certfile, keyfile);
                 } else {
-                    m_app->ssl_file(certfile);
+                    this->ssl_file(certfile);
                 }
             }
 
-            return m_app->run_async();
+            return this->run_async();
         }
 
         Server &Server::operator=(const Server &p_server)
@@ -84,7 +80,6 @@ namespace engine
             if (this != &p_server) {
                 log = p_server.log;
                 config = p_server.config;
-                m_app = p_server.m_app;
 
                 ssl_enable = p_server.config->get("server.ssl.enable")
                                  .value<bool>()
@@ -98,9 +93,9 @@ namespace engine
                 name.assign(p_server.config->get("server.name")
                                 .value<std::string>()
                                 .value());
-                bindaddr.assign(p_server.config->get("server.bindaddr")
-                                    .value<std::string>()
-                                    .value());
+                baddr.assign(p_server.config->get("server.bindaddr")
+                                 .value<std::string>()
+                                 .value());
                 concurrency = p_server.config->get("server.threads")
                                   .value<int64_t>()
                                   .value();
@@ -111,15 +106,9 @@ namespace engine
             return *this;
         }
 
-        void Server::stop()
+        void Server::end()
         {
-            m_app->stop();
+            this->stop();
         }
-
-        App &Server::get()
-        {
-            return *m_app;
-        }
-
     } // namespace server
 } // namespace engine
