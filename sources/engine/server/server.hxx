@@ -39,7 +39,6 @@ namespace engine
             std::string keyfile;
 
             std::future<void> start();
-            void tick(std::chrono::milliseconds, std::function<void()>);
             void load();
             void end();
         };

@@ -30,14 +30,6 @@ namespace engine
             port = config->get("server.port").value<int64_t>().value();
         }
 
-        void Server::tick(std::chrono::milliseconds p_milliseconds,
-                          std::function<void()> p_func)
-        {
-            log->info("Registering tick with interval: {}ms",
-                      p_milliseconds.count());
-            this->tick(p_milliseconds, p_func);
-        }
-
         void Server::load()
         {
             log->info("Server configured with name: {}, address: {}, port: {}, "
