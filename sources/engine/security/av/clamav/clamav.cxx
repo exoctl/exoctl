@@ -57,7 +57,7 @@ namespace engine
                 TRY_BEGIN()
                 fd = memory::Memory::fd("tmp_", MFD_ALLOW_SEALING);
                 memory::Memory::ftruncate(fd, p_buffer.size());
-                memory::Memory::write(fd, p_buffer.c_str(), p_buffer.size());
+                memory::Memory::write(fd, p_buffer.data(), p_buffer.size());
                 TRY_END()
                 CATCH(memory::exception::Fd, {
                     throw clamav::exception::Scan(
