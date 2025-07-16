@@ -14,18 +14,11 @@ namespace engine::bridge::extend
             "load",
             &bridge::Bridge::load);
 
-        plugins::Plugins::lua.state["_data"] = bridge::Bridge::data;
         plugins::Plugins::lua.state["_analysis"] = bridge::Bridge::analysis;
-    }
-
-    void Bridge::bind_to_lua(engine::lua::StateView &p_lua)
-    {
-        Bridge::bind_bridge(p_lua);
     }
 
     void Bridge::_plugins()
     {
-        bridge::endpoints::Data::plugins();
         engine::bridge::endpoints::Analysis::plugins();
 
         Bridge::bind_bridge(plugins::Plugins::lua.state);

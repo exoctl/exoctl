@@ -6,8 +6,6 @@
 
 namespace engine::server::extend
 {
-    static std::mutex tick_mutex;
-
     void Server::bind_http_methods(engine::lua::StateView &p_lua)
     {
         p_lua.new_enum<crow::HTTPMethod>(
@@ -105,7 +103,7 @@ namespace engine::server::extend
             sol::constructors<server::Server()>(),
             "setup",
             &server::Server::setup,
-            "run_async",
+            "start",
             [](server::Server &self) {
                 std::jthread([&self]() {
                     auto runner = self.run_async();
@@ -113,26 +111,22 @@ namespace engine::server::extend
             },
             "load",
             &server::Server::load,
-            "stop",
-            &server::Server::stop,
+            "end",
+            &server::Server::end,
             "tick",
             sol::overload([](server::Server &server,
                              int32_t milliseconds,
                              const sol::protected_function callback) {
                 if (!callback.valid()) {
-                    throw plugins::exception::Runtime("Callback not valid");
+                    throw plugins::exception::Runtime("Invalid callback");
                 }
 
-                server.tick(std::chrono::milliseconds(milliseconds),
-                            [callback]() {
-                                std::lock_guard<std::mutex> lock(tick_mutex);
-                                callback();
-                            });
+                server.tick(std::chrono::milliseconds(milliseconds), callback);
             }),
             "port",
             sol::readonly(&server::Server::port),
-            "bindaddr",
-            sol::readonly(&server::Server::bindaddr),
+            "baddr",
+            sol::readonly(&server::Server::baddr),
             "concurrency",
             sol::readonly(&server::Server::concurrency),
             "ssl_enable",
@@ -228,10 +222,5 @@ namespace engine::server::extend
         Server::bind_wvalue(plugins::Plugins::lua.state);
 
         gateway::web::extend::Web::plugins();
-    }
-
-    void Server::bind_to_lua(engine::lua::StateView &p_lua)
-    {
-        Server::bind_server(p_lua);
     }
 } // namespace engine::server::extend

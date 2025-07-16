@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/security/yara/entitys.hxx>
 #include <engine/security/yara/extend/yara.hxx>
@@ -23,18 +24,6 @@ namespace engine
             ~Yara();
 
             friend class yara::extend::Yara;
-
-            /**
-             * @brief this function realize fast scan using flag
-             * SCAN_FLAGS_FAST_MODE and if match rule return aborted callback
-             * scan_fast_callback
-             * @param string buffer for scan
-             * @param callback receiver callback for pass parameter
-             * Yr::Structs::Data scanned scan_fast_callback
-             */
-            void scan_fast_bytes(
-                const std::string &,
-                const std::function<void(yara::record::Data *)> &) const;
 
             /**
              * @brief function for scan, but, you pass flag and callback for
@@ -70,18 +59,16 @@ namespace engine
             [[nodiscard]] const int load_compiler();
             void unload_compiler();
 
-            void load_rules(const std::function<void()> &) const;
+            void load_rules() const;
 
             /* load rules if extension file '.yar'*/
-            void load_rules_folder(const std::string & /* path */) const;
+            void set_rules_folder(const std::string & /* path */) const;
 
             [[nodiscard]] const int set_rule_buff(const std::string &,
                                                   const std::string &) const;
             [[nodiscard]] const int set_rule_file(const std::string &,
                                                   const std::string &,
                                                   const std::string &) const;
-
-            mutable std::atomic<int> rules_loaded_count;
 
           private:
             mutable std::mutex m_compiler_mutex;
@@ -90,17 +77,13 @@ namespace engine
             template <typename Callback>
             void execute_safely(Callback &&cb) const
             {
-                std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+                const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
                 cb();
             }
 
             YR_COMPILER *m_yara_compiler;
             mutable YR_RULES *m_yara_rules;
             void compiler_rules() const;
-            static YR_CALLBACK_FUNC scan_fast_callback(YR_SCAN_CONTEXT *,
-                                                       const int,
-                                                       void *,
-                                                       void *);
         };
     } // namespace security
 } // namespace engine

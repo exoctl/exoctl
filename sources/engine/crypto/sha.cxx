@@ -18,7 +18,7 @@ namespace engine
             EVP_MD_CTX_free(m_ctx);
         }
 
-        const std::string Sha::gen_sha1_hash(const std::string &p_str)
+        const std::string Sha::sha1(const std::string &p_str)
         {
             unsigned char hash[SHA_DIGEST_LENGTH];
 
@@ -30,7 +30,7 @@ namespace engine
                                fmt::join(hash, hash + SHA_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha256_hash(const std::string &p_str)
+        const std::string Sha::sha256(const std::string &p_str)
         {
             unsigned char hash[SHA256_DIGEST_LENGTH];
 
@@ -42,7 +42,7 @@ namespace engine
                 "{:02x}", fmt::join(hash, hash + SHA256_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha512_hash(const std::string &p_str)
+        const std::string Sha::sha512(const std::string &p_str)
         {
             unsigned char hash[SHA512_DIGEST_LENGTH];
 
@@ -54,7 +54,7 @@ namespace engine
                 "{:02x}", fmt::join(hash, hash + SHA512_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha224_hash(const std::string &p_str)
+        const std::string Sha::sha224(const std::string &p_str)
         {
             unsigned char hash[SHA224_DIGEST_LENGTH];
 
@@ -66,7 +66,7 @@ namespace engine
                 "{:02x}", fmt::join(hash, hash + SHA224_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha384_hash(const std::string &p_str)
+        const std::string Sha::sha384(const std::string &p_str)
         {
             unsigned char hash[SHA384_DIGEST_LENGTH];
 
@@ -78,7 +78,7 @@ namespace engine
                 "{:02x}", fmt::join(hash, hash + SHA384_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha3_256_hash(const std::string &p_str)
+        const std::string Sha::sha3_256(const std::string &p_str)
         {
             unsigned char hash[SHA256_DIGEST_LENGTH];
 
@@ -90,7 +90,7 @@ namespace engine
                 "{:02x}", fmt::join(hash, hash + SHA256_DIGEST_LENGTH, ""));
         }
 
-        const std::string Sha::gen_sha3_512_hash(const std::string &p_str)
+        const std::string Sha::sha3_512(const std::string &p_str)
         {
             unsigned char hash[SHA512_DIGEST_LENGTH];
 

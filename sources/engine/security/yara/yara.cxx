@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <dirent.h>
 #include <engine/memory/memory.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <engine/security/yara/yara.hxx>
 #include <fcntl.h>
 #include <fmt/core.h>
+#include <mutex>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -11,9 +13,7 @@ namespace engine
 {
     namespace security
     {
-        Yara::Yara()
-            : rules_loaded_count(0), m_yara_compiler(nullptr),
-              m_yara_rules(nullptr)
+        Yara::Yara() : m_yara_compiler(nullptr), m_yara_rules(nullptr)
         {
             if (yr_initialize() != ERROR_SUCCESS) {
                 throw yara::exception::Initialize(
@@ -57,7 +57,7 @@ namespace engine
         void Yara::rules_foreach(
             const std::function<void(const YR_RULE &)> &p_callback)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             const YR_RULE *rule;
             yr_rules_foreach(m_yara_rules, rule)
             {
@@ -69,7 +69,7 @@ namespace engine
             YR_RULE *p_rule,
             const std::function<void(const YR_STRING &)> &p_callback)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             YR_STRING *string;
             yr_rule_strings_foreach(p_rule, string)
             {
@@ -81,7 +81,7 @@ namespace engine
             YR_RULE *p_rule,
             const std::function<void(const YR_META &)> &p_callback)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             const YR_META *meta;
             yr_rule_metas_foreach(p_rule, meta)
             {
@@ -93,7 +93,7 @@ namespace engine
             YR_RULE *p_rule,
             const std::function<void(const char *)> &p_callback)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             const char *tag;
             yr_rule_tags_foreach(p_rule, tag)
             {
@@ -103,7 +103,7 @@ namespace engine
 
         const int Yara::load_rules_file(const char *p_file)
         {
-            std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
             return yr_rules_load(p_file, &m_yara_rules);
         }
 
@@ -119,26 +119,26 @@ namespace engine
 
         const int Yara::save_rules_file(const char *p_file)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             return yr_rules_save(m_yara_rules, p_file);
         }
 
         const int Yara::load_rules_stream(YR_STREAM &p_stream)
         {
-            std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::unique_lock<std::shared_mutex> lock(m_rules_mutex);
             return yr_rules_load_stream(&p_stream, &m_yara_rules);
         }
 
         const int Yara::save_rules_stream(YR_STREAM &p_stream)
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
             return yr_rules_save_stream(m_yara_rules, &p_stream);
         }
 
         Yara::~Yara()
         {
-            std::unique_lock<std::shared_mutex> rules_lock(m_rules_mutex);
-            std::lock_guard<std::mutex> compiler_lock(m_compiler_mutex);
+            const std::unique_lock<std::shared_mutex> rules_lock(m_rules_mutex);
+            const std::lock_guard<std::mutex> compiler_lock(m_compiler_mutex);
 
             if (yr_finalize() != ERROR_SUCCESS) {
                 yara::exception::Finalize("yr_finalize() error finalize yara");
@@ -157,7 +157,7 @@ namespace engine
                                       const std::string &p_yrname,
                                       const std::string &p_yrns) const
         {
-            std::lock_guard<std::mutex> lock(m_compiler_mutex);
+            const std::lock_guard<std::mutex> lock(m_compiler_mutex);
             const YR_FILE_DESCRIPTOR rules_fd = open(p_path.c_str(), O_RDONLY);
             if (rules_fd == -1) {
                 return ERROR_INVALID_FILE;
@@ -167,24 +167,19 @@ namespace engine
                 m_yara_compiler, rules_fd, p_yrns.c_str(), p_yrname.c_str());
 
             close(rules_fd);
-            rules_loaded_count.fetch_add(1);
             return error_success;
         }
 
         const int Yara::set_rule_buff(const std::string &p_rule,
                                       const std::string &p_yrns) const
         {
-            std::lock_guard<std::mutex> lock(m_compiler_mutex);
-            rules_loaded_count.fetch_add(1);
+            const std::lock_guard<std::mutex> lock(m_compiler_mutex);
             return yr_compiler_add_string(
                 m_yara_compiler, p_rule.c_str(), p_yrns.c_str());
         }
 
-        void Yara::load_rules_folder(const std::string &p_path) const
+        void Yara::set_rules_folder(const std::string &p_path) const
         {
-            static std::mutex fs_mutex;
-            std::lock_guard<std::mutex> fs_lock(fs_mutex);
-
             DIR *dir = opendir(p_path.c_str());
             if (!dir)
                 throw yara::exception::LoadRules(
@@ -218,24 +213,21 @@ namespace engine
                             std::string(full_path));
                     }
                 } else if (entry->d_type == DT_DIR) {
-                    Yara::load_rules_folder(full_path);
+                    Yara::set_rules_folder(full_path);
                 }
             }
             closedir(dir);
         }
 
-        void Yara::load_rules(const std::function<void()> &p_callback) const
+        void Yara::load_rules() const
         {
-            if (!IS_NULL(p_callback)) {
-                p_callback();
-            }
             Yara::compiler_rules();
         }
 
         void Yara::compiler_rules() const
         {
-            std::unique_lock<std::shared_mutex> rules_lock(m_rules_mutex);
-            std::lock_guard<std::mutex> compiler_lock(m_compiler_mutex);
+            const std::unique_lock<std::shared_mutex> rules_lock(m_rules_mutex);
+            const std::lock_guard<std::mutex> compiler_lock(m_compiler_mutex);
 
             const int compiler_rules =
                 yr_compiler_get_rules(m_yara_compiler, &m_yara_rules);
@@ -252,7 +244,7 @@ namespace engine
                               void *p_data,
                               int p_flags) const
         {
-            std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+            const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
 
             if (m_yara_compiler != nullptr && m_yara_rules != nullptr) {
                 if (yr_rules_scan_mem(
@@ -271,61 +263,6 @@ namespace engine
                     "scan_bytes() falied check if compiler rules sucessful use "
                     "load_rules()");
             }
-        }
-
-        void Yara::scan_fast_bytes(
-            const std::string &p_buffer,
-            const std::function<void(yara::record::Data *)> &p_callback) const
-        {
-            if (p_callback) {
-                struct yara::record::Data *data = new struct yara::record::Data;
-                data->match_status = yara::type::Scan::none;
-
-                try {
-                    Yara::scan_bytes(p_buffer,
-                                     reinterpret_cast<YR_CALLBACK_FUNC>(
-                                         security::Yara::scan_fast_callback),
-                                     data,
-                                     SCAN_FLAGS_FAST_MODE);
-                    p_callback(data);
-                } catch (...) {
-                    delete data;
-                    throw;
-                }
-                delete data;
-            }
-        }
-
-        YR_CALLBACK_FUNC
-        Yara::scan_fast_callback(YR_SCAN_CONTEXT *p_context,
-                                 const int p_message,
-                                 void *p_message_data,
-                                 void *p_user_data)
-        {
-            const YR_RULE *rule = reinterpret_cast<YR_RULE *>(p_message_data);
-            yara::record::Data *user_data =
-                static_cast<yara::record::Data *>(p_user_data);
-
-            switch (p_message) {
-                case CALLBACK_MSG_SCAN_FINISHED:
-                    if (user_data->match_status == yara::type::Scan::none) {
-                        user_data->match_status = yara::type::Scan::nomatch;
-                        user_data->rule = "";
-                        user_data->ns = "";
-                    }
-                    break;
-
-                case CALLBACK_MSG_RULE_MATCHING:
-                    user_data->ns = rule->ns->name;
-                    user_data->rule = rule->identifier;
-                    user_data->match_status = yara::type::Scan::match;
-                    return (YR_CALLBACK_FUNC) CALLBACK_ABORT;
-
-                case CALLBACK_MSG_RULE_NOT_MATCHING:
-                    break;
-            }
-
-            return CALLBACK_CONTINUE;
         }
     } // namespace security
 } // namespace engine

@@ -1,22 +1,17 @@
 #pragma once
 
-#include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
 
 namespace engine::server::extend
 {
-    class Server : public interface::IBind
-
-        ,
-                   public interface::ISubPlugins<Server>
+    class Server :
+                   public interface::IPlugins<Server>
 
     {
       public:
         Server() = default;
         ~Server() = default;
-        void bind_to_lua(engine::lua::StateView &) override;
-
         void _plugins() override;
 
       private:

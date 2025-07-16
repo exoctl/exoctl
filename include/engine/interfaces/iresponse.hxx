@@ -10,7 +10,7 @@ namespace engine::interface
       public:
         inline static const parser::Json to_json()
         {
-            return Derived()._to_json();
+            return Derived()._tojson();
         }
 
         inline static const int code()
@@ -32,7 +32,7 @@ namespace engine::interface
         explicit IResponse() = default;
 
       private:
-        virtual const parser::Json _to_json() const = 0;
+        virtual const parser::Json _tojson() const = 0;
         virtual const int _code() const = 0;
         virtual const std::string _status() const = 0;
         virtual const std::string _message() const = 0;

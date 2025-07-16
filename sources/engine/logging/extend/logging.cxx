@@ -4,11 +4,6 @@
 
 namespace engine::logging::extend
 {
-    void Logging::bind_to_lua(engine::lua::StateView &p_lua)
-    {
-        Logging::bind_logging(p_lua);
-    }
-
     void Logging::_plugins()
     {
         Logging::bind_logging(plugins::Plugins::lua.state);

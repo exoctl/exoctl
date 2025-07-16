@@ -4,7 +4,7 @@
 
 namespace engine::version::extend
 {
-    class Version : public interface::ISubPlugins<Version>
+    class Version : public interface::IPlugins<Version>
     {
       public:
         void _plugins() override;

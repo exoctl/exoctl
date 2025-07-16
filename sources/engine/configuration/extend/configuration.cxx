@@ -16,6 +16,8 @@ namespace engine::configuration::extend
             &configuration::Configuration::load,
             "setup",
             &configuration::Configuration::setup,
+            "tojson",
+            &configuration::Configuration::tojson,
             "get",
             sol::overload([](configuration::Configuration &self,
                              const std::string &section) -> sol::object {
@@ -116,11 +118,6 @@ namespace engine::configuration::extend
                         fmt::format("Unsupported type for key: {}", section));
                 }
             }));
-    }
-
-    void Configuration::bind_to_lua(engine::lua::StateView &p_lua)
-    {
-        Configuration::bind_configuration(p_lua);
     }
 
     void Configuration::_plugins()

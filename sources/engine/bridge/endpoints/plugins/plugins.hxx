@@ -22,7 +22,7 @@ namespace engine::bridge::endpoints
         server::Server &m_server;
         mutable map::Map m_map;
 
-        std::unique_ptr<engine::server::gateway::Web> m_web_plugins;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_plugins;
 
         void prepare();
         void plugins();

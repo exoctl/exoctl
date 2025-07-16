@@ -11,7 +11,7 @@
 namespace engine::bridge::focades::data::metadata
 {
     class Metadata
-        : public interface::ISubPlugins<Metadata>
+        : public interface::IPlugins<Metadata>
     {
       public:
         Metadata() = default;

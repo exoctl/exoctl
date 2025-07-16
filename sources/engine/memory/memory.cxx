@@ -8,10 +8,10 @@ namespace engine::memory
 {
     Memory::Memory()
     {
-        Memory::update();
+        Memory::update_segments();
     }
 
-    void Memory::update()
+    void Memory::update_segments()
     {
         segments.clear();
 
@@ -33,42 +33,7 @@ namespace engine::memory
             this);
     }
 
-    void Memory::bind_to_lua(engine::lua::StateView &p_lua)
-    {
-        p_lua.new_usertype<record::Segment>(
-            "Segment",
-            sol::constructors<record::Segment()>(),
-            "start",
-            sol::readonly(&record::Segment::start),
-            "end",
-            sol::readonly(&record::Segment::end),
-            "name",
-            sol::readonly(&record::Segment::name),
-            "type",
-            sol::readonly(&record::Segment::type),
-            "permissions",
-            sol::readonly(&record::Segment::permissions));
-
-        p_lua.new_usertype<memory::Memory>(
-            "Memory",
-            sol::constructors<memory::Memory()>(),
-            "protect",
-            &Memory::protect,
-            "fd",
-            &Memory::fd,
-            "ftruncate",
-            &Memory::ftruncate,
-            "update",
-            &Memory::update,
-            "write",
-            &Memory::write,
-            "close",
-            &Memory::close,
-            "segments",
-            &Memory::segments);
-    }
-
-    const void Memory::protect(void *p_address,
+    void Memory::protect(void *p_address,
                                const size_t p_len,
                                const unsigned int p_prot)
     {

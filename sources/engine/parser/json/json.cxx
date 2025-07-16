@@ -25,7 +25,7 @@ namespace engine
             m_document.Parse(json_str.c_str());
         }
 
-        std::string Json::to_string() const
+        std::string Json::tostring() const
         {
             rapidjson::StringBuffer buffer;
             rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);

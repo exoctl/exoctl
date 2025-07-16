@@ -19,13 +19,7 @@ namespace engine::security::av::clamav
     {
         namespace scan
         {
-            using Options = struct Options {
-                uint32_t general;
-                uint32_t parse;
-                uint32_t heuristic;
-                uint32_t mail;
-                uint32_t dev;
-            };
+            using Options = cl_scan_options;
         } // namespace scan
 
         using Data = struct Data {

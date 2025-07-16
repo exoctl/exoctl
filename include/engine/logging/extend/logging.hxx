@@ -1,16 +1,13 @@
 #pragma once
 
-#include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/lua/lua.hxx>
 
 namespace engine::logging::extend
 {
-    class Logging : public interface::IBind
-        ,
-                    public interface::ISubPlugins<Logging>
+    class Logging : public interface::IPlugins<Logging>
     {
       public:
-        void bind_to_lua(engine::lua::StateView &) override;
 
         void _plugins() override;
 

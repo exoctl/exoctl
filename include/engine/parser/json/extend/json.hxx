@@ -4,7 +4,7 @@
 
 namespace engine::parser::extend
 {
-    class Json : public interface::ISubPlugins<Json>
+    class Json : public interface::IPlugins<Json>
     {
       public:
         void _plugins() override;

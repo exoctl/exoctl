@@ -24,11 +24,11 @@ namespace engine::bridge::endpoints
             m_server->log->warn("Gateway analysis not enabled");
             return;
         }
-        
+
         m_scan_yara->setup(*m_server->config);
         m_scan_av_clamav->setup(*m_server->config);
 
-        // add new routes
+        // add new HTTP routes (Web)
         Analysis::scan();
         Analysis::scan_yara();
         Analysis::scan_av_clamav();
@@ -45,40 +45,38 @@ namespace engine::bridge::endpoints
     void Analysis::scan()
     {
         m_map.add_route("/scan", [&]() {
-            m_socket_scan = std::make_unique<server::gateway::WebSocket>();
-            m_socket_scan->setup(
-                *m_server,
+            m_web_scan = std::make_unique<server::gateway::web::Web>();
+            m_web_scan->setup(
+                &*m_server,
                 BASE_ANALYSIS "/scan",
-                UINT64_MAX,
-                // on_message_callback
-                [&](server::gateway::websocket::Context &p_context,
-                    crow::websocket::connection &p_conn,
-                    const std::string &p_data,
-                    bool p_is_binary) {
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
+
                     parser::Json json;
                     parser::Json av;
 
-                    TRY_BEGIN()
-                    m_scan_yara->scan_fast_bytes(
-                        p_data,
-                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json.add("yara", m_scan_yara->dto_json(p_dto));
-                        });
+                    // TRY_BEGIN()
+                    // m_scan_av_clamav->scan_fast_bytes(
+                    //     req.body,
+                    //     [&](focades::analysis::scan::av::clamav::record::DTO
+                    //             *p_dto) {
+                    //         av.add("clamav",
+                    //         m_scan_av_clamav->dto_json(p_dto));
+                    //     });
+                    //
+                    // json.add("av", av);
+                    // return crow::response{json.to_string()};
+                    // TRY_END()
+                    //
+                    // CATCH(security::yara::exception::Scan, {
+                    //    m_server->log->info("Error scan yara
+                    //    '{}'", e.what()); return
+                    //    crow::response{500, e.what()};
+                    //});
 
-                    m_scan_av_clamav->scan_fast_bytes(
-                        p_data,
-                        [&](focades::analysis::scan::av::clamav::record::DTO
-                                *p_dto) {
-                            av.add("clamav", m_scan_av_clamav->dto_json(p_dto));
-                        });
-
-                    json.add("av", av);
-                    p_context.broadcast_text(&p_conn, json.to_string());
-
-                    TRY_END()
-                    CATCH(security::yara::exception::Scan, {
-                        m_server->log->info("Error scan yara '{}'", e.what());
-                    })
+                    return crow::response(200);
                 });
         });
     }
@@ -86,55 +84,59 @@ namespace engine::bridge::endpoints
     void Analysis::scan_av_clamav()
     {
         m_map.add_route("/scan/av/clamav", [&]() {
-            m_socket_scan_av_clamav =
-                std::make_unique<engine::server::gateway::WebSocket>();
-            m_socket_scan_av_clamav->setup(
-                *m_server,
+            m_web_scan_av_clamav =
+                std::make_unique<server::gateway::web::Web>();
+            m_web_scan_av_clamav->setup(
+                &*m_server,
                 BASE_ANALYSIS "/scan/av/clamav",
-                UINT64_MAX,
-                // on_message_callback
-                [&](server::gateway::websocket::Context &p_context,
-                    crow::websocket::connection &p_conn,
-                    const std::string &p_data,
-                    bool p_is_binary) {
-                    m_scan_av_clamav->scan_fast_bytes(
-                        p_data,
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
+
+                    parser::Json json;
+
+                    m_scan_av_clamav->scan(
+                        req.body,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
-                            p_context.broadcast_text(
-                                &p_conn,
-                                m_scan_av_clamav->dto_json(p_dto).to_string());
+                            json = m_scan_av_clamav->dto_json(p_dto);
                         });
+
+                    return crow::response{"application/json", json.tostring()};
                 });
         });
     }
 
     void Analysis::scan_yara()
     {
-        m_map.add_route("/scan/yara/fast", [&]() {
-            m_socket_scan_yara =
-                std::make_unique<engine::server::gateway::WebSocket>();
-            m_socket_scan_yara->setup(
-                *m_server,
-                BASE_ANALYSIS "/scan/yara/fast",
-                UINT64_MAX,
-                // on_message_callback
-                [&](server::gateway::websocket::Context &p_context,
-                    crow::websocket::connection &p_conn,
-                    const std::string &p_data,
-                    bool p_is_binary) {
-                    TRY_BEGIN()
-                    m_scan_yara->scan_fast_bytes(
-                        p_data,
-                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            p_context.broadcast_text(
-                                &p_conn,
-                                m_scan_yara->dto_json(p_dto).to_string());
-                        });
-                    TRY_END()
-                    CATCH(security::yara::exception::Scan, {
-                        m_server->log->info("Error scan yara '{}'", e.what());
-                    })
+        m_map.add_route("/scan/yara", [&]() {
+            m_web_scan_yara = std::make_unique<server::gateway::web::Web>();
+            m_web_scan_yara->setup(
+                &*m_server,
+                BASE_ANALYSIS "/scan/yara",
+                [&](const crow::request &req) -> crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        return crow::response{405};
+                    }
+
+                    // TRY_BEGIN()
+                    // parser::Json json;
+
+                    // Se quiser ativar depois:
+                    // m_scan_yara->scan(
+                    //     req.body,
+                    //     [&](focades::analysis::scan::yara::record::DTO
+                    //     *p_dto) {
+                    //         json = m_scan_yara->dto_json(p_dto);
+                    //     });
+
+                    // return crow::response{json.to_string()};
+                    // TRY_END()
+                    // CATCH(security::yara::exception::Scan, {
+                    //     m_server->log->info("Error scan yara '{}'",
+                    //     e.what()); return crow::response{500, e.what()};
+                    // });
                 });
         });
     }
@@ -145,13 +147,8 @@ namespace engine::bridge::endpoints
                 .value<bool>()
                 .value()) {
             TRY_BEGIN()
-            m_server->log->info("Loading rules yara ...");
-            m_scan_yara->load_rules([&](uint64_t p_total_rules) {
-                m_server->log->info(
-                    "Successfully loaded rules. Total Yara rules count: "
-                    "{:d}",
-                    p_total_rules);
-            });
+            m_server->log->info("Loading rules yara...");
+            m_scan_yara->load_rules();
 
             m_server->log->info("Loading rules clamav ...");
             m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {

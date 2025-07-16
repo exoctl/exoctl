@@ -4,7 +4,7 @@
 
 namespace engine::llama::extend
 {
-    class Llama : public interface::ISubPlugins<Llama>
+    class Llama : public interface::IPlugins<Llama>
     {
       public:
         void _plugins() override;

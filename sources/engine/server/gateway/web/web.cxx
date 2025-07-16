@@ -1,51 +1,57 @@
 #include <engine/server/gateway/web/web.hxx>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::web
 {
-    void Web::setup(Server &p_server,
+    void Web::setup(Server *p_server,
                     const std::string &p_url,
-                    on_request_callback on_request,
-                    const std::vector<crow::HTTPMethod> &methods)
+                    on_request_callback on_request)
     {
-        m_server = &p_server;
-        m_url = p_url;
-        m_on_request = std::move(on_request);
+        m_server = &*p_server;
 
-        m_server->log->info("Creating HTTP route for URL: '{}' with {} methods",
-                            m_url,
-                            methods.size());
+        m_server->log->info("Creating HTTP route for URL: '{}'", p_url);
 
-        auto &route = m_server->get().route_dynamic(m_url);
-
-        if (!methods.empty()) {
-            switch (methods.size()) {
-                case 1:
-                    route.methods(methods[0]);
-                    break;
-                case 2:
-                    route.methods(methods[0], methods[1]);
-                    break;
-                case 3:
-                    route.methods(methods[0], methods[1], methods[2]);
-                    break;
-                case 4:
-                    route.methods(
-                        methods[0], methods[1], methods[2], methods[3]);
-                    break;
-                case 5:
-                default:
-                    route.methods(methods[0],
-                                  methods[1],
-                                  methods[2],
-                                  methods[3],
-                                  methods[4]);
-                    break;
-            }
-        } else {
-            route.methods(crow::HTTPMethod::GET);
-        }
-
-        route(m_on_request);
-        route.validate();
+        m_route = &m_server->route_dynamic(p_url);
+        Web::active_all_methods();
+        (*m_route)(on_request);
+        m_route->validate();
     }
-} // namespace engine::server::gateway
+
+    void Web::active_all_methods()
+    {
+        // accept all methods
+        m_route->methods(crow::HTTPMethod::Delete,
+                         crow::HTTPMethod::Get,
+                         crow::HTTPMethod::Head,
+                         crow::HTTPMethod::Post,
+                         crow::HTTPMethod::Put,
+                         crow::HTTPMethod::Connect,
+                         crow::HTTPMethod::Options,
+                         crow::HTTPMethod::Trace,
+                         crow::HTTPMethod::Patch,
+                         crow::HTTPMethod::Purge,
+                         crow::HTTPMethod::Copy,
+                         crow::HTTPMethod::Lock,
+                         crow::HTTPMethod::MkCol,
+                         crow::HTTPMethod::Move,
+                         crow::HTTPMethod::Propfind,
+                         crow::HTTPMethod::Proppatch,
+                         crow::HTTPMethod::Search,
+                         crow::HTTPMethod::Unlock,
+                         crow::HTTPMethod::Bind,
+                         crow::HTTPMethod::Rebind,
+                         crow::HTTPMethod::Unbind,
+                         crow::HTTPMethod::Acl,
+                         crow::HTTPMethod::Report,
+                         crow::HTTPMethod::MkActivity,
+                         crow::HTTPMethod::Checkout,
+                         crow::HTTPMethod::Merge,
+                         crow::HTTPMethod::MSearch,
+                         crow::HTTPMethod::Notify,
+                         crow::HTTPMethod::Subscribe,
+                         crow::HTTPMethod::Unsubscribe,
+                         crow::HTTPMethod::MkCalendar,
+                         crow::HTTPMethod::Link,
+                         crow::HTTPMethod::Unlink,
+                         crow::HTTPMethod::Source);
+    }
+} // namespace engine::server::gateway::web

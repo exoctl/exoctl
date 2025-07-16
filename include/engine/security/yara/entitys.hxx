@@ -1,5 +1,8 @@
 #pragma once
 
+#include <stdint.h>
+#include <yara.h>
+
 namespace engine::security::yara
 {
     namespace type
@@ -9,14 +12,6 @@ namespace engine::security::yara
             match,
             none /* default value */
         };
+        using Rule = YR_RULE;
     } // namespace type
-
-    namespace record
-    {
-        using Data = struct Data {
-            type::Scan match_status;
-            const char *rule;
-            const char *ns;
-        };
-    } // namespace record
 } // namespace engine::security::yara
