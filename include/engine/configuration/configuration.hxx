@@ -2,8 +2,8 @@
 
 #include <engine/configuration/exception.hxx>
 #include <engine/configuration/extend/configuration.hxx>
-#include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/parser/json/json.hxx>
 #include <toml++/toml.hpp>
 
 namespace engine
@@ -23,6 +23,7 @@ namespace engine
 
             void setup(const std::string &);
             void load();
+            const parser::Json tojson();
 
             [[nodiscard]] toml::node_view<const toml::node> get(
                 const std::string &path) const;

@@ -11,7 +11,7 @@ namespace engine::server::gateway::websocket::responses
         Connected();
         ~Connected() override = default;
 
-        const parser::Json _to_json() const override;
+        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -23,7 +23,7 @@ namespace engine::server::gateway::websocket::responses
         UnsupportedData();
         ~UnsupportedData() override = default;
 
-        const parser::Json _to_json() const override;
+        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -35,7 +35,7 @@ namespace engine::server::gateway::websocket::responses
         InvalidTokenJWT();
         ~InvalidTokenJWT() override = default;
 
-        const parser::Json _to_json() const override;
+        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -47,9 +47,9 @@ namespace engine::server::gateway::websocket::responses
         BadRequests();
         ~BadRequests() override = default;
 
-        const parser::Json _to_json() const override;
+        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
     };
-} // namespace engine::server::gateway::websocket::responses
+} // namespace engine::server::gateway::websocket::Websocket::responses

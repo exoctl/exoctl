@@ -1,16 +1,14 @@
 #pragma once
 
-#include <engine/interfaces/ibind.hxx>
 #include <engine/interfaces/iplugins.hxx>
+#include <engine/lua/lua.hxx>
 
 namespace engine::configuration::extend
 {
-    class Configuration : public interface::IBind,
-                          public interface::ISubPlugins<Configuration>
+    class Configuration : 
+                          public interface::IPlugins<Configuration>
     {
       public:
-        void bind_to_lua(engine::lua::StateView &) override;
-
         void _plugins() override;
 
       private:

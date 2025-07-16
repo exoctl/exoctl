@@ -4,7 +4,7 @@
 
 namespace engine::security::yara::extend
 {
-    class Yara : public interface::ISubPlugins<Yara>
+    class Yara : public interface::IPlugins<Yara>
     {
       public:
         Yara() = default;
@@ -19,7 +19,6 @@ namespace engine::security::yara::extend
         inline void bind_meta();
         inline void bind_rule();
         inline void bind_stream();
-        inline void bind_data();
         inline void bind_yara();
     };
 } // namespace engine::security::yara::extend

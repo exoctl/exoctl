@@ -6,34 +6,22 @@
 
 namespace engine::server::gateway::web::extend
 {
-    static std::mutex web_mutex;
-
-    void Web::_plugins()
+    void Web::bind_web()
     {
-        plugins::Plugins::lua.state.new_usertype<Web>(
+        plugins::Plugins::lua.state.new_usertype<web::Web>(
             "Web",
             "new",
             sol::overload([](Server &server,
                              const std::string &url,
-                             const sol::protected_function callback,
-                             sol::variadic_args methods) {
-                std::vector<crow::HTTPMethod> method_list;
-                method_list.reserve(methods.size());
+                             const sol::protected_function callback) {
+                const std::shared_ptr<gateway::web::Web> instance =
+                    std::make_shared<gateway::web::Web>();
 
-                for (auto method : methods) {
-                    if (method.is<int>()) {
-                        method_list.push_back(
-                            static_cast<crow::HTTPMethod>(method.as<int>()));
-                    }
-                }
-
-                auto instance = std::make_shared<gateway::Web>();
                 instance->setup(
-                    server,
+                    &server,
                     url,
-                    [callback](const crow::request &req) -> crow::response {
-                        std::lock_guard<std::mutex> lock(web_mutex);
-
+                    [callback](
+                        const crow::request &req) -> const crow::response {
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
@@ -57,10 +45,14 @@ namespace engine::server::gateway::web::extend
                         }
 
                         return crow::response(200);
-                    },
-                    method_list);
+                    });
 
                 return instance;
             }));
+    }
+
+    void Web::_plugins()
+    {
+        Web::bind_web();
     }
 } // namespace engine::server::gateway::web::extend

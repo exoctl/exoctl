@@ -8,10 +8,9 @@
 #include <mutex>
 #include <string>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::websocket
 {
     class WebSocket
-    // : public interface::ISubPlugins<WebSocket>
     {
       public:
         using on_error_callback =
@@ -33,7 +32,7 @@ namespace engine::server::gateway
                                const std::string &,
                                bool)>;
 
-        void setup(Server &,
+        void setup(Server *,
                    const std::string &,
                    uint64_t,
                    on_message_callback = nullptr,

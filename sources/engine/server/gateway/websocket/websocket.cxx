@@ -3,9 +3,9 @@
 #include <engine/server/gateway/websocket/responses/responses.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 
-namespace engine::server::gateway
+namespace engine::server::gateway::websocket
 {
-    void WebSocket::setup(Server &p_server,
+    void WebSocket::setup(Server *p_server,
                           const std::string &p_url,
                           uint64_t p_max_payload,
                           on_message_callback on_message,
@@ -14,7 +14,7 @@ namespace engine::server::gateway
                           on_open_callback on_open,
                           on_close_callback on_close)
     {
-        m_server = &p_server;
+        m_server = &*p_server;
         m_url = p_url;
         m_on_message = on_message;
         m_on_error = on_error;
@@ -24,11 +24,10 @@ namespace engine::server::gateway
 
         m_server->log->info("Creating WebSocket route for URL: '{}'", m_url);
 
-        m_server->get()
-            .route_dynamic(m_url)
+        (*m_server).route_dynamic(m_url)
             .middlewares<crow::App<middleware::websocket::JWTAuth>,
                          middleware::websocket::JWTAuth>()
-            .websocket(&m_server->get())
+            .websocket(m_server)
             .max_payload(p_max_payload)
             .onopen([&](crow::websocket::connection &p_conn) {
                 WebSocket::def_open_connection(&p_conn);
@@ -83,7 +82,7 @@ namespace engine::server::gateway
         std::lock_guard<std::mutex> _(m_mtx);
         m_context.add(p_conn);
         m_context.broadcast_text(
-            p_conn, websocket::responses::Connected::to_json().to_string());
+            p_conn, websocket::responses::Connected::to_json().tostring());
 
         m_server->log->info(
             "Connection opened {} from IP: '{}',  SubProtocol : "
@@ -182,4 +181,4 @@ namespace engine::server::gateway
     //             return instance;
     //         }));
     // }
-} // namespace engine::server::gateway
+} // namespace engine::server::gateway::websocket

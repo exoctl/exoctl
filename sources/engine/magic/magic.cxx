@@ -22,9 +22,9 @@ namespace engine
             magic_close(m_cookie);
         }
 
-        void Magic::load_mime(const std::string &p_buffer)
+        const char *Magic::mime(const std::string &p_buffer)
         {
-            mime = magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
+            return magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
         }
     } // namespace magic
 } // namespace engine

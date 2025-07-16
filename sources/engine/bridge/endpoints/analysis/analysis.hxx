@@ -5,7 +5,7 @@
 #include <engine/bridge/map/map.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
-#include <engine/server/gateway/websocket/websocket.hxx>
+#include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 
@@ -13,9 +13,8 @@
 
 namespace engine::bridge::endpoints
 {
-    class Analysis : public interface::IEndpoint
-        ,
-                     public interface::ISubPlugins<Analysis>
+    class Analysis : public interface::IEndpoint,
+                     public interface::IPlugins<Analysis>
     {
       public:
         Analysis();
@@ -30,16 +29,14 @@ namespace engine::bridge::endpoints
         server::Server *m_server;
         mutable map::Map m_map;
 
-        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_scan_yara;
-        std::unique_ptr<engine::server::gateway::WebSocket>
-            m_socket_scan_av_clamav;
-        std::unique_ptr<engine::server::gateway::WebSocket> m_socket_scan;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_yara;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_av_clamav;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan;
 
         std::shared_ptr<focades::analysis::scan::av::clamav::Clamav>
             m_scan_av_clamav;
         std::shared_ptr<focades::analysis::scan::yara::Yara> m_scan_yara;
 
-        void prepare();
         void scan();
         void scan_yara();
         void scan_av_clamav();

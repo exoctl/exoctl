@@ -56,7 +56,8 @@ namespace engine::logging
             auto time = m_config.get("logging.daily.time").as_time();
             sinks.emplace_back(std::make_shared<
                                spdlog::sinks::daily_file_sink_mt>(
-                m_config.get("logging.filepath").value<std::string>().value(),
+                m_config.get("logging.path").value<std::string>().value() +
+                    m_config.get("logging.file").value<std::string>().value(),
                 time->get().hour,
                 time->get().minute,
                 m_config.get("logging.daily.truncate").value<bool>().value(),
@@ -66,9 +67,10 @@ namespace engine::logging
         } else if (p_type == "rotation") {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-                    m_config.get("logging.filepath")
-                        .value<std::string>()
-                        .value(),
+                    m_config.get("logging.path").value<std::string>().value() +
+                        m_config.get("logging.file")
+                            .value<std::string>()
+                            .value(),
                     m_config.get("logging.rotation.max_size")
                         .value<int64_t>()
                         .value(),
@@ -78,9 +80,10 @@ namespace engine::logging
         } else {
             sinks.emplace_back(
                 std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-                    m_config.get("logging.filepath")
-                        .value<std::string>()
-                        .value(),
+                    m_config.get("logging.path").value<std::string>().value() +
+                        m_config.get("logging.file")
+                            .value<std::string>()
+                            .value(),
                     true));
         }
 

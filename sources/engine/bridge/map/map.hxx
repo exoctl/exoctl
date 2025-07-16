@@ -1,15 +1,16 @@
 #pragma once
 
-#include <engine/version/version.hxx>
 #include <functional>
 #include <map>
 #include <string>
 #include <vector>
 
+#include <engine/version/version.hxx>
+
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
-#define VERSION_PREFIX "/v" TOSTRING(ENGINE_MAJOR)
-#define API_PREFIX(endpoint) VERSION_PREFIX "/engine/" endpoint
+#define VERSION_PREFIX "/v" TOSTRING(ENGINE_MAJOR) "/"
+#define API_PREFIX(endpoint) "/engine" VERSION_PREFIX endpoint
 
 namespace engine
 {

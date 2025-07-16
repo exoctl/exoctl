@@ -1,8 +1,8 @@
 #pragma once
 
+#include <engine/bridge/bridge.hxx>
 #include <engine/configuration/configuration.hxx>
-#include <engine/emergency/emergency.hxx>
-#include <engine/interfaces/ibind.hxx>
+#include <engine/database/database.hxx>
 #include <engine/llama/_/log.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/lua/lua.hxx>
@@ -12,26 +12,17 @@
 #include <engine/security/av/clamav/_/log.hxx>
 #include <engine/server/_/log/log.hxx>
 #include <engine/server/server.hxx>
+#include <engine/signals/signals.hxx>
 #include <engine/version/version.hxx>
 #include <functional>
 #include <unordered_map>
 
 namespace engine
 {
-    class Engine : public interface::IBind, public interface::IPlugins
+    class Engine : public interface::IPlugins<Engine>
     {
       private:
-        configuration::Configuration m_configuration;
-        logging::Logging m_logging;
-        version::Version m_version;
-        plugins::Plugins m_plugins;
-
-        server::Server m_server;
-
-        emergency::Emergency m_emergency;
-        std::unordered_map<int, std::function<void(int, siginfo_t *, void *)>>
-            m_map_emergencys;
-
+        // signals::Signals m_signals;
         server::_::Log m_server_log;
         llama::_::Log m_llama_log;
         security::av::clamav::_::Log m_clamav_log;
@@ -40,20 +31,23 @@ namespace engine
       public:
         bool is_running;
 
+        configuration::Configuration configuration;
+        logging::Logging logging;
+        server::Server server;
+        database::Database database;
+        plugins::Plugins plugins;
+        version::Version version;
+        bridge::Bridge bridge;
+
         ~Engine();
         Engine();
 
-        void register_plugins() override;
-        void bind_to_lua(engine::lua::StateView &) override;
-        void register_emergency(const int,
-                                std::function<void(int, siginfo_t *, void *)>);
-        void setup(configuration::Configuration &,
-                   logging::Logging &,
-                   server::Server &);
+        void _plugins() override;
+
+        void setup(configuration::Configuration &, logging::Logging &);
 
         void load();
-        void load_emergency();
-        void run(const std::function<void()> & = nullptr);
+        void run();
         void stop();
     };
 } // namespace engine

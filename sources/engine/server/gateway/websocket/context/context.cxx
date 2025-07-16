@@ -60,4 +60,4 @@ namespace engine::server::gateway::websocket
             Context::erase(p_conn);
         }
     }
-} // namespace engine::server::gateway::websocket
+} // namespace engine::server::gateway::websocket::Websocket

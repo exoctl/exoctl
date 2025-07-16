@@ -14,9 +14,8 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
         void setup(configuration::Configuration &);
         ~Clamav() = default;
 
-        void scan_fast_bytes(
-            const std::string &,
-            const std::function<void(clamav::record::DTO *)> &);
+        void scan(const std::string &,
+                  const std::function<void(clamav::record::DTO *)> &);
         void load_rules(const std::function<void(unsigned int)> & = nullptr);
         const engine::parser::Json dto_json(clamav::record::DTO *);
 

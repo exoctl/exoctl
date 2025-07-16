@@ -12,6 +12,16 @@ namespace engine
             m_path.assign(p_path);
         }
 
+        const parser::Json Configuration::tojson()
+        {
+            std::ostringstream oss;
+            parser::Json json;
+            
+            oss << toml::json_formatter{m_toml};
+            json.from_string(oss.str());
+            return json;
+        }
+
         void Configuration::load()
         {
             TRY_BEGIN()
@@ -22,7 +32,7 @@ namespace engine
             CATCH(toml::parse_error, {
                 const auto &source = e.source();
                 throw exception::Load(
-                    fmt::format("Error parsing file '{:s}' at line {:d}, "
+                    fmt::format("Configuration error file '{:s}' at line {:d}, "
                                 "column {:d}: {:s}",
                                 *source.path,
                                 source.begin.line,

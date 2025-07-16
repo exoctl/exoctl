@@ -17,18 +17,12 @@ namespace engine
 {
     namespace server
     {
-        class Server; // Forward declaration Server plugin
-
-        using App = crow::App<middlewares::cors::Cors>;
-        class Server
+        class Server : public crow::App<middlewares::cors::Cors>
         {
-          private:
-            std::shared_ptr<App> m_app;
-
           public:
             friend class engine::server::extend::Server;
 
-            Server();
+            Server() =default;
             ~Server() = default;
             Server &operator=(const Server &);
             configuration::Configuration *config;
@@ -36,19 +30,17 @@ namespace engine
 
             void setup(configuration::Configuration &, logging::Logging &);
 
-            App &get();
             unsigned short concurrency;
-            std::string bindaddr;
+            std::string baddr;
             std::string name;
             bool ssl_enable;
             unsigned short port;
             std::string certfile;
             std::string keyfile;
 
-            std::future<void> run_async();
-            void tick(std::chrono::milliseconds, std::function<void()>);
+            std::future<void> start();
             void load();
-            void stop();
+            void end();
         };
     } // namespace server
 } // namespace engine

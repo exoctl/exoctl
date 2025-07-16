@@ -33,7 +33,7 @@ namespace engine
             }
             friend class extend::Json;
 
-            [[nodiscard]] std::string to_string() const;
+            [[nodiscard]] std::string tostring() const;
 
             template <typename T>
             std::optional<T> get(const std::string &p_key) const

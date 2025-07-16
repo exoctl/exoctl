@@ -15,21 +15,20 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
 
     void Clamav::load_rules(const std::function<void(unsigned int)> &p_callback)
     {
-        m_clamav.load_rules([&]() {
-            m_clamav.set_db_rule_fd(m_config
-                                        ->get("bridge.focade.analysis.av."
-                                              "clamav.database.default_path")
-                                        .value<std::string>()
-                                        .value(),
-                                    CL_DB_STDOPT);
-        });
+        m_clamav.set_db_rule_fd(m_config
+                                    ->get("bridge.focade.analysis.av."
+                                          "clamav.database.file")
+                                    .value<std::string>()
+                                    .value(),
+                                CL_DB_STDOPT);
+        m_clamav.load_rules();
 
         if (!IS_NULL(p_callback)) {
             p_callback(m_clamav.rules_loaded_count);
         }
     }
 
-    void Clamav::scan_fast_bytes(
+    void Clamav::scan(
         const std::string &p_buffer,
         const std::function<void(clamav::record::DTO *)> &p_callback)
     {
@@ -45,7 +44,7 @@ namespace engine::bridge::focades::analysis::scan::av::clamav
             scanopts.dev =
                 CL_SCAN_DEV_COLLECT_PERFORMANCE_INFO | CL_SCAN_DEV_COLLECT_SHA;
 
-            m_clamav.scan_fast_bytes(
+            m_clamav.scan_bytes(
                 p_buffer,
                 scanopts,
                 [&](const security::av::clamav::record::Data *p_data) {
