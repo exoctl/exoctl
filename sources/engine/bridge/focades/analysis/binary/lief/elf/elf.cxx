@@ -1,8 +1,8 @@
-#include <engine/bridge/focades/parser/binary/lief/elf/elf.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/elf/elf.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::elf
+namespace engine::bridge::focades::analysis::binary::elf
 {
 
     void ELF::parse_bytes(
@@ -33,4 +33,4 @@ namespace engine::bridge::focades::parser::binary::elf
 
         return json;
     }
-} // namespace engine::bridge::focades::parser::binary::elf
+} // namespace engine::bridge::focades::analysis::binary::elf

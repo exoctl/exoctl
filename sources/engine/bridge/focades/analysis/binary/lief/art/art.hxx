@@ -1,10 +1,10 @@
 #pragma once
 
-#include <engine/bridge/focades/parser/binary/lief/art/entitys.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/art/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::art
+namespace engine::bridge::focades::analysis::binary::art
 {
     class ART
     {
@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::art
                                        const LIEF::ART::Parser>
             m_art;
     };
-} // namespace engine::bridge::focades::parser::binary::art
+} // namespace engine::bridge::focades::analysis::binary::art

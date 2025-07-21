@@ -2,7 +2,7 @@
 
 #include <engine/parser/binary/lief/lief.hxx>
 
-namespace engine::bridge::focades::parser::binary::macho
+namespace engine::bridge::focades::analysis::binary::macho
 {
     namespace record
     {
@@ -10,4 +10,4 @@ namespace engine::bridge::focades::parser::binary::macho
             std::unique_ptr<const LIEF::MachO::FatBinary> *macho;
         } DTO;
     } // namespace record
-} // namespace engine::bridge::focades::parser::binary::macho
+} // namespace engine::bridge::focades::analysis::binary::macho

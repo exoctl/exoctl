@@ -1,15 +1,15 @@
 #include <cmath>
-#include <engine/bridge/focades/data/metadata/metadata.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <fmt/core.h>
+#include <sources/engine/bridge/focades/analysis/metadata/metadata.hxx>
 
-namespace engine::bridge::focades::data::metadata
+namespace engine::bridge::focades::analysis::metadata
 {
     void Metadata::_plugins()
     {
         plugins::Plugins::lua.state
-            .new_usertype<focades::data::metadata::Metadata>(
+            .new_usertype<focades::analysis::metadata::Metadata>(
                 "Metadata",
                 "sha",
                 &Metadata::m_sha,

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace engine::bridge::focades::data::metadata::record
+namespace engine::bridge::focades::analysis::metadata::record
 {
     using DTO = struct DTO {
         std::string mime_type;
@@ -17,4 +17,4 @@ namespace engine::bridge::focades::data::metadata::record
         std::string creation_date;
         double entropy;
     };
-} // namespace engine::bridge::focades::data::metadata::record
+} // namespace engine::bridge::focades::analysis::metadata::record

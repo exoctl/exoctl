@@ -1,9 +1,9 @@
-#include <engine/bridge/focades/parser/binary/lief/macho/macho.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/macho/macho.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/binary/lief/exception.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::macho
+namespace engine::bridge::focades::analysis::binary::macho
 {
     void MACHO::parse_bytes(
         const std::string &p_buffer,
@@ -35,4 +35,4 @@ namespace engine::bridge::focades::parser::binary::macho
 
         return json;
     }
-} // namespace engine::bridge::focades::parser::binary::macho
+} // namespace engine::bridge::focades::analysis::binary::macho

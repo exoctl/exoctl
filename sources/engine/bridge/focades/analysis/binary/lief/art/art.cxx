@@ -1,8 +1,8 @@
-#include <engine/bridge/focades/parser/binary/lief/art/art.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/art/art.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::art
+namespace engine::bridge::focades::analysis::binary::art
 {
 
     void ART::parse_bytes(
@@ -33,4 +33,4 @@ namespace engine::bridge::focades::parser::binary::art
 
         return json;
     }
-} // namespace engine::bridge::focades::parser::binary::art
+} // namespace engine::bridge::focades::analysis::binary::art

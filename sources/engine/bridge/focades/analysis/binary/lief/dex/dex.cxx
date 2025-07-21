@@ -1,8 +1,8 @@
-#include <engine/bridge/focades/parser/binary/lief/dex/dex.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/dex/dex.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::dex
+namespace engine::bridge::focades::analysis::binary::dex
 {
     void DEX::parse_bytes(
         const std::string &p_buffer,
@@ -33,4 +33,4 @@ namespace engine::bridge::focades::parser::binary::dex
         return json;
     }
 
-} // namespace engine::bridge::focades::parser::binary::dex
+} // namespace engine::bridge::focades::analysis::binary::dex

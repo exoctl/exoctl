@@ -1,10 +1,10 @@
 #pragma once
 
-#include <engine/bridge/focades/parser/binary/lief/dex/entitys.hxx>
+#include <engine/bridge/focades/analysis/binary/lief/dex/entitys.hxx>
 #include <engine/parser/binary/lief/lief.hxx>
 #include <engine/parser/json/json.hxx>
 
-namespace engine::bridge::focades::parser::binary::dex
+namespace engine::bridge::focades::analysis::binary::dex
 {
     class DEX
     {
@@ -22,4 +22,4 @@ namespace engine::bridge::focades::parser::binary::dex
                                        const LIEF::DEX::Parser>
             m_dex;
     };
-} // namespace engine::bridge::focades::parser::binary::dex
+} // namespace engine::bridge::focades::analysis::binary::dex
