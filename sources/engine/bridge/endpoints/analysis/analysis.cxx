@@ -120,23 +120,21 @@ namespace engine::bridge::endpoints
                         return crow::response{405};
                     }
 
-                    // TRY_BEGIN()
-                    // parser::Json json;
+                    parser::Json json;
+                    TRY_BEGIN()
 
-                    // Se quiser ativar depois:
-                    // m_scan_yara->scan(
-                    //     req.body,
-                    //     [&](focades::analysis::scan::yara::record::DTO
-                    //     *p_dto) {
-                    //         json = m_scan_yara->dto_json(p_dto);
-                    //     });
+                    m_scan_yara->scan(
+                        req.body,
+                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
+                            json = std::move(m_scan_yara->dto_json(p_dto));
+                        });
 
-                    // return crow::response{json.to_string()};
-                    // TRY_END()
-                    // CATCH(security::yara::exception::Scan, {
-                    //     m_server->log->info("Error scan yara '{}'",
-                    //     e.what()); return crow::response{500, e.what()};
-                    // });
+                    TRY_END()
+                    CATCH(security::yara::exception::Scan, {
+                        // return crow::response{500, e.what()};
+                        m_server->log->info("Error scan yara '{}'", e.what());
+                    });
+                    return crow::response{json.tostring()};
                 });
         });
     }

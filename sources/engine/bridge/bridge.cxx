@@ -1,5 +1,5 @@
-#include <engine/bridge/exception.hxx>
 #include <engine/bridge/bridge.hxx>
+#include <engine/bridge/exception.hxx>
 
 namespace engine
 {
@@ -9,9 +9,11 @@ namespace engine
         std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
             std::make_shared<bridge::endpoints::Analysis>());
 
-        void Bridge::setup(server::Server &p_server)
+        void Bridge::setup(server::Server &p_server,
+                           database::Database &p_database)
         {
             m_server = &p_server;
+            m_database = &p_database;
 
             analysis->setup(*m_server);
             plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);

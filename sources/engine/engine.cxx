@@ -37,8 +37,8 @@ namespace engine
         m_llama_log.setup(configuration, logging);
         m_lief_log.setup(configuration, logging);
         m_server_log.setup(configuration, logging);
-        bridge.setup(server);
-
+        bridge.setup(server, database);
+        
         _plugins();
     }
 

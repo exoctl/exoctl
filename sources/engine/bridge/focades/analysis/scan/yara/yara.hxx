@@ -23,7 +23,7 @@ namespace engine::bridge::focades::analysis::scan::yara
                   const std::function<void(yara::record::DTO *)> &);
         void load_rules() const;
 
-        // const engine::parser::Json dto_json(const yara::record::DTO *);
+        const engine::parser::Json dto_json(const yara::record::DTO *);
 
       private:
         std::shared_ptr<security::Yara> m_yara;

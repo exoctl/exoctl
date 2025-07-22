@@ -27,7 +27,7 @@ namespace engine
                         .value()));
             }
 
-            void Log::log(std::string p_message, crow::LogLevel p_level)
+            void Log::log(const std::string &p_message, crow::LogLevel p_level)
             {
                 switch (p_level) {
                     case crow::LogLevel::Debug:

@@ -249,7 +249,7 @@ namespace engine
             if (m_yara_compiler != nullptr && m_yara_rules != nullptr) {
                 if (yr_rules_scan_mem(
                         m_yara_rules,
-                        reinterpret_cast<const uint8_t *>(p_buffer.c_str()),
+                        reinterpret_cast<const uint8_t *>(p_buffer.data()),
                         p_buffer.size(),
                         p_flags,
                         p_callback,
