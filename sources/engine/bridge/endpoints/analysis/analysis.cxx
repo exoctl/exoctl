@@ -2,6 +2,7 @@
 #include <engine/bridge/exception.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/security/av/clamav/exception.hxx>
 #include <stdint.h>
 
 namespace engine::bridge::endpoints
@@ -95,14 +96,15 @@ namespace engine::bridge::endpoints
                     }
 
                     parser::Json json;
-
+                    TRY_BEGIN()
                     m_scan_av_clamav->scan(
                         req.body,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
                             json = m_scan_av_clamav->dto_json(p_dto);
                         });
-
+                    TRY_END()
+                    CATCH(security::av::clamav::exception::Scan, {})
                     return crow::response{"application/json", json.tostring()};
                 });
         });
