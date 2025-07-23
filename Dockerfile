@@ -1,6 +1,5 @@
 FROM ubuntu:22.04
 
-# Dependências para compilar cmake + utilitários essenciais
 RUN apt-get update && \
     apt-get install -y \
         build-essential \

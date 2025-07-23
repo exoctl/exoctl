@@ -35,7 +35,7 @@ namespace engine
             void scan_bytes(const std::string &,
                             YR_CALLBACK_FUNC,
                             void *,
-                            int) const;
+                            yara::type::Flags) const;
 
             void rule_disable(YR_RULE &);
             void rule_enable(YR_RULE &);

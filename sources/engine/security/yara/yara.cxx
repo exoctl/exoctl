@@ -242,7 +242,7 @@ namespace engine
         void Yara::scan_bytes(const std::string &p_buffer,
                               YR_CALLBACK_FUNC p_callback,
                               void *p_data,
-                              int p_flags) const
+                              yara::type::Flags p_flags) const
         {
             const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
 
@@ -251,7 +251,7 @@ namespace engine
                         m_yara_rules,
                         reinterpret_cast<const uint8_t *>(p_buffer.data()),
                         p_buffer.size(),
-                        p_flags,
+                        (int) p_flags,
                         p_callback,
                         p_data,
                         0) == ERROR_INTERNAL_FATAL_ERROR) {

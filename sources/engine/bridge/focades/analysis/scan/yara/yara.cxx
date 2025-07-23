@@ -49,23 +49,23 @@ namespace engine::bridge::focades::analysis::scan::yara
                             reinterpret_cast<YR_RULE *>(message_data);
 
                         switch (message) {
-                            case CALLBACK_MSG_SCAN_FINISHED:
+                            case security::yara::type::Flags::ScanFinished:
                                 break;
 
-                            case CALLBACK_MSG_RULE_MATCHING:
+                            case security::yara::type::Flags::RuleMatching:
                                 dto->rules.push_back(*rule);
                                 return CALLBACK_CONTINUE;
 
-                            case CALLBACK_MSG_RULE_NOT_MATCHING:
+                            case security::yara::type::Flags::RuleNotMatching:
                                 break;
                         }
 
-                        return CALLBACK_CONTINUE;
+                        return security::yara::type::Flags::ContinueScan;
                     }
                     return 0;
                 },
                 (void *) dto,
-                SCAN_FLAGS_FAST_MODE);
+                security::yara::type::Flags::FastMode);
 
             p_callback(dto);
             delete dto;
