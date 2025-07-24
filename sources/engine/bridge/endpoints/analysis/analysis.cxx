@@ -12,7 +12,7 @@ namespace engine::bridge::endpoints
           m_scan_av_clamav(
               std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
           m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>()),
-          is_running(true), max_queue_size(0)
+          is_running(true), max_queue_size(0), scan_queue_size(0)
     {
     }
 
@@ -36,7 +36,20 @@ namespace engine::bridge::endpoints
         focades::analysis::scan::yara::Yara::plugins();
 
         plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
-            "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
+            "Analysis",
+            "scan",
+            &endpoints::Analysis::m_scan_yara,
+            "is_running",
+            sol::property([](const endpoints::Analysis &p_self) -> const bool {
+                return p_self.is_running.load();
+            }),
+            "scan_queue_size",
+            sol::property(
+                [](const endpoints::Analysis &p_self) -> const size_t {
+                    return p_self.scan_queue_size.load();
+                }),
+            "max_queue_size",
+            &endpoints::Analysis::max_queue_size);
     }
 
     void Analysis::setup(server::Server &p_server)
@@ -96,7 +109,8 @@ namespace engine::bridge::endpoints
     {
         std::lock_guard<std::mutex> lock(m_scan_mutex);
         if (m_scan_queue.size() >= max_queue_size) {
-            throw exception::ParcialAbort("Scan queue is full");
+            throw exception::ParcialAbort(
+                fmt::format("Scan queue({}) is full", max_queue_size));
         }
         m_scan_queue.push(p_buffer);
         m_scan_cv.notify_one();
@@ -105,6 +119,7 @@ namespace engine::bridge::endpoints
     void Analysis::worker()
     {
         m_server->log->info("Analysis Worker thread started running.");
+
         while (is_running) {
             std::unique_lock<std::mutex> lock(m_scan_mutex);
             m_scan_cv.wait(
@@ -117,10 +132,14 @@ namespace engine::bridge::endpoints
             while (!m_scan_queue.empty()) {
                 std::string body = m_scan_queue.front();
                 m_scan_queue.pop();
+                scan_queue_size = m_scan_queue.size();
                 lock.unlock();
 
                 parser::Json json;
                 parser::Json av_clamav;
+
+                m_server->log->info(fmt::format("Executing scan from queue({}) ",
+                                       scan_queue_size.load()));
 
                 TRY_BEGIN()
                 m_scan_av_clamav->scan(
@@ -158,9 +177,7 @@ namespace engine::bridge::endpoints
                     TRY_BEGIN()
                     enqueue_scan(req.body);
                     TRY_END()
-                    CATCH(exception::ParcialAbort, 
-                        return crow::response{429};
-                    )
+                    CATCH(exception::ParcialAbort, return crow::response{429};)
 
                     return crow::response{202, "Scan enqueued"};
                 });

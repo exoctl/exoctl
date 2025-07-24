@@ -40,6 +40,7 @@ namespace engine::bridge::endpoints
         void _plugins() override;
 
         std::atomic<bool> is_running;
+        std::atomic<size_t> scan_queue_size;
         size_t max_queue_size;
 
       private:
