@@ -16,7 +16,7 @@ namespace engine
         {
             std::ostringstream oss;
             parser::Json json;
-            
+
             oss << toml::json_formatter{m_toml};
             json.from_string(oss.str());
             return json;

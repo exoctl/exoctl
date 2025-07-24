@@ -89,4 +89,4 @@ namespace engine::bridge::focades::analysis::metadata
 
         return -entropy;
     }
-} // namespace engine::bridge::focades::data::metadata
+} // namespace engine::bridge::focades::analysis::metadata

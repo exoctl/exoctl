@@ -10,8 +10,7 @@
 
 namespace engine::bridge::focades::analysis::metadata
 {
-    class Metadata
-        : public interface::IPlugins<Metadata>
+    class Metadata : public interface::IPlugins<Metadata>
     {
       public:
         Metadata() = default;
@@ -30,4 +29,4 @@ namespace engine::bridge::focades::analysis::metadata
         magic::Magic m_magic;
         crypto::Sha m_sha;
     };
-} // namespace engine::bridge::focades::data::metadata
+} // namespace engine::bridge::focades::analysis::metadata

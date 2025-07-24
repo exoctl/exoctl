@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <engine/memory/entitys.hxx>
 #include <sys/mman.h>
-#include <cstdint>
 #include <vector>
 
 // clang-format off
@@ -14,7 +14,7 @@
 
 namespace engine::memory
 {
-    class Memory 
+    class Memory
     {
       public:
         Memory();

@@ -68,4 +68,4 @@ namespace engine::server::gateway::websocket
         void def_error_connection(crow::websocket::connection *,
                                   const std::string &);
     };
-} // namespace engine::server::gateway
+} // namespace engine::server::gateway::websocket

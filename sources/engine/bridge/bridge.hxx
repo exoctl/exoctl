@@ -4,8 +4,8 @@
 #include <LIEF/LIEF.hpp>
 // clang-format on
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
-#include <engine/bridge/entitys.hxx>
 #include <engine/bridge/endpoints/plugins/plugins.hxx>
+#include <engine/bridge/entitys.hxx>
 #include <engine/bridge/extend/bridge.hxx>
 #include <engine/database/database.hxx>
 #include <engine/server/server.hxx>

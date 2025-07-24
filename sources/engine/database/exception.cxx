@@ -20,8 +20,7 @@ namespace engine::database::exception
         return m_error_message.c_str();
     }
 
-    Schema::Schema(const std::string &p_message)
-        : m_error_message(p_message)
+    Schema::Schema(const std::string &p_message) : m_error_message(p_message)
     {
     }
     const char *Schema::what() const noexcept

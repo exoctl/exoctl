@@ -24,7 +24,8 @@ namespace engine::server::gateway::websocket
 
         m_server->log->info("Creating WebSocket route for URL: '{}'", m_url);
 
-        (*m_server).route_dynamic(m_url)
+        (*m_server)
+            .route_dynamic(m_url)
             .middlewares<crow::App<middleware::websocket::JWTAuth>,
                          middleware::websocket::JWTAuth>()
             .websocket(m_server)

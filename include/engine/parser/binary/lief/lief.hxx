@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <LIEF/LIEF.hpp>
 #include <LIEF/json.hpp>
+#include <cstdint>
 #include <engine/parser/binary/lief/exception.hxx>
 #include <functional>
 #include <memory>

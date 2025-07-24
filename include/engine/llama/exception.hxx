@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #include <engine/interfaces/iexception.hxx>
 namespace engine
 {

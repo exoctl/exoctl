@@ -20,7 +20,7 @@ namespace engine
             Logging &operator=(const Logging &);
             void setup(const configuration::Configuration &);
             void load();
-            
+
             friend class extend::Logging;
 
             template <typename... Args>

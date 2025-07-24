@@ -8,7 +8,6 @@ namespace engine::logging::extend
     class Logging : public interface::IPlugins<Logging>
     {
       public:
-
         void _plugins() override;
 
       private:

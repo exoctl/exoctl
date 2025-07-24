@@ -22,7 +22,7 @@ namespace engine
           public:
             friend class engine::server::extend::Server;
 
-            Server() =default;
+            Server() = default;
             ~Server() = default;
             Server &operator=(const Server &);
             configuration::Configuration *config;

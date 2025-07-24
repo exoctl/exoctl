@@ -118,4 +118,4 @@ namespace engine::server::gateway::websocket::responses
         return "Bad requests raw data";
     }
 
-} // namespace engine::server::gateway::websocket::Websocket::responses
+} // namespace engine::server::gateway::websocket::responses

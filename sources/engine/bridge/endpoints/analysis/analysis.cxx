@@ -1,8 +1,8 @@
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/logging/logging.hxx>
-#include <engine/security/yara/exception.hxx>
 #include <engine/security/av/clamav/exception.hxx>
+#include <engine/security/yara/exception.hxx>
 #include <stdint.h>
 
 namespace engine::bridge::endpoints
@@ -11,8 +11,32 @@ namespace engine::bridge::endpoints
         : m_map(BASE_ANALYSIS),
           m_scan_av_clamav(
               std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
-          m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>())
+          m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>()),
+          is_running(true), max_queue_size(0)
     {
+    }
+
+    Analysis::~Analysis()
+    {
+        {
+            std::lock_guard<std::mutex> lock(m_scan_mutex);
+            is_running = false;
+        }
+        m_scan_cv.notify_all();
+
+        if (m_scan_worker.joinable())
+            m_scan_worker.join();
+
+        m_scan_av_clamav.reset();
+        m_scan_yara.reset();
+    }
+
+    void Analysis::_plugins()
+    {
+        focades::analysis::scan::yara::Yara::plugins();
+
+        plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
+            "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
     }
 
     void Analysis::setup(server::Server &p_server)
@@ -26,21 +50,97 @@ namespace engine::bridge::endpoints
             return;
         }
 
+        max_queue_size =
+            m_server->config
+                ->get("bridge.endpoint.analysis.scan.max_queue_size")
+                .value<size_t>()
+                .value();
+
         m_scan_yara->setup(*m_server->config);
         m_scan_av_clamav->setup(*m_server->config);
 
-        // add new HTTP routes (Web)
-        Analysis::scan();
-        Analysis::scan_yara();
-        Analysis::scan_av_clamav();
+        m_scan_worker = std::thread(&Analysis::worker, this);
+
+        scan();
+        scan_yara();
+        scan_av_clamav();
     }
 
-    void Analysis::_plugins()
+    void Analysis::load() const
     {
-        focades::analysis::scan::yara::Yara::plugins();
+        if (m_server->config->get("bridge.endpoint.analysis.enable")
+                .value<bool>()
+                .value()) {
+            TRY_BEGIN()
+            m_server->log->info("Loading rules yara...");
+            m_scan_yara->load_rules();
 
-        plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
-            "Analysis", "scan", &endpoints::Analysis::m_scan_yara);
+            m_server->log->info("Loading rules clamav ...");
+            m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
+                m_server->log->info(
+                    "Successfully loaded rules. Total Clamav rules count: {:d}",
+                    p_total_rules);
+            });
+            TRY_END()
+            CATCH(security::yara::exception::LoadRules, {
+                m_server->log->error("{}", e.what());
+                throw exception::Abort(e.what());
+            })
+
+            m_map.get_routes(
+                [&](const std::string p_route) { m_map.call_route(p_route); });
+        }
+    }
+
+    void Analysis::enqueue_scan(const std::string &p_buffer)
+    {
+        std::lock_guard<std::mutex> lock(m_scan_mutex);
+        if (m_scan_queue.size() >= max_queue_size) {
+            throw exception::ParcialAbort("Scan queue is full");
+        }
+        m_scan_queue.push(p_buffer);
+        m_scan_cv.notify_one();
+    }
+
+    void Analysis::worker()
+    {
+        m_server->log->info("Analysis Worker thread started running.");
+        while (is_running) {
+            std::unique_lock<std::mutex> lock(m_scan_mutex);
+            m_scan_cv.wait(
+                lock, [this] { return !m_scan_queue.empty() || !is_running; });
+
+            if (!is_running && m_scan_queue.empty()) {
+                break;
+            }
+
+            while (!m_scan_queue.empty()) {
+                std::string body = m_scan_queue.front();
+                m_scan_queue.pop();
+                lock.unlock();
+
+                parser::Json json;
+                parser::Json av_clamav;
+
+                TRY_BEGIN()
+                m_scan_av_clamav->scan(
+                    body,
+                    [&](focades::analysis::scan::av::clamav::record::DTO
+                            *p_dto) {
+                        av_clamav = m_scan_av_clamav->dto_json(p_dto);
+                    });
+
+                json.add("av", av_clamav);
+                // m_server->log->info("Scan finalizado: {}", json.tostring());
+                TRY_END()
+                CATCH(security::av::clamav::exception::Scan,
+                      { m_server->log->error("Erro ClamAV: {}", e.what()); })
+                CATCH(security::yara::exception::Scan,
+                      { m_server->log->error("Erro YARA: {}", e.what()); })
+
+                lock.lock();
+            }
+        }
     }
 
     void Analysis::scan()
@@ -55,29 +155,14 @@ namespace engine::bridge::endpoints
                         return crow::response{405};
                     }
 
-                    parser::Json json;
-                    parser::Json av;
+                    TRY_BEGIN()
+                    enqueue_scan(req.body);
+                    TRY_END()
+                    CATCH(exception::ParcialAbort, 
+                        return crow::response{429};
+                    )
 
-                    // TRY_BEGIN()
-                    // m_scan_av_clamav->scan_fast_bytes(
-                    //     req.body,
-                    //     [&](focades::analysis::scan::av::clamav::record::DTO
-                    //             *p_dto) {
-                    //         av.add("clamav",
-                    //         m_scan_av_clamav->dto_json(p_dto));
-                    //     });
-                    //
-                    // json.add("av", av);
-                    // return crow::response{json.to_string()};
-                    // TRY_END()
-                    //
-                    // CATCH(security::yara::exception::Scan, {
-                    //    m_server->log->info("Error scan yara
-                    //    '{}'", e.what()); return
-                    //    crow::response{500, e.what()};
-                    //});
-
-                    return crow::response(200);
+                    return crow::response{202, "Scan enqueued"};
                 });
         });
     }
@@ -124,16 +209,13 @@ namespace engine::bridge::endpoints
 
                     parser::Json json;
                     TRY_BEGIN()
-
                     m_scan_yara->scan(
                         req.body,
                         [&](focades::analysis::scan::yara::record::DTO *p_dto) {
                             json = std::move(m_scan_yara->dto_json(p_dto));
                         });
-
                     TRY_END()
                     CATCH(security::yara::exception::Scan, {
-                        // return crow::response{500, e.what()};
                         m_server->log->info("Error scan yara '{}'", e.what());
                     });
                     return crow::response{json.tostring()};
@@ -141,30 +223,4 @@ namespace engine::bridge::endpoints
         });
     }
 
-    void Analysis::load() const
-    {
-        if (m_server->config->get("bridge.endpoint.analysis.enable")
-                .value<bool>()
-                .value()) {
-            TRY_BEGIN()
-            m_server->log->info("Loading rules yara...");
-            m_scan_yara->load_rules();
-
-            m_server->log->info("Loading rules clamav ...");
-            m_scan_av_clamav->load_rules([&](unsigned int p_total_rules) {
-                m_server->log->info(
-                    "Successfully loaded rules. Total Clamav rules count: "
-                    "{:d}",
-                    p_total_rules);
-            });
-            TRY_END()
-            CATCH(security::yara::exception::LoadRules, {
-                m_server->log->error("{}", e.what());
-                throw exception::Abort(e.what());
-            })
-
-            m_map.get_routes(
-                [&](const std::string p_route) { m_map.call_route(p_route); });
-        }
-    }
 } // namespace engine::bridge::endpoints

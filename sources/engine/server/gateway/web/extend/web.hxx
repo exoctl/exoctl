@@ -12,4 +12,4 @@ namespace engine::server::gateway::web::extend
       private:
         void bind_web();
     };
-} // namespace engine::server::gateway::web::Web::extend
+} // namespace engine::server::gateway::web::extend
