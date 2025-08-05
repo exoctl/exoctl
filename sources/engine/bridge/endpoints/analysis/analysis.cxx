@@ -39,6 +39,8 @@ namespace engine::bridge::endpoints
             "Analysis",
             "scan",
             &endpoints::Analysis::m_scan_yara,
+            "enqueue_scan",
+            &endpoints::Analysis::enqueue_scan,
             "is_running",
             sol::property([](const endpoints::Analysis &p_self) -> const bool {
                 return p_self.is_running.load();
@@ -85,7 +87,7 @@ namespace engine::bridge::endpoints
                 .value<bool>()
                 .value()) {
             TRY_BEGIN()
-            m_server->log->info("Loading rules yara...");
+            m_server->log->info("Loading rules yara ...");
             m_scan_yara->load_rules();
 
             m_server->log->info("Loading rules clamav ...");
@@ -136,21 +138,23 @@ namespace engine::bridge::endpoints
                 lock.unlock();
 
                 parser::Json json;
-                parser::Json av_clamav;
 
-                m_server->log->info(fmt::format("Executing scan from queue({}) ",
-                                       scan_queue_size.load()));
+                m_server->log->info(fmt::format(
+                    "Executing scan from queue({}) ", scan_queue_size.load()));
 
                 TRY_BEGIN()
                 m_scan_av_clamav->scan(
                     body,
                     [&](focades::analysis::scan::av::clamav::record::DTO
                             *p_dto) {
-                        av_clamav = m_scan_av_clamav->dto_json(p_dto);
+                            // work here
                     });
 
-                json.add("av", av_clamav);
-                // m_server->log->info("Scan finalizado: {}", json.tostring());
+                m_scan_yara->scan(
+                    body,
+                    [&](focades::analysis::scan::yara::record::DTO *p_dto) {
+                        // work here 
+                    });
                 TRY_END()
                 CATCH(security::av::clamav::exception::Scan,
                       { m_server->log->error("Erro ClamAV: {}", e.what()); })
@@ -203,7 +207,7 @@ namespace engine::bridge::endpoints
                         req.body,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
-                            json = m_scan_av_clamav->dto_json(p_dto);
+                            json = std::move(m_scan_av_clamav->dto_json(p_dto));
                         });
                     TRY_END()
                     CATCH(security::av::clamav::exception::Scan, {})
