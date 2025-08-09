@@ -30,14 +30,15 @@ namespace engine
         logging = p_log;
         configuration = p_config;
 
+        filesystem.setup(configuration, logging);
         database.setup(configuration, logging);
         server.setup(configuration, logging);
         plugins.setup(configuration, logging);
+        bridge.setup(server);
         m_clamav_log.setup(configuration, logging);
         m_llama_log.setup(configuration, logging);
         m_lief_log.setup(configuration, logging);
         m_server_log.setup(configuration, logging);
-        bridge.setup(server, database);
 
         _plugins();
     }
@@ -87,6 +88,7 @@ namespace engine
 
     void Engine::load()
     {
+        filesystem.load();
         database.load();
         server.load();
         bridge.load();

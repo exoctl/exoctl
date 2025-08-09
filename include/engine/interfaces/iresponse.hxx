@@ -1,38 +1,69 @@
 #pragma once
 
 #include <engine/parser/json/json.hxx>
+#include <string>
 
 namespace engine::interface
 {
-    // CRTP (Curiously Recurring Template Pattern)
     template <typename Derived> class IResponse
     {
       public:
-        inline static const parser::Json to_json()
+        explicit IResponse(const std::string &p_message = "",
+                           const std::string &p_status = "",
+                           int p_code = -1)
+            : m_code(p_code), m_status(p_status), m_message(p_message)
         {
-            return Derived()._tojson();
-        }
-
-        inline static const int code()
-        {
-            return Derived()._code();
-        }
-
-        inline static const std::string status()
-        {
-            return Derived()._status();
-        }
-
-        inline static const std::string message()
-        {
-            return Derived()._message();
         }
 
         virtual ~IResponse() = default;
-        explicit IResponse() = default;
+
+        // Adds an extra field directly to internal JSON (chainable)
+        template <typename T>
+        inline Derived &add_field(const std::string &key, const T &value)
+        {
+            m_json.add(key, value);
+            return *static_cast<Derived *>(this);
+        }
+
+        // Converts to JSON (including default fields)
+        inline const parser::Json tojson() const
+        {
+            parser::Json json_data = m_json;
+
+            json_data.add("code", code());
+            json_data.add("status", status());
+            json_data.add("message", message());
+
+            return json_data;
+        }
+
+        inline const int code() const
+        {
+            return (m_code == -1) ? static_cast<const Derived *>(this)->_code()
+                                  : m_code;
+        }
+
+        inline const std::string status() const
+        {
+            return m_status.empty()
+                       ? static_cast<const Derived *>(this)->_status()
+                       : m_status;
+        }
+
+        inline const std::string message() const
+        {
+            return m_message.empty()
+                       ? static_cast<const Derived *>(this)->_message()
+                       : m_message;
+        }
+
+      protected:
+        int m_code;
+        std::string m_status;
+        std::string m_message;
+        parser::Json m_json;
 
       private:
-        virtual const parser::Json _tojson() const = 0;
         virtual const int _code() const = 0;
         virtual const std::string _status() const = 0;
         virtual const std::string _message() const = 0;

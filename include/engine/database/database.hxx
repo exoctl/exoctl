@@ -4,13 +4,17 @@
 #include <condition_variable>
 #include <dirent.h>
 #include <engine/configuration/configuration.hxx>
+#include <engine/database/entitys.hxx>
 #include <engine/database/extend/database.hxx>
 #include <engine/logging/logging.hxx>
 #include <filesystem>
 #include <fmt/core.h>
+#include <fstream>
+#include <mutex>
 #include <queue>
 #include <sqlite3.h>
 #include <sys/types.h>
+#include <thread>
 
 namespace engine::database
 {
@@ -31,9 +35,10 @@ namespace engine::database
         const int exec_query(const std::string &,
                              int (*)(void *, int, char **, char **),
                              char **p_msg);
+        static void enqueue_sql(record::EnqueueTask &);
         void close() const;
 
-        std::atomic<bool> is_running;
+        static std::atomic<bool> is_running;
         std::atomic<size_t> sql_queue_size;
 
       private:
@@ -42,7 +47,6 @@ namespace engine::database
         logging::Logging m_log;
 
         void worker();
-        void enqueue_sql(const std::string &&);
         void load_schema();
         void load_migrations();
 
@@ -51,51 +55,55 @@ namespace engine::database
         {
             m_log.info(fmt::format("Loading from '{}'", p_dir));
 
-            std::function<void(const std::string &)> process;
-            process = [&](const std::string &p_path) {
-                DIR *dir = opendir(p_path.c_str());
-                if (!dir) {
-                    throw ExceptionType(fmt::format(
-                        "Failed to open '{}': {}", p_path, strerror(errno)));
-                }
-
-                while (const dirent *entry = readdir(dir)) {
-                    const std::filesystem::path entry_name = entry->d_name;
-                    const std::string full_path =
-                        fmt::format("{}/{}", p_path, entry_name.c_str());
-
-                    if (entry_name == "." || entry_name == "..")
-                        continue;
-
-                    if (entry_name.extension() == ".sql") {
-                        m_log.info(fmt::format("{}", full_path));
-
-                        std::ifstream file(full_path);
-                        if (!file.is_open()) {
-                            closedir(dir);
-                            throw ExceptionType(fmt::format(
-                                "Failed to open file '{}'", full_path));
-                        }
-
-                        const std::string sql(
-                            (std::istreambuf_iterator<char>(file)),
-                            std::istreambuf_iterator<char>());
-
-                        Database::enqueue_sql(sql.data());
-                    } else if (entry->d_type == DT_DIR) {
-                        process(full_path);
+            std::function<void(const std::string &)> process =
+                [&](const std::string &p_path) {
+                    DIR *dir = opendir(p_path.c_str());
+                    if (!dir) {
+                        throw ExceptionType(
+                            fmt::format("Failed to open '{}': {}",
+                                        p_path,
+                                        strerror(errno)));
                     }
-                }
 
-                closedir(dir);
-            };
+                    while (const dirent *entry = readdir(dir)) {
+                        const std::filesystem::path entry_name = entry->d_name;
+                        const std::string full_path =
+                            fmt::format("{}/{}", p_path, entry_name.c_str());
+
+                        if (entry_name == "." || entry_name == "..")
+                            continue;
+
+                        if (entry_name.extension() == ".sql") {
+                            std::ifstream file(full_path);
+                            if (!file.is_open()) {
+                                closedir(dir);
+                                throw ExceptionType(fmt::format(
+                                    "Failed to open file '{}'", full_path));
+                            }
+
+                            const std::string sql(
+                                (std::istreambuf_iterator<char>(file)),
+                                std::istreambuf_iterator<char>());
+
+                            record::EnqueueTask task;
+                            task.sql = sql;
+
+                            Database::enqueue_sql(task);
+                        } else if (entry->d_type == DT_DIR) {
+                            process(full_path);
+                        }
+                    }
+
+                    closedir(dir);
+                };
 
             process(p_dir);
         }
 
         std::thread m_worker_thread;
-        std::mutex m_queue_mutex;
-        std::condition_variable m_queue_cv;
-        std::queue<std::string> m_sql_queue;
+        static std::mutex m_sql_queue_mutex;
+        static std::queue<record::EnqueueTask> m_sql_queue;
+        static std::condition_variable m_sql_queue_cv;
+        static std::atomic<int> m_id_counter;
     };
 } // namespace engine::database

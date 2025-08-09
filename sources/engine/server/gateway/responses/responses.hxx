@@ -1,17 +1,15 @@
 #pragma once
 
 #include <engine/interfaces/iresponse.hxx>
-#include <engine/server/server.hxx>
 
-namespace engine::server::gateway::websocket::responses
+namespace engine::server::gateway::responses
 {
     class Connected : public interface::IResponse<Connected>
     {
       public:
-        Connected();
+        Connected() = default;
         ~Connected() override = default;
 
-        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -20,10 +18,20 @@ namespace engine::server::gateway::websocket::responses
     class UnsupportedData : public interface::IResponse<UnsupportedData>
     {
       public:
-        UnsupportedData();
+        UnsupportedData() = default;
         ~UnsupportedData() override = default;
 
-        const parser::Json _tojson() const override;
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
+
+    class Accepted : public interface::IResponse<Accepted>
+    {
+      public:
+        Accepted() = default;
+        ~Accepted() override = default;
+
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -32,10 +40,9 @@ namespace engine::server::gateway::websocket::responses
     class InvalidTokenJWT : public interface::IResponse<InvalidTokenJWT>
     {
       public:
-        InvalidTokenJWT();
+        InvalidTokenJWT() = default;
         ~InvalidTokenJWT() override = default;
 
-        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
@@ -44,12 +51,11 @@ namespace engine::server::gateway::websocket::responses
     class BadRequests : public interface::IResponse<BadRequests>
     {
       public:
-        BadRequests();
+        BadRequests() = default;
         ~BadRequests() override = default;
 
-        const parser::Json _tojson() const override;
         const int _code() const override;
         const std::string _status() const override;
         const std::string _message() const override;
     };
-} // namespace engine::server::gateway::websocket::responses
+} // namespace engine::server::gateway::responses

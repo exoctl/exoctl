@@ -6,14 +6,12 @@ namespace engine
     namespace bridge
     {
         std::shared_ptr<bridge::endpoints::Plugins> Bridge::plugins;
-        std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
-            std::make_shared<bridge::endpoints::Analysis>());
+        std::shared_ptr<bridge::endpoints::analysis::Analysis> Bridge::analysis(
+            std::make_shared<bridge::endpoints::analysis::Analysis>());
 
-        void Bridge::setup(server::Server &p_server,
-                           database::Database &p_database)
+        void Bridge::setup(server::Server &p_server)
         {
             m_server = &p_server;
-            m_database = &p_database;
 
             analysis->setup(*m_server);
             plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);
@@ -21,7 +19,7 @@ namespace engine
 
         void Bridge::load()
         {
-            m_server->log->info("Loading Defaults Bridges...");
+            m_server->log->info("Loading Defaults Bridges ...");
 
             TRY_BEGIN()
 

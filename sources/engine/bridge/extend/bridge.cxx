@@ -19,7 +19,7 @@ namespace engine::bridge::extend
 
     void Bridge::_plugins()
     {
-        engine::bridge::endpoints::Analysis::plugins();
+        engine::bridge::endpoints::analysis::Analysis::plugins();
 
         Bridge::bind_bridge(plugins::Plugins::lua.state);
     }

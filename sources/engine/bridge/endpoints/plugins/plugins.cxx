@@ -1,6 +1,6 @@
 #include <engine/bridge/endpoints/plugins/plugins.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/gateway/websocket/responses/responses.hxx>
+#include <engine/server/gateway/responses/responses.hxx>
 
 namespace engine::bridge::endpoints
 {

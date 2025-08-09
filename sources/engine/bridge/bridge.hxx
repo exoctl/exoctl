@@ -25,14 +25,13 @@ namespace engine
             ~Bridge() = default;
             friend class extend::Bridge;
             void load();
-            void setup(server::Server &, database::Database &);
+            void setup(server::Server &);
 
             static std::shared_ptr<bridge::endpoints::Plugins> plugins;
-            static std::shared_ptr<bridge::endpoints::Analysis> analysis;
+            static std::shared_ptr<bridge::endpoints::analysis::Analysis> analysis;
 
           private:
             server::Server *m_server;
-            database::Database *m_database;
             std::vector<bridge::record::Bridge> m_endpoints;
         };
     } // namespace bridge

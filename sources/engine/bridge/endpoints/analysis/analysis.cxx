@@ -1,57 +1,54 @@
+#include "entitys.hxx"
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/security/av/clamav/exception.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <engine/server/gateway/responses/responses.hxx>
 #include <stdint.h>
 
-namespace engine::bridge::endpoints
+namespace engine::bridge::endpoints::analysis
 {
     Analysis::Analysis()
         : m_map(BASE_ANALYSIS),
           m_scan_av_clamav(
               std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
           m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>()),
-          is_running(true), max_queue_size(0), scan_queue_size(0)
+          is_running(true), max_queue_size(0), scan_queue_size(0),
+          m_id_counter(0)
     {
     }
 
     Analysis::~Analysis()
     {
-        {
-            std::lock_guard<std::mutex> lock(m_scan_mutex);
-            is_running = false;
-        }
         m_scan_cv.notify_all();
+        is_running = false;
 
         if (m_scan_worker.joinable())
             m_scan_worker.join();
-
-        m_scan_av_clamav.reset();
-        m_scan_yara.reset();
     }
 
     void Analysis::_plugins()
     {
         focades::analysis::scan::yara::Yara::plugins();
 
-        plugins::Plugins::lua.state.new_usertype<endpoints::Analysis>(
+        plugins::Plugins::lua.state.new_usertype<endpoints::analysis::Analysis>(
             "Analysis",
             "scan",
-            &endpoints::Analysis::m_scan_yara,
+            &endpoints::analysis::Analysis::m_scan_yara,
             "enqueue_scan",
-            &endpoints::Analysis::enqueue_scan,
+            &endpoints::analysis::Analysis::enqueue_scan,
             "is_running",
-            sol::property([](const endpoints::Analysis &p_self) -> const bool {
-                return p_self.is_running.load();
-            }),
+            sol::property(
+                [](const endpoints::analysis::Analysis &p_self) -> const bool {
+                    return p_self.is_running.load();
+                }),
             "scan_queue_size",
             sol::property(
-                [](const endpoints::Analysis &p_self) -> const size_t {
-                    return p_self.scan_queue_size.load();
-                }),
+                [](const endpoints::analysis::Analysis &p_self)
+                    -> const size_t { return p_self.scan_queue_size.load(); }),
             "max_queue_size",
-            &endpoints::Analysis::max_queue_size);
+            &endpoints::analysis::Analysis::max_queue_size);
     }
 
     void Analysis::setup(server::Server &p_server)
@@ -107,14 +104,17 @@ namespace engine::bridge::endpoints
         }
     }
 
-    void Analysis::enqueue_scan(const std::string &p_buffer)
+    void Analysis::enqueue_scan(record::EnqueueTask &p_task)
     {
         std::lock_guard<std::mutex> lock(m_scan_mutex);
-        if (m_scan_queue.size() >= max_queue_size) {
-            throw exception::ParcialAbort(
-                fmt::format("Scan queue({}) is full", max_queue_size));
+        if (m_scan_queue.size() >= max_queue_size || !is_running) {
+            throw exception::ParcialAbort(fmt::format(
+                "Scan queue({}) is full or not is_running ", max_queue_size));
         }
-        m_scan_queue.push(p_buffer);
+
+        p_task.id = ++m_id_counter;
+
+        m_scan_queue.push(p_task);
         m_scan_cv.notify_one();
     }
 
@@ -132,28 +132,30 @@ namespace engine::bridge::endpoints
             }
 
             while (!m_scan_queue.empty()) {
-                std::string body = m_scan_queue.front();
+                record::EnqueueTask &task = m_scan_queue.front();
                 m_scan_queue.pop();
                 scan_queue_size = m_scan_queue.size();
                 lock.unlock();
 
                 parser::Json json;
 
-                m_server->log->info(fmt::format(
-                    "Executing scan from queue({}) ", scan_queue_size.load()));
+                m_server->log->info(
+                    fmt::format("Processing scan from task {} queue({}) ",
+                                task.id,
+                                scan_queue_size.load()));
 
                 TRY_BEGIN()
                 m_scan_av_clamav->scan(
-                    body,
+                    task.buf,
                     [&](focades::analysis::scan::av::clamav::record::DTO
                             *p_dto) {
-                            // work here
+                        // work here
                     });
 
                 m_scan_yara->scan(
-                    body,
+                    task.buf,
                     [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                        // work here 
+                        // work here
                     });
                 TRY_END()
                 CATCH(security::av::clamav::exception::Scan,
@@ -178,12 +180,21 @@ namespace engine::bridge::endpoints
                         return crow::response{405};
                     }
 
+                    record::EnqueueTask task =
+                        (record::EnqueueTask) {0, req.body};
+
                     TRY_BEGIN()
-                    enqueue_scan(req.body);
+                    Analysis::enqueue_scan(task);
                     TRY_END()
                     CATCH(exception::ParcialAbort, return crow::response{429};)
 
-                    return crow::response{202, "Scan enqueued"};
+                    auto accept = server::gateway::responses::Accepted();
+
+                    accept.add_field("task_id", task.id);
+
+                    return crow::response{accept.code(),
+                                          "application/json",
+                                          accept.tojson().tostring()};
                 });
         });
     }
@@ -244,4 +255,4 @@ namespace engine::bridge::endpoints
         });
     }
 
-} // namespace engine::bridge::endpoints
+} // namespace engine::bridge::endpoints::analysis

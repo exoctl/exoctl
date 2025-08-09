@@ -3,9 +3,26 @@
 
 namespace engine::database
 {
-    Database::Database()
-        : is_running(true), m_database(nullptr), sql_queue_size(0)
+    std::mutex Database::m_sql_queue_mutex;
+    std::queue<record::EnqueueTask> Database::m_sql_queue;
+    std::condition_variable Database::m_sql_queue_cv;
+    std::atomic<bool> Database::is_running = true;
+    std::atomic<int> Database::m_id_counter = 0;
+    
+    Database::Database() : m_database(nullptr), sql_queue_size(0)
     {
+    }
+
+    Database::~Database()
+    {
+        m_sql_queue_cv.notify_all();
+        is_running = false;
+
+        if (m_worker_thread.joinable()) {
+            m_worker_thread.join();
+        }
+    
+        Database::close();
     }
 
     void Database::setup(const configuration::Configuration &p_config,
@@ -63,37 +80,42 @@ namespace engine::database
                 .value());
     }
 
-    void Database::enqueue_sql(const std::string &&sql)
+    void Database::enqueue_sql(record::EnqueueTask &p_task)
     {
-        m_log.info(fmt::format("Enqueueing SQL: {}", sql));
-        {
-            std::lock_guard<std::mutex> lock(m_queue_mutex);
-            m_sql_queue.push(sql);
-        }
-        m_queue_cv.notify_one();
+        if (!is_running)
+            return;
+
+        p_task.id = ++m_id_counter;
+
+        std::lock_guard<std::mutex> lock(m_sql_queue_mutex);
+        m_sql_queue.push(p_task);
+        m_sql_queue_cv.notify_one();
     }
 
     void Database::worker()
     {
         m_log.info("Database Worker thread started running.");
         while (is_running) {
-            std::unique_lock<std::mutex> lock(m_queue_mutex);
-            m_queue_cv.wait(
+            std::unique_lock<std::mutex> lock(m_sql_queue_mutex);
+            m_sql_queue_cv.wait(
                 lock, [this] { return !m_sql_queue.empty() || !is_running; });
 
             while (!m_sql_queue.empty()) {
-                const std::string sql = m_sql_queue.front();
+                record::EnqueueTask task = m_sql_queue.front();
                 m_sql_queue.pop();
                 sql_queue_size = m_sql_queue.size();
                 lock.unlock();
 
-                m_log.info(fmt::format("Executing SQL from queue({}): {} ",
-                                       sql_queue_size.load(),
-                                       sql));
+                m_log.info(
+                    fmt::format("Executing Task ID {} from queue({})",
+                                task.id,
+                                sql_queue_size.load()));
 
                 char *errmsg = nullptr;
-                if (Database::exec_query(sql, nullptr, &errmsg) != SQLITE_OK) {
-                    m_log.error(fmt::format("SQLite exec error: {}", errmsg));
+                if (Database::exec_query(task.sql, nullptr, &errmsg) !=
+                    SQLITE_OK) {
+                    m_log.error(fmt::format(
+                        "SQLite exec error on task {}: {}", task.id, errmsg));
                     sqlite3_free(errmsg);
                 }
 
@@ -104,16 +126,6 @@ namespace engine::database
 
     void Database::exec_query_commit(const std::string &sql)
     {
-        // m_log.info("Executing committed SQL query.");
-        // char *errmsg = nullptr;
-        // sqlite3_exec(m_database, "BEGIN;", nullptr, nullptr, nullptr);
-        // if (sqlite3_exec(m_database, sql.c_str(), nullptr, nullptr, &errmsg)
-        // !=
-        //     SQLITE_OK) {
-        //     m_log.error(fmt::format("SQL error: {}", errmsg));
-        //     sqlite3_free(errmsg);
-        // }
-        // sqlite3_exec(m_database, "COMMIT;", nullptr, nullptr, nullptr);
     }
 
     const int Database::exec_query(
@@ -121,7 +133,6 @@ namespace engine::database
         int (*p_callback)(void *, int, char **, char **),
         char **p_msg)
     {
-        m_log.info(fmt::format("Executing SQL query: {}", p_sql));
         return sqlite3_exec(
             m_database, p_sql.c_str(), p_callback, p_msg, nullptr);
     }
@@ -131,14 +142,4 @@ namespace engine::database
         sqlite3_close_v2(m_database);
     }
 
-    Database::~Database()
-    {
-        is_running = false;
-        m_queue_cv.notify_all();
-        if (m_worker_thread.joinable()) {
-            m_worker_thread.join();
-        }
-
-        Database::close();
-    }
 } // namespace engine::database

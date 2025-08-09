@@ -14,8 +14,7 @@
 #include <engine/server/server.hxx>
 #include <engine/signals/signals.hxx>
 #include <engine/version/version.hxx>
-#include <functional>
-#include <unordered_map>
+#include <engine/filesystem/filesystem.hxx>
 
 namespace engine
 {
@@ -38,6 +37,7 @@ namespace engine
         plugins::Plugins plugins;
         version::Version version;
         bridge::Bridge bridge;
+        filesystem::Filesystem filesystem;
 
         ~Engine();
         Engine();

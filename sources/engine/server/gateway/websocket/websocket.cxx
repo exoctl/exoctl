@@ -1,6 +1,6 @@
 #include <engine/server/gateway/websocket/context/context.hxx>
 #include <engine/server/gateway/websocket/middlewares/jwtauth.hxx>
-#include <engine/server/gateway/websocket/responses/responses.hxx>
+#include <engine/server/gateway/responses/responses.hxx>
 #include <engine/server/gateway/websocket/websocket.hxx>
 
 namespace engine::server::gateway::websocket
@@ -83,7 +83,7 @@ namespace engine::server::gateway::websocket
         std::lock_guard<std::mutex> _(m_mtx);
         m_context.add(p_conn);
         m_context.broadcast_text(
-            p_conn, websocket::responses::Connected::to_json().tostring());
+            p_conn, responses::Connected().tojson().tostring());
 
         m_server->log->info(
             "Connection opened {} from IP: '{}',  SubProtocol : "

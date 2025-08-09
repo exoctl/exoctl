@@ -21,8 +21,7 @@ namespace engine
             }
 
             const int yr_compiler = Yara::load_compiler();
-            if (yr_compiler != ERROR_SUCCESS &&
-                yr_compiler == ERROR_INSUFFICIENT_MEMORY) {
+            if (yr_compiler != ERROR_SUCCESS) {
                 throw yara::exception::Initialize(
                     "yr_compiler_create() error initialize compiler yara");
             }
