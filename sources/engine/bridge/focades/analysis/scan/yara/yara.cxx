@@ -82,7 +82,7 @@ namespace engine::bridge::focades::analysis::scan::yara
             for (const auto &rule : p_dto->rules) {
                 engine::parser::Json rule_json;
                 rule_json.add("identifier", rule.identifier);
-                rule_json.add("flags", rule.flags);
+                rule_json.add("namespace", rule.ns->name);
                 rules_array.add(rule_json);
             }
 
