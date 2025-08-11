@@ -12,7 +12,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class UnsupportedData : public interface::IResponse<UnsupportedData>
@@ -23,7 +22,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class InternalServerError : public interface::IResponse<InternalServerError>
@@ -34,7 +32,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class Accepted : public interface::IResponse<Accepted>
@@ -45,7 +42,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class TooManyRequests : public interface::IResponse<TooManyRequests>
@@ -56,7 +52,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class MethodNotAllowed : public interface::IResponse<MethodNotAllowed>
@@ -67,7 +62,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class InvalidTokenJWT : public interface::IResponse<InvalidTokenJWT>
@@ -78,7 +72,6 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 
     class BadRequests : public interface::IResponse<BadRequests>
@@ -89,6 +82,5 @@ namespace engine::server::gateway::responses
 
         const int _code() const override;
         const std::string _status() const override;
-        const std::string _message() const override;
     };
 } // namespace engine::server::gateway::responses

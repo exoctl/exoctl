@@ -14,7 +14,8 @@ namespace engine::bridge::extend
             "load",
             &bridge::Bridge::load);
 
-        plugins::Plugins::lua.state["_analysis"] = bridge::Bridge::analysis;
+        plugins::Plugins::lua.state.create_named_table(
+            "_bridge", "analysis", bridge::Bridge::analysis);
     }
 
     void Bridge::_plugins()

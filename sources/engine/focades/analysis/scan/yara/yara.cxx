@@ -6,7 +6,7 @@
 
 namespace engine::focades::analysis::scan::yara
 {
-    Yara::Yara() : m_yara(std::make_shared<security::Yara>())
+    Yara::Yara() : yara(std::make_shared<security::Yara>())
     {
     }
 
@@ -15,20 +15,14 @@ namespace engine::focades::analysis::scan::yara
         m_config = &p_config;
     }
 
-    void Yara::_plugins()
-    {
-        plugins::Plugins::lua.state.new_usertype<yara::Yara>(
-            "AnalysisYara", "yara", &Yara::m_yara);
-    }
-
     void Yara::load() const
     {
-        m_yara->set_rules_folder(
-            m_config->get("bridge.focade.analysis.yara.rules.path")
+        yara->set_rules_folder(
+            m_config->get("focades.analysis.yara.rules.path")
                 .value<std::string>()
                 .value());
 
-        m_yara->load_rules();
+        yara->load_rules();
     }
 
     void Yara::scan(const std::string p_buffer,
@@ -36,7 +30,7 @@ namespace engine::focades::analysis::scan::yara
     {
         yara::record::DTO *dto = new yara::record::DTO;
         if (p_callback) {
-            m_yara->scan_bytes(
+            yara->scan_bytes(
                 p_buffer,
                 +[](YR_SCAN_CONTEXT *context,
                     int message,

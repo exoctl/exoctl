@@ -30,12 +30,23 @@ namespace engine::focades::analysis
 
     void Analysis::_plugins()
     {
-        focades::analysis::scan::yara::Yara::plugins();
-
         plugins::Plugins::lua.state.new_usertype<focades::analysis::Analysis>(
             "Analysis",
             "scan",
-            &focades::analysis::Analysis::scan_yara,
+            sol::property(
+                [](focades::analysis::Analysis &self)
+                    -> focades::analysis::Analysis & { return self; }),
+            sol::meta_function::index,
+            [](focades::analysis::Analysis &self,
+               const std::string &key,
+               sol::this_state ts) {
+                sol::state_view lua(ts);
+                if (key == "clamav" && self.scan_av_clamav)
+                    return sol::make_object(lua, std::ref(self.scan_av_clamav->clamav));
+                if (key == "yara" && self.scan_yara)
+                    return sol::make_object(lua,  std::ref(self.scan_yara->yara));
+                return sol::make_object(lua, sol::nil);
+            },
             "enqueue_scan",
             &focades::analysis::Analysis::enqueue_scan,
             "is_running",

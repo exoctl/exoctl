@@ -8,10 +8,8 @@ namespace engine::interface
     template <typename Derived> class IResponse
     {
       public:
-        explicit IResponse(const std::string &p_message = "",
-                           const std::string &p_status = "",
-                           int p_code = -1)
-            : m_code(p_code), m_status(p_status), m_message(p_message)
+        explicit IResponse(const std::string &p_status = "", int p_code = -1)
+            : m_code(p_code), m_status(p_status)
         {
         }
 
@@ -30,7 +28,6 @@ namespace engine::interface
 
             json_data.add("code", code());
             json_data.add("status", status());
-            json_data.add("message", message());
 
             return json_data;
         }
@@ -48,22 +45,13 @@ namespace engine::interface
                        : m_status;
         }
 
-        inline const std::string message() const
-        {
-            return m_message.empty()
-                       ? static_cast<const Derived *>(this)->_message()
-                       : m_message;
-        }
-
       protected:
         int m_code;
         std::string m_status;
-        std::string m_message;
         parser::Json m_json;
 
       private:
         virtual const int _code() const = 0;
         virtual const std::string _status() const = 0;
-        virtual const std::string _message() const = 0;
     };
 } // namespace engine::interface
