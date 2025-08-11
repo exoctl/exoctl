@@ -39,7 +39,6 @@ server:setup(config, logging)
 -- APis
 
 api.get_rules:setup(server, yara_manager)
-print(yara_manager)
 api.get_rules:load()
 
 -- api.enable_rules:setup(server, yara)

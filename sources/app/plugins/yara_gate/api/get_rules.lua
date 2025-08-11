@@ -23,7 +23,6 @@ function get_rules:load()
             return self:create_error_response(500, "Yara engine is not initialized")
         end
 
-        print(self.yara_manager.yara)
         self.yara_manager.yara:rules_foreach(function(rules)
             if rules then
                 local meta = Json:new()
@@ -35,20 +34,14 @@ function get_rules:load()
                     end
                 end)
 
-                local rule = Json:new()
-                rule:add("identifier", rules.identifier or "unknown")
-                rule:add("namespace", (rules.ns and rules.ns.name) or "unknown")
-                rule:add("num_atoms", rules.num_atoms or 0)
-                rule:add("meta", meta)
+                local rule = Json:new():add("identifier", rules.identifier):add("namespace",
+                    (rules.ns and rules.ns.name)):add("num_atoms", rules.num_atoms or 0):add("meta", meta)
 
-                rules_json:add(rules.identifier or "unknown", rule)
+                rules_json:add(rules.identifier, rule)
             end
         end)
 
-        local response = Json:new()
-        response:add("rules", rules_json)
-
-        return Response:new(200, "application/json", response:tostring())
+        return Response:new(200, "application/json", Json:new():add("rules", rules_json):tostring())
     end)
 end
 
