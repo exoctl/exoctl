@@ -10,7 +10,7 @@ BENCHMARK_DEFINE_F(MetadataBenchmark, MetadataParse)(benchmark::State &state)
 
         metadata->parse(
             test_string,
-            [&](engine::bridge::focades::data::metadata::record::DTO *p_dto) {
+            [&](engine::focades::data::metadata::record::DTO *p_dto) {
                 benchmark::DoNotOptimize(p_dto);
             });
     }

@@ -24,6 +24,7 @@ namespace engine::filesystem
 
         static void enqueue_write(record::EnqueueTask &);
         static void write(const std::string &, const std::string &);
+        static bool is_exists(const std::string &);
         static const std::string read(const std::string &);
         static std::string path;
         static bool readonly;

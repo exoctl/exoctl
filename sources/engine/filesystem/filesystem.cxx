@@ -27,6 +27,13 @@ namespace engine::filesystem
         }
     }
 
+    bool Filesystem::is_exists(const std::string &p_filename)
+    {
+        std::error_code ec;
+        return std::filesystem::exists(std::filesystem::path(path) / p_filename,
+                                       ec);
+    }
+
     void Filesystem::setup(const configuration::Configuration &p_config,
                            const logging::Logging &p_log)
     {
@@ -96,23 +103,33 @@ namespace engine::filesystem
             return;
         }
 
-        std::string full_path = path + "/" + filename;
-        std::ofstream ofs(full_path, std::ios::binary);
+        std::filesystem::path full_path =
+            std::filesystem::path(path) / filename;
+
+        std::ofstream ofs(full_path, std::ios::binary | std::ios::trunc);
         if (!ofs) {
             return;
         }
-        ofs << content;
+
+        ofs.write(content.data(), static_cast<std::streamsize>(content.size()));
     }
 
     const std::string Filesystem::read(const std::string &filename)
     {
-        std::string full_path = path + "/" + filename;
+        std::filesystem::path full_path =
+            std::filesystem::path(path) / filename;
+
         std::ifstream ifs(full_path, std::ios::binary);
         if (!ifs) {
             return {};
         }
-        std::string content((std::istreambuf_iterator<char>(ifs)),
-                            std::istreambuf_iterator<char>());
+
+        ifs.seekg(0, std::ios::end);
+        std::string content;
+        content.resize(static_cast<size_t>(ifs.tellg()));
+        ifs.seekg(0, std::ios::beg);
+
+        ifs.read(content.data(), static_cast<std::streamsize>(content.size()));
         return content;
     }
 } // namespace engine::filesystem
