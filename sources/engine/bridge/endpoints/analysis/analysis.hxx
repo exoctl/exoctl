@@ -43,7 +43,8 @@ namespace engine::bridge::endpoints::analysis
         std::atomic<bool> is_running;
         std::atomic<size_t> scan_queue_size;
         size_t max_queue_size;
-
+        size_t min_binary_size;
+        
       private:
         server::Server *m_server;
         mutable map::Map m_map;
@@ -58,10 +59,14 @@ namespace engine::bridge::endpoints::analysis
         std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_yara;
         std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_av_clamav;
 
+        std::shared_ptr<focades::analysis::metadata::Metadata> m_metadata;
+        
+        // scan binary
         std::shared_ptr<focades::analysis::scan::av::clamav::Clamav>
             m_scan_av_clamav;
         std::shared_ptr<focades::analysis::scan::yara::Yara> m_scan_yara;
-        std::shared_ptr<focades::analysis::metadata::Metadata> m_metadata;
+        
+        // parser binary formats
         std::shared_ptr<focades::analysis::binary::pe::PE> m_binary_pe;
         std::shared_ptr<focades::analysis::binary::macho::MACHO> m_binary_macho;
         std::shared_ptr<focades::analysis::binary::dex::DEX> m_binary_dex;

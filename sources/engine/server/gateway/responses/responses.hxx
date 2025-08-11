@@ -26,11 +26,44 @@ namespace engine::server::gateway::responses
         const std::string _message() const override;
     };
 
+    class InternalServerError : public interface::IResponse<InternalServerError>
+    {
+      public:
+        InternalServerError() = default;
+        ~InternalServerError() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
+
     class Accepted : public interface::IResponse<Accepted>
     {
       public:
         Accepted() = default;
         ~Accepted() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
+
+    class TooManyRequests : public interface::IResponse<TooManyRequests>
+    {
+      public:
+        TooManyRequests() = default;
+        ~TooManyRequests() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+        const std::string _message() const override;
+    };
+
+    class MethodNotAllowed : public interface::IResponse<MethodNotAllowed>
+    {
+      public:
+        MethodNotAllowed() = default;
+        ~MethodNotAllowed() override = default;
 
         const int _code() const override;
         const std::string _status() const override;

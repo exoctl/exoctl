@@ -17,7 +17,6 @@ namespace engine::interface
 
         virtual ~IResponse() = default;
 
-        // Adds an extra field directly to internal JSON (chainable)
         template <typename T>
         inline Derived &add_field(const std::string &key, const T &value)
         {
@@ -25,7 +24,6 @@ namespace engine::interface
             return *static_cast<Derived *>(this);
         }
 
-        // Converts to JSON (including default fields)
         inline const parser::Json tojson() const
         {
             parser::Json json_data = m_json;

@@ -24,23 +24,23 @@ namespace engine::bridge::focades::analysis::metadata
         if (!IS_NULL(p_callback)) {
             struct metadata::record::DTO *dto = new metadata::record::DTO;
 
-            dto->mime_type.assign(m_magic.mime(p_buffer));
+            dto->mime_type = (m_magic.mime(p_buffer));
             dto->size = (int) p_buffer.size();
 
-            dto->sha256.assign(m_sha.sha256(p_buffer));
-            dto->sha1.assign(m_sha.sha1(p_buffer));
-            dto->sha512.assign(m_sha.sha512(p_buffer));
-            dto->sha224.assign(m_sha.sha224(p_buffer));
-            dto->sha384.assign(m_sha.sha384(p_buffer));
-            dto->sha3_256.assign(m_sha.sha3_256(p_buffer));
-            dto->sha3_512.assign(m_sha.sha3_512(p_buffer));
+            dto->sha256 = (m_sha.sha256(p_buffer));
+            dto->sha1 = (m_sha.sha1(p_buffer));
+            dto->sha512 = (m_sha.sha512(p_buffer));
+            dto->sha224 = (m_sha.sha224(p_buffer));
+            dto->sha384 = (m_sha.sha384(p_buffer));
+            dto->sha3_256 = (m_sha.sha3_256(p_buffer));
+            dto->sha3_512 = (m_sha.sha3_512(p_buffer));
 
             time_t current_time = time(0);
             tm *ltm = localtime(&current_time);
             char cstr[11];
             strftime(cstr, sizeof(cstr), "%Y-%m-%d", ltm);
 
-            dto->creation_date.assign(std::string(cstr));
+            dto->creation_date = (std::string(cstr));
             dto->entropy = Metadata::compute_entropy(p_buffer);
 
             p_callback(dto);

@@ -8,7 +8,7 @@ namespace engine::filesystem
     {
         using EnqueueTask = struct EnqueueTask {
             int id; // auto generated
-            std::string filename;
+            const char *filename;
             std::string content;
         };
     } // namespace record

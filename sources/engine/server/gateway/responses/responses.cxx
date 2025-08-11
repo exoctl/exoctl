@@ -4,6 +4,51 @@
 
 namespace engine::server::gateway::responses
 {
+    const int MethodNotAllowed::_code() const
+    {
+        return 405;
+    }
+
+    const std::string MethodNotAllowed::_status() const
+    {
+        return "method_not_allowed";
+    }
+
+    const std::string MethodNotAllowed::_message() const
+    {
+        return "Method not implemented";
+    }
+
+    const int InternalServerError::_code() const
+    {
+        return 500;
+    }
+
+    const std::string InternalServerError::_status() const
+    {
+        return "internal_server_error";
+    }
+
+    const std::string InternalServerError::_message() const
+    {
+        return "Internal Server Error";
+    }
+
+    const int TooManyRequests::_code() const
+    {
+        return 429;
+    }
+
+    const std::string TooManyRequests::_status() const
+    {
+        return "too_many_requests";
+    }
+
+    const std::string TooManyRequests::_message() const
+    {
+        return "Too Many Requests";
+    }
+
     const int Connected::_code() const
     {
         return 200;

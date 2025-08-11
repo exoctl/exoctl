@@ -10,8 +10,10 @@ namespace engine::filesystem
     std::condition_variable Filesystem::m_fs_queue_cv;
     std::atomic<bool> Filesystem::is_running = true;
     std::atomic<int> Filesystem::m_id_counter = 0;
+    std::string Filesystem::path;
+    bool Filesystem::readonly;
 
-    Filesystem::Filesystem() : m_readonly(false)
+    Filesystem::Filesystem()
     {
     }
 
@@ -19,7 +21,7 @@ namespace engine::filesystem
     {
         m_fs_queue_cv.notify_all();
         is_running = false;
-        
+
         if (m_worker_thread.joinable()) {
             m_worker_thread.join();
         }
@@ -31,11 +33,10 @@ namespace engine::filesystem
         m_config = p_config;
         m_log = p_log;
 
-        m_base_path =
-            m_config.get("filesystem.path").value<std::string>().value();
-        m_readonly = m_config.get("filesystem.readonly").value<bool>().value();
+        path = m_config.get("filesystem.path").value<std::string>().value();
+        readonly = m_config.get("filesystem.readonly").value<bool>().value();
 
-        std::filesystem::create_directories(m_base_path);
+        std::filesystem::create_directories(path);
     }
 
     void Filesystem::load()
@@ -68,7 +69,7 @@ namespace engine::filesystem
                 m_fs_queue.pop();
                 lock.unlock();
 
-                if (m_readonly) {
+                if (readonly) {
                     m_log.error(
                         fmt::format("Cannot write file '{}': Filesystem is "
                                     "readonly (Task ID {})",
@@ -79,7 +80,8 @@ namespace engine::filesystem
                         fmt::format("Processing write task ID {} for file '{}'",
                                     task.id,
                                     task.filename));
-                    write(task.filename, task.content);
+
+                    Filesystem::write(task.filename, task.content);
                 }
 
                 lock.lock();
@@ -90,31 +92,23 @@ namespace engine::filesystem
     void Filesystem::write(const std::string &filename,
                            const std::string &content)
     {
-        if (!m_readonly) {
-            m_log.error(fmt::format("Cannot write file '{}': Filesystem is "
-                                    "readonly",
-                                    filename));
+        if (readonly) {
             return;
         }
 
-        std::string full_path = m_base_path + "/" + filename;
+        std::string full_path = path + "/" + filename;
         std::ofstream ofs(full_path, std::ios::binary);
         if (!ofs) {
-            m_log.error(
-                fmt::format("Failed to open file for writing: {}", full_path));
             return;
         }
         ofs << content;
-        m_log.info(fmt::format("Wrote file: {}", full_path));
     }
 
     const std::string Filesystem::read(const std::string &filename)
     {
-        std::string full_path = m_base_path + "/" + filename;
+        std::string full_path = path + "/" + filename;
         std::ifstream ifs(full_path, std::ios::binary);
         if (!ifs) {
-            m_log.error(
-                fmt::format("Failed to open file for reading: {}", full_path));
             return {};
         }
         std::string content((std::istreambuf_iterator<char>(ifs)),

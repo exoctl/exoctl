@@ -1,6 +1,7 @@
 #include "entitys.hxx"
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
+#include <engine/filesystem/filesystem.hxx>
 #include <engine/logging/logging.hxx>
 #include <engine/security/av/clamav/exception.hxx>
 #include <engine/security/yara/exception.hxx>
@@ -11,6 +12,7 @@ namespace engine::bridge::endpoints::analysis
 {
     Analysis::Analysis()
         : m_map(BASE_ANALYSIS),
+          m_metadata(std::make_shared<focades::analysis::metadata::Metadata>()),
           m_scan_av_clamav(
               std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
           m_scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>()),
@@ -48,7 +50,9 @@ namespace engine::bridge::endpoints::analysis
                 [](const endpoints::analysis::Analysis &p_self)
                     -> const size_t { return p_self.scan_queue_size.load(); }),
             "max_queue_size",
-            &endpoints::analysis::Analysis::max_queue_size);
+            &endpoints::analysis::Analysis::max_queue_size,
+            "min_binary_size",
+            &endpoints::analysis::Analysis::min_binary_size);
     }
 
     void Analysis::setup(server::Server &p_server)
@@ -65,6 +69,12 @@ namespace engine::bridge::endpoints::analysis
         max_queue_size =
             m_server->config
                 ->get("bridge.endpoint.analysis.scan.max_queue_size")
+                .value<size_t>()
+                .value();
+
+        min_binary_size =
+            m_server->config
+                ->get("bridge.endpoint.analysis.scan.min_binary_size")
                 .value<size_t>()
                 .value();
 
@@ -145,6 +155,13 @@ namespace engine::bridge::endpoints::analysis
                                 scan_queue_size.load()));
 
                 TRY_BEGIN()
+
+                m_metadata->parse(
+                    task.buf,
+                    [&](focades::analysis::metadata::record::DTO *p_dto) {
+                        filesystem::Filesystem::write(p_dto->sha256, task.buf);
+                    });
+
                 m_scan_av_clamav->scan(
                     task.buf,
                     [&](focades::analysis::scan::av::clamav::record::DTO
@@ -177,24 +194,44 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/scan",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
-                        return crow::response{405};
+                        auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
                     }
 
-                    record::EnqueueTask task =
-                        (record::EnqueueTask) {0, req.body};
+                    if (!req.body.empty() &&
+                        req.body.size() >= min_binary_size) {
+                        record::EnqueueTask task{0, std::move(req.body)};
 
-                    TRY_BEGIN()
-                    Analysis::enqueue_scan(task);
-                    TRY_END()
-                    CATCH(exception::ParcialAbort, return crow::response{429};)
+                        TRY_BEGIN()
+                        Analysis::enqueue_scan(task);
+                        TRY_END()
+                        CATCH(exception::ParcialAbort,
+                              return crow::response{server::gateway::responses::
+                                                        InternalServerError()
+                                                            .code()};)
 
-                    auto accept = server::gateway::responses::Accepted();
+                        auto accept =
+                            server::gateway::responses::Accepted().add_field(
+                                "task_id", task.id);
 
-                    accept.add_field("task_id", task.id);
+                        return crow::response{accept.code(),
+                                              "application/json",
+                                              accept.tojson().tostring()};
+                    }
 
-                    return crow::response{accept.code(),
+                    auto bad_requests =
+                        server::gateway::responses::BadRequests().add_field(
+                            "details",
+                            fmt::format("File too small for scan minimal {}b",
+                                        min_binary_size));
+
+                    return crow::response{bad_requests.code(),
                                           "application/json",
-                                          accept.tojson().tostring()};
+                                          bad_requests.tojson().tostring()};
                 });
         });
     }
@@ -209,10 +246,16 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/scan/av/clamav",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
-                        return crow::response{405};
+                        auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
                     }
 
                     parser::Json json;
+
                     TRY_BEGIN()
                     m_scan_av_clamav->scan(
                         req.body,
@@ -221,8 +264,18 @@ namespace engine::bridge::endpoints::analysis
                             json = std::move(m_scan_av_clamav->dto_json(p_dto));
                         });
                     TRY_END()
-                    CATCH(security::av::clamav::exception::Scan, {})
-                    return crow::response{"application/json", json.tostring()};
+                    CATCH(security::av::clamav::exception::Scan,
+                          return crow::response{
+                              server::gateway::responses::InternalServerError()
+                                  .code()};)
+
+                    auto connected =
+                        server::gateway::responses::Connected().add_field(
+                            "clamav", json);
+
+                    return crow::response{connected.code(),
+                                          "application/json",
+                                          connected.tojson().tostring()};
                 });
         });
     }
@@ -236,7 +289,12 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/scan/yara",
                 [&](const crow::request &req) -> crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
-                        return crow::response{405};
+                        auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
                     }
 
                     parser::Json json;
@@ -247,10 +305,18 @@ namespace engine::bridge::endpoints::analysis
                             json = std::move(m_scan_yara->dto_json(p_dto));
                         });
                     TRY_END()
-                    CATCH(security::yara::exception::Scan, {
-                        m_server->log->info("Error scan yara '{}'", e.what());
-                    });
-                    return crow::response{json.tostring()};
+                    CATCH(security::yara::exception::Scan,
+                          return crow::response{
+                              server::gateway::responses::InternalServerError()
+                                  .code()};)
+
+                    auto connected =
+                        server::gateway::responses::Connected().add_field(
+                            "yara", json);
+
+                    return crow::response{connected.code(),
+                                          "application/json",
+                                          connected.tojson().tostring()};
                 });
         });
     }
