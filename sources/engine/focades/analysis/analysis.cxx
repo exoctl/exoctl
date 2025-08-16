@@ -1,5 +1,6 @@
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
+#include <engine/database/database.hxx>
 #include <engine/filesystem/filesystem.hxx>
 #include <engine/focades/analysis/exception.hxx>
 #include <engine/logging/logging.hxx>
@@ -13,19 +14,8 @@ namespace engine::focades::analysis
         : metadata(std::make_shared<focades::analysis::metadata::Metadata>()),
           scan_av_clamav(
               std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
-          scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>()),
-          is_running(true), max_queue_size(0), scan_queue_size(0),
-          m_id_counter(0)
+          scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>())
     {
-    }
-
-    Analysis::~Analysis()
-    {
-        m_scan_cv.notify_all();
-        is_running = false;
-
-        if (m_scan_worker.joinable())
-            m_scan_worker.join();
     }
 
     void Analysis::_plugins()
@@ -42,25 +32,13 @@ namespace engine::focades::analysis
                sol::this_state ts) {
                 sol::state_view lua(ts);
                 if (key == "clamav" && self.scan_av_clamav)
-                    return sol::make_object(lua, std::ref(self.scan_av_clamav->clamav));
+                    return sol::make_object(
+                        lua, std::ref(self.scan_av_clamav->clamav));
                 if (key == "yara" && self.scan_yara)
-                    return sol::make_object(lua,  std::ref(self.scan_yara->yara));
+                    return sol::make_object(lua,
+                                            std::ref(self.scan_yara->yara));
                 return sol::make_object(lua, sol::nil);
-            },
-            "enqueue_scan",
-            &focades::analysis::Analysis::enqueue_scan,
-            "is_running",
-            sol::property(
-                [](const focades::analysis::Analysis &p_self) -> const bool {
-                    return p_self.is_running.load();
-                }),
-            "scan_queue_size",
-            sol::property(
-                [](const focades::analysis::Analysis &p_self) -> const size_t {
-                    return p_self.scan_queue_size.load();
-                }),
-            "max_queue_size",
-            &focades::analysis::Analysis::max_queue_size);
+            });
     }
 
     void Analysis::setup(configuration::Configuration &p_config,
@@ -69,14 +47,8 @@ namespace engine::focades::analysis
         m_config = &p_config;
         m_log = &p_log;
 
-        max_queue_size = p_config.get("focades.analysis.max_queue_size")
-                             .value<size_t>()
-                             .value();
-
         scan_yara->setup(p_config);
         scan_av_clamav->setup(p_config);
-
-        m_scan_worker = std::thread(&Analysis::worker, this);
     }
 
     void Analysis::load() const
@@ -98,80 +70,75 @@ namespace engine::focades::analysis
         })
     }
 
-    void Analysis::enqueue_scan(record::EnqueueTask &p_task)
+    const record::Analysis Analysis::scan(const record::File &p_file)
     {
-        std::lock_guard<std::mutex> lock(m_scan_mutex);
-        if (m_scan_queue.size() >= max_queue_size || !is_running) {
-            throw exception::EnqueueScan(
-                fmt::format("Scan queue({}) is full({}) or not is running({}) ",
-                            m_scan_queue.size(),
-                            max_queue_size,
-                            is_running.load()));
-        }
+        record::Analysis analysis;
+        analysis.owner = p_file.owner;
 
-        p_task.id = ++m_id_counter;
+        metadata->parse(p_file.content,
+                        [&](focades::analysis::metadata::record::DTO *p_dto) {
+                            analysis.file_name = analysis.sha256 =
+                                p_dto->sha256;
+                            analysis.sha1 = p_dto->sha1;
+                            analysis.sha512 = p_dto->sha512;
+                            analysis.sha224 = p_dto->sha224;
+                            analysis.sha384 = p_dto->sha384;
+                            analysis.sha3_256 = p_dto->sha3_256;
+                            analysis.sha3_512 = p_dto->sha3_512;
+                            analysis.file_type = p_dto->mime_type;
+                            analysis.file_entropy = p_dto->entropy;
+                            analysis.last_update_date = analysis.creation_date =
+                                p_dto->creation_date;
+                        });
 
-        m_scan_queue.push(p_task);
-        m_scan_cv.notify_one();
+        // analysis.is_malicious;
+        // analysis.packed;
+
+        analysis.file_size = p_file.content.size();
+        analysis.file_path = filesystem::Filesystem::path;
+        Analysis::file_write({analysis.sha512, p_file.content});
+        Analysis::table_insert(analysis);
+
+        return analysis;
     }
 
-    void Analysis::worker()
+    void Analysis::file_write(const record::File &p_file)
     {
-        m_log->info("Analysis Worker thread started running.");
-
-        while (is_running) {
-            std::unique_lock<std::mutex> lock(m_scan_mutex);
-            m_scan_cv.wait(
-                lock, [this] { return !m_scan_queue.empty() || !is_running; });
-
-            if (!is_running && m_scan_queue.empty()) {
-                break;
-            }
-
-            while (!m_scan_queue.empty()) {
-                record::EnqueueTask &task = m_scan_queue.front();
-                m_scan_queue.pop();
-                scan_queue_size = m_scan_queue.size();
-                lock.unlock();
-
-                parser::Json json;
-
-                m_log->info(
-                    fmt::format("Processing scan from task {} queue({}) ",
-                                task.id,
-                                scan_queue_size.load()));
-
-                TRY_BEGIN()
-
-                metadata->parse(
-                    task.buf,
-                    [&](focades::analysis::metadata::record::DTO *p_dto) {
-                        if (!filesystem::Filesystem::is_exists(p_dto->sha256)) {
-                            filesystem::Filesystem::write(p_dto->sha256,
-                                                          task.buf);
-                        }
-                    });
-
-                scan_av_clamav->scan(
-                    task.buf,
-                    [&](focades::analysis::scan::av::clamav::record::DTO
-                            *p_dto) {
-                        // work here
-                    });
-
-                scan_yara->scan(
-                    task.buf,
-                    [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                        // work here
-                    });
-                TRY_END()
-                CATCH(security::av::clamav::exception::Scan,
-                      { m_log->error("Erro ClamAV: {}", e.what()); })
-                CATCH(security::yara::exception::Scan,
-                      { m_log->error("Erro YARA: {}", e.what()); })
-
-                lock.lock();
-            }
+        filesystem::record::EnqueueTask task;
+        task.file.content = p_file.content;
+        task.file.filename = p_file.filename;
+        if (!filesystem::Filesystem::is_exists(task.file)) {
+            filesystem::Filesystem::enqueue_write(task);
         }
+    }
+
+    const bool Analysis::table_exists()
+    {
+        return database::Database::is_table_exists("analysis");
+    }
+
+    void Analysis::table_insert(const record::Analysis &p_analysis)
+    {
+        if (!Analysis::table_exists()) {
+            m_log->error("Table for analysis not found, reanalyze '{}' the "
+                         "file to save it in the database",
+                         p_analysis.sha256);
+            return;
+        }
+    }
+
+    void Analysis::table_update(const record::Analysis &p_analysis)
+    {
+    }
+
+    const record::Analysis Analysis::table_get_by_id(const int p_id)
+    {
+        return {};
+    }
+
+    const record::Analysis Analysis::table_get_by_sha256(
+        const std::string &p_sha256)
+    {
+        return {};
     }
 } // namespace engine::focades::analysis

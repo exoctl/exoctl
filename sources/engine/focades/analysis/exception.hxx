@@ -4,13 +4,13 @@
 
 namespace engine::focades::analysis::exception
 {
-    class EnqueueScan : public interface::IException
+    class Scan : public interface::IException
     {
       private:
         const std::string m_error_message;
 
       public:
-        explicit EnqueueScan(const std::string &);
+        explicit Scan(const std::string &);
         const char *what() const noexcept override;
     };
 

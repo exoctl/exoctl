@@ -29,16 +29,21 @@ namespace engine::focades::analysis
     {
       public:
         Analysis();
-        ~Analysis();
+        ~Analysis() = default;
 
         void setup(configuration::Configuration &, logging::Logging &);
         void load() const;
-        void enqueue_scan(record::EnqueueTask &);
-        void _plugins() override;
+        const record::Analysis scan(const record::File &);
 
-        std::atomic<bool> is_running;
-        std::atomic<size_t> scan_queue_size;
-        size_t max_queue_size;
+        const bool table_exists();
+        void table_insert(const record::Analysis &);
+        void table_update(const record::Analysis &);
+        const record::Analysis table_get_by_id(const int);
+        const record::Analysis table_get_by_sha256(const std::string&);
+        void file_write(const record::File &);
+
+        // void insert();
+        void _plugins() override;
 
         std::shared_ptr<focades::analysis::metadata::Metadata> metadata;
 
@@ -57,12 +62,5 @@ namespace engine::focades::analysis
       private:
         logging::Logging *m_log;
         configuration::Configuration *m_config;
-        std::queue<record::EnqueueTask> m_scan_queue;
-        std::mutex m_scan_mutex;
-        std::condition_variable m_scan_cv;
-        std::thread m_scan_worker;
-        std::atomic<int> m_id_counter;
-
-        void worker();
     };
-} // namespace engine::bridge::endpoints::analysis
+} // namespace engine::focades::analysis

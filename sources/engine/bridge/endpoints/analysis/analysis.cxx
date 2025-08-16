@@ -17,10 +17,11 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::_plugins()
     {
-        plugins::Plugins::lua.state.new_usertype<bridge::endpoints::analysis::Analysis>(
-            "EndpointAnalysis",
-            "analysis",
-            &bridge::endpoints::analysis::Analysis::analysis);
+        plugins::Plugins::lua.state
+            .new_usertype<bridge::endpoints::analysis::Analysis>(
+                "EndpointAnalysis",
+                "analysis",
+                &bridge::endpoints::analysis::Analysis::analysis);
 
         focades::analysis::Analysis::plugins();
     }
@@ -80,20 +81,21 @@ namespace engine::bridge::endpoints::analysis
 
                     if (!req.body.empty() &&
                         req.body.size() >= min_binary_size) {
-                        focades::analysis::record::EnqueueTask task{
-                            0, std::move(req.body)};
+
+                        focades::analysis::record::File file;
+                        file.content = req.body;
+                        file.owner = req.remote_ip_address;
 
                         TRY_BEGIN()
-                        analysis.enqueue_scan(task);
+                        analysis.scan(file);
                         TRY_END()
-                        CATCH(focades::analysis::exception::EnqueueScan,
+                        CATCH(focades::analysis::exception::Scan,
                               return crow::response{server::gateway::responses::
                                                         InternalServerError()
                                                             .code()};)
 
                         auto accept =
-                            server::gateway::responses::Accepted().add_field(
-                                "task_id", task.id);
+                            server::gateway::responses::Accepted();
 
                         return crow::response{accept.code(),
                                               "application/json",
@@ -180,8 +182,8 @@ namespace engine::bridge::endpoints::analysis
                     analysis.scan_yara->scan(
                         req.body,
                         [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json = std::move(
-                                analysis.scan_yara->dto_json(p_dto));
+                            json =
+                                std::move(analysis.scan_yara->dto_json(p_dto));
                         });
                     TRY_END()
                     CATCH(security::yara::exception::Scan,

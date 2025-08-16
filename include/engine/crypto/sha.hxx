@@ -14,8 +14,8 @@ namespace engine
         class Sha
         {
           public:
-            Sha();
-            ~Sha();
+            Sha() = default;
+            ~Sha() = default;
             friend class extend::Sha;
 
             [[nodiscard]] const std::string sha256(const std::string &);
@@ -27,7 +27,9 @@ namespace engine
             [[nodiscard]] const std::string sha3_512(const std::string &);
 
           private:
-            EVP_MD_CTX *m_ctx;
+            [[nodiscard]] const std::string digest(const std::string &,
+                                                   const EVP_MD *(*) (),
+                                                   size_t);
         };
     } // namespace crypto
 } // namespace engine

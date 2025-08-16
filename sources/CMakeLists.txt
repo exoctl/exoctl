@@ -26,7 +26,12 @@ set(EXOCTL_DEPENDENCIES
     LIEF::LIEF
     clamav
     capstone
+    mysqlclient
     ssl
+    soci_core
+    soci_mysql
+    soci_postgresql
+    soci_sqlite3
     magic
     sol2
     pthread

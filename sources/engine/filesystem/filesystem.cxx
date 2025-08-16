@@ -27,11 +27,11 @@ namespace engine::filesystem
         }
     }
 
-    bool Filesystem::is_exists(const std::string &p_filename)
+    const bool Filesystem::is_exists(const record::File &p_file)
     {
         std::error_code ec;
-        return std::filesystem::exists(std::filesystem::path(path) / p_filename,
-                                       ec);
+        return std::filesystem::exists(
+            std::filesystem::path(path) / p_file.filename, ec);
     }
 
     void Filesystem::setup(const configuration::Configuration &p_config,
@@ -72,52 +72,39 @@ namespace engine::filesystem
                 lock, [] { return !m_fs_queue.empty() || !is_running; });
 
             while (!m_fs_queue.empty()) {
-                record::EnqueueTask &task = m_fs_queue.front();
+                record::EnqueueTask task = m_fs_queue.front();
                 m_fs_queue.pop();
                 lock.unlock();
 
-                if (readonly) {
-                    m_log.error(
-                        fmt::format("Cannot write file '{}': Filesystem is "
-                                    "readonly (Task ID {})",
-                                    task.filename,
-                                    task.id));
-                } else {
-                    m_log.info(
-                        fmt::format("Processing write task ID {} for file '{}'",
-                                    task.id,
-                                    task.filename));
-
-                    Filesystem::write(task.filename, task.content);
-                }
+                Filesystem::write(task.file);
 
                 lock.lock();
             }
         }
     }
 
-    void Filesystem::write(const std::string &filename,
-                           const std::string &content)
+    void Filesystem::write(const record::File &p_file)
     {
         if (readonly) {
             return;
         }
 
         std::filesystem::path full_path =
-            std::filesystem::path(path) / filename;
+            std::filesystem::path(path) / p_file.filename;
 
         std::ofstream ofs(full_path, std::ios::binary | std::ios::trunc);
         if (!ofs) {
             return;
         }
 
-        ofs.write(content.data(), static_cast<std::streamsize>(content.size()));
+        ofs.write(p_file.content.data(),
+                  static_cast<std::streamsize>(p_file.content.size()));
     }
 
-    const std::string Filesystem::read(const std::string &filename)
+    const std::string Filesystem::read(const record::File &p_file)
     {
         std::filesystem::path full_path =
-            std::filesystem::path(path) / filename;
+            std::filesystem::path(path) / p_file.filename;
 
         std::ifstream ifs(full_path, std::ios::binary);
         if (!ifs) {

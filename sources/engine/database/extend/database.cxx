@@ -14,14 +14,8 @@ namespace engine::database::extend
             &database::Database::load,
             "setup",
             &database::Database::setup,
-            "is_running",
-            sol::property([](const database::Database &p_self) -> const bool {
-                return p_self.is_running.load();
-            }),
-            "sql_queue_size",
-            sol::property([](const database::Database &p_self) -> const size_t {
-                return p_self.sql_queue_size.load();
-            }));
+            "exec",
+            &database::Database::exec);
     }
 
     void Database::_plugins()

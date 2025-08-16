@@ -12,6 +12,8 @@ RUN apt-get update && \
         libsqlite3-dev \
         curl \
         unzip \
+        libmysqlclient-dev \
+        libpq-dev \
         clamav \
         libasio-dev
 

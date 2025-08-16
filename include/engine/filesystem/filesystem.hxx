@@ -23,9 +23,9 @@ namespace engine::filesystem
         void load();
 
         static void enqueue_write(record::EnqueueTask &);
-        static void write(const std::string &, const std::string &);
-        static bool is_exists(const std::string &);
-        static const std::string read(const std::string &);
+        static void write(const record::File &);
+        static const bool is_exists(const record::File &);
+        static const std::string read(const record::File &);
         static std::string path;
         static bool readonly;
         static std::atomic<bool> is_running;

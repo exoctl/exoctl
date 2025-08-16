@@ -1,145 +1,136 @@
 #include <engine/database/database.hxx>
-#include <engine/database/exception.hxx>
 
 namespace engine::database
 {
-    std::mutex Database::m_sql_queue_mutex;
-    std::queue<record::EnqueueTask> Database::m_sql_queue;
-    std::condition_variable Database::m_sql_queue_cv;
-    std::atomic<bool> Database::is_running = true;
-    std::atomic<int> Database::m_id_counter = 0;
-    
-    Database::Database() : m_database(nullptr), sql_queue_size(0)
-    {
-    }
+    std::unique_ptr<soci::session> Database::m_session;
+    std::string Database::type;
+    std::string Database::m_connection_str;
 
-    Database::~Database()
+    void Database::setup(const configuration::Configuration &config,
+                         const logging::Logging &log)
     {
-        m_sql_queue_cv.notify_all();
-        is_running = false;
+        m_config = config;
+        m_log = log;
 
-        if (m_worker_thread.joinable()) {
-            m_worker_thread.join();
+        // Define tipo de banco
+        type = m_config.get("database.type")
+                        .value<std::string>()
+                        .value_or("sqlite");
+
+        if (type == "sqlite") {
+            std::string path =
+                m_config.get("database.path").value<std::string>().value();
+            std::string file =
+                m_config.get("database.file").value<std::string>().value();
+            m_connection_str = path + file;
+            m_session = std::make_unique<soci::session>(soci::sqlite3,
+                                                        m_connection_str);
+        } else if (type == "postgresql") {
+            m_connection_str = m_config.get("database.connection")
+                                   .value<std::string>()
+                                   .value();
+            m_session = std::make_unique<soci::session>(soci::postgresql,
+                                                        m_connection_str);
+        } else if (type == "mysql") {
+            m_connection_str = m_config.get("database.connection")
+                                   .value<std::string>()
+                                   .value();
+            m_session =
+                std::make_unique<soci::session>(soci::mysql, m_connection_str);
+        } else {
+            throw exception::Initialize(
+                fmt::format("Unsupported DB type '{}'", type));
         }
-    
-        Database::close();
-    }
 
-    void Database::setup(const configuration::Configuration &p_config,
-                         const logging::Logging &p_log)
-    {
-        m_log = p_log;
-        m_config = p_config;
+        m_log.info(
+            fmt::format("Connected to {} database successfully", type));
     }
 
     void Database::load()
     {
-        std::string path =
-            m_config.get("database.path").value<std::string>().value();
-        std::string file =
-            m_config.get("database.file").value<std::string>().value();
-        int flags = m_config.get("database.flags").value<int>().value();
-        std::string zvfs =
-            m_config.get("database.zvfs").value<std::string>().value();
-
-        m_log.info(fmt::format(
-            "Opening Database at '{}{}' with flags {} and zvfs '{}'",
-            path,
-            file,
-            flags,
-            zvfs));
-
-        if (sqlite3_open_v2(
-                (path + file).c_str(), &m_database, flags, zvfs.c_str())) {
-            m_log.error(fmt::format("Failed to open database: {}",
-                                    sqlite3_errmsg(m_database)));
-            throw exception::Initialize(sqlite3_errmsg(m_database));
-        }
-
-        m_log.info("Database connection opened successfully.");
-
-        m_worker_thread = std::thread(&Database::worker, this);
-
-        Database::load_schema();
-        Database::load_migrations();
+        load_schema();
+        load_migrations();
     }
 
     void Database::load_schema()
     {
-        Database::load_sql_directory<exception::Schema>(
+        std::string schema_path =
             m_config.get("database.ddl.path").value<std::string>().value() +
-            m_config.get("database.ddl.schema").value<std::string>().value());
+            m_config.get("database.ddl.schema").value<std::string>().value();
+        load_sql_directory<exception::Schema>(schema_path);
     }
 
     void Database::load_migrations()
     {
-        Database::load_sql_directory<exception::Migrations>(
+        std::string migrations_path =
             m_config.get("database.ddl.path").value<std::string>().value() +
             m_config.get("database.ddl.migrations")
                 .value<std::string>()
-                .value());
+                .value();
+        load_sql_directory<exception::Migrations>(migrations_path);
     }
 
-    void Database::enqueue_sql(record::EnqueueTask &p_task)
+    const bool Database::is_table_exists(const std::string &p_table)
     {
-        if (!is_running)
-            return;
+        bool exists = false;
 
-        p_task.id = ++m_id_counter;
+        if (type == "sqlite") {
+            int count = 0;
+            (*m_session)
+                << "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND "
+                   "name=:name",
+                soci::use(p_table), soci::into(count);
+            exists = (count > 0);
+        } else if (type == "postgresql") {
+            std::string result;
+            std::string tblname = "public." + p_table;
+            (*m_session) << "SELECT to_regclass(:tblname)",
+                soci::use(tblname, "tblname"), soci::into(result);
+            exists = !result.empty();
+        } else if (type == "mysql") {
+            int count = 0;
+            (*m_session)
+                << "SELECT COUNT(*) FROM information_schema.tables "
+                   "WHERE table_schema = DATABASE() AND table_name = :name",
+                soci::use(p_table), soci::into(count);
+            exists = (count > 0);
+        } else {
+            return exists;
+        }
 
-        std::lock_guard<std::mutex> lock(m_sql_queue_mutex);
-        m_sql_queue.push(p_task);
-        m_sql_queue_cv.notify_one();
+        return exists;
     }
 
-    void Database::worker()
+    const std::vector<soci::row> Database::query(const std::string &p_sql)
     {
-        m_log.info("Database Worker thread started running.");
-        while (is_running) {
-            std::unique_lock<std::mutex> lock(m_sql_queue_mutex);
-            m_sql_queue_cv.wait(
-                lock, [this] { return !m_sql_queue.empty() || !is_running; });
+        try {
+            soci::rowset<soci::row> rs = ((*m_session).prepare << p_sql);
+            std::vector<soci::row> results;
 
-            while (!m_sql_queue.empty()) {
-                record::EnqueueTask task = m_sql_queue.front();
-                m_sql_queue.pop();
-                sql_queue_size = m_sql_queue.size();
-                lock.unlock();
+            for (auto &r : rs)
+                results.push_back(std::move(r));
 
-                m_log.info(
-                    fmt::format("Executing Task ID {} from queue({})",
-                                task.id,
-                                sql_queue_size.load()));
-
-                char *errmsg = nullptr;
-                if (Database::exec_query(task.sql, nullptr, &errmsg) !=
-                    SQLITE_OK) {
-                    m_log.error(fmt::format(
-                        "SQLite exec error on task {}: {}", task.id, errmsg));
-                    sqlite3_free(errmsg);
-                }
-
-                lock.lock();
-            }
+            return results;
+        } catch (const soci::soci_error &e) {
+            throw exception::Query(e.what());
         }
     }
 
-    void Database::exec_query_commit(const std::string &sql)
+    void Database::exec(const std::string &sql)
     {
+        try {
+            (*m_session) << sql;
+        } catch (const soci::soci_error &e) {
+            throw exception::Query(e.what());
+        }
     }
 
-    const int Database::exec_query(
-        const std::string &p_sql,
-        int (*p_callback)(void *, int, char **, char **),
-        char **p_msg)
+    void Database::close()
     {
-        return sqlite3_exec(
-            m_database, p_sql.c_str(), p_callback, p_msg, nullptr);
+        if (m_session) {
+            m_session->close();
+            m_session.reset();
+            m_log.info("Database connection closed.");
+        }
     }
-
-    void Database::close() const
-    {
-        sqlite3_close_v2(m_database);
-    }
-
 } // namespace engine::database

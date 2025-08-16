@@ -27,4 +27,12 @@ namespace engine::database::exception
     {
         return m_error_message.c_str();
     }
+
+    Query::Query(const std::string &p_message) : m_error_message(p_message)
+    {
+    }
+    const char *Query::what() const noexcept
+    {
+        return m_error_message.c_str();
+    }
 } // namespace engine::database::exception

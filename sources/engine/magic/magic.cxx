@@ -19,11 +19,13 @@ namespace engine
 
         Magic::~Magic()
         {
+            std::lock_guard<std::mutex> lock(m_mutex);
             magic_close(m_cookie);
         }
 
         const char *Magic::mime(const std::string &p_buffer)
         {
+            std::lock_guard<std::mutex> lock(m_mutex);
             return magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
         }
     } // namespace magic

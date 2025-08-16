@@ -24,6 +24,16 @@ namespace engine::database::exception
         const char *what() const noexcept override;
     };
 
+    class Query : public interface::IException
+    {
+      private:
+        const std::string m_error_message;
+
+      public:
+        explicit Query(const std::string &);
+        const char *what() const noexcept override;
+    };
+
     class Schema : public interface::IException
     {
       private:

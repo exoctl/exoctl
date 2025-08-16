@@ -2,12 +2,12 @@
 
 namespace engine::focades::analysis::exception
 {
-    EnqueueScan::EnqueueScan(const std::string &p_message)
+    Scan::Scan(const std::string &p_message)
         : m_error_message(p_message)
     {
     }
 
-    const char *EnqueueScan::what() const noexcept
+    const char *Scan::what() const noexcept
     {
         return m_error_message.c_str();
     }

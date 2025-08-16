@@ -47,3 +47,9 @@
 [submodule "libraries/libcpr"]
 	path = libraries/libcpr
 	url = https://github.com/libcpr/cpr.git
+[submodule "libraries/sqlite_orm"]
+	path = libraries/sqlite_orm
+	url = https://github.com/fnc12/sqlite_orm.git
+[submodule "libraries/soci"]
+	path = libraries/soci
+	url = https://github.com/SOCI/soci.git
