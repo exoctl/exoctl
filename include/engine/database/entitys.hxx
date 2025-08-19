@@ -1,14 +1,11 @@
 #pragma once
 
-#include <string>
+#include <soci/soci.h>
 
 namespace engine::database
 {
-    namespace record
-    {
-        using EnqueueTask = struct EnqueueTask {
-            int id; // auto generated
-            std::string sql;
-        };
-    } // namespace record
+    using Soci = soci::session;
+    using SociError = soci::soci_error;
+    using SociIndicator = soci::indicator;
+    using SociValues = soci::values;
 } // namespace engine::database

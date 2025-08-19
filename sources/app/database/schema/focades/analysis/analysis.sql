@@ -1,22 +1,22 @@
 -- Table: analysis
 CREATE TABLE IF NOT EXISTS analysis (
-    id INTEGER PRIMARY KEY,
-    file_name VARCHAR(255) NOT NULL,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_name VARCHAR(255) NOT NULL UNIQUE,
     file_type VARCHAR(100),
-    sha256 VARCHAR(64),
-    sha1 VARCHAR(40),
-    sha512 VARCHAR(128),
-    sha224 VARCHAR(56),
-    sha384 VARCHAR(96),
-    sha3_256 VARCHAR(64),
-    sha3_512 VARCHAR(128),
+    sha256 VARCHAR(64) UNIQUE,
+    sha1 VARCHAR(40) UNIQUE,
+    sha512 VARCHAR(128) UNIQUE,
+    sha224 VARCHAR(56) UNIQUE,
+    sha384 VARCHAR(96) UNIQUE,
+    sha3_256 VARCHAR(64) UNIQUE,
+    sha3_512 VARCHAR(128) UNIQUE,
     file_size BIGINT,
     file_entropy DOUBLE PRECISION,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     file_path TEXT,
     is_malicious BOOLEAN,
-    packed BOOLEAN,
+    is_packed BOOLEAN,
     owner VARCHAR(100)
 );
 

@@ -83,11 +83,18 @@ namespace engine::bridge::endpoints::analysis
                         req.body.size() >= min_binary_size) {
 
                         focades::analysis::record::File file;
-                        file.content = req.body;
-                        file.owner = req.remote_ip_address;
+                        file.content.assign(std::move(req.body));
+                        file.owner.assign(req.remote_ip_address);
 
+                        focades::analysis::record::Analysis anal;
                         TRY_BEGIN()
-                        analysis.scan(file);
+                        anal = analysis.scan(file);
+                        analysis.file_write({anal.sha512, file.content});
+                        if (analysis.table_exists_by_sha256(anal)) {
+                            analysis.table_update(anal);
+                        } else {
+                            analysis.table_insert(anal);
+                        }
                         TRY_END()
                         CATCH(focades::analysis::exception::Scan,
                               return crow::response{server::gateway::responses::
@@ -95,7 +102,8 @@ namespace engine::bridge::endpoints::analysis
                                                             .code()};)
 
                         auto accept =
-                            server::gateway::responses::Accepted();
+                            server::gateway::responses::Accepted().add_field(
+                                "sha256", anal.sha256);
 
                         return crow::response{accept.code(),
                                               "application/json",

@@ -32,7 +32,7 @@ namespace engine::database
                    const logging::Logging &);
 
         void load();
-        static void exec(const std::string &sql);
+        static Soci& exec();
         static const std::vector<soci::row> query(const std::string &);
         static const bool is_table_exists(const std::string &);
         void close();
@@ -41,7 +41,7 @@ namespace engine::database
         configuration::Configuration m_config;
         logging::Logging m_log;
 
-        static std::unique_ptr<soci::session> m_session;
+        static std::unique_ptr<Soci> m_session;
         static std::string type;
         static std::string m_connection_str;
 
@@ -68,7 +68,7 @@ namespace engine::database
                         (std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());
 
-                    exec(sql);
+                    exec() << sql;
                 }
             }
         }

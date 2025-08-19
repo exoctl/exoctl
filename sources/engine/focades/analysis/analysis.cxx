@@ -6,6 +6,7 @@
 #include <engine/logging/logging.hxx>
 #include <engine/security/av/clamav/exception.hxx>
 #include <engine/security/yara/exception.hxx>
+#include <netdb.h>
 #include <stdint.h>
 
 namespace engine::focades::analysis
@@ -46,6 +47,10 @@ namespace engine::focades::analysis
     {
         m_config = &p_config;
         m_log = &p_log;
+
+        packed_entropy = m_config->get("focades.analysis.packed.entropy")
+                             .value<double>()
+                             .value();
 
         scan_yara->setup(p_config);
         scan_av_clamav->setup(p_config);
@@ -91,13 +96,30 @@ namespace engine::focades::analysis
                                 p_dto->creation_date;
                         });
 
-        // analysis.is_malicious;
-        // analysis.packed;
+        analysis.is_malicious = [&]() -> bool {
+            bool result = false;
+            scan_yara->scan(
+                p_file.content,
+                [&](focades::analysis::scan::yara::record::DTO *p_dto) {
+                    if (p_dto->math_status ==
+                        focades::analysis::scan::yara::type::Scan::match) {
+                        result = true;
+                    }
+                });
 
+            scan_av_clamav->scan(
+                p_file.content,
+                [&](focades::analysis::scan::av::clamav::record::DTO *p_dto) {
+                    if (p_dto->math_status ==
+                        security::av::clamav::type::Scan::virus)
+                        result = true;
+                });
+            return result;
+        }();
+
+        analysis.is_packed = (analysis.file_entropy >= packed_entropy);
         analysis.file_size = p_file.content.size();
         analysis.file_path = filesystem::Filesystem::path;
-        Analysis::file_write({analysis.sha512, p_file.content});
-        Analysis::table_insert(analysis);
 
         return analysis;
     }
@@ -120,25 +142,176 @@ namespace engine::focades::analysis
     void Analysis::table_insert(const record::Analysis &p_analysis)
     {
         if (!Analysis::table_exists()) {
+            m_log->error("Table for analysis not found, cannot insert record "
+                         "for sha256 '{}'",
+                         p_analysis.sha256);
+            return;
+        }
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        sql << "INSERT INTO analysis ("
+               "id, file_name, file_type, sha256, sha1, sha512, sha224, "
+               "sha384, "
+               "sha3_256, sha3_512, file_size, file_entropy, "
+               "creation_date, "
+               "last_update_date, file_path, is_malicious, is_packed, owner) "
+               "VALUES (:id, :file_name, :file_type, :sha256, :sha1, "
+               ":sha512, :sha224, :sha384, "
+               ":sha3_256, :sha3_512, :file_size, :file_entropy, "
+               ":creation_date, "
+               ":last_update_date, :file_path, :is_malicious, :is_packed, "
+               ":owner)",
+            soci::use(p_analysis);
+
+        m_log->info("Successfully inserted analysis record for sha256 '{}'",
+                    p_analysis.sha256);
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error("Failed to insert analysis for sha256 '{}': {}",
+                         p_analysis.sha256,
+                         e.what());
+        });
+    }
+
+    void Analysis::table_update(const record::Analysis &p_analysis)
+    {
+        if (!Analysis::table_exists()) {
             m_log->error("Table for analysis not found, reanalyze '{}' the "
                          "file to save it in the database",
                          p_analysis.sha256);
             return;
         }
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        sql << "UPDATE analysis SET "
+               "file_name = :file_name, "
+               "file_type = :file_type, "
+               "sha1 = :sha1, "
+               "sha512 = :sha512, "
+               "sha224 = :sha224, "
+               "sha384 = :sha384, "
+               "sha3_256 = :sha3_256, "
+               "sha3_512 = :sha3_512, "
+               "file_size = :file_size, "
+               "file_entropy = :file_entropy, "
+               "creation_date = :creation_date, "
+               "last_update_date = :last_update_date, "
+               "file_path = :file_path, "
+               "is_malicious = :is_malicious, "
+               "is_packed = :is_packed, "
+               "owner = :owner "
+               "WHERE sha256 = :sha256",
+            soci::use(p_analysis);
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error("Failed to update analysis for sha256 '{}': {}",
+                         p_analysis.sha256,
+                         e.what());
+        });
     }
 
-    void Analysis::table_update(const record::Analysis &p_analysis)
+    const bool Analysis::table_exists_by_sha256(
+        const record::Analysis &p_analysis)
     {
+        if (!Analysis::table_exists()) {
+            m_log->error("Table for analysis not found, cannot check existence "
+                         "for SHA256 '{}'",
+                         p_analysis.sha256);
+            return false;
+        }
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        int exists;
+        sql << "SELECT EXISTS (SELECT 1 FROM analysis WHERE sha256 = "
+               ":sha256)",
+            soci::use(p_analysis.sha256), soci::into(exists);
+
+        if (sql.got_data()) {
+            return exists != 0;
+        } else {
+            m_log->warn("No result returned when checking existence for "
+                        "SHA256 '{}'",
+                        p_analysis.sha256);
+            return false;
+        }
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error("Failed to check existence for SHA256 '{}': {}",
+                         p_analysis.sha256,
+                         e.what());
+        });
+
+        return false;
     }
 
     const record::Analysis Analysis::table_get_by_id(const int p_id)
     {
+        if (!Analysis::table_exists()) {
+            m_log->error("Table for analysis not found, cannot retrieve record "
+                         "with ID '{}'",
+                         p_id);
+            return {};
+        }
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        record::Analysis result;
+        sql << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
+               "sha224, sha384, sha3_256, sha3_512, file_size, "
+               "file_entropy, creation_date, last_update_date, file_path, "
+               "is_malicious, is_packed, owner "
+               "FROM analysis WHERE id = :id",
+            soci::use(p_id), soci::into(result);
+
+        if (sql.got_data()) {
+            return result;
+        } else {
+            m_log->warn("No analysis record found for ID '{}'", p_id);
+            return {};
+        }
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error(
+                "Failed to retrieve analysis for ID '{}': {}", p_id, e.what());
+        })
         return {};
     }
 
     const record::Analysis Analysis::table_get_by_sha256(
         const std::string &p_sha256)
     {
+        if (!Analysis::table_exists()) {
+            m_log->error("Table for analysis not found, cannot retrieve record "
+                         "with SHA256 '{}'",
+                         p_sha256);
+            return {};
+        }
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        record::Analysis result;
+        sql << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
+               "sha224, sha384, sha3_256, sha3_512, file_size, "
+               "file_entropy, creation_date, last_update_date, file_path, "
+               "is_malicious, is_packed, owner "
+               "FROM analysis WHERE sha256 = :sha256",
+            soci::use(p_sha256), soci::into(result);
+
+        if (sql.got_data()) {
+            return result;
+        } else {
+            m_log->warn("No analysis record found for SHA256 '{}'", p_sha256);
+            return {};
+        }
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error("Failed to retrieve analysis for SHA256 '{}': {}",
+                         p_sha256,
+                         e.what());
+        })
         return {};
     }
 } // namespace engine::focades::analysis

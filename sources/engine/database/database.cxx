@@ -12,10 +12,9 @@ namespace engine::database
         m_config = config;
         m_log = log;
 
-        // Define tipo de banco
         type = m_config.get("database.type")
-                        .value<std::string>()
-                        .value_or("sqlite");
+                   .value<std::string>()
+                   .value_or("sqlite");
 
         if (type == "sqlite") {
             std::string path =
@@ -42,8 +41,7 @@ namespace engine::database
                 fmt::format("Unsupported DB type '{}'", type));
         }
 
-        m_log.info(
-            fmt::format("Connected to {} database successfully", type));
+        m_log.info(fmt::format("Connected to {} database successfully", type));
     }
 
     void Database::load()
@@ -101,28 +99,9 @@ namespace engine::database
         return exists;
     }
 
-    const std::vector<soci::row> Database::query(const std::string &p_sql)
+    Soci &Database::exec()
     {
-        try {
-            soci::rowset<soci::row> rs = ((*m_session).prepare << p_sql);
-            std::vector<soci::row> results;
-
-            for (auto &r : rs)
-                results.push_back(std::move(r));
-
-            return results;
-        } catch (const soci::soci_error &e) {
-            throw exception::Query(e.what());
-        }
-    }
-
-    void Database::exec(const std::string &sql)
-    {
-        try {
-            (*m_session) << sql;
-        } catch (const soci::soci_error &e) {
-            throw exception::Query(e.what());
-        }
+        return *m_session;
     }
 
     void Database::close()

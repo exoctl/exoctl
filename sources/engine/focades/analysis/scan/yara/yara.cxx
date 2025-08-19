@@ -17,10 +17,9 @@ namespace engine::focades::analysis::scan::yara
 
     void Yara::load() const
     {
-        yara->set_rules_folder(
-            m_config->get("focades.analysis.yara.rules.path")
-                .value<std::string>()
-                .value());
+        yara->set_rules_folder(m_config->get("focades.analysis.yara.rules.path")
+                                   .value<std::string>()
+                                   .value());
 
         yara->load_rules();
     }
@@ -29,6 +28,7 @@ namespace engine::focades::analysis::scan::yara
                     const std::function<void(yara::record::DTO *)> &p_callback)
     {
         yara::record::DTO *dto = new yara::record::DTO;
+        dto->math_status = yara::type::Scan::nomatch;
         if (p_callback) {
             yara->scan_bytes(
                 p_buffer,
@@ -47,6 +47,7 @@ namespace engine::focades::analysis::scan::yara
                                 break;
 
                             case security::yara::type::Flags::RuleMatching:
+                                dto->math_status = yara::type::Scan::match;
                                 dto->rules.push_back(*rule);
                                 return CALLBACK_CONTINUE;
 

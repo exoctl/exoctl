@@ -7,11 +7,20 @@ namespace engine::focades::analysis::scan
 {
     namespace yara
     {
+        namespace type
+        {
+            enum Scan {
+                nomatch,
+                match,
+                none /* default value */
+            };
+        } // namespace type
+
         namespace record
         {
             typedef struct DTO {
                 std::vector<security::yara::type::Rule> rules;
-                security::yara::type::Scan math_status;
+                yara::type::Scan math_status;
             } DTO;
         } // namespace record
     } // namespace yara

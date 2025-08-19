@@ -7,12 +7,6 @@ namespace engine::security::yara
 {
     namespace type
     {
-        enum Scan {
-            nomatch,
-            match,
-            none /* default value */
-        };
-
         enum Flags {
             // Callback message types
             RuleMatching = CALLBACK_MSG_RULE_MATCHING,
