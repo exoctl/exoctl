@@ -18,7 +18,7 @@ function yara_gate:setup(config, logging)
     self.is_life = false
     self.logging = logging
     self.config = config
-    self.yara = _bridge.analysis.analysis.scan["yara"]
+    self.yara = _bridge.analysis.analysis.threats["yara"]
 end
 
 function yara_gate:load()
@@ -53,7 +53,7 @@ function yara_gate:load_rules_saved()
 end
 
 function yara_gate:save_rule(rule, namespace)
-    local path <const> = self.config:get("yara.rules.path") .. _data.metadata.sha:gen_sha256_hash(rule) .. ".yar"
+    local path <const> = self.config:get("yara.rules.path") .. _data.metadata.sha:sha256(rule) .. ".yar"
     self.logging:info(string.format("Saving yara rule in {%s}", path))
 
     local rule_file <close> = io.open(path, "w")

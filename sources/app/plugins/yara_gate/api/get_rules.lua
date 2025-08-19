@@ -16,17 +16,17 @@ function get_rules:setup(server, yara_manager)
 end
 
 function get_rules:load()
-    self.server:create_route("/api/get/rules", function(req)
+    self.server:create_route("/rules", function(req)
         local rules_json = Json:new()
 
         if not self.yara_manager or not self.yara_manager.is_life then
             return self:create_error_response(500, "Yara engine is not initialized")
         end
-
+        local count = 0
         self.yara_manager.yara:rules_foreach(function(rules)
             if rules then
                 local meta = Json:new()
-
+                count = count + 1
                 self.yara_manager.yara:metas_foreach(rules, function(metas)
                     if metas then
                         local value = (metas.type ~= 2) and metas.integer or metas.string
@@ -41,7 +41,7 @@ function get_rules:load()
             end
         end)
 
-        return Response:new(200, "application/json", Json:new():add("rules", rules_json):tostring())
+        return Response:new(200, "application/json", Json:new():add("rules", rules_json):add("count", count):tostring())
     end)
 end
 

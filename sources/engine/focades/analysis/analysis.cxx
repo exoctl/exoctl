@@ -23,7 +23,7 @@ namespace engine::focades::analysis
     {
         plugins::Plugins::lua.state.new_usertype<focades::analysis::Analysis>(
             "Analysis",
-            "scan",
+            "threats",
             sol::property(
                 [](focades::analysis::Analysis &self)
                     -> focades::analysis::Analysis & { return self; }),
