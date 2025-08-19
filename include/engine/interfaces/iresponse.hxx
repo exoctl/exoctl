@@ -22,9 +22,9 @@ namespace engine::interface
             return *static_cast<Derived *>(this);
         }
 
-        inline const parser::Json tojson() const
+        inline const parser::json::Json tojson() const
         {
-            parser::Json json_data = m_json;
+            parser::json::Json json_data = m_json;
 
             json_data.add("code", code());
             json_data.add("status", status());
@@ -48,7 +48,7 @@ namespace engine::interface
       protected:
         int m_code;
         std::string m_status;
-        parser::Json m_json;
+        parser::json::Json m_json;
 
       private:
         virtual const int _code() const = 0;

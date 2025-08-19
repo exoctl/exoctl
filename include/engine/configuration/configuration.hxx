@@ -23,7 +23,7 @@ namespace engine
 
             void setup(const std::string &);
             void load();
-            const parser::Json tojson();
+            const parser::json::Json tojson();
 
             [[nodiscard]] toml::node_view<const toml::node> get(
                 const std::string &path) const;

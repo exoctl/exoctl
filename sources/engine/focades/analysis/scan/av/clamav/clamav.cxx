@@ -56,9 +56,9 @@ namespace engine::focades::analysis::scan::av::clamav
         }
     }
 
-    const engine::parser::Json Clamav::dto_json(clamav::record::DTO *p_dto)
+    const engine::parser::json::Json Clamav::dto_json(clamav::record::DTO *p_dto)
     {
-        parser::Json json;
+        parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
 

@@ -1,36 +1,34 @@
 #include <engine/parser/json/json.hxx>
 #include <engine/plugins/plugins.hxx>
 
-namespace engine
+namespace engine::parser::json
 {
-    namespace parser
+
+    Json::Json()
     {
-        Json::Json()
-        {
-            m_document.SetObject();
-        }
+        m_document.SetObject();
+    }
 
-        Json::Json(const parser::Json &other)
-        {
-            m_document.CopyFrom(other.m_document, m_allocator);
-        }
+    Json::Json(const parser::json::Json &other)
+    {
+        m_document.CopyFrom(other.m_document, m_allocator);
+    }
 
-        void Json::clear()
-        {
-            m_document.Clear();
-        }
+    void Json::clear()
+    {
+        m_document.Clear();
+    }
 
-        void Json::from_string(const std::string &json_str)
-        {
-            m_document.Parse(json_str.c_str());
-        }
+    void Json::from_string(const std::string &json_str)
+    {
+        m_document.Parse(json_str.c_str());
+    }
 
-        std::string Json::tostring() const
-        {
-            rapidjson::StringBuffer buffer;
-            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            m_document.Accept(writer);
-            return buffer.GetString();
-        }
-    } // namespace parser
-} // namespace engine
+    std::string Json::tostring() const
+    {
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        m_document.Accept(writer);
+        return buffer.GetString();
+    }
+} // namespace engine::parser::json

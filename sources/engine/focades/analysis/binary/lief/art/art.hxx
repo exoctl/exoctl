@@ -15,7 +15,7 @@ namespace engine::focades::analysis::binary::art
         void parse_bytes(
             const std::string &,
             const std::function<void(binary::art::record::DTO *)> &);
-        const ::engine::parser::Json dto_json(binary::art::record::DTO *);
+        const ::engine::parser::json::Json dto_json(binary::art::record::DTO *);
 
       private:
         ::engine::parser::binary::LIEF<const LIEF::ART::File,

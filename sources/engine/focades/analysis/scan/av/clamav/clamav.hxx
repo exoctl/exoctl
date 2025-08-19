@@ -17,7 +17,7 @@ namespace engine::focades::analysis::scan::av::clamav
         void scan(const std::string &,
                   const std::function<void(clamav::record::DTO *)> &);
         void load(const std::function<void(unsigned int)> & = nullptr);
-        const engine::parser::Json dto_json(clamav::record::DTO *);
+        const engine::parser::json::Json dto_json(clamav::record::DTO *);
 
         security::av::Clamav clamav;
       private:

@@ -37,11 +37,11 @@ namespace engine::bridge::endpoints::analysis
         bool m_enable;
 
         std::unique_ptr<engine::server::gateway::web::Web> m_web_scan;
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_yara;
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_av_clamav;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_threats;
+        std::unique_ptr<engine::server::gateway::web::Web> m_web_records;
 
         void scan();
-        void scan_yara();
-        void scan_av_clamav();
+        void records();
+        void scan_threats();
     };
 } // namespace engine::bridge::endpoints::analysis

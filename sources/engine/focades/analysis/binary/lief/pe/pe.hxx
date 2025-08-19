@@ -15,7 +15,7 @@ namespace engine::focades::analysis::binary::pe
         void parse_bytes(
             const std::string &,
             const std::function<void(binary::pe::record::DTO *)> &);
-        const ::engine::parser::Json dto_json(binary::pe::record::DTO *);
+        const ::engine::parser::json::Json dto_json(binary::pe::record::DTO *);
 
       private:
         ::engine::parser::binary::LIEF<const LIEF::PE::Binary,

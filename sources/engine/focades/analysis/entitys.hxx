@@ -42,9 +42,10 @@ namespace soci
     struct type_conversion<engine::focades::analysis::record::Analysis> {
         using base_type = values;
 
-        static void from_base(const engine::database::SociValues &v,
-                              engine::database::SociIndicator /* ind */,
-                              engine::focades::analysis::record::Analysis &analysis)
+        static void from_base(
+            const engine::database::SociValues &v,
+            engine::database::SociIndicator /* ind */,
+            engine::focades::analysis::record::Analysis &analysis)
         {
             analysis.id = v.get<int>("id");
             analysis.file_name = v.get<std::string>("file_name");
@@ -56,19 +57,21 @@ namespace soci
             analysis.sha384 = v.get<std::string>("sha384");
             analysis.sha3_256 = v.get<std::string>("sha3_256");
             analysis.sha3_512 = v.get<std::string>("sha3_512");
-            analysis.file_size = v.get<std::size_t>("file_size");
+            analysis.file_size =
+                static_cast<size_t>(v.get<long long>("file_size", 0));
             analysis.file_entropy = v.get<double>("file_entropy");
             analysis.creation_date = v.get<std::string>("creation_date");
             analysis.last_update_date = v.get<std::string>("last_update_date");
             analysis.file_path = v.get<std::string>("file_path");
-            analysis.is_malicious = v.get<int>("is_malicious") != 0;
-            analysis.is_packed = v.get<int>("is_packed") != 0;
+            analysis.is_malicious = v.get<bool>("is_malicious") != 0;
+            analysis.is_packed = v.get<bool>("is_packed") != 0;
             analysis.owner = v.get<std::string>("owner");
         }
 
-        static void to_base(const engine::focades::analysis::record::Analysis &analysis,
-                            engine::database::SociValues &v,
-                            engine::database::SociIndicator &ind)
+        static void to_base(
+            const engine::focades::analysis::record::Analysis &analysis,
+            engine::database::SociValues &v,
+            engine::database::SociIndicator &ind)
         {
             v.set("file_name", analysis.file_name);
             v.set("file_type", analysis.file_type);

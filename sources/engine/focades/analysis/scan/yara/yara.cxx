@@ -67,15 +67,15 @@ namespace engine::focades::analysis::scan::yara
         }
     }
 
-    const engine::parser::Json Yara::dto_json(const yara::record::DTO *p_dto)
+    const engine::parser::json::Json Yara::dto_json(const yara::record::DTO *p_dto)
     {
-        engine::parser::Json json;
+        engine::parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
-            engine::parser::Json rules_array;
+            engine::parser::json::Json rules_array;
 
             for (const auto &rule : p_dto->rules) {
-                engine::parser::Json rule_json;
+                engine::parser::json::Json rule_json;
                 rule_json.add("identifier", rule.identifier);
                 rule_json.add("namespace", rule.ns->name);
                 rules_array.add(rule_json);

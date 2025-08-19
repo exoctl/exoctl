@@ -48,10 +48,10 @@ namespace engine::focades::analysis::metadata
         }
     }
 
-    const engine::parser::Json Metadata::dto_json(
+    const engine::parser::json::Json Metadata::dto_json(
         const metadata::record::DTO *p_dto)
     {
-        engine::parser::Json json;
+        engine::parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
             json.add("mime_type", p_dto->mime_type);

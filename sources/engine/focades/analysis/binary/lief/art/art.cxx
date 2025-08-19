@@ -23,9 +23,9 @@ namespace engine::focades::analysis::binary::art
                           });
     }
 
-    const ::engine::parser::Json ART::dto_json(binary::art::record::DTO *p_dto)
+    const ::engine::parser::json::Json ART::dto_json(binary::art::record::DTO *p_dto)
     {
-        ::engine::parser::Json json;
+        ::engine::parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
             json.from_string(LIEF::to_json(*p_dto->art->get()));

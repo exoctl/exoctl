@@ -21,7 +21,7 @@ namespace engine::focades::analysis::metadata
         void parse(const std::string &,
                    const std::function<void(metadata::record::DTO *)> &);
 
-        [[nodiscard]] const engine::parser::Json dto_json(
+        [[nodiscard]] const engine::parser::json::Json dto_json(
             const metadata::record::DTO *);
 
       private:

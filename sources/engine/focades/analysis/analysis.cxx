@@ -96,6 +96,7 @@ namespace engine::focades::analysis
                                 p_dto->creation_date;
                         });
 
+        TRY_BEGIN()
         analysis.is_malicious = [&]() -> bool {
             bool result = false;
             scan_yara->scan(
@@ -116,6 +117,13 @@ namespace engine::focades::analysis
                 });
             return result;
         }();
+        TRY_END()
+        CATCH(security::av::clamav::exception::Scan,
+              throw exception::Scan(fmt::format(
+                  "Error scan clamav from file '{}'", analysis.sha256)))
+        CATCH(security::yara::exception::Scan,
+              throw exception::Scan(fmt::format(
+                  "Error scan yara from file '{}'", analysis.sha256)))
 
         analysis.is_packed = (analysis.file_entropy >= packed_entropy);
         analysis.file_size = p_file.content.size();
@@ -127,16 +135,52 @@ namespace engine::focades::analysis
     void Analysis::file_write(const record::File &p_file)
     {
         filesystem::record::EnqueueTask task;
-        task.file.content = p_file.content;
-        task.file.filename = p_file.filename;
+        task.file.content.assign(p_file.content);
+        task.file.filename.assign(p_file.filename);
         if (!filesystem::Filesystem::is_exists(task.file)) {
             filesystem::Filesystem::enqueue_write(task);
+        }
+    }
+
+    void Analysis::file_read(record::File &p_file)
+    {
+        filesystem::record::File file;
+        file.filename.assign(p_file.filename);
+        if (filesystem::Filesystem::is_exists(file)) {
+            filesystem::Filesystem::read(file);
+            p_file.content.assign(file.content);
         }
     }
 
     const bool Analysis::table_exists()
     {
         return database::Database::is_table_exists("analysis");
+    }
+
+    const std::vector<record::Analysis> Analysis::table_get_all()
+    {
+        std::vector<record::Analysis> results;
+
+        TRY_BEGIN()
+        database::Soci &sql = engine::database::Database::exec();
+        soci::rowset<record::Analysis> rs =
+            (sql.prepare
+             << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
+                "sha224, sha384, sha3_256, sha3_512, file_size, file_entropy, "
+                "creation_date, last_update_date, file_path, is_malicious, "
+                "is_packed, owner "
+                "FROM analysis");
+
+        results.assign(rs.begin(), rs.end());
+
+        m_log->info("Successfully retrieved {} analysis records",
+                    results.size());
+        TRY_END()
+        CATCH(database::SociError, {
+            m_log->error("Failed to retrieve analysis records: {}", e.what());
+        });
+
+        return results;
     }
 
     void Analysis::table_insert(const record::Analysis &p_analysis)
@@ -151,12 +195,12 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         database::Soci &sql = engine::database::Database::exec();
         sql << "INSERT INTO analysis ("
-               "id, file_name, file_type, sha256, sha1, sha512, sha224, "
+               "file_name, file_type, sha256, sha1, sha512, sha224, "
                "sha384, "
                "sha3_256, sha3_512, file_size, file_entropy, "
                "creation_date, "
                "last_update_date, file_path, is_malicious, is_packed, owner) "
-               "VALUES (:id, :file_name, :file_type, :sha256, :sha1, "
+               "VALUES (:file_name, :file_type, :sha256, :sha1, "
                ":sha512, :sha224, :sha384, "
                ":sha3_256, :sha3_512, :file_size, :file_entropy, "
                ":creation_date, "
@@ -196,7 +240,6 @@ namespace engine::focades::analysis
                "sha3_512 = :sha3_512, "
                "file_size = :file_size, "
                "file_entropy = :file_entropy, "
-               "creation_date = :creation_date, "
                "last_update_date = :last_update_date, "
                "file_path = :file_path, "
                "is_malicious = :is_malicious, "

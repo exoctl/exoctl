@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS analysis (
     sha3_512 VARCHAR(128) UNIQUE,
     file_size BIGINT,
     file_entropy DOUBLE PRECISION,
-    creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    creation_date  VARCHAR(255) DEFAULT CURRENT_TIMESTAMP,
+    last_update_date VARCHAR(255) DEFAULT CURRENT_TIMESTAMP,
     file_path TEXT,
     is_malicious BOOLEAN,
     is_packed BOOLEAN,
@@ -27,17 +27,3 @@ CREATE TABLE IF NOT EXISTS analysis_info (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TRIGGER update_analysis_timestamp
-AFTER UPDATE ON analysis
-FOR EACH ROW
-BEGIN
-    UPDATE analysis SET last_update_date = CURRENT_TIMESTAMP WHERE id = OLD.id;
-END;
-
-CREATE TRIGGER update_analysis_info_timestamp
-AFTER UPDATE ON analysis_info
-FOR EACH ROW
-BEGIN
-    UPDATE analysis_info SET updated_at = CURRENT_TIMESTAMP WHERE metadata_id = OLD.metadata_id;
-END;

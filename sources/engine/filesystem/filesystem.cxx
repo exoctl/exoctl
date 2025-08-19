@@ -101,22 +101,21 @@ namespace engine::filesystem
                   static_cast<std::streamsize>(p_file.content.size()));
     }
 
-    const std::string Filesystem::read(const record::File &p_file)
+    const void Filesystem::read(record::File &p_file)
     {
         std::filesystem::path full_path =
             std::filesystem::path(path) / p_file.filename;
 
         std::ifstream ifs(full_path, std::ios::binary);
         if (!ifs) {
-            return {};
+            return;
         }
 
         ifs.seekg(0, std::ios::end);
-        std::string content;
-        content.resize(static_cast<size_t>(ifs.tellg()));
+        p_file.content.resize(static_cast<size_t>(ifs.tellg()));
         ifs.seekg(0, std::ios::beg);
 
-        ifs.read(content.data(), static_cast<std::streamsize>(content.size()));
-        return content;
+        ifs.read(p_file.content.data(),
+                 static_cast<std::streamsize>(p_file.content.size()));
     }
 } // namespace engine::filesystem

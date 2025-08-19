@@ -12,10 +12,10 @@ namespace engine
             m_path.assign(p_path);
         }
 
-        const parser::Json Configuration::tojson()
+        const parser::json::Json Configuration::tojson()
         {
             std::ostringstream oss;
-            parser::Json json;
+            parser::json::Json json;
 
             oss << toml::json_formatter{m_toml};
             json.from_string(oss.str());

@@ -34,13 +34,13 @@ function yara_gate:reload()
 end
 
 function yara_gate:backup_save_rules()
-    local stream <const> = self.config:get("yara_gate.rules.backup")
+    local stream <const> = self.config:get("yara.rules.backup")
     self.logging:info(string.format("Saving backup yara rules to {%s}", stream))
     self.yara:save_rules_file(stream)
 end
 
 function yara_gate:backup_recover_rules()
-    local stream <const> = self.config:get("yara_gate.rules.backup")
+    local stream <const> = self.config:get("yara.rules.backup")
     self.logging:info(string.format("Loading backup yara rules {%s}", stream))
     self.yara:load_rules_file(stream)
     self.is_life = true
@@ -53,7 +53,7 @@ function yara_gate:load_rules_saved()
 end
 
 function yara_gate:save_rule(rule, namespace)
-    local path <const> = self.config:get("yara_gate.rules.path") .. _data.metadata.sha:gen_sha256_hash(rule) .. ".yar"
+    local path <const> = self.config:get("yara.rules.path") .. _data.metadata.sha:gen_sha256_hash(rule) .. ".yar"
     self.logging:info(string.format("Saving yara rule in {%s}", path))
 
     local rule_file <close> = io.open(path, "w")

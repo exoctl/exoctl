@@ -15,7 +15,7 @@ namespace engine::focades::analysis::binary::macho
         void parse_bytes(
             const std::string &,
             const std::function<void(binary::macho::record::DTO *)> &);
-        const ::engine::parser::Json dto_json(binary::macho::record::DTO *);
+        const ::engine::parser::json::Json dto_json(binary::macho::record::DTO *);
 
       private:
         ::engine::parser::binary::LIEF<const LIEF::MachO::FatBinary,

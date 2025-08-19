@@ -80,7 +80,7 @@ namespace engine
         crypto::extend::Sha::plugins();
         security::yara::extend::Yara::plugins();
         magic::extend::Magic::plugins();
-        parser::extend::Json::plugins();
+        parser::json::extend::Json::plugins();
         bridge::extend::Bridge::plugins();
         version::extend::Version::plugins();
         database::extend::Database::plugins();

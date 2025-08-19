@@ -8,7 +8,7 @@ class JsonBenchmark : public benchmark::Fixture
   public:
     void SetUp(const ::benchmark::State &state) override
     {
-        json = new engine::parser::Json();
+        json = new engine::parser::json::Json();
     }
 
     void TearDown(const ::benchmark::State &state) override
@@ -16,5 +16,5 @@ class JsonBenchmark : public benchmark::Fixture
         delete json;
     }
 
-    engine::parser::Json *json;
+    engine::parser::json::Json *json;
 };

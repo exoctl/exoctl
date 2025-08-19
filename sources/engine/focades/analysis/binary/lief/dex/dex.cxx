@@ -22,9 +22,9 @@ namespace engine::focades::analysis::binary::dex
                           });
     }
 
-    const ::engine::parser::Json DEX::dto_json(binary::dex::record::DTO *p_dto)
+    const ::engine::parser::json::Json DEX::dto_json(binary::dex::record::DTO *p_dto)
     {
-        ::engine::parser::Json json;
+        ::engine::parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
             json.from_string(LIEF::to_json(*p_dto->dex->get()));

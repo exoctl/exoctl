@@ -1,5 +1,6 @@
 #pragma once
 
+#include "entitys.hxx"
 #include <LIEF/LIEF.hpp>
 #include <engine/focades/analysis/binary/lief/art/art.hxx>
 #include <engine/focades/analysis/binary/lief/dex/dex.hxx>
@@ -30,12 +31,14 @@ namespace engine::focades::analysis
         [[nodiscard]] const bool table_exists();
         void table_insert(const record::Analysis &);
         void table_update(const record::Analysis &);
+        [[nodiscard]] const std::vector<record::Analysis> table_get_all();
         [[nodiscard]] const record::Analysis table_get_by_id(const int);
         [[nodiscard]] const record::Analysis table_get_by_sha256(
             const std::string &);
         [[nodiscard]] const bool table_exists_by_sha256(
             const record::Analysis &);
         void file_write(const record::File &);
+        void file_read(record::File &);
 
         void _plugins() override;
 

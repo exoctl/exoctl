@@ -36,7 +36,7 @@ BENCHMARK_DEFINE_F(JsonBenchmark, JsonAddMemberBool)(benchmark::State &state)
 
 BENCHMARK_DEFINE_F(JsonBenchmark, JsonAddMemberJson)(benchmark::State &state)
 {
-    engine::parser::Json json_2;
+    engine::parser::json::Json json_2;
 
     json_2.add("is_match", true);
 

@@ -46,9 +46,9 @@ namespace engine::bridge::endpoints::analysis
                 .value<size_t>()
                 .value();
 
-        scan();
-        // scan_yara();
-        // scan_av_clamav();
+        Analysis::scan();
+        Analysis::records();
+        Analysis::scan_threats();
     }
 
     void Analysis::load() const
@@ -89,7 +89,7 @@ namespace engine::bridge::endpoints::analysis
                         focades::analysis::record::Analysis anal;
                         TRY_BEGIN()
                         anal = analysis.scan(file);
-                        analysis.file_write({anal.sha512, file.content});
+                        analysis.file_write({anal.sha256, file.content});
                         if (analysis.table_exists_by_sha256(anal)) {
                             analysis.table_update(anal);
                         } else {
@@ -123,14 +123,65 @@ namespace engine::bridge::endpoints::analysis
         });
     }
 
-    void Analysis::scan_av_clamav()
+    void Analysis::records()
     {
-        m_map.add_route("/scan/av/clamav", [&]() {
-            m_web_scan_av_clamav =
-                std::make_unique<server::gateway::web::Web>();
-            m_web_scan_av_clamav->setup(
+        m_map.add_route("/records", [&]() {
+            m_web_records = std::make_unique<server::gateway::web::Web>();
+            m_web_records->setup(
                 &*m_server,
-                BASE_ANALYSIS "/scan/av/clamav",
+                BASE_ANALYSIS "/records",
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::GET) {
+                        auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
+                    }
+
+                    auto analyses = analysis.table_get_all();
+                    parser::json::Json json;
+                    for (const auto &anal : analyses) {
+                        parser::json::Json record;
+                        record.add("id", anal.id);
+                        record.add("file_name", anal.file_name);
+                        record.add("file_type", anal.file_type);
+                        record.add("sha256", anal.sha256);
+                        record.add("sha1", anal.sha1);
+                        record.add("sha512", anal.sha512);
+                        record.add("sha224", anal.sha224);
+                        record.add("sha384", anal.sha384);
+                        record.add("sha3_256", anal.sha3_256);
+                        record.add("sha3_512", anal.sha3_512);
+                        record.add("file_size", anal.file_size);
+                        record.add("file_entropy", anal.file_entropy);
+                        record.add("creation_date", anal.creation_date);
+                        record.add("last_update_date", anal.last_update_date);
+                        record.add("file_path", anal.file_path);
+                        record.add("is_malicious", anal.is_malicious);
+                        record.add("is_packed", anal.is_packed);
+                        record.add("owner", anal.owner);
+                        json.add(record);
+                    }
+
+                    auto connected =
+                        server::gateway::responses::Connected().add_field(
+                            "records", json);
+                    return crow::response{connected.code(),
+                                          "application/json",
+                                          connected.tojson().tostring()};
+                });
+        });
+    }
+
+    void Analysis::scan_threats()
+    {
+        m_map.add_route("/scan/threats", [&]() {
+            m_web_scan_threats = std::make_unique<server::gateway::web::Web>();
+            m_web_scan_threats->setup(
+                &*m_server,
+                BASE_ANALYSIS "/scan/threats",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
                         auto method_not_allowed =
@@ -141,59 +192,50 @@ namespace engine::bridge::endpoints::analysis
                             method_not_allowed.tojson().tostring()};
                     }
 
-                    parser::Json json;
+                    parser::json::Json body;
+                    body.from_string(req.body);
+
+                    const auto &sha256 = body.get<std::string>("sha256");
+                    if (sha256 == std::nullopt) {
+                        auto bad_requests =
+                            server::gateway::responses::BadRequests().add_field(
+                                "message",
+                                fmt::format("Field 'sha256' not found",
+                                            min_binary_size));
+                        return crow::response{bad_requests.code(),
+                                              "application/json",
+                                              bad_requests.tojson().tostring()};
+                    }
+
+                    parser::json::Json json;
 
                     TRY_BEGIN()
+                    focades::analysis::record::File file;
+                    file.filename = sha256.value();
+                    analysis.file_read(file);
+
                     analysis.scan_av_clamav->scan(
-                        req.body,
+                        file.content,
                         [&](focades::analysis::scan::av::clamav::record::DTO
                                 *p_dto) {
-                            json = std::move(
-                                analysis.scan_av_clamav->dto_json(p_dto));
+                            json.add(
+                                "clamav",
+                                std::move(
+                                    analysis.scan_av_clamav->dto_json(p_dto)));
+                        });
+
+                    analysis.scan_yara->scan(
+                        file.content,
+                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
+                            json.add(
+                                "yara",
+                                std::move(analysis.scan_yara->dto_json(p_dto)));
                         });
                     TRY_END()
                     CATCH(security::av::clamav::exception::Scan,
                           return crow::response{
                               server::gateway::responses::InternalServerError()
                                   .code()};)
-
-                    auto connected =
-                        server::gateway::responses::Connected().add_field(
-                            "clamav", json);
-
-                    return crow::response{connected.code(),
-                                          "application/json",
-                                          connected.tojson().tostring()};
-                });
-        });
-    }
-
-    void Analysis::scan_yara()
-    {
-        m_map.add_route("/scan/yara", [&]() {
-            m_web_scan_yara = std::make_unique<server::gateway::web::Web>();
-            m_web_scan_yara->setup(
-                &*m_server,
-                BASE_ANALYSIS "/scan/yara",
-                [&](const crow::request &req) -> crow::response {
-                    if (req.method != crow::HTTPMethod::POST) {
-                        auto method_not_allowed =
-                            server::gateway::responses::MethodNotAllowed();
-                        return crow::response{
-                            method_not_allowed.code(),
-                            "application/json",
-                            method_not_allowed.tojson().tostring()};
-                    }
-
-                    parser::Json json;
-                    TRY_BEGIN()
-                    analysis.scan_yara->scan(
-                        req.body,
-                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json =
-                                std::move(analysis.scan_yara->dto_json(p_dto));
-                        });
-                    TRY_END()
                     CATCH(security::yara::exception::Scan,
                           return crow::response{
                               server::gateway::responses::InternalServerError()
@@ -201,7 +243,7 @@ namespace engine::bridge::endpoints::analysis
 
                     auto connected =
                         server::gateway::responses::Connected().add_field(
-                            "yara", json);
+                            "threats", json);
 
                     return crow::response{connected.code(),
                                           "application/json",
@@ -209,5 +251,4 @@ namespace engine::bridge::endpoints::analysis
                 });
         });
     }
-
 } // namespace engine::bridge::endpoints::analysis

@@ -24,10 +24,10 @@ namespace engine::focades::analysis::binary::macho
             });
     }
 
-    const ::engine::parser::Json MACHO::dto_json(
+    const ::engine::parser::json::Json MACHO::dto_json(
         binary::macho::record::DTO *p_dto)
     {
-        ::engine::parser::Json json;
+        ::engine::parser::json::Json json;
 
         if (!IS_NULL(p_dto)) {
             json.from_string(LIEF::to_json(*p_dto->macho->get()->back()));
