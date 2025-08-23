@@ -13,10 +13,6 @@ namespace engine::filesystem
     std::string Filesystem::path;
     bool Filesystem::readonly;
 
-    Filesystem::Filesystem()
-    {
-    }
-
     Filesystem::~Filesystem()
     {
         m_fs_queue_cv.notify_all();
@@ -27,11 +23,15 @@ namespace engine::filesystem
         }
     }
 
-    const bool Filesystem::is_exists(const record::File &p_file)
+    const bool Filesystem::is_exists(const record::File &p_file,
+                                     bool p_relative)
     {
+        const auto full_path =
+            p_relative ? std::filesystem::path(path) / p_file.filename
+                       : std::filesystem::path(p_file.filename);
+
         std::error_code ec;
-        return std::filesystem::exists(
-            std::filesystem::path(path) / p_file.filename, ec);
+        return std::filesystem::exists(full_path, ec);
     }
 
     void Filesystem::setup(const configuration::Configuration &p_config,
@@ -43,7 +43,16 @@ namespace engine::filesystem
         path = m_config.get("filesystem.path").value<std::string>().value();
         readonly = m_config.get("filesystem.readonly").value<bool>().value();
 
-        std::filesystem::create_directories(path);
+        Filesystem::create_directories(path, false);
+    }
+
+    void Filesystem::create_directories(const std::string &p_path,
+                                        const bool p_relative)
+    {
+        const auto full_path = p_relative ? std::filesystem::path(path) / p_path
+                                          : std::filesystem::path(p_path);
+
+        std::filesystem::create_directories(full_path);
     }
 
     void Filesystem::load()
@@ -58,8 +67,15 @@ namespace engine::filesystem
 
         p_task.id = ++m_id_counter;
 
-        std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
-        m_fs_queue.push(p_task);
+        {
+            std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
+            m_fs_queue.push(p_task);
+        }
+        {
+            std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
+            m_fs_queue.push(p_task);
+        }
+
         m_fs_queue_cv.notify_one();
     }
 
@@ -76,21 +92,21 @@ namespace engine::filesystem
                 m_fs_queue.pop();
                 lock.unlock();
 
-                Filesystem::write(task.file);
-
+                Filesystem::write(task.file, task.relative);
                 lock.lock();
             }
         }
     }
 
-    void Filesystem::write(const record::File &p_file)
+    void Filesystem::write(const record::File &p_file, const bool p_relative)
     {
         if (readonly) {
             return;
         }
 
-        std::filesystem::path full_path =
-            std::filesystem::path(path) / p_file.filename;
+        const auto full_path =
+            p_relative ? std::filesystem::path(path) / p_file.filename
+                       : std::filesystem::path(p_file.filename);
 
         std::ofstream ofs(full_path, std::ios::binary | std::ios::trunc);
         if (!ofs) {
@@ -101,10 +117,11 @@ namespace engine::filesystem
                   static_cast<std::streamsize>(p_file.content.size()));
     }
 
-    const void Filesystem::read(record::File &p_file)
+    void Filesystem::read(record::File &p_file, const bool p_relative)
     {
-        std::filesystem::path full_path =
-            std::filesystem::path(path) / p_file.filename;
+        const auto full_path =
+            p_relative ? std::filesystem::path(path) / p_file.filename
+                       : std::filesystem::path(p_file.filename);
 
         std::ifstream ifs(full_path, std::ios::binary);
         if (!ifs) {

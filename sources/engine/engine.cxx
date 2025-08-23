@@ -69,16 +69,20 @@ namespace engine
             "version",
             &Engine::version,
             "database",
-            &Engine::database);
+            &Engine::database,
+            "filesystem",
+            &Engine::filesystem);
 
         plugins::Plugins::lua.state["_engine"] = this;
 
+        filesystem::extend::Filesystem::plugins();
         server::extend::Server::plugins();
         logging::extend::Logging::plugins();
         configuration::extend::Configuration::plugins();
         llama::extend::Llama::plugins();
         crypto::extend::Sha::plugins();
         security::yara::extend::Yara::plugins();
+        security::av::clamav::extend::Clamav::plugins();
         magic::extend::Magic::plugins();
         parser::json::extend::Json::plugins();
         bridge::extend::Bridge::plugins();

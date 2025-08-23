@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <engine/configuration/configuration.hxx>
 #include <engine/filesystem/entitys.hxx>
+#include <engine/filesystem/extend/filesystem.hxx>
 #include <engine/logging/logging.hxx>
 #include <mutex>
 #include <queue>
@@ -15,7 +16,9 @@ namespace engine::filesystem
     class Filesystem
     {
       public:
-        Filesystem();
+        friend class extend::Filesystem;
+
+        Filesystem() = default;
         ~Filesystem();
 
         void setup(const configuration::Configuration &,
@@ -23,9 +26,10 @@ namespace engine::filesystem
         void load();
 
         static void enqueue_write(record::EnqueueTask &);
-        static void write(const record::File &);
-        static const bool is_exists(const record::File &);
-        static const void read(record::File &);
+        static void write(const record::File &, const bool = true);
+        [[nodiscard]] static const bool is_exists(const record::File &, const bool = true);
+        static void read(record::File &, const bool = true);
+        static void create_directories(const std::string &, const bool = true);
         static std::string path;
         static bool readonly;
         static std::atomic<bool> is_running;

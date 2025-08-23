@@ -2,30 +2,31 @@
 #include <engine/plugins/plugins.hxx>
 #include <engine/server/gateway/web/extend/web.hxx>
 #include <engine/server/gateway/web/web.hxx>
-#include <mutex>
 
 namespace engine::server::gateway::web::extend
 {
+    static std::mutex web_mutex;
+
     void Web::bind_web()
     {
         plugins::Plugins::lua.state.new_usertype<web::Web>(
             "Web",
             "new",
             sol::overload([](Server &server,
-                             const std::string &url,
-                             const sol::protected_function callback) {
+                              const std::string &url,
+                              const sol::protected_function callback) {
                 const std::shared_ptr<gateway::web::Web> instance =
                     std::make_shared<gateway::web::Web>();
 
                 instance->setup(
                     &server,
                     url,
-                    [callback](
-                        const crow::request &req) -> const crow::response {
+                    [callback](const crow::request &req) -> const crow::response {
                         if (!callback.valid()) {
                             return crow::response(500, "Invalid callback");
                         }
 
+                        std::lock_guard<std::mutex> guard(web_mutex);
                         sol::protected_function_result result = callback(req);
 
                         if (!result.valid()) {

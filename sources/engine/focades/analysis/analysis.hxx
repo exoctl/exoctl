@@ -9,8 +9,8 @@
 #include <engine/focades/analysis/binary/lief/pe/pe.hxx>
 #include <engine/focades/analysis/entitys.hxx>
 #include <engine/focades/analysis/metadata/metadata.hxx>
-#include <engine/focades/analysis/scan/av/clamav/clamav.hxx>
-#include <engine/focades/analysis/scan/yara/yara.hxx>
+#include <engine/focades/analysis/threats/av/clamav/clamav.hxx>
+#include <engine/focades/analysis/threats/yara/yara.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/logging/logging.hxx>
 
@@ -45,16 +45,15 @@ namespace engine::focades::analysis
         std::shared_ptr<focades::analysis::metadata::Metadata> metadata;
 
         // scan binary
-        std::shared_ptr<focades::analysis::scan::av::clamav::Clamav>
-            scan_av_clamav;
-        std::shared_ptr<focades::analysis::scan::yara::Yara> scan_yara;
+        std::shared_ptr<focades::analysis::threats::av::clamav::Clamav> clamav;
+        std::shared_ptr<focades::analysis::threats::yara::Yara> yara;
 
         // parser binary formats
-        std::shared_ptr<focades::analysis::binary::pe::PE> binary_pe;
-        std::shared_ptr<focades::analysis::binary::macho::MACHO> binary_macho;
-        std::shared_ptr<focades::analysis::binary::dex::DEX> binary_dex;
-        std::shared_ptr<focades::analysis::binary::art::ART> binary_art;
-        std::shared_ptr<focades::analysis::binary::elf::ELF> binary_elf;
+        std::shared_ptr<focades::analysis::binary::pe::PE> pe;
+        std::shared_ptr<focades::analysis::binary::macho::MACHO> macho;
+        std::shared_ptr<focades::analysis::binary::dex::DEX> dex;
+        std::shared_ptr<focades::analysis::binary::art::ART> art;
+        std::shared_ptr<focades::analysis::binary::elf::ELF> elf;
 
         double packed_entropy;
 

@@ -3,7 +3,7 @@
 #include <engine/security/yara/entitys.hxx>
 #include <vector>
 
-namespace engine::focades::analysis::scan
+namespace engine::focades::analysis::threats
 {
     namespace yara
     {
@@ -24,4 +24,4 @@ namespace engine::focades::analysis::scan
             } DTO;
         } // namespace record
     } // namespace yara
-} // namespace engine::focades::analysis::scan
+} // namespace engine::focades::analysis::threats

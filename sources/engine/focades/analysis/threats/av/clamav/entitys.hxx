@@ -2,7 +2,7 @@
 
 #include <engine/security/av/clamav/entitys.hxx>
 
-namespace engine::focades::analysis::scan::av
+namespace engine::focades::analysis::threats::av
 {
     namespace clamav
     {
@@ -14,4 +14,4 @@ namespace engine::focades::analysis::scan::av
             } DTO;
         } // namespace record
     } // namespace clamav
-} // namespace engine::focades::analysis::scan::av
+} // namespace engine::focades::analysis::threats::av

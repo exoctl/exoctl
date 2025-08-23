@@ -8,13 +8,11 @@ local server <const> = require("sources.app.plugins.yara_gate.server"):new()
 
 
 local api <const> = {
-    get_rules = require("sources.app.plugins.yara_gate.api.get_rules"):new()
-    --scan = require("plugins.yaragate.api.Scan"):new(),
-    --disable_rules = require("plugins.yaragate.api.DisableRules"):new(),
-    --enable_rules = require("plugins.yaragate.api.EnableRules"):new(),
-    --load_rule = require("plugins.yaragate.api.LoadRules"):new(),
-    --get_reset_rules = require("plugins.yaragate.api.GetResetRules"):new(),
-    --get_compiled_rules = require("plugins.yaragate.api.GetCompiledRules"):new()
+    get_rules = require("sources.app.plugins.yara_gate.get_rules"):new(),
+    set_disable_rules = require("sources.app.plugins.yara_gate.set_disable_rules"):new(),
+    set_enable_rules = require("sources.app.plugins.yara_gate.set_enable_rules"):new(),
+    get_compiled_rules = require("sources.app.plugins.yara_gate.get_compiled_rules"):new(),
+    set_load_rules = require("sources.app.plugins.yara_gate.set_load_rules"):new(),
 }
 
 local yara_manager <const> = require("sources.app.plugins.yara_gate.yara_manager"):new()
@@ -37,6 +35,18 @@ yara_manager:load()
 server:setup(config, logging)
 
 -- APis
+
+api.set_enable_rules:setup(server, yara_manager)
+api.set_enable_rules:load()
+
+api.set_load_rules:setup(server, yara_manager)
+api.set_load_rules:load()
+
+api.set_disable_rules:setup(server, yara_manager)
+api.set_disable_rules:load()
+
+api.get_compiled_rules:setup(server, yara_manager)
+api.get_compiled_rules:load()
 
 api.get_rules:setup(server, yara_manager)
 api.get_rules:load()

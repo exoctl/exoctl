@@ -1,10 +1,10 @@
-#include <engine/focades/analysis/scan/yara/yara.hxx>
+#include <engine/focades/analysis/threats/yara/yara.hxx>
 #include <engine/memory/memory.hxx>
 #include <engine/plugins/plugins.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <string>
 
-namespace engine::focades::analysis::scan::yara
+namespace engine::focades::analysis::threats::yara
 {
     Yara::Yara() : yara(std::make_shared<security::Yara>())
     {
@@ -13,14 +13,15 @@ namespace engine::focades::analysis::scan::yara
     void Yara::setup(configuration::Configuration &p_config)
     {
         m_config = &p_config;
+
+        rules_path.assign(m_config->get("focades.analysis.yara.rules.path")
+                              .value<std::string>()
+                              .value());
     }
 
     void Yara::load() const
     {
-        yara->set_rules_folder(m_config->get("focades.analysis.yara.rules.path")
-                                   .value<std::string>()
-                                   .value());
-
+        yara->set_rules_folder(rules_path);
         yara->load_rules();
     }
 
@@ -67,7 +68,8 @@ namespace engine::focades::analysis::scan::yara
         }
     }
 
-    const engine::parser::json::Json Yara::dto_json(const yara::record::DTO *p_dto)
+    const engine::parser::json::Json Yara::dto_json(
+        const yara::record::DTO *p_dto)
     {
         engine::parser::json::Json json;
 
@@ -87,4 +89,4 @@ namespace engine::focades::analysis::scan::yara
         return json;
     }
 
-} // namespace engine::focades::analysis::scan::yara
+} // namespace engine::focades::analysis::threats::yara

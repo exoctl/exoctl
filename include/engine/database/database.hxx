@@ -36,13 +36,14 @@ namespace engine::database
         static const std::vector<soci::row> query(const std::string &);
         static const bool is_table_exists(const std::string &);
         void close();
-
+        
+        static std::string type;
+        
       private:
         configuration::Configuration m_config;
         logging::Logging m_log;
 
         static std::unique_ptr<Soci> m_session;
-        static std::string type;
         static std::string m_connection_str;
 
         void load_schema();

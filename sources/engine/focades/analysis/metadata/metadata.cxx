@@ -6,17 +6,6 @@
 
 namespace engine::focades::analysis::metadata
 {
-    void Metadata::_plugins()
-    {
-        plugins::Plugins::lua.state
-            .new_usertype<focades::analysis::metadata::Metadata>(
-                "Metadata",
-                "sha",
-                &Metadata::m_sha,
-                "magic",
-                &Metadata::m_magic);
-    }
-
     void Metadata::parse(
         const std::string &p_buffer,
         const std::function<void(metadata::record::DTO *)> &p_callback)
@@ -24,16 +13,16 @@ namespace engine::focades::analysis::metadata
         if (!IS_NULL(p_callback)) {
             struct metadata::record::DTO *dto = new metadata::record::DTO;
 
-            dto->mime_type = (m_magic.mime(p_buffer));
+            dto->mime_type = (magic.mime(p_buffer));
             dto->size = (int) p_buffer.size();
 
-            dto->sha256 = (m_sha.sha256(p_buffer));
-            dto->sha1 = (m_sha.sha1(p_buffer));
-            dto->sha512 = (m_sha.sha512(p_buffer));
-            dto->sha224 = (m_sha.sha224(p_buffer));
-            dto->sha384 = (m_sha.sha384(p_buffer));
-            dto->sha3_256 = (m_sha.sha3_256(p_buffer));
-            dto->sha3_512 = (m_sha.sha3_512(p_buffer));
+            dto->sha256 = (sha.sha256(p_buffer));
+            dto->sha1 = (sha.sha1(p_buffer));
+            dto->sha512 = (sha.sha512(p_buffer));
+            dto->sha224 = (sha.sha224(p_buffer));
+            dto->sha384 = (sha.sha384(p_buffer));
+            dto->sha3_256 = (sha.sha3_256(p_buffer));
+            dto->sha3_512 = (sha.sha3_512(p_buffer));
 
             time_t current_time = time(0);
             tm *ltm = localtime(&current_time);

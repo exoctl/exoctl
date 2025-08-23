@@ -1,8 +1,8 @@
-#include <engine/focades/analysis/scan/av/clamav/clamav.hxx>
+#include <engine/focades/analysis/threats/av/clamav/clamav.hxx>
 #include <engine/memory/memory.hxx>
 #include <fmt/core.h>
 
-namespace engine::focades::analysis::scan::av::clamav
+namespace engine::focades::analysis::threats::av::clamav
 {
     Clamav::Clamav() : clamav()
     {
@@ -68,4 +68,4 @@ namespace engine::focades::analysis::scan::av::clamav
 
         return json;
     }
-} // namespace engine::focades::analysis::scan::av::clamav
+} // namespace engine::focades::analysis::threats::av::clamav

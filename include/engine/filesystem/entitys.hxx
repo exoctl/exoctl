@@ -14,6 +14,7 @@ namespace engine::filesystem
         using EnqueueTask = struct EnqueueTask {
             int id; // auto generated
             File file;
+            bool relative = true; // path relative to filesystem.path
         };
 
     } // namespace record

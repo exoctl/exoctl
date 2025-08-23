@@ -34,6 +34,16 @@ namespace engine::server::gateway::responses
         const std::string _status() const override;
     };
 
+    class ServiceUnavailable : public interface::IResponse<ServiceUnavailable>
+    {
+      public:
+        ServiceUnavailable() = default;
+        ~ServiceUnavailable() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+    };
+
     class Accepted : public interface::IResponse<Accepted>
     {
       public:

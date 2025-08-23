@@ -14,6 +14,9 @@ namespace engine::database::extend
             &database::Database::load,
             "setup",
             &database::Database::setup,
+            "type",
+            sol::property(
+                [](const database::Database &self) { return self.type; }),
             "exec",
             &database::Database::exec);
     }

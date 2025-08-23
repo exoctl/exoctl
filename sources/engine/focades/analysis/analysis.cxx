@@ -13,9 +13,9 @@ namespace engine::focades::analysis
 {
     Analysis::Analysis()
         : metadata(std::make_shared<focades::analysis::metadata::Metadata>()),
-          scan_av_clamav(
-              std::make_shared<focades::analysis::scan::av::clamav::Clamav>()),
-          scan_yara(std::make_shared<focades::analysis::scan::yara::Yara>())
+          clamav(std::make_shared<
+                 focades::analysis::threats::av::clamav::Clamav>()),
+          yara(std::make_shared<focades::analysis::threats::yara::Yara>())
     {
     }
 
@@ -23,21 +23,37 @@ namespace engine::focades::analysis
     {
         plugins::Plugins::lua.state.new_usertype<focades::analysis::Analysis>(
             "Analysis",
-            "threats",
+            "yara_rules_path",
             sol::property(
-                [](focades::analysis::Analysis &self)
-                    -> focades::analysis::Analysis & { return self; }),
+                [](focades::analysis::Analysis &self) -> const std::string {
+                    if (self.yara)
+                        return self.yara->rules_path;
+                    return "";
+                }),
             sol::meta_function::index,
             [](focades::analysis::Analysis &self,
                const std::string &key,
                sol::this_state ts) {
                 sol::state_view lua(ts);
-                if (key == "clamav" && self.scan_av_clamav)
-                    return sol::make_object(
-                        lua, std::ref(self.scan_av_clamav->clamav));
-                if (key == "yara" && self.scan_yara)
-                    return sol::make_object(lua,
-                                            std::ref(self.scan_yara->yara));
+
+                // threats
+                if (key == "clamav" && self.clamav)
+                    return sol::make_object(lua, std::ref(self.clamav->clamav));
+
+                if (key == "yara" && self.yara)
+                    return sol::make_object(lua, std::ref(self.yara->yara));
+
+                // metadata
+                if (self.metadata) {
+                    if (key == "sha")
+                        return sol::make_object(lua,
+                                                std::ref(self.metadata->sha));
+
+                    if (key == "magic")
+                        return sol::make_object(lua,
+                                                std::ref(self.metadata->magic));
+                }
+
                 return sol::make_object(lua, sol::nil);
             });
     }
@@ -52,18 +68,18 @@ namespace engine::focades::analysis
                              .value<double>()
                              .value();
 
-        scan_yara->setup(p_config);
-        scan_av_clamav->setup(p_config);
+        yara->setup(p_config);
+        clamav->setup(p_config);
     }
 
     void Analysis::load() const
     {
         TRY_BEGIN()
         m_log->info("Loading rules yara ...");
-        scan_yara->load();
+        yara->load();
 
         m_log->info("Loading rules clamav ...");
-        scan_av_clamav->load([&](unsigned int p_total_rules) {
+        clamav->load([&](unsigned int p_total_rules) {
             m_log->info(
                 "Successfully loaded rules. Total Clamav rules count: {:d}",
                 p_total_rules);
@@ -99,22 +115,23 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         analysis.is_malicious = [&]() -> bool {
             bool result = false;
-            scan_yara->scan(
+            yara->scan(
                 p_file.content,
-                [&](focades::analysis::scan::yara::record::DTO *p_dto) {
+                [&](focades::analysis::threats::yara::record::DTO *p_dto) {
                     if (p_dto->math_status ==
-                        focades::analysis::scan::yara::type::Scan::match) {
+                        focades::analysis::threats::yara::type::Scan::match) {
                         result = true;
                     }
                 });
 
-            scan_av_clamav->scan(
-                p_file.content,
-                [&](focades::analysis::scan::av::clamav::record::DTO *p_dto) {
-                    if (p_dto->math_status ==
-                        security::av::clamav::type::Scan::virus)
-                        result = true;
-                });
+            clamav->scan(p_file.content,
+                         [&](focades::analysis::threats::av::clamav::record::DTO
+                                 *p_dto) {
+                             if (p_dto->math_status ==
+                                 security::av::clamav::type::Scan::virus)
+                                 result = true;
+                         });
+
             return result;
         }();
         TRY_END()
@@ -137,6 +154,7 @@ namespace engine::focades::analysis
         filesystem::record::EnqueueTask task;
         task.file.content.assign(p_file.content);
         task.file.filename.assign(p_file.filename);
+
         if (!filesystem::Filesystem::is_exists(task.file)) {
             filesystem::Filesystem::enqueue_write(task);
         }

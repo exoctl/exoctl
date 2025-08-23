@@ -1,11 +1,11 @@
 #pragma once
 
-#include <engine/focades/analysis/scan/av/clamav/entitys.hxx>
 #include <engine/configuration/configuration.hxx>
+#include <engine/focades/analysis/threats/av/clamav/entitys.hxx>
 #include <engine/parser/json/json.hxx>
 #include <engine/security/av/clamav/clamav.hxx>
 
-namespace engine::focades::analysis::scan::av::clamav
+namespace engine::focades::analysis::threats::av::clamav
 {
     class Clamav
     {
@@ -19,8 +19,9 @@ namespace engine::focades::analysis::scan::av::clamav
         void load(const std::function<void(unsigned int)> & = nullptr);
         const engine::parser::json::Json dto_json(clamav::record::DTO *);
 
-        security::av::Clamav clamav;
+        security::av::clamav::Clamav clamav;
+
       private:
         configuration::Configuration *m_config;
     };
-} // namespace engine::focades::analysis::scan::av::clamav
+} // namespace engine::focades::analysis::threats::av::clamav

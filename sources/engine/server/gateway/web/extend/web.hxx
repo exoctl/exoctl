@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
+#include <mutex>
 
 namespace engine::server::gateway::web::extend
 {

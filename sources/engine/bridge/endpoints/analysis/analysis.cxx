@@ -214,22 +214,21 @@ namespace engine::bridge::endpoints::analysis
                     file.filename = sha256.value();
                     analysis.file_read(file);
 
-                    analysis.scan_av_clamav->scan(
+                    analysis.clamav->scan(
                         file.content,
-                        [&](focades::analysis::scan::av::clamav::record::DTO
+                        [&](focades::analysis::threats::av::clamav::record::DTO
                                 *p_dto) {
                             json.add(
                                 "clamav",
-                                std::move(
-                                    analysis.scan_av_clamav->dto_json(p_dto)));
+                                std::move(analysis.clamav->dto_json(p_dto)));
                         });
 
-                    analysis.scan_yara->scan(
+                    analysis.yara->scan(
                         file.content,
-                        [&](focades::analysis::scan::yara::record::DTO *p_dto) {
-                            json.add(
-                                "yara",
-                                std::move(analysis.scan_yara->dto_json(p_dto)));
+                        [&](focades::analysis::threats::yara::record::DTO
+                                *p_dto) {
+                            json.add("yara",
+                                     std::move(analysis.yara->dto_json(p_dto)));
                         });
                     TRY_END()
                     CATCH(security::av::clamav::exception::Scan,

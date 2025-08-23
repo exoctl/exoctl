@@ -14,6 +14,16 @@ namespace engine::server::gateway::responses
         return "method_not_allowed";
     }
 
+    const int ServiceUnavailable::_code() const
+    {
+        return 503;
+    }
+
+    const std::string ServiceUnavailable::_status() const
+    {
+        return "service_unavailable";
+    }
+
     const int InternalServerError::_code() const
     {
         return 500;
