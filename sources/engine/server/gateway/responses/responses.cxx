@@ -14,6 +14,16 @@ namespace engine::server::gateway::responses
         return "method_not_allowed";
     }
 
+    const int NotFound::_code() const
+    {
+        return 404;
+    }
+
+    const std::string NotFound::_status() const
+    {
+        return "not_found";
+    }
+
     const int ServiceUnavailable::_code() const
     {
         return 503;

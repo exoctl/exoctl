@@ -47,6 +47,7 @@ namespace engine::bridge::endpoints::analysis
                 .value();
 
         Analysis::scan();
+        Analysis::rescan();
         Analysis::records();
         Analysis::scan_threats();
     }
@@ -62,6 +63,85 @@ namespace engine::bridge::endpoints::analysis
             [&](const std::string p_route) { m_map.call_route(p_route); });
     }
 
+    void Analysis::rescan()
+    {
+        m_map.add_route("/rescan", [&]() {
+            m_web_scan = std::make_unique<server::gateway::web::Web>();
+            m_web_scan->setup(
+                &*m_server,
+                BASE_ANALYSIS "/rescan",
+                [&](const crow::request &req) -> const crow::response {
+                    if (req.method != crow::HTTPMethod::POST) {
+                        const auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
+                    }
+
+                    parser::json::Json body;
+                    body.from_string(req.body);
+
+                    const auto &sha256 = body.get<std::string>("sha256");
+                    if (sha256 == std::nullopt) {
+                        const auto bad_requests =
+                            server::gateway::responses::BadRequests().add_field(
+                                "message",
+                                fmt::format("Field 'sha256' not found",
+                                            min_binary_size));
+                        return crow::response{bad_requests.code(),
+                                              "application/json",
+                                              bad_requests.tojson().tostring()};
+                    }
+
+                    focades::analysis::record::Analysis new_anal;
+                    focades::analysis::record::Analysis anal;
+
+                    TRY_BEGIN()
+                    anal = analysis.table_get_by_sha256(sha256.value());
+                    if (anal.sha256.empty() || !filesystem::Filesystem::is_exists(
+                                                 {sha256.value()})) {
+                        const auto not_found =
+                            server::gateway::responses::NotFound().add_field(
+                                "message",
+                                fmt::format("Record with sha256 '{}' not found",
+                                            sha256.value()));
+                        return crow::response{not_found.code(),
+                                              "application/json",
+                                              not_found.tojson().tostring()};
+                    }
+
+                    focades::analysis::record::File file;
+                    file.filename = anal.sha256;
+                    analysis.file_read(file);
+
+                    new_anal = analysis.scan(file);
+                    new_anal.id = anal.id;
+                    new_anal.file_name = anal.file_name;
+
+                    if (analysis.table_exists_by_sha256(new_anal)) {
+                        analysis.table_update(new_anal);
+                    } else {
+                        analysis.table_insert(new_anal);
+                    }
+                    TRY_END()
+                    CATCH(focades::analysis::exception::Scan,
+                          return crow::response{
+                              server::gateway::responses::InternalServerError()
+                                  .code()};)
+
+                    const auto accept =
+                        server::gateway::responses::Accepted().add_field(
+                            "sha256", new_anal.sha256);
+
+                    return crow::response{accept.code(),
+                                          "application/json",
+                                          accept.tojson().tostring()};
+                });
+        });
+    }
+
     void Analysis::scan()
     {
         m_map.add_route("/scan", [&]() {
@@ -71,7 +151,7 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/scan",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
-                        auto method_not_allowed =
+                        const auto method_not_allowed =
                             server::gateway::responses::MethodNotAllowed();
                         return crow::response{
                             method_not_allowed.code(),
@@ -101,7 +181,7 @@ namespace engine::bridge::endpoints::analysis
                                                         InternalServerError()
                                                             .code()};)
 
-                        auto accept =
+                        const auto accept =
                             server::gateway::responses::Accepted().add_field(
                                 "sha256", anal.sha256);
 
@@ -113,7 +193,8 @@ namespace engine::bridge::endpoints::analysis
                     auto bad_requests =
                         server::gateway::responses::BadRequests().add_field(
                             "message",
-                            fmt::format("File too small for scan minimal {}b",
+                            fmt::format("File too small for "
+                                        "scan minimal {}b",
                                         min_binary_size));
 
                     return crow::response{bad_requests.code(),
@@ -132,7 +213,7 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/records",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::GET) {
-                        auto method_not_allowed =
+                        const auto method_not_allowed =
                             server::gateway::responses::MethodNotAllowed();
                         return crow::response{
                             method_not_allowed.code(),
@@ -165,7 +246,7 @@ namespace engine::bridge::endpoints::analysis
                         json.add(record);
                     }
 
-                    auto connected =
+                    const auto connected =
                         server::gateway::responses::Connected().add_field(
                             "records", json);
                     return crow::response{connected.code(),
@@ -184,7 +265,7 @@ namespace engine::bridge::endpoints::analysis
                 BASE_ANALYSIS "/scan/threats",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
-                        auto method_not_allowed =
+                        const auto method_not_allowed =
                             server::gateway::responses::MethodNotAllowed();
                         return crow::response{
                             method_not_allowed.code(),
@@ -240,7 +321,7 @@ namespace engine::bridge::endpoints::analysis
                               server::gateway::responses::InternalServerError()
                                   .code()};)
 
-                    auto connected =
+                    const auto connected =
                         server::gateway::responses::Connected().add_field(
                             "threats", json);
 

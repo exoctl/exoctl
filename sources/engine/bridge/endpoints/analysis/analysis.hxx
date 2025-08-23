@@ -41,6 +41,7 @@ namespace engine::bridge::endpoints::analysis
         std::unique_ptr<engine::server::gateway::web::Web> m_web_records;
 
         void scan();
+        void rescan();
         void records();
         void scan_threats();
     };

@@ -71,10 +71,6 @@ namespace engine::filesystem
             std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
             m_fs_queue.push(p_task);
         }
-        {
-            std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
-            m_fs_queue.push(p_task);
-        }
 
         m_fs_queue_cv.notify_one();
     }
