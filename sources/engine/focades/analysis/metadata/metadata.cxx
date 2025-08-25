@@ -13,16 +13,17 @@ namespace engine::focades::analysis::metadata
         if (!IS_NULL(p_callback)) {
             struct metadata::record::DTO *dto = new metadata::record::DTO;
 
-            dto->mime_type = (magic.mime(p_buffer));
-            dto->size = (int) p_buffer.size();
+            dto->mime_type = magic.mime(p_buffer);
+            dto->size = p_buffer.size();
 
-            dto->sha256 = (sha.sha256(p_buffer));
-            dto->sha1 = (sha.sha1(p_buffer));
-            dto->sha512 = (sha.sha512(p_buffer));
-            dto->sha224 = (sha.sha224(p_buffer));
-            dto->sha384 = (sha.sha384(p_buffer));
-            dto->sha3_256 = (sha.sha3_256(p_buffer));
-            dto->sha3_512 = (sha.sha3_512(p_buffer));
+            dto->sha256 = sha.sha256(p_buffer);
+            dto->sha1 = sha.sha1(p_buffer);
+            dto->sha512 = sha.sha512(p_buffer);
+            dto->sha224 = sha.sha224(p_buffer);
+            dto->sha384 = sha.sha384(p_buffer);
+            dto->sha3_256 = sha.sha3_256(p_buffer);
+            dto->tlsh = tlsh.hash(p_buffer);
+            dto->sha3_512 = sha.sha3_512(p_buffer);
 
             time_t current_time = time(0);
             tm *ltm = localtime(&current_time);
@@ -45,6 +46,7 @@ namespace engine::focades::analysis::metadata
         if (!IS_NULL(p_dto)) {
             json.add("mime_type", p_dto->mime_type);
             json.add("sha256", p_dto->sha256);
+            json.add("tlsh", p_dto->tlsh);
             json.add("sha1", p_dto->sha1);
             json.add("sha512", p_dto->sha512);
             json.add("sha224", p_dto->sha224);

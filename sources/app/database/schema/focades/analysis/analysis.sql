@@ -1,8 +1,11 @@
--- Table: analysis
 CREATE TABLE IF NOT EXISTS analysis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     file_name VARCHAR(255) NOT NULL UNIQUE,
     file_type VARCHAR(100),
+    file_size BIGINT,
+    file_path TEXT,
+    file_entropy DOUBLE PRECISION,
+    mime_type VARCHAR(100),
     sha256 VARCHAR(64) UNIQUE,
     sha1 VARCHAR(40) UNIQUE,
     sha512 VARCHAR(128) UNIQUE,
@@ -10,20 +13,13 @@ CREATE TABLE IF NOT EXISTS analysis (
     sha384 VARCHAR(96) UNIQUE,
     sha3_256 VARCHAR(64) UNIQUE,
     sha3_512 VARCHAR(128) UNIQUE,
-    file_size BIGINT,
-    file_entropy DOUBLE PRECISION,
-    creation_date  VARCHAR(40) DEFAULT CURRENT_TIMESTAMP,
+    tlsh VARCHAR(255) UNIQUE,
+    family_id INTEGER,
+    description TEXT,
+    creation_date VARCHAR(40) DEFAULT CURRENT_TIMESTAMP,
     last_update_date VARCHAR(40) DEFAULT CURRENT_TIMESTAMP,
-    file_path TEXT,
     is_malicious BOOLEAN,
     is_packed BOOLEAN,
-    owner VARCHAR(100)
-);
-
-CREATE TABLE IF NOT EXISTS analysis_info (
-    metadata_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    table_name VARCHAR(100) NOT NULL,
-    version INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    owner VARCHAR(100),
+    FOREIGN KEY (family_id) REFERENCES family(id) ON DELETE SET NULL
 );

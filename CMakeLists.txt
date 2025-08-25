@@ -46,6 +46,7 @@ add_subdirectory(libraries/lief ${CMAKE_BINARY_DIR}/libraries/lief)
 add_subdirectory(libraries/rapidjson ${CMAKE_BINARY_DIR}/libraries/rapidjson)
 add_subdirectory(libraries/sol2 ${CMAKE_BINARY_DIR}/libraries/sol2)
 add_subdirectory(libraries/soci ${CMAKE_BINARY_DIR}/libraries/soci)
+add_subdirectory(libraries/tlsh ${CMAKE_BINARY_DIR}/libraries/tlsh)
 
 # Add project sources
 add_subdirectory(sources)

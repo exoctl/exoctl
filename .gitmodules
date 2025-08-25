@@ -53,3 +53,6 @@
 [submodule "libraries/soci"]
 	path = libraries/soci
 	url = https://github.com/SOCI/soci.git
+[submodule "libraries/tlsh"]
+	path = libraries/tlsh
+	url = https://github.com/trendmicro/tlsh.git

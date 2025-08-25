@@ -6,6 +6,7 @@
 #include <engine/magic/magic.hxx>
 #include <engine/parser/json/json.hxx>
 #include <functional>
+#include <engine/crypto/tlsh.hxx>
 
 namespace engine::focades::analysis::metadata
 {
@@ -23,6 +24,7 @@ namespace engine::focades::analysis::metadata
 
         magic::Magic magic;
         crypto::Sha sha;
+        crypto::Tlsh tlsh;
 
       private:
         [[nodiscard]] const double compute_entropy(const std::string &);

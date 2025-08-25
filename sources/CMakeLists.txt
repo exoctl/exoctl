@@ -32,6 +32,7 @@ set(EXOCTL_DEPENDENCIES
     soci_mysql
     soci_postgresql
     soci_sqlite3
+    tlsh_static
     magic
     sol2
     pthread

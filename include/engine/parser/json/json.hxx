@@ -22,14 +22,9 @@ namespace engine::parser::json
         Json();
         Json(const parser::json::Json &);
         ~Json() = default;
-        Json &operator=(const Json &other)
-        {
-            if (this != &other) {
-                m_document.SetObject();
-                m_document.CopyFrom(other.m_document, m_allocator);
-            }
-            return *this;
-        }
+
+        Json &operator=(const Json &);
+
         friend class extend::Json;
 
         [[nodiscard]] std::string tostring() const;
@@ -37,11 +32,11 @@ namespace engine::parser::json
         template <typename T>
         std::optional<T> get(const std::string &p_key) const
         {
-            if (!m_document.HasMember(p_key.c_str())) {
+            if (!document.HasMember(p_key.c_str())) {
                 return std::nullopt;
             }
 
-            const rapidjson::Value &v = m_document[p_key.c_str()];
+            const rapidjson::Value &v = document[p_key.c_str()];
 
             if constexpr (std::is_same_v<T, std::string>) {
                 if (v.IsString())
@@ -70,9 +65,8 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, Json>) {
                 if (v.IsObject()) {
                     Json jsonObj;
-                    jsonObj.m_document.CopyFrom(v, jsonObj.m_allocator, true);
-
-                    return std::move(jsonObj);
+                    jsonObj.document.CopyFrom(v, jsonObj.m_allocator, true);
+                    return jsonObj;
                 }
             } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
                 if (v.IsArray()) {
@@ -81,17 +75,18 @@ namespace engine::parser::json
 
                     for (const auto &item : v.GetArray()) {
                         Json jsonObj;
-                        jsonObj.m_document.CopyFrom(
+                        jsonObj.document.CopyFrom(
                             item, jsonObj.m_allocator, true);
                         jsonArray.push_back(std::move(jsonObj));
                     }
-                    return std::move(jsonArray);
+                    return jsonArray;
                 }
             }
 
             return std::nullopt;
         }
 
+        // Para arrays "soltos": json.add("foo").add("bar")
         template <typename T> Json add(const T &p_value)
         {
             rapidjson::Value v;
@@ -115,22 +110,16 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, bool>) {
                 v.SetBool(p_value);
             } else if constexpr (std::is_same_v<T, Json>) {
-                v.CopyFrom(p_value.m_document, m_allocator);
+                v.CopyFrom(p_value.document, m_allocator);
             } else {
                 throw exception::Add("Unsupported type");
             }
 
-            if (!m_document.IsArray()) {
-                rapidjson::Value array(rapidjson::kArrayType);
-                if (m_document.IsObject() && !m_document.ObjectEmpty()) {
-                    array.PushBack(
-                        rapidjson::Value().CopyFrom(m_document, m_allocator),
-                        m_allocator);
-                }
-                m_document.Swap(array);
+            if (!document.IsArray()) {
+                document.SetArray();
             }
 
-            m_document.PushBack(v, m_allocator);
+            document.PushBack(v, m_allocator);
 
             return *this;
         }
@@ -138,6 +127,10 @@ namespace engine::parser::json
         template <typename T>
         Json add(const std::string &p_key, const T &p_value)
         {
+            if (!document.IsObject()) {
+                document.SetObject();
+            }
+
             rapidjson::Value k(p_key.c_str(), m_allocator);
             rapidjson::Value v;
 
@@ -160,30 +153,31 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, bool>) {
                 v.SetBool(p_value);
             } else if constexpr (std::is_same_v<T, Json>) {
-                v.CopyFrom(p_value.m_document, m_allocator);
+                v.CopyFrom(p_value.document, m_allocator);
             } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
                 rapidjson::Value array(rapidjson::kArrayType);
                 for (const auto &value : p_value) {
                     rapidjson::Value item;
-                    item.CopyFrom(value.m_document, m_allocator);
+                    item.CopyFrom(value.document, m_allocator);
                     array.PushBack(item, m_allocator);
                 }
-                m_document.AddMember(k, array, m_allocator);
+                document.AddMember(k, array, m_allocator);
                 return *this;
             } else {
                 throw exception::Add("Unsupported type");
             }
 
-            m_document.AddMember(k, v, m_allocator);
+            document.AddMember(k, v, m_allocator);
 
             return *this;
         }
-        void clear();
 
+        void clear();
         void from_string(const std::string &);
+
+        rapidjson::Document document;
 
       private:
         rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> m_allocator;
-        rapidjson::Document m_document;
     };
 } // namespace engine::parser::json

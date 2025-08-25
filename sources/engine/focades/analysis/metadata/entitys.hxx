@@ -12,6 +12,7 @@ namespace engine::focades::analysis::metadata::record
         std::string sha224;
         std::string sha384;
         std::string sha3_256;
+        std::string tlsh;
         std::string sha3_512;
         size_t size;
         std::string creation_date;

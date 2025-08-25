@@ -4,6 +4,7 @@ include_directories(
     ../libraries
     ../sources
     ../
+    ../libraries/tlsh/include
     ../libraries/sol2/include
     ../libraries/lua
     ../libraries/tomlplusplus/include
