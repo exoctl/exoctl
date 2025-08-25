@@ -34,8 +34,28 @@ function get_rules:load()
                     end
                 end)
 
+                local string = Json:new()
+                self.yara_manager.yara:strings_foreach(rules, function(strings)
+                    if strings then
+                        local json_string = Json:new():add("identifier", strings.identifier):add("length",
+                            strings.length):add("index", strings.idx):add("string", strings.string):add("flags",
+                            strings.flags)
+
+                        string:add(json_string)
+                    end
+                end)
+
+
+                local tag = Json:new()
+                self.yara_manager.yara:tags_foreach(rules, function(tags)
+                    if tags then
+                        tag:add(tags)
+                    end
+                end)
+
                 local rule = Json:new():add("identifier", rules.identifier):add("namespace",
-                    (rules.ns and rules.ns.name)):add("num_atoms", rules.num_atoms):add("meta", meta)
+                    (rules.ns and rules.ns.name)):add("num_atoms", rules.num_atoms):add("meta", meta):add("strings",
+                    string):add("flags", rules.flags):add("tags", tag)
 
                 rules_json:add(rule)
             end

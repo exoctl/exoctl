@@ -60,10 +60,10 @@ namespace engine::security::yara::extend
             "length",
             sol::readonly(&YR_STRING::length),
             "string",
-            [](const YR_STRING &s) {
+            sol::property([](const YR_STRING &s) {
                 return std::string(reinterpret_cast<const char *>(s.string),
                                    s.length);
-            },
+            }),
             "identifier",
             sol::readonly(&YR_STRING::identifier));
     }

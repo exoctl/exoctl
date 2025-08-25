@@ -184,32 +184,25 @@ namespace engine
                 throw yara::exception::LoadRules(
                     fmt::format("{} : '{}'", strerror(errno), p_path));
 
-            auto replace_slashes_with_dots =
-                [](const std::string &str) -> std::string {
-                std::string copy = str;
-                std::replace(copy.begin(), copy.end(), '/', '.');
-                return copy;
-            };
-
             const struct dirent *entry;
             while ((entry = readdir(dir)) != nullptr) {
-                const std::filesystem::path entry_name = entry->d_name;
-                const std::string full_path =
-                    fmt::format("{}/{}", p_path, entry_name.c_str());
-
-                if (entry_name == "." || entry_name == "..") {
+                std::filesystem::path entry_name(entry->d_name);
+                if (entry_name == "." || entry_name == "..")
                     continue;
-                }
+
+                std::string full_path = p_path + "/" + entry_name.string();
+
                 if (entry_name.extension() == ".yar") {
                     if (Yara::set_rule_file(full_path,
                                             entry_name,
-                                            replace_slashes_with_dots(
-                                                p_path)) != ERROR_SUCCESS) {
+                                            std::filesystem::path(p_path)
+                                                .filename()
+                                                .string()) != ERROR_SUCCESS) {
                         closedir(dir);
                         throw yara::exception::LoadRules(
                             "yara_set_signature_rule() failed to compile "
                             "rule " +
-                            std::string(full_path));
+                            full_path);
                     }
                 } else if (entry->d_type == DT_DIR) {
                     Yara::set_rules_folder(full_path);
