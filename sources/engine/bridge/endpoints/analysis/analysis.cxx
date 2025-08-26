@@ -102,7 +102,8 @@ namespace engine::bridge::endpoints::analysis
                     focades::analysis::record::Analysis anal;
 
                     TRY_BEGIN()
-                    anal = analysis.analysis_table_get_by_sha256(sha256.value());
+                    anal =
+                        analysis.analysis_table_get_by_sha256(sha256.value());
                     if (anal.sha256.empty() ||
                         !filesystem::Filesystem::is_exists({sha256.value()})) {
                         const auto not_found =
@@ -122,13 +123,15 @@ namespace engine::bridge::endpoints::analysis
                     new_anal = analysis.scan(file);
                     new_anal.id = anal.id;
                     new_anal.file_name = anal.file_name;
+                    new_anal.family_id = (new_anal.family_id) != 0
+                                             ? new_anal.family_id
+                                             : anal.family_id;
                     new_anal.description = anal.description;
 
-                    if (analysis.analysis_table_exists_by_sha256(new_anal)) {
-                        analysis.analysis_table_update(new_anal);
-                    } else {
-                        analysis.analysis_table_insert(new_anal);
-                    }
+                    (analysis.analysis_table_exists_by_sha256(new_anal))
+                        ? analysis.analysis_table_update(new_anal)
+                        : analysis.analysis_table_insert(new_anal);
+
                     TRY_END()
                     CATCH(focades::analysis::exception::Scan,
                           return crow::response{
@@ -368,11 +371,11 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::update()
     {
-        m_map.add_route("/update", [&]() {
+        m_map.add_route("/record/update", [&]() {
             m_web_update = std::make_unique<server::gateway::web::Web>();
             m_web_update->setup(
                 &*m_server,
-                BASE_ANALYSIS "/update",
+                BASE_ANALYSIS "/record/update",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
                         const auto method_not_allowed =

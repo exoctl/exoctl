@@ -115,8 +115,6 @@ namespace engine::focades::analysis
                             analysis.tlsh = p_dto->tlsh;
                             analysis.last_update_date = analysis.creation_date =
                                 p_dto->creation_date;
-
-                            fmt::print("tlsh: {}\n", analysis.tlsh);
                         });
 
         TRY_BEGIN()
@@ -160,24 +158,22 @@ namespace engine::focades::analysis
 
         // Assign family ID to analysis based on TLSH distance
         analysis.family_id = [&]() -> int {
-            int best_family;
-            int min_dist = std::numeric_limits<int>::infinity();
-            const std::string &target_file_type = analysis.file_type;
+            int best_family = 0;
 
             for (const auto &anal : Analysis::analysis_table_get_all()) {
-                if (anal.file_type != target_file_type) {
+                if (anal.file_type != analysis.file_type ||
+                    anal.sha256 == analysis.sha256) {
                     continue;
-                }
-                if (anal.sha256 == analysis.sha256) {
-                    best_family = anal.family_id; // default to self family
-                    continue;                     // Skip self-comparison
                 }
 
                 int dist = crypto::Tlsh::compare(anal.tlsh, analysis.tlsh);
                 // Check if distance satisfies the per-family threshold
-                if (dist <= family_tlsh && dist < min_dist) {
-                    min_dist = dist;
+                if (dist <= family_tlsh) {
+                    family_tlsh = dist;
                     best_family = anal.family_id;
+                    fmt::print("New best family: {} (distance {})\n",
+                               best_family,
+                               family_tlsh);
                     if (dist == 0) {
                         break;
                     }
