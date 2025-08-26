@@ -23,7 +23,7 @@ namespace engine::bridge::endpoints::analysis
                             method_not_allowed.tojson().tostring()};
                     }
 
-                    auto families = analysis.analysis.family_table_get_all();
+                    auto families = analysis.analysis.database->family_table_get_all();
                     parser::json::Json json;
                     for (const auto &family : families) {
                         parser::json::Json family_json;
@@ -56,32 +56,34 @@ namespace engine::bridge::endpoints::analysis
                             method_not_allowed.code(),
                             "application/json",
                             method_not_allowed.tojson().tostring()};
-                    }
-
-                    parser::json::Json body;
-                    if (!req.body.empty()) {
-                        body.from_string(req.body);
-                    } else {
+                    } else if (req.body.empty()) {
                         const auto bad_requests =
                             server::gateway::responses::BadRequests().add_field(
-                                "message", "Empty request body");
+                                "message",
+                                std::string("Empty request body"));
                         return crow::response{bad_requests.code(),
                                               "application/json",
                                               bad_requests.tojson().tostring()};
                     }
+
+                    parser::json::Json body;
+                    body.from_string(crow::utility::trim(req.body));
 
                     const auto &name = body.get<std::string>("name");
                     if (name == std::nullopt || name->empty()) {
                         const auto bad_requests =
                             server::gateway::responses::BadRequests().add_field(
-                                "message", "Field 'name' is missing or empty");
+                                "message",
+                                fmt::format(
+                                    "Field 'name' is missing or empty '{}'",
+                                    body.tostring()));
                         return crow::response{bad_requests.code(),
                                               "application/json",
                                               bad_requests.tojson().tostring()};
                     }
 
-                    focades::analysis::record::Family family;
-                    family = analysis.analysis.family_table_get_by_name(
+                    focades::analysis::database::record::Family family;
+                    family = analysis.analysis.database->family_table_get_by_name(
                         name.value());
                     if (family.id != 0) {
                         const auto conflict =
@@ -98,10 +100,8 @@ namespace engine::bridge::endpoints::analysis
                     family.name = name.value();
                     family.description =
                         body.get<std::string>("description").value_or("");
-                    analysis.analysis.family_table_insert(family);
+                    analysis.analysis.database->family_table_insert(family);
 
-                    family = analysis.analysis.family_table_get_by_name(
-                        name.value());
                     parser::json::Json family_json;
                     family_json.add("id", family.id);
                     family_json.add("name", family.name);
@@ -110,6 +110,7 @@ namespace engine::bridge::endpoints::analysis
                     const auto created =
                         server::gateway::responses::Created().add_field(
                             "family", family_json);
+
                     return crow::response{created.code(),
                                           "application/json",
                                           created.tojson().tostring()};

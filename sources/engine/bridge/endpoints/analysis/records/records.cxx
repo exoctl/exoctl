@@ -23,7 +23,8 @@ namespace engine::bridge::endpoints::analysis
                             method_not_allowed.tojson().tostring()};
                     }
 
-                    auto analyses = analysis.analysis.analysis_table_get_all();
+                    auto analyses =
+                        analysis.analysis.database->analysis_table_get_all();
                     parser::json::Json json;
                     for (const auto &anal : analyses) {
                         parser::json::Json record;
@@ -52,8 +53,8 @@ namespace engine::bridge::endpoints::analysis
                         parser::json::Json family_json;
                         if (anal.family_id != 0) {
                             auto family =
-                                analysis.analysis.family_table_get_by_id(
-                                    anal.family_id);
+                                analysis.analysis.database
+                                    ->family_table_get_by_id(anal.family_id);
                             if (family.id != 0) {
                                 family_json.add("id", family.id);
                                 family_json.add("name", family.name);
@@ -65,8 +66,8 @@ namespace engine::bridge::endpoints::analysis
 
                         parser::json::Json tags_json;
                         auto tags =
-                            analysis.analysis
-                                .analysis_tag_get_tags_by_analysis_id(anal.id);
+                            analysis.analysis.database
+                                ->analysis_tag_get_tags_by_analysis_id(anal.id);
                         for (const auto &tag : tags) {
                             parser::json::Json tag_json;
                             tag_json.add("id", tag.id);
@@ -88,12 +89,12 @@ namespace engine::bridge::endpoints::analysis
                 });
         });
 
-        analysis.map_.add_route("/record/update", [&]() {
+        analysis.map_.add_route("/records/update", [&]() {
             analysis.web_update_ =
                 std::make_unique<server::gateway::web::Web>();
             analysis.web_update_->setup(
                 &*analysis.server_,
-                BASE_ANALYSIS "/record/update",
+                BASE_ANALYSIS "/records/update",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
                         const auto method_not_allowed =
@@ -102,35 +103,34 @@ namespace engine::bridge::endpoints::analysis
                             method_not_allowed.code(),
                             "application/json",
                             method_not_allowed.tojson().tostring()};
-                    }
-
-                    parser::json::Json body;
-                    if (!req.body.empty()) {
-                        body.from_string(req.body);
-                    } else {
+                    } else if (req.body.empty()) {
                         const auto bad_requests =
                             server::gateway::responses::BadRequests().add_field(
-                                "message", "Empty request body");
+                                "message", std::string("Empty request body"));
                         return crow::response{bad_requests.code(),
                                               "application/json",
                                               bad_requests.tojson().tostring()};
                     }
+
+                    parser::json::Json body;
+                    body.from_string(crow::utility::trim(req.body));
 
                     const auto &sha256 = body.get<std::string>("sha256");
                     if (sha256 == std::nullopt || sha256->empty()) {
                         const auto bad_requests =
                             server::gateway::responses::BadRequests().add_field(
                                 "message",
-                                "Field 'sha256' is missing or empty");
+                                std::string(
+                                    "Field 'sha256' is missing or empty"));
                         return crow::response{bad_requests.code(),
                                               "application/json",
                                               bad_requests.tojson().tostring()};
                     }
 
-                    focades::analysis::record::Analysis anal;
+                    focades::analysis::database::record::Analysis anal;
 
-                    anal = analysis.analysis.analysis_table_get_by_sha256(
-                        sha256.value());
+                    anal = analysis.analysis.database
+                               ->analysis_table_get_by_sha256(sha256.value());
                     if (anal.sha256.empty()) {
                         const auto not_found =
                             server::gateway::responses::NotFound().add_field(
@@ -138,8 +138,8 @@ namespace engine::bridge::endpoints::analysis
                                 fmt::format("Record with sha256 '{}' not found",
                                             sha256.value()));
                         return crow::response{not_found.code(),
-                                               "application/json",
-                                               not_found.tojson().tostring()};
+                                              "application/json",
+                                              not_found.tojson().tostring()};
                     }
 
                     // update fields optionals
@@ -162,10 +162,11 @@ namespace engine::bridge::endpoints::analysis
                         if (auto family_name =
                                 family_obj->get<std::string>("name")) {
                             if (!family_name->empty()) {
-                                focades::analysis::record::Family family;
-                                family =
-                                    analysis.analysis.family_table_get_by_name(
-                                        *family_name);
+                                focades::analysis::database::record::Family
+                                    family;
+                                family = analysis.analysis.database
+                                             ->family_table_get_by_name(
+                                                 *family_name);
 
                                 if (family.id == 0) {
                                     family.name = *family_name;
@@ -173,10 +174,10 @@ namespace engine::bridge::endpoints::analysis
                                         family_obj
                                             ->get<std::string>("description")
                                             .value_or("");
-                                    analysis.analysis.family_table_insert(
-                                        family);
-                                    family = analysis.analysis
-                                                 .family_table_get_by_name(
+                                    analysis.analysis.database
+                                        ->family_table_insert(family);
+                                    family = analysis.analysis.database
+                                                 ->family_table_get_by_name(
                                                      *family_name);
                                 }
                                 anal.family_id = family.id;
@@ -207,39 +208,40 @@ namespace engine::bridge::endpoints::analysis
                                 continue;
                             }
 
-                            focades::analysis::record::Tag tag;
-                            tag = analysis.analysis.tag_table_get_by_name(
-                                *tag_name);
+                            focades::analysis::database::record::Tag tag;
+                            tag = analysis.analysis.database
+                                      ->tag_table_get_by_name(*tag_name);
                             if (tag.id == 0) {
                                 tag.name = *tag_name;
                                 tag.description =
                                     tag_json.get<std::string>("description")
                                         .value_or("");
-                                analysis.analysis.tag_table_insert(tag);
-                                tag = analysis.analysis.tag_table_get_by_name(
-                                    *tag_name);
+                                analysis.analysis.database->tag_table_insert(
+                                    tag);
+                                tag = analysis.analysis.database
+                                          ->tag_table_get_by_name(*tag_name);
                             }
 
                             auto existing_tags =
-                                analysis.analysis
-                                    .analysis_tag_get_tags_by_analysis_id(
+                                analysis.analysis.database
+                                    ->analysis_tag_get_tags_by_analysis_id(
                                         anal.id);
                             if (std::none_of(existing_tags.begin(),
                                              existing_tags.end(),
                                              [&tag](const auto &t) {
                                                  return t.id == tag.id;
                                              })) {
-                                focades::analysis::record::AnalysisTag
+                                focades::analysis::database::record::AnalysisTag
                                     analysis_tag;
                                 analysis_tag.analysis_id = anal.id;
                                 analysis_tag.tag_id = tag.id;
-                                analysis.analysis.analysis_tag_table_insert(
-                                    analysis_tag);
+                                analysis.analysis.database
+                                    ->analysis_tag_table_insert(analysis_tag);
                             }
                         }
                     }
 
-                    analysis.analysis.analysis_table_update(anal);
+                    analysis.analysis.database->analysis_table_update(anal);
 
                     const auto accept =
                         server::gateway::responses::Accepted().add_field(
@@ -267,7 +269,7 @@ namespace engine::bridge::endpoints::analysis
                     }
 
                     parser::json::Json body;
-                    body.from_string(req.body);
+                    body.from_string(crow::utility::trim(req.body));
 
                     const auto &sha256 = body.get<std::string>("sha256");
                     if (sha256 == std::nullopt || sha256->empty()) {
@@ -280,11 +282,11 @@ namespace engine::bridge::endpoints::analysis
                                               bad_requests.tojson().tostring()};
                     }
 
-                    focades::analysis::record::Analysis anal;
+                    focades::analysis::database::record::Analysis anal;
                     parser::json::Json record_anal;
 
-                    anal = analysis.analysis.analysis_table_get_by_sha256(
-                        sha256.value());
+                    anal = analysis.analysis.database
+                               ->analysis_table_get_by_sha256(sha256.value());
                     if (anal.sha256.empty()) {
                         const auto not_found =
                             server::gateway::responses::NotFound().add_field(
@@ -320,8 +322,9 @@ namespace engine::bridge::endpoints::analysis
 
                     parser::json::Json family_json;
                     if (anal.family_id != 0) {
-                        auto family = analysis.analysis.family_table_get_by_id(
-                            anal.family_id);
+                        auto family =
+                            analysis.analysis.database->family_table_get_by_id(
+                                anal.family_id);
                         if (family.id != 0) {
                             family_json.add("id", family.id);
                             family_json.add("name", family.name);
@@ -332,8 +335,8 @@ namespace engine::bridge::endpoints::analysis
 
                     parser::json::Json tags_json;
                     auto tags =
-                        analysis.analysis.analysis_tag_get_tags_by_analysis_id(
-                            anal.id);
+                        analysis.analysis.database
+                            ->analysis_tag_get_tags_by_analysis_id(anal.id);
                     for (const auto &tag : tags) {
                         parser::json::Json tag_json;
                         tag_json.add("id", tag.id);

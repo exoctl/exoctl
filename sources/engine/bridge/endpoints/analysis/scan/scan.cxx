@@ -34,14 +34,14 @@ namespace engine::bridge::endpoints::analysis
                         file.content.assign(std::move(req.body));
                         file.owner.assign(req.remote_ip_address);
 
-                        focades::analysis::record::Analysis anal;
+                        focades::analysis::database::record::Analysis anal;
                         TRY_BEGIN()
-                        anal = analysis.analysis.scan(file);
+                        anal = analysis.analysis.analyze(file);
                         analysis.analysis.file_write({anal.sha256, file.content});
-                        if (analysis.analysis.analysis_table_exists_by_sha256(anal)) {
-                            analysis.analysis.analysis_table_update(anal);
+                        if (analysis.analysis.database->analysis_table_exists_by_sha256(anal)) {
+                            analysis.analysis.database->analysis_table_update(anal);
                         } else {
-                            analysis.analysis.analysis_table_insert(anal);
+                            analysis.analysis.database->analysis_table_insert(anal);
                         }
                         TRY_END()
                         CATCH(focades::analysis::exception::Scan,
@@ -100,11 +100,11 @@ namespace engine::bridge::endpoints::analysis
                                               bad_requests.tojson().tostring()};
                     }
 
-                    focades::analysis::record::Analysis new_anal;
-                    focades::analysis::record::Analysis anal;
+                    focades::analysis::database::record::Analysis new_anal;
+                    focades::analysis::database::record::Analysis anal;
 
                     TRY_BEGIN()
-                    anal = analysis.analysis.analysis_table_get_by_sha256(sha256.value());
+                    anal = analysis.analysis.database->analysis_table_get_by_sha256(sha256.value());
                     if (anal.sha256.empty() ||
                         !filesystem::Filesystem::is_exists({sha256.value()})) {
                         const auto not_found =
@@ -121,17 +121,18 @@ namespace engine::bridge::endpoints::analysis
                     file.filename = anal.sha256;
                     analysis.analysis.file_read(file);
 
-                    new_anal = analysis.analysis.scan(file);
+                    new_anal = analysis.analysis.analyze(file);
                     new_anal.id = anal.id;
                     new_anal.file_name = anal.file_name;
                     new_anal.family_id = (new_anal.family_id) != 0
                                              ? new_anal.family_id
                                              : anal.family_id;
                     new_anal.description = anal.description;
+                    new_anal.owner = anal.owner;
 
-                    (analysis.analysis.analysis_table_exists_by_sha256(new_anal))
-                        ? analysis.analysis.analysis_table_update(new_anal)
-                        : analysis.analysis.analysis_table_insert(new_anal);
+                    (analysis.analysis.database->analysis_table_exists_by_sha256(new_anal))
+                        ? analysis.analysis.database->analysis_table_update(new_anal)
+                        : analysis.analysis.database->analysis_table_insert(new_anal);
 
                     TRY_END()
                     CATCH(focades::analysis::exception::Scan,
