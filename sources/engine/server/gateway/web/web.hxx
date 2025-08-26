@@ -24,8 +24,8 @@ namespace engine::server::gateway::web
         void setup(Server *, const std::string &, on_request_callback);
 
       private:
-        Server *m_server;
-        crow::DynamicRule *m_route;
+        Server *server_;
+        crow::DynamicRule *route_;
         void active_all_methods();
     };
 } // namespace engine::server::gateway::web

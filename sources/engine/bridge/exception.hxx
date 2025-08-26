@@ -11,7 +11,7 @@ namespace engine
             class Abort : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Abort(const std::string &);
@@ -21,7 +21,7 @@ namespace engine
             class ParcialAbort : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit ParcialAbort(const std::string &);

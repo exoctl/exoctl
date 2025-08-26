@@ -20,6 +20,6 @@ namespace engine::focades::analysis::binary::art
       private:
         ::engine::parser::binary::LIEF<const LIEF::ART::File,
                                        const LIEF::ART::Parser>
-            m_art;
+            art_;
     };
 } // namespace engine::focades::analysis::binary::art

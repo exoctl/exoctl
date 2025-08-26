@@ -65,7 +65,7 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, Json>) {
                 if (v.IsObject()) {
                     Json jsonObj;
-                    jsonObj.document.CopyFrom(v, jsonObj.m_allocator, true);
+                    jsonObj.document.CopyFrom(v, jsonObj.allocator_, true);
                     return jsonObj;
                 }
             } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
@@ -76,7 +76,7 @@ namespace engine::parser::json
                     for (const auto &item : v.GetArray()) {
                         Json jsonObj;
                         jsonObj.document.CopyFrom(
-                            item, jsonObj.m_allocator, true);
+                            item, jsonObj.allocator_, true);
                         jsonArray.push_back(std::move(jsonObj));
                     }
                     return jsonArray;
@@ -92,9 +92,9 @@ namespace engine::parser::json
             rapidjson::Value v;
 
             if constexpr (std::is_same_v<T, std::string>) {
-                v.SetString(p_value.c_str(), m_allocator);
+                v.SetString(p_value.c_str(), allocator_);
             } else if constexpr (std::is_same_v<T, const char *>) {
-                v.SetString(p_value, m_allocator);
+                v.SetString(p_value, allocator_);
             } else if constexpr (std::is_same_v<T, int>) {
                 v.SetInt(p_value);
             } else if constexpr (std::is_same_v<T, uint16_t>) {
@@ -110,7 +110,7 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, bool>) {
                 v.SetBool(p_value);
             } else if constexpr (std::is_same_v<T, Json>) {
-                v.CopyFrom(p_value.document, m_allocator);
+                v.CopyFrom(p_value.document, allocator_);
             } else {
                 throw exception::Add("Unsupported type");
             }
@@ -119,7 +119,7 @@ namespace engine::parser::json
                 document.SetArray();
             }
 
-            document.PushBack(v, m_allocator);
+            document.PushBack(v, allocator_);
 
             return *this;
         }
@@ -131,13 +131,13 @@ namespace engine::parser::json
                 document.SetObject();
             }
 
-            rapidjson::Value k(p_key.c_str(), m_allocator);
+            rapidjson::Value k(p_key.c_str(), allocator_);
             rapidjson::Value v;
 
             if constexpr (std::is_same_v<T, std::string>) {
-                v.SetString(p_value.c_str(), m_allocator);
+                v.SetString(p_value.c_str(), allocator_);
             } else if constexpr (std::is_same_v<T, const char *>) {
-                v.SetString(p_value, m_allocator);
+                v.SetString(p_value, allocator_);
             } else if constexpr (std::is_same_v<T, int>) {
                 v.SetInt(p_value);
             } else if constexpr (std::is_same_v<T, uint16_t>) {
@@ -153,21 +153,21 @@ namespace engine::parser::json
             } else if constexpr (std::is_same_v<T, bool>) {
                 v.SetBool(p_value);
             } else if constexpr (std::is_same_v<T, Json>) {
-                v.CopyFrom(p_value.document, m_allocator);
+                v.CopyFrom(p_value.document, allocator_);
             } else if constexpr (std::is_same_v<T, std::vector<Json>>) {
                 rapidjson::Value array(rapidjson::kArrayType);
                 for (const auto &value : p_value) {
                     rapidjson::Value item;
-                    item.CopyFrom(value.document, m_allocator);
-                    array.PushBack(item, m_allocator);
+                    item.CopyFrom(value.document, allocator_);
+                    array.PushBack(item, allocator_);
                 }
-                document.AddMember(k, array, m_allocator);
+                document.AddMember(k, array, allocator_);
                 return *this;
             } else {
                 throw exception::Add("Unsupported type");
             }
 
-            document.AddMember(k, v, m_allocator);
+            document.AddMember(k, v, allocator_);
 
             return *this;
         }
@@ -178,6 +178,6 @@ namespace engine::parser::json
         rapidjson::Document document;
 
       private:
-        rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> m_allocator;
+        rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator> allocator_;
     };
 } // namespace engine::parser::json

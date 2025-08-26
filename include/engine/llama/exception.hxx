@@ -10,7 +10,7 @@ namespace engine
             class GenerateMessage : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit GenerateMessage(const std::string &);

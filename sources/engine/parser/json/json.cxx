@@ -10,7 +10,7 @@ namespace engine::parser::json
 
     Json::Json(const parser::json::Json &other)
     {
-        document.CopyFrom(other.document, m_allocator);
+        document.CopyFrom(other.document, allocator_);
     }
 
     void Json::clear()

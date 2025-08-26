@@ -35,10 +35,10 @@ namespace engine
         server.setup(configuration, logging);
         plugins.setup(configuration, logging);
         bridge.setup(server);
-        m_clamav_log.setup(configuration, logging);
-        m_llama_log.setup(configuration, logging);
-        m_lief_log.setup(configuration, logging);
-        m_server_log.setup(configuration, logging);
+        clamav_log_.setup(configuration, logging);
+        llama_log_.setup(configuration, logging);
+        lief_log_.setup(configuration, logging);
+        server_log_.setup(configuration, logging);
 
         _plugins();
     }

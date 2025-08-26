@@ -9,7 +9,7 @@ namespace engine::focades::analysis::binary::art
         const std::string &p_buffer,
         const std::function<void(binary::art::record::DTO *)> &p_callback)
     {
-        m_art.parse_bytes(p_buffer,
+        art_.parse_bytes(p_buffer,
                           [&](std::unique_ptr<const LIEF::ART::File> p_art) {
                               if (p_art) {
                                   struct binary::art::record::DTO *dto =

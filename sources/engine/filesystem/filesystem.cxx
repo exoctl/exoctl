@@ -5,21 +5,21 @@
 
 namespace engine::filesystem
 {
-    std::mutex Filesystem::m_fs_queue_mutex;
-    std::queue<record::EnqueueTask> Filesystem::m_fs_queue;
-    std::condition_variable Filesystem::m_fs_queue_cv;
+    std::mutex Filesystem::fs_queue_mutex_;
+    std::queue<record::EnqueueTask> Filesystem::fs_queue_;
+    std::condition_variable Filesystem::fs_queue_cv_;
     std::atomic<bool> Filesystem::is_running = true;
-    std::atomic<int> Filesystem::m_id_counter = 0;
+    std::atomic<int> Filesystem::id_counter_ = 0;
     std::string Filesystem::path;
     bool Filesystem::readonly;
 
     Filesystem::~Filesystem()
     {
-        m_fs_queue_cv.notify_all();
+        fs_queue_cv_.notify_all();
         is_running = false;
 
-        if (m_worker_thread.joinable()) {
-            m_worker_thread.join();
+        if (worker_thread_.joinable()) {
+            worker_thread_.join();
         }
     }
 
@@ -37,11 +37,11 @@ namespace engine::filesystem
     void Filesystem::setup(const configuration::Configuration &p_config,
                            const logging::Logging &p_log)
     {
-        m_config = p_config;
-        m_log = p_log;
+        config_ = p_config;
+        log_ = p_log;
 
-        path = m_config.get("filesystem.path").value<std::string>().value();
-        readonly = m_config.get("filesystem.readonly").value<bool>().value();
+        path = config_.get("filesystem.path").value<std::string>().value();
+        readonly = config_.get("filesystem.readonly").value<bool>().value();
 
         Filesystem::create_directories(path, false);
     }
@@ -57,7 +57,7 @@ namespace engine::filesystem
 
     void Filesystem::load()
     {
-        m_worker_thread = std::thread(&Filesystem::worker, this);
+        worker_thread_ = std::thread(&Filesystem::worker, this);
     }
 
     void Filesystem::enqueue_write(record::EnqueueTask &p_task)
@@ -65,27 +65,27 @@ namespace engine::filesystem
         if (!is_running)
             return;
 
-        p_task.id = ++m_id_counter;
+        p_task.id = ++id_counter_;
 
         {
-            std::lock_guard<std::mutex> lock(m_fs_queue_mutex);
-            m_fs_queue.push(p_task);
+            std::lock_guard<std::mutex> lock(fs_queue_mutex_);
+            fs_queue_.push(p_task);
         }
 
-        m_fs_queue_cv.notify_one();
+        fs_queue_cv_.notify_one();
     }
 
     void Filesystem::worker()
     {
-        m_log.info("Filesystem Worker thread started running.");
+        log_.info("Filesystem Worker thread started running.");
         while (is_running) {
-            std::unique_lock<std::mutex> lock(m_fs_queue_mutex);
-            m_fs_queue_cv.wait(
-                lock, [] { return !m_fs_queue.empty() || !is_running; });
+            std::unique_lock<std::mutex> lock(fs_queue_mutex_);
+            fs_queue_cv_.wait(
+                lock, [] { return !fs_queue_.empty() || !is_running; });
 
-            while (!m_fs_queue.empty()) {
-                record::EnqueueTask task = m_fs_queue.front();
-                m_fs_queue.pop();
+            while (!fs_queue_.empty()) {
+                record::EnqueueTask task = fs_queue_.front();
+                fs_queue_.pop();
                 lock.unlock();
 
                 Filesystem::write(task.file, task.relative);

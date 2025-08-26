@@ -2,46 +2,46 @@
 
 namespace engine::database
 {
-    std::unique_ptr<soci::session> Database::m_session;
+    std::unique_ptr<soci::session> Database::session_;
     std::string Database::type;
-    std::string Database::m_connection_str;
+    std::string Database::connection_str_;
 
     void Database::setup(const configuration::Configuration &config,
                          const logging::Logging &log)
     {
-        m_config = config;
-        m_log = log;
+        config_ = config;
+        log_ = log;
 
-        type = m_config.get("database.type")
+        type = config_.get("database.type")
                    .value<std::string>()
                    .value_or("sqlite");
 
         if (type == "sqlite") {
             std::string path =
-                m_config.get("database.path").value<std::string>().value();
+                config_.get("database.path").value<std::string>().value();
             std::string file =
-                m_config.get("database.file").value<std::string>().value();
-            m_connection_str = path + file;
-            m_session = std::make_unique<soci::session>(soci::sqlite3,
-                                                        m_connection_str);
+                config_.get("database.file").value<std::string>().value();
+            connection_str_ = path + file;
+            session_ = std::make_unique<soci::session>(soci::sqlite3,
+                                                        connection_str_);
         } else if (type == "postgresql") {
-            m_connection_str = m_config.get("database.connection")
+            connection_str_ = config_.get("database.connection")
                                    .value<std::string>()
                                    .value();
-            m_session = std::make_unique<soci::session>(soci::postgresql,
-                                                        m_connection_str);
+            session_ = std::make_unique<soci::session>(soci::postgresql,
+                                                        connection_str_);
         } else if (type == "mysql") {
-            m_connection_str = m_config.get("database.connection")
+            connection_str_ = config_.get("database.connection")
                                    .value<std::string>()
                                    .value();
-            m_session =
-                std::make_unique<soci::session>(soci::mysql, m_connection_str);
+            session_ =
+                std::make_unique<soci::session>(soci::mysql, connection_str_);
         } else {
             throw exception::Initialize(
                 fmt::format("Unsupported DB type '{}'", type));
         }
 
-        m_log.info(fmt::format("Connected to {} database successfully", type));
+        log_.info(fmt::format("Connected to {} database successfully", type));
     }
 
     void Database::load()
@@ -53,16 +53,16 @@ namespace engine::database
     void Database::load_schema()
     {
         std::string schema_path =
-            m_config.get("database.ddl.path").value<std::string>().value() +
-            m_config.get("database.ddl.schema").value<std::string>().value();
+            config_.get("database.ddl.path").value<std::string>().value() +
+            config_.get("database.ddl.schema").value<std::string>().value();
         load_sql_directory<exception::Schema>(schema_path);
     }
 
     void Database::load_migrations()
     {
         std::string migrations_path =
-            m_config.get("database.ddl.path").value<std::string>().value() +
-            m_config.get("database.ddl.migrations")
+            config_.get("database.ddl.path").value<std::string>().value() +
+            config_.get("database.ddl.migrations")
                 .value<std::string>()
                 .value();
         load_sql_directory<exception::Migrations>(migrations_path);
@@ -74,7 +74,7 @@ namespace engine::database
 
         if (type == "sqlite") {
             int count = 0;
-            (*m_session)
+            (*session_)
                 << "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND "
                    "name=:name",
                 soci::use(p_table), soci::into(count);
@@ -82,12 +82,12 @@ namespace engine::database
         } else if (type == "postgresql") {
             std::string result;
             std::string tblname = "public." + p_table;
-            (*m_session) << "SELECT to_regclass(:tblname)",
+            (*session_) << "SELECT to_regclass(:tblname)",
                 soci::use(tblname, "tblname"), soci::into(result);
             exists = !result.empty();
         } else if (type == "mysql") {
             int count = 0;
-            (*m_session)
+            (*session_)
                 << "SELECT COUNT(*) FROM information_schema.tables "
                    "WHERE table_schema = DATABASE() AND table_name = :name",
                 soci::use(p_table), soci::into(count);
@@ -101,15 +101,15 @@ namespace engine::database
 
     Soci &Database::exec()
     {
-        return *m_session;
+        return *session_;
     }
 
     void Database::close()
     {
-        if (m_session) {
-            m_session->close();
-            m_session.reset();
-            m_log.info("Database connection closed.");
+        if (session_) {
+            session_->close();
+            session_.reset();
+            log_.info("Database connection closed.");
         }
     }
 } // namespace engine::database

@@ -7,7 +7,7 @@ namespace engine::memory::exception
     class Protect : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Protect(const std::string &);
@@ -17,7 +17,7 @@ namespace engine::memory::exception
     class Fd : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Fd(const std::string &);
@@ -27,7 +27,7 @@ namespace engine::memory::exception
     class Ftruncate : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Ftruncate(const std::string &);
@@ -37,7 +37,7 @@ namespace engine::memory::exception
     class Write : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Write(const std::string &);

@@ -20,7 +20,7 @@ namespace engine::magic
         const char *mime(const std::string &buffer);
 
       private:
-        magic_t m_cookie;
-        std::mutex m_mutex;
+        magic_t cookie_;
+        std::mutex mutex_;
     };
 } // namespace engine::magic

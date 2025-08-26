@@ -20,6 +20,6 @@ namespace engine::focades::analysis::binary::dex
       private:
         ::engine::parser::binary::LIEF<const LIEF::DEX::File,
                                        const LIEF::DEX::Parser>
-            m_dex;
+            dex_;
     };
 } // namespace engine::focades::analysis::binary::dex

@@ -9,7 +9,7 @@ namespace engine::interface
     {
       public:
         explicit IResponse(const std::string &p_status = "", int p_code = -1)
-            : m_code(p_code), m_status(p_status)
+            : code_(p_code), status_(p_status)
         {
         }
 
@@ -18,13 +18,13 @@ namespace engine::interface
         template <typename T>
         inline Derived &add_field(const std::string &key, const T &value)
         {
-            m_json.add(key, value);
+            json_.add(key, value);
             return *static_cast<Derived *>(this);
         }
 
         inline const parser::json::Json tojson() const
         {
-            parser::json::Json json_data = m_json;
+            parser::json::Json json_data = json_;
 
             json_data.add("code", code());
             json_data.add("status", status());
@@ -34,21 +34,21 @@ namespace engine::interface
 
         inline const int code() const
         {
-            return (m_code == -1) ? static_cast<const Derived *>(this)->_code()
-                                  : m_code;
+            return (code_ == -1) ? static_cast<const Derived *>(this)->_code()
+                                  : code_;
         }
 
         inline const std::string status() const
         {
-            return m_status.empty()
+            return status_.empty()
                        ? static_cast<const Derived *>(this)->_status()
-                       : m_status;
+                       : status_;
         }
 
       protected:
-        int m_code;
-        std::string m_status;
-        parser::json::Json m_json;
+        int code_;
+        std::string status_;
+        parser::json::Json json_;
 
       private:
         virtual const int _code() const = 0;

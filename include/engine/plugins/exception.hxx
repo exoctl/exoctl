@@ -11,7 +11,7 @@ namespace engine
             class LoadPlugin : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit LoadPlugin(const std::string &);
@@ -21,7 +21,7 @@ namespace engine
             class LoadLibraries : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit LoadLibraries(const std::string &);
@@ -31,7 +31,7 @@ namespace engine
             class Runtime : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Runtime(const std::string &);

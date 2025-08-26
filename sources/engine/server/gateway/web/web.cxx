@@ -6,20 +6,20 @@ namespace engine::server::gateway::web
                     const std::string &p_url,
                     on_request_callback on_request)
     {
-        m_server = &*p_server;
+        server_ = &*p_server;
 
-        m_server->log->info("Creating HTTP route for URL: '{}'", p_url);
+        server_->log->info("Creating HTTP route for URL: '{}'", p_url);
 
-        m_route = &m_server->route_dynamic(p_url);
+        route_ = &server_->route_dynamic(p_url);
         Web::active_all_methods();
-        (*m_route)(on_request);
-        m_route->validate();
+        (*route_)(on_request);
+        route_->validate();
     }
 
     void Web::active_all_methods()
     {
         // accept all methods
-        m_route->methods(crow::HTTPMethod::Delete,
+        route_->methods(crow::HTTPMethod::Delete,
                          crow::HTTPMethod::Get,
                          crow::HTTPMethod::Head,
                          crow::HTTPMethod::Post,

@@ -12,9 +12,9 @@ namespace engine::focades::analysis::threats::yara
 
     void Yara::setup(configuration::Configuration &p_config)
     {
-        m_config = &p_config;
+        config_ = &p_config;
 
-        rules_path.assign(m_config->get("focades.analysis.yara.rules.path")
+        rules_path.assign(config_->get("focades.analysis.yara.rules.path")
                               .value<std::string>()
                               .value());
     }

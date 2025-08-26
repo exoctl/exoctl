@@ -22,6 +22,6 @@ namespace engine::focades::analysis::threats::av::clamav
         security::av::clamav::Clamav clamav;
 
       private:
-        configuration::Configuration *m_config;
+        configuration::Configuration *config_;
     };
 } // namespace engine::focades::analysis::threats::av::clamav

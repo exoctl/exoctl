@@ -13,7 +13,7 @@
 namespace engine::bridge::endpoints::analysis
 {
     Analysis::Analysis()
-        : min_binary_size(0), m_map(BASE_ANALYSIS), m_enable(true)
+        : min_binary_size(0), map_(BASE_ANALYSIS), enable_(true)
     {
     }
 
@@ -30,20 +30,20 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::setup(server::Server &p_server)
     {
-        m_server = &p_server;
-        m_enable = m_server->config->get("bridge.endpoint.analysis.enable")
+        server_ = &p_server;
+        enable_ = server_->config->get("bridge.endpoint.analysis.enable")
                        .value<bool>()
                        .value();
 
-        if (!m_enable) {
-            m_server->log->warn("Gateway 'Analysis' not enabled");
+        if (!enable_) {
+            server_->log->warn("Gateway 'Analysis' not enabled");
             return;
         }
 
-        analysis.setup(*m_server->config, *m_server->log);
+        analysis.setup(*server_->config, *server_->log);
 
         min_binary_size =
-            m_server->config
+            server_->config
                 ->get("bridge.endpoint.analysis.scan.min_binary_size")
                 .value<size_t>()
                 .value();
@@ -57,21 +57,21 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::load() const
     {
-        if (!m_enable) {
+        if (!enable_) {
             return;
         }
 
         analysis.load();
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
+        map_.get_routes(
+            [&](const std::string p_route) { map_.call_route(p_route); });
     }
 
     void Analysis::rescan()
     {
-        m_map.add_route("/rescan", [&]() {
-            m_web_scan = std::make_unique<server::gateway::web::Web>();
-            m_web_scan->setup(
-                &*m_server,
+        map_.add_route("/rescan", [&]() {
+            web_scan_ = std::make_unique<server::gateway::web::Web>();
+            web_scan_->setup(
+                &*server_,
                 BASE_ANALYSIS "/rescan",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
@@ -151,10 +151,10 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::scan()
     {
-        m_map.add_route("/scan", [&]() {
-            m_web_scan = std::make_unique<server::gateway::web::Web>();
-            m_web_scan->setup(
-                &*m_server,
+        map_.add_route("/scan", [&]() {
+            web_scan_ = std::make_unique<server::gateway::web::Web>();
+            web_scan_->setup(
+                &*server_,
                 BASE_ANALYSIS "/scan",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
@@ -213,10 +213,10 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::records()
     {
-        m_map.add_route("/records", [&]() {
-            m_web_records = std::make_unique<server::gateway::web::Web>();
-            m_web_records->setup(
-                &*m_server,
+        map_.add_route("/records", [&]() {
+            web_records_ = std::make_unique<server::gateway::web::Web>();
+            web_records_->setup(
+                &*server_,
                 BASE_ANALYSIS "/records",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::GET) {
@@ -295,10 +295,10 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::scan_threats()
     {
-        m_map.add_route("/scan/threats", [&]() {
-            m_web_scan_threats = std::make_unique<server::gateway::web::Web>();
-            m_web_scan_threats->setup(
-                &*m_server,
+        map_.add_route("/scan/threats", [&]() {
+            web_scan_threats_ = std::make_unique<server::gateway::web::Web>();
+            web_scan_threats_->setup(
+                &*server_,
                 BASE_ANALYSIS "/scan/threats",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
@@ -371,10 +371,10 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::update()
     {
-        m_map.add_route("/record/update", [&]() {
-            m_web_update = std::make_unique<server::gateway::web::Web>();
-            m_web_update->setup(
-                &*m_server,
+        map_.add_route("/record/update", [&]() {
+            web_update_ = std::make_unique<server::gateway::web::Web>();
+            web_update_->setup(
+                &*server_,
                 BASE_ANALYSIS "/record/update",
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::POST) {
@@ -459,7 +459,7 @@ namespace engine::bridge::endpoints::analysis
                                 }
                                 anal.family_id = family.id;
                             } else {
-                                m_server->log->warn("Skipping family with "
+                                server_->log->warn("Skipping family with "
                                                     "missing or empty 'name'");
                             }
                         }
@@ -470,14 +470,14 @@ namespace engine::bridge::endpoints::analysis
                             body.get<std::vector<parser::json::Json>>("tags")) {
                         for (const auto &tag_json : *tags_array) {
                             if (!tag_json.document.IsObject()) {
-                                m_server->log->warn("Skipping tag: expected an "
+                                server_->log->warn("Skipping tag: expected an "
                                                     "object, got a non-object");
                                 continue;
                             }
 
                             auto tag_name = tag_json.get<std::string>("name");
                             if (!tag_name.has_value() || tag_name->empty()) {
-                                m_server->log->warn("Skipping tag with missing "
+                                server_->log->warn("Skipping tag with missing "
                                                     "or empty 'name' field");
                                 continue;
                             }

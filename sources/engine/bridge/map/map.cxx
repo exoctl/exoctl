@@ -6,35 +6,35 @@ namespace engine
     {
         namespace map
         {
-            Map::Map(const std::string &p_base) : m_base(p_base)
+            Map::Map(const std::string &p_base) : base_(p_base)
             {
             }
 
             void Map::add_route(const std::string &p_route,
                                 const std::function<void()> &&p_handle)
             {
-                const std::string full_route = m_base + p_route;
-                m_routes[full_route] = p_handle;
+                const std::string full_route = base_ + p_route;
+                routes_[full_route] = p_handle;
             }
 
             void Map::get_routes(
                 const std::function<void(const std::string)> &p_handle)
             {
-                for (const auto &entry : m_routes) {
+                for (const auto &entry : routes_) {
                     p_handle(entry.first);
                 }
             }
 
             void Map::call_route(const std::string &p_route)
             {
-                auto it = m_routes.find(p_route);
-                if (it != m_routes.end())
+                auto it = routes_.find(p_route);
+                if (it != routes_.end())
                     it->second();
             }
 
             const std::string Map::get_base() const
             {
-                return m_base;
+                return base_;
             }
         } // namespace map
     } // namespace bridge

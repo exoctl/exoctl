@@ -12,8 +12,8 @@ namespace engine::security::av::clamav
     class Clamav
     {
       private:
-        struct cl_engine *m_engine;
-        mutable std::mutex m_mutex;
+        struct cl_engine *engine_;
+        mutable std::mutex mutex_;
 
       public:
         Clamav();

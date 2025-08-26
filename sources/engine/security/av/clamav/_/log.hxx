@@ -16,7 +16,7 @@ namespace engine::security::av::clamav::_
         void setup(configuration::Configuration &, logging::Logging &);
 
       private:
-        static configuration::Configuration m_config;
-        static logging::Logging m_log;
+        static configuration::Configuration config_;
+        static logging::Logging log_;
     };
 } // namespace engine::security::av::clamav::_

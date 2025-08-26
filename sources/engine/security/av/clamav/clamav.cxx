@@ -10,17 +10,17 @@
 
 namespace engine::security::av::clamav
 {
-    Clamav::Clamav() : m_engine(nullptr), rules_loaded_count(0)
+    Clamav::Clamav() : engine_(nullptr), rules_loaded_count(0)
     {
-        const std::scoped_lock lock(m_mutex);
+        const std::scoped_lock lock(mutex_);
 
         if (cl_init(CL_INIT_DEFAULT) != CL_SUCCESS) {
             throw clamav::exception::Initialize(
                 "cl_init() : failed to initialize clamav.");
         }
 
-        m_engine = cl_engine_new();
-        if (IS_NULL(m_engine)) {
+        engine_ = cl_engine_new();
+        if (IS_NULL(engine_)) {
             throw clamav::exception::Initialize(
                 "cl_engine_new() : failed to new engine clamav.");
         }
@@ -29,10 +29,10 @@ namespace engine::security::av::clamav
     void Clamav::set_db_rule_fd(const std::string &p_path,
                                 unsigned int p_dboptions) const
     {
-        const std::scoped_lock lock(m_mutex);
+        const std::scoped_lock lock(mutex_);
 
         const cl_error_t ret =
-            cl_load(p_path.c_str(), m_engine, &rules_loaded_count, p_dboptions);
+            cl_load(p_path.c_str(), engine_, &rules_loaded_count, p_dboptions);
         if (ret != CL_SUCCESS) {
             throw clamav::exception::SetDbRules("cl_load() failed load db " +
                                                 std::string(cl_strerror(ret)));
@@ -68,9 +68,9 @@ namespace engine::security::av::clamav
 
         cl_error_t ret;
         {
-            std::scoped_lock lock(m_mutex);
+            std::scoped_lock lock(mutex_);
             ret = cl_scandesc(
-                fd, "tmp_", &data->virname, nullptr, m_engine, &p_options);
+                fd, "tmp_", &data->virname, nullptr, engine_, &p_options);
         }
 
         data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
@@ -94,8 +94,8 @@ namespace engine::security::av::clamav
 
     void Clamav::load_rules()
     {
-        const std::scoped_lock lock(m_mutex);
-        const cl_error_t ret = cl_engine_compile(m_engine);
+        const std::scoped_lock lock(mutex_);
+        const cl_error_t ret = cl_engine_compile(engine_);
         if (ret != CL_SUCCESS) {
             throw clamav::exception::LoadRules(
                 "cl_engine_compile() : failed to compile clamav "
@@ -106,10 +106,10 @@ namespace engine::security::av::clamav
 
     Clamav::~Clamav()
     {
-        const std::scoped_lock lock(m_mutex);
-        if (m_engine) {
-            cl_engine_free(m_engine);
-            m_engine = nullptr;
+        const std::scoped_lock lock(mutex_);
+        if (engine_) {
+            cl_engine_free(engine_);
+            engine_ = nullptr;
         }
     }
 

@@ -29,8 +29,8 @@ namespace engine
                 const std::string &path) const;
 
           private:
-            std::string m_path;
-            toml::table m_toml;
+            std::string path_;
+            toml::table toml_;
         };
     } // namespace configuration
 } // namespace engine

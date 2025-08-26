@@ -20,8 +20,8 @@ namespace engine
                 void log(const std::string &, crow::LogLevel) override;
 
               private:
-                configuration::Configuration m_config;
-                logging::Logging m_log;
+                configuration::Configuration config_;
+                logging::Logging log_;
 
               protected:
                 void active_level(crow::LogLevel);

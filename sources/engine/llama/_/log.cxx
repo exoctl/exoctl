@@ -6,12 +6,12 @@ namespace engine::llama::_
                     logging::Logging &p_log)
 
     {
-        m_config = p_config;
-        m_log = p_log;
+        config_ = p_config;
+        log_ = p_log;
 
-        m_log.create_logger(
-            m_config.get("logging.type").value<std::string>().value(),
-            m_config.get("llama._.log.name").value<std::string>().value());
+        log_.create_logger(
+            config_.get("logging.type").value<std::string>().value(),
+            config_.get("llama._.log.name").value<std::string>().value());
 
         llama_log_set(&Log::log, this);
     }
@@ -22,7 +22,7 @@ namespace engine::llama::_
     {
         auto *logger_instance = reinterpret_cast<Log *>(p_user_data);
         if (logger_instance &&
-            p_level >= logger_instance->m_config.get("llama._.log.level")
+            p_level >= logger_instance->config_.get("llama._.log.level")
                            .value<int64_t>()
                            .value()) {
             switch (p_level) {
@@ -31,33 +31,33 @@ namespace engine::llama::_
                     break;
 
                 case GGML_LOG_LEVEL_DEBUG:
-                    logger_instance->m_log
+                    logger_instance->log_
                         .get_logger(
-                            logger_instance->m_config.get("llama._.log.name")
+                            logger_instance->config_.get("llama._.log.name")
                                 .value<std::string>()
                                 .value())
                         ->debug("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_INFO:
-                    logger_instance->m_log
+                    logger_instance->log_
                         .get_logger(
-                            logger_instance->m_config.get("llama._.log.name")
+                            logger_instance->config_.get("llama._.log.name")
                                 .value<std::string>()
                                 .value())
                         ->info("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_WARN:
-                    logger_instance->m_log
+                    logger_instance->log_
                         .get_logger(
-                            logger_instance->m_config.get("llama._.log.name")
+                            logger_instance->config_.get("llama._.log.name")
                                 .value<std::string>()
                                 .value())
                         ->warn("{}", p_message);
                     break;
                 case GGML_LOG_LEVEL_ERROR:
-                    logger_instance->m_log
+                    logger_instance->log_
                         .get_logger(
-                            logger_instance->m_config.get("llama._.log.name")
+                            logger_instance->config_.get("llama._.log.name")
                                 .value<std::string>()
                                 .value())
                         ->error("{}", p_message);

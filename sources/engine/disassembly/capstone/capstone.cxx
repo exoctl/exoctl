@@ -11,17 +11,17 @@ namespace engine
     {
         void Capstone::setup(const cs_arch p_arch, const cs_mode p_mode)
         {
-            m_arch = p_arch;
-            m_mode = p_mode;
+            arch_ = p_arch;
+            mode_ = p_mode;
 
-            if (cs_open(p_arch, p_mode, &m_handle) != CS_ERR_OK)
+            if (cs_open(p_arch, p_mode, &handle_) != CS_ERR_OK)
                 throw capstone::exception::Initialize(
                     "Failed to initialize Capstone");
         }
 
         Capstone::~Capstone()
         {
-            cs_close(&m_handle);
+            cs_close(&handle_);
         }
 
         void Capstone::disassembly(
@@ -35,7 +35,7 @@ namespace engine
                 capstone::record::Data *data = new capstone::record::Data;
                 data->address = 0;
 
-                const size_t count = cs_disasm(m_handle,
+                const size_t count = cs_disasm(handle_,
                                                p_code,
                                                p_code_size,
                                                data->address,
@@ -55,11 +55,11 @@ namespace engine
 
         const cs_arch Capstone::get_arch()
         {
-            return m_arch;
+            return arch_;
         }
         const cs_mode Capstone::get_mode()
         {
-            return m_mode;
+            return mode_;
         }
 
         const std::string Capstone::arch_to_string(const cs_arch p_arch)

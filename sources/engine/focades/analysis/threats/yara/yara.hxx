@@ -26,6 +26,6 @@ namespace engine::focades::analysis::threats::yara
         std::string rules_path;
 
       private:
-        configuration::Configuration *m_config;
+        configuration::Configuration *config_;
     };
 } // namespace engine::focades::analysis::threats::yara

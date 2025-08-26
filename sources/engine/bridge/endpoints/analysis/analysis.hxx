@@ -32,14 +32,14 @@ namespace engine::bridge::endpoints::analysis
         focades::analysis::Analysis analysis;
 
       private:
-        server::Server *m_server;
-        mutable map::Map m_map;
-        bool m_enable;
+        server::Server *server_;
+        mutable map::Map map_;
+        bool enable_;
 
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan;
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_scan_threats;
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_records;
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_update;
+        std::unique_ptr<engine::server::gateway::web::Web> web_scan_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_scan_threats_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_records_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_update_;
 
 
         void scan();

@@ -72,11 +72,11 @@ namespace engine::focades::analysis
         std::shared_ptr<focades::analysis::binary::art::ART> art;
         std::shared_ptr<focades::analysis::binary::elf::ELF> elf;
 
-        double packed_entropy;
-        int family_tlsh;
+        double packed_entropy_threshold;
+        int family_tlsh_threshold;
 
       private:
-        logging::Logging *m_log;
-        configuration::Configuration *m_config;
+        logging::Logging *log_;
+        configuration::Configuration *config_;
     };
 } // namespace engine::focades::analysis

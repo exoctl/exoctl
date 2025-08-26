@@ -20,6 +20,6 @@ namespace engine::focades::analysis::binary::macho
       private:
         ::engine::parser::binary::LIEF<const LIEF::MachO::FatBinary,
                                        const LIEF::MachO::Parser>
-            m_macho;
+            macho_;
     };
 } // namespace engine::focades::analysis::binary::macho

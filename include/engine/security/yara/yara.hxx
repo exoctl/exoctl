@@ -71,18 +71,18 @@ namespace engine
                                                   const std::string &) const;
 
           private:
-            mutable std::mutex m_compiler_mutex;
-            mutable std::shared_mutex m_rules_mutex;
+            mutable std::mutex compiler_mutex_;
+            mutable std::shared_mutex rules_mutex_;
 
             template <typename Callback>
             void execute_safely(Callback &&cb) const
             {
-                const std::shared_lock<std::shared_mutex> lock(m_rules_mutex);
+                const std::shared_lock<std::shared_mutex> lock(rules_mutex_);
                 cb();
             }
 
-            YR_COMPILER *m_yara_compiler;
-            mutable YR_RULES *m_yara_rules;
+            YR_COMPILER *yara_compiler_;
+            mutable YR_RULES *yara_rules_;
             void compiler_rules() const;
         };
     } // namespace security

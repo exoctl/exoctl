@@ -31,8 +31,8 @@ namespace engine
             static std::shared_ptr<bridge::endpoints::analysis::Analysis> analysis;
 
           private:
-            server::Server *m_server;
-            std::vector<bridge::record::Bridge> m_endpoints;
+            server::Server *server_;
+            std::vector<bridge::record::Bridge> endpoints_;
         };
     } // namespace bridge
 } // namespace engine

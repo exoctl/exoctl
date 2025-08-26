@@ -35,15 +35,15 @@ namespace engine::filesystem
         static std::atomic<bool> is_running;
 
       private:
-        configuration::Configuration m_config;
-        logging::Logging m_log;
+        configuration::Configuration config_;
+        logging::Logging log_;
 
-        static std::mutex m_fs_queue_mutex;
-        static std::queue<record::EnqueueTask> m_fs_queue;
-        static std::condition_variable m_fs_queue_cv;
-        static std::atomic<int> m_id_counter;
+        static std::mutex fs_queue_mutex_;
+        static std::queue<record::EnqueueTask> fs_queue_;
+        static std::condition_variable fs_queue_cv_;
+        static std::atomic<int> id_counter_;
 
-        std::thread m_worker_thread;
+        std::thread worker_thread_;
         void worker();
     };
 } // namespace engine::filesystem

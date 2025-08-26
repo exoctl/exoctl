@@ -5,7 +5,7 @@
 namespace engine::bridge::endpoints
 {
     Plugins::Plugins(server::Server &p_server)
-        : m_server(p_server), m_map(BASE_PLUGINS)
+        : server_(p_server), map_(BASE_PLUGINS)
     {
         Plugins::prepare();
 
@@ -15,22 +15,22 @@ namespace engine::bridge::endpoints
 
     void Plugins::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
+        map_.get_routes(
+            [&](const std::string p_route) { map_.call_route(p_route); });
     }
 
     void Plugins::prepare()
     {
-        m_server.log->info("Preparing gateway plugins routes ...");
+        server_.log->info("Preparing gateway plugins routes ...");
     }
 
     void Plugins::plugins()
     {
-        m_map.add_route(BASE_PLUGINS, [&]() {
-            m_web_plugins =
+        map_.add_route(BASE_PLUGINS, [&]() {
+            web_plugins_ =
                 std::make_unique<engine::server::gateway::web::Web>();
-            m_web_plugins->setup(
-                &m_server,
+            web_plugins_->setup(
+                &server_,
                 BASE_PLUGINS,
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::GET) {
@@ -42,7 +42,7 @@ namespace engine::bridge::endpoints
                             method_not_allowed.tojson().tostring()};
                     }
 
-                    if (!m_server.config->get("plugins.enable")
+                    if (!server_.config->get("plugins.enable")
                              .value<bool>()
                              .value()) {
                         auto service_unavailable =

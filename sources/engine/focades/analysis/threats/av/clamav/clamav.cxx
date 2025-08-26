@@ -10,12 +10,12 @@ namespace engine::focades::analysis::threats::av::clamav
 
     void Clamav::setup(configuration::Configuration &p_config)
     {
-        m_config = &p_config;
+        config_ = &p_config;
     }
 
     void Clamav::load(const std::function<void(unsigned int)> &p_callback)
     {
-        clamav.set_db_rule_fd(m_config
+        clamav.set_db_rule_fd(config_
                                   ->get("focades.analysis.av."
                                         "clamav.database.file")
                                   .value<std::string>()

@@ -7,20 +7,20 @@ namespace engine
         namespace exception
         {
             Load::Load(const std::string &p_message)
-                : m_error_message(p_message)
+                : error_message_(p_message)
             {
             }
             const char *Load::what() const noexcept
             {
-                return m_error_message.c_str();
+                return error_message_.c_str();
             }
 
-            Get::Get(const std::string &p_message) : m_error_message(p_message)
+            Get::Get(const std::string &p_message) : error_message_(p_message)
             {
             }
             const char *Get::what() const noexcept
             {
-                return m_error_message.c_str();
+                return error_message_.c_str();
             }
         } // namespace exception
     } // namespace configuration

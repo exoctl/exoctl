@@ -31,8 +31,8 @@ namespace engine
                 [[nodiscard]] const std::string get_base() const;
 
               private:
-                const std::string m_base;
-                std::map<std::string, std::function<void()>> m_routes;
+                const std::string base_;
+                std::map<std::string, std::function<void()>> routes_;
             };
         } // namespace map
     } // namespace bridge

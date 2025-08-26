@@ -10,7 +10,7 @@ namespace engine
             class Load : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Load(const std::string &);
@@ -20,7 +20,7 @@ namespace engine
             class Get : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Get(const std::string &);

@@ -9,7 +9,7 @@ namespace engine::focades::analysis::binary::elf
         const std::string &p_buffer,
         const std::function<void(binary::elf::record::DTO *)> &p_callback)
     {
-        m_elf.parse_bytes(p_buffer,
+        elf_.parse_bytes(p_buffer,
                           [&](std::unique_ptr<const LIEF::ELF::Binary> p_elf) {
                               if (p_elf) {
                                   struct binary::elf::record::DTO *dto =

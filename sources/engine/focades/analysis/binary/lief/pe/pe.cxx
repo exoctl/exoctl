@@ -8,7 +8,7 @@ namespace engine::focades::analysis::binary::pe
         const std::string &p_buffer,
         const std::function<void(binary::pe::record::DTO *)> &p_callback)
     {
-        m_pe.parse_bytes(p_buffer,
+        pe_.parse_bytes(p_buffer,
                          [&](std::unique_ptr<const LIEF::PE::Binary> p_pe) {
                              if (p_pe) {
                                  struct binary::pe::record::DTO *dto =

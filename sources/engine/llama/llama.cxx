@@ -12,12 +12,12 @@ namespace engine
         {
             va_list ap;
             va_start(ap, p_path);
-            m_model = llama_model_load_from_file(
+            model_ = llama_model_load_from_file(
                 p_path, va_arg(ap, llama_model_params));
 
             va_end(ap);
 
-            if (!m_model) {
+            if (!model_) {
                 return false;
             }
 
@@ -27,13 +27,13 @@ namespace engine
         const bool Llama::load_context(
             const struct llama_context_params p_params)
         {
-            if (!m_model) {
+            if (!model_) {
                 return false;
             }
 
-            m_context = llama_new_context_with_model(m_model, p_params);
+            context_ = llama_new_context_with_model(model_, p_params);
 
-            if (!m_context) {
+            if (!context_) {
                 return false;
             }
 
@@ -47,25 +47,25 @@ namespace engine
         void Llama::load_sampler(
             const struct llama_sampler_chain_params p_params)
         {
-            m_sampler = llama_sampler_chain_init(p_params);
+            sampler_ = llama_sampler_chain_init(p_params);
         }
 
         // const std::string Llama::prompt(const std::string &prompt,
         //                                        float temperature,
         //                                        float min_p)
         //{
-        // if (!m_model) {
+        // if (!model_) {
         //     throw std::runtime_error(
         //         "generate_text: Modelo não inicializado.");
         // }
-        // if (!m_context) {
+        // if (!context_) {
         //     throw std::runtime_error(
         //         "generate_text: Contexto não inicializado.");
         // }
         //
         //// Tokeniza o prompt.
         // std::vector<llama_token> promptTokens =
-        // llama_tokenize(m_model, prompt.c_str(), true, true);
+        // llama_tokenize(model_, prompt.c_str(), true, true);
         //
         //// Prepara o batch inicial com o prompt.
         // llama_batch batch;
@@ -87,27 +87,27 @@ namespace engine
         // std::string resposta;
         // while (true) {
         //    // Verifica se o contexto ainda comporta novos tokens.
-        //    int contextSize = llama_n_ctx(m_context);
-        //    int nCtxUsed = llama_get_kv_cache_used_cells(m_context);
+        //    int contextSize = llama_n_ctx(context_);
+        //    int nCtxUsed = llama_get_kv_cache_used_cells(context_);
         //    if (nCtxUsed + batch.n_tokens > contextSize) {
         //        llama_sampler_free(sampler);
         //        throw std::runtime_error("Limite do contexto excedido.");
         //    }
         //
         //    // Executa a decodificação do modelo.
-        //    if (llama_decode(m_context, batch) < 0) {
+        //    if (llama_decode(context_, batch) < 0) {
         //        llama_sampler_free(sampler);
         //        throw std::runtime_error("Erro durante a decodificação.");
         //    }
         //
         //    // Amostra um token.
         //    llama_token currToken =
-        //        llama_sampler_sample(sampler, m_context, -1);
-        //    if (llama_token_is_eog(m_model, currToken)) {
+        //        llama_sampler_sample(sampler, context_, -1);
+        //    if (llama_token_is_eog(model_, currToken)) {
         //        break; // Encerra ao encontrar o token de fim de geração.
         //    }
         //    std::string token_str =
-        //    llama_token_to_piece(m_model, currToken, true);
+        //    llama_token_to_piece(model_, currToken, true);
         //    resposta += token_str;
         //
         //    // Atualiza o batch para processar apenas o novo token.
@@ -121,14 +121,14 @@ namespace engine
 
         Llama::~Llama()
         {
-            if (m_context) {
-                llama_free(m_context);
+            if (context_) {
+                llama_free(context_);
             }
-            if (m_model) {
-                llama_model_free(m_model);
+            if (model_) {
+                llama_model_free(model_);
             }
-            if (m_sampler) {
-                llama_sampler_free(m_sampler);
+            if (sampler_) {
+                llama_sampler_free(sampler_);
             }
         }
 

@@ -40,11 +40,11 @@ namespace engine::database
         static std::string type;
         
       private:
-        configuration::Configuration m_config;
-        logging::Logging m_log;
+        configuration::Configuration config_;
+        logging::Logging log_;
 
-        static std::unique_ptr<Soci> m_session;
-        static std::string m_connection_str;
+        static std::unique_ptr<Soci> session_;
+        static std::string connection_str_;
 
         void load_schema();
         void load_migrations();
@@ -52,7 +52,7 @@ namespace engine::database
         template <typename ExceptionType>
         void load_sql_directory(const std::string &p_dir)
         {
-            m_log.info(fmt::format("Loading SQL files from '{}'", p_dir));
+            log_.info(fmt::format("Loading SQL files from '{}'", p_dir));
 
             for (const auto &entry :
                  std::filesystem::directory_iterator(p_dir)) {

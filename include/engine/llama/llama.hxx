@@ -32,9 +32,9 @@ namespace engine
             load_context_default_params();
 
           private:
-            llama_context *m_context;
-            llama_model *m_model;
-            llama_sampler *m_sampler;
+            llama_context *context_;
+            llama_model *model_;
+            llama_sampler *sampler_;
         };
     } // namespace llama
 } // namespace engine

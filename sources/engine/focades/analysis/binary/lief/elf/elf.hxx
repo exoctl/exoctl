@@ -20,6 +20,6 @@ namespace engine::focades::analysis::binary::elf
       private:
         ::engine::parser::binary::LIEF<const LIEF::ELF::Binary,
                                        const LIEF::ELF::Parser>
-            m_elf;
+            elf_;
     };
 } // namespace engine::focades::analysis::binary::elf

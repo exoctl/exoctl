@@ -9,7 +9,7 @@ namespace engine::focades::analysis::binary::macho
         const std::string &p_buffer,
         const std::function<void(binary::macho::record::DTO *)> &p_callback)
     {
-        m_macho.parse_bytes(
+        macho_.parse_bytes(
             p_buffer,
             [&](std::unique_ptr<const LIEF::MachO::FatBinary> p_macho) {
                 if (p_macho) {

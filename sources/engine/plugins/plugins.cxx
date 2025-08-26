@@ -12,28 +12,28 @@ namespace engine
     namespace plugins
     {
         lua::Lua Plugins::lua;
-        configuration::Configuration Plugins::m_config;
-        logging::Logging Plugins::m_log;
+        configuration::Configuration Plugins::config_;
+        logging::Logging Plugins::log_;
 
         void Plugins::setup(configuration::Configuration &p_config,
                             logging::Logging &p_log)
         {
-            m_config = p_config;
-            m_log = p_log;
+            config_ = p_config;
+            log_ = p_log;
 
             lua.state.set_panic(
                 reinterpret_cast<lua_CFunction>(&Plugins::plugins_panic));
 
-            if (!m_config.get("plugins.enable").value<bool>().value())
-                m_log.warn("Plugins not enabled");
+            if (!config_.get("plugins.enable").value<bool>().value())
+                log_.warn("Plugins not enabled");
         }
 
         void Plugins::load_libraries()
         {
-            if (m_config.get("plugins.enable").value<bool>().value()) {
+            if (config_.get("plugins.enable").value<bool>().value()) {
                 std::vector<std::string> libs_any;
                 for (const auto &elem :
-                     *m_config.get("plugins.lua.standard.libraries")
+                     *config_.get("plugins.lua.standard.libraries")
                           .as_array()) {
                     if (!elem.is_string()) {
                         throw exception::LoadPlugin(
@@ -43,7 +43,7 @@ namespace engine
                     libs_any.push_back(*elem.value<std::string>());
                 }
 
-                m_log.info(fmt::format("Loading lua standard libraries: '{}'",
+                log_.info(fmt::format("Loading lua standard libraries: '{}'",
                                        fmt::join(libs_any, ", ")));
 
                 for (const auto &name : libs_any) {
@@ -61,7 +61,7 @@ namespace engine
         {
             if (p_path.extension() == ".lua") {
 
-                m_log.info(
+                log_.info(
                     "Loading and creating environment for the plugin '{}'",
                     p_path.c_str());
 
@@ -69,7 +69,7 @@ namespace engine
                     lua.state, sol::create, lua.state.globals());
 
                 if (!lua.load_script_file(p_path.filename(), p_path, env)) {
-                    m_log.error("Falied to load plugin '{}'", p_path.c_str());
+                    log_.error("Falied to load plugin '{}'", p_path.c_str());
                 }
             }
         }
@@ -77,38 +77,38 @@ namespace engine
         void Plugins::load()
         {
             Plugins::load_libraries();
-            if (m_config.get("plugins.enable").value<bool>().value()) {
+            if (config_.get("plugins.enable").value<bool>().value()) {
                 Plugins::load_plugins_folder(
-                    m_config.get("plugins.path").value<std::string>().value());
+                    config_.get("plugins.path").value<std::string>().value());
             }
         }
 
         std::future<void> Plugins::run_async()
         {
-            if (!m_config.get("plugins.enable").value<bool>().value()) {
+            if (!config_.get("plugins.enable").value<bool>().value()) {
                 return std::future<void>();
             }
 
-            m_log.info("Launching plugins async...");
+            log_.info("Launching plugins async...");
             return std::async(
                 std::launch::async, &Plugins::run_plugins_thread, this);
         }
 
         const int Plugins::plugins_panic(lua_State *state)
         {
-            m_log.error(
+            log_.error(
                 "Lua is in a panic state and will now abort() the application");
 
             if (state != nullptr) {
                 const char *error_msg = lua_tostring(state, -1);
-                m_log.error("Error message: '{}'",
+                log_.error("Error message: '{}'",
                             error_msg ? error_msg : "Unknown error");
 
                 lua_Debug ar;
                 int level = 0;
                 while (lua_getstack(state, level, &ar)) {
                     lua_getinfo(state, "Sln", &ar);
-                    m_log.error("#{} -> {}:{} ({})",
+                    log_.error("#{} -> {}:{} ({})",
                                 level,
                                 ar.short_src,
                                 ar.currentline,
@@ -127,7 +127,7 @@ namespace engine
 
         void Plugins::load_plugins_folder(const std::string &p_path)
         {
-            if (m_config.get("plugins.enable").value<bool>().value()) {
+            if (config_.get("plugins.enable").value<bool>().value()) {
                 DIR *dir = opendir(p_path.c_str());
                 if (!dir)
                     throw plugins::exception::LoadPlugin(
