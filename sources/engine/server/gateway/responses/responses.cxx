@@ -24,6 +24,26 @@ namespace engine::server::gateway::responses
         return "not_found";
     }
 
+    const int Conflict::_code() const
+    {
+        return 409;
+    }
+
+    const std::string Conflict::_status() const
+    {
+        return "conflict";
+    }
+
+    const int Created::_code() const
+    {
+        return 201;
+    }
+
+    const std::string Created::_status() const
+    {
+        return "created";
+    }
+
     const int ServiceUnavailable::_code() const
     {
         return 503;

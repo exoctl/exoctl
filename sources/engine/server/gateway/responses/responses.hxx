@@ -24,6 +24,26 @@ namespace engine::server::gateway::responses
         const std::string _status() const override;
     };
 
+    class Conflict : public interface::IResponse<Conflict>
+    {
+      public:
+        Conflict() = default;
+        ~Conflict() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+    };
+
+    class Created : public interface::IResponse<Created>
+    {
+      public:
+        Created() = default;
+        ~Created() override = default;
+
+        const int _code() const override;
+        const std::string _status() const override;
+    };
+
     class InternalServerError : public interface::IResponse<InternalServerError>
     {
       public:

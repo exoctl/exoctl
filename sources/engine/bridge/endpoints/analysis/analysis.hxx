@@ -1,26 +1,31 @@
 #pragma once
 
 #include <LIEF/LIEF.hpp>
-#include <atomic>
-#include <chrono>
-#include <condition_variable>
 #include <engine/bridge/map/map.hxx>
 #include <engine/focades/analysis/analysis.hxx>
 #include <engine/interfaces/iendpoint.hxx>
 #include <engine/interfaces/iplugins.hxx>
 #include <engine/server/gateway/web/web.hxx>
 #include <engine/server/server.hxx>
-#include <functional>
-#include <memory>
-#include <mutex>
-#include <queue>
-#include <thread>
+
+#define BASE_ANALYSIS API_PREFIX("analysis")
 
 namespace engine::bridge::endpoints::analysis
 {
+    class Scan;
+    class Records;
+    class Update;
+    class Families;
+    class Tags;
+
     class Analysis : public interface::IEndpoint,
                      public interface::IPlugins<Analysis>
     {
+        friend class Scan;
+        friend class Records;
+        friend class Families;
+        friend class Tags;
+
       public:
         Analysis();
         ~Analysis() = default;
@@ -40,12 +45,9 @@ namespace engine::bridge::endpoints::analysis
         std::unique_ptr<engine::server::gateway::web::Web> web_scan_threats_;
         std::unique_ptr<engine::server::gateway::web::Web> web_records_;
         std::unique_ptr<engine::server::gateway::web::Web> web_update_;
-
-
-        void scan();
-        void update();
-        void rescan();
-        void records();
-        void scan_threats();
+        std::unique_ptr<engine::server::gateway::web::Web> web_families_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_tags_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_create_family_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_create_tag_;
     };
 } // namespace engine::bridge::endpoints::analysis

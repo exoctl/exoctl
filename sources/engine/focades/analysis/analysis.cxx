@@ -29,9 +29,7 @@ namespace engine::focades::analysis
             "yara_rules_path",
             sol::property(
                 [](focades::analysis::Analysis &self) -> const std::string {
-                    if (self.yara)
-                        return self.yara->rules_path;
-                    return "";
+                    return (self.yara) ?self.yara->rules_path : "";
                 }),
             sol::meta_function::index,
             [](focades::analysis::Analysis &self,
