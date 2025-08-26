@@ -52,7 +52,7 @@ namespace engine::bridge::endpoints::analysis
         Analysis::rescan();
         Analysis::records();
         Analysis::scan_threats();
-        Analysis::update(); // Nova rota para update
+        Analysis::update();
     }
 
     void Analysis::load() const
@@ -122,6 +122,7 @@ namespace engine::bridge::endpoints::analysis
                     new_anal = analysis.scan(file);
                     new_anal.id = anal.id;
                     new_anal.file_name = anal.file_name;
+                    new_anal.description = anal.description;
 
                     if (analysis.analysis_table_exists_by_sha256(new_anal)) {
                         analysis.analysis_table_update(new_anal);

@@ -1,5 +1,6 @@
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
+#include <engine/crypto/tlsh.hxx>
 #include <engine/database/database.hxx>
 #include <engine/filesystem/filesystem.hxx>
 #include <engine/focades/analysis/exception.hxx>
@@ -7,6 +8,7 @@
 #include <engine/security/av/clamav/exception.hxx>
 #include <engine/security/yara/exception.hxx>
 #include <fmt/format.h>
+#include <limits.h>
 #include <netdb.h>
 #include <stdint.h>
 
@@ -66,6 +68,9 @@ namespace engine::focades::analysis
         packed_entropy = m_config->get("focades.analysis.packed.entropy")
                              .value<double>()
                              .value();
+
+        family_tlsh =
+            m_config->get("focades.analysis.family.tlsh").value<int>().value();
 
         yara->setup(p_config);
         clamav->setup(p_config);
@@ -152,7 +157,35 @@ namespace engine::focades::analysis
         analysis.description =
             (analysis.is_malicious ? "File detected as malicious"
                                    : "File not detected as malicious");
-        analysis.family_id = 0;
+
+        // Assign family ID to analysis based on TLSH distance
+        analysis.family_id = [&]() -> int {
+            int best_family;
+            int min_dist = std::numeric_limits<int>::infinity();
+            const std::string &target_file_type = analysis.file_type;
+
+            for (const auto &anal : Analysis::analysis_table_get_all()) {
+                if (anal.file_type != target_file_type) {
+                    continue;
+                }
+                if (anal.sha256 == analysis.sha256) {
+                    best_family = anal.family_id; // default to self family
+                    continue;                     // Skip self-comparison
+                }
+
+                int dist = crypto::Tlsh::compare(anal.tlsh, analysis.tlsh);
+                // Check if distance satisfies the per-family threshold
+                if (dist <= family_tlsh && dist < min_dist) {
+                    min_dist = dist;
+                    best_family = anal.family_id;
+                    if (dist == 0) {
+                        break;
+                    }
+                }
+            }
+
+            return best_family;
+        }();
 
         return analysis;
     }
@@ -192,7 +225,8 @@ namespace engine::focades::analysis
         soci::rowset<record::Analysis> rs =
             (sql.prepare
              << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
-                "sha224, sha384, sha3_256, sha3_512, file_size, file_entropy, "
+                "sha224, sha384, sha3_256, sha3_512, file_size, "
+                "file_entropy, "
                 "creation_date, last_update_date, file_path, is_malicious, "
                 "is_packed, owner, family_id, tlsh, description "
                 "FROM analysis");
@@ -295,15 +329,16 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         database::Soci &sql = engine::database::Database::exec();
         int exists;
-        sql << "SELECT EXISTS (SELECT 1 FROM analysis WHERE sha256 = :sha256)",
+        sql << "SELECT EXISTS (SELECT 1 FROM analysis WHERE sha256 = "
+               ":sha256)",
             soci::use(p_analysis.sha256), soci::into(exists);
 
         if (sql.got_data()) {
             return exists != 0;
         } else {
-            m_log->warn(
-                "No result returned when checking existence for SHA256 '{}'",
-                p_analysis.sha256);
+            m_log->warn("No result returned when checking existence for "
+                        "SHA256 '{}'",
+                        p_analysis.sha256);
             return false;
         }
         TRY_END()
@@ -331,7 +366,8 @@ namespace engine::focades::analysis
         sql << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
                "sha224, sha384, sha3_256, sha3_512, file_size, "
                "file_entropy, creation_date, last_update_date, file_path, "
-               "is_malicious, is_packed, owner, family_id, tlsh, description "
+               "is_malicious, is_packed, owner, family_id, tlsh, "
+               "description "
                "FROM analysis WHERE id = :id",
             soci::use(p_id), soci::into(result);
 
@@ -365,7 +401,8 @@ namespace engine::focades::analysis
         sql << "SELECT id, file_name, file_type, sha256, sha1, sha512, "
                "sha224, sha384, sha3_256, sha3_512, file_size, "
                "file_entropy, creation_date, last_update_date, file_path, "
-               "is_malicious, is_packed, owner, family_id, tlsh, description "
+               "is_malicious, is_packed, owner, family_id, tlsh, "
+               "description "
                "FROM analysis WHERE sha256 = :sha256",
             soci::use(p_sha256), soci::into(result);
 
@@ -421,8 +458,7 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         database::Soci &sql = engine::database::Database::exec();
         soci::rowset<record::Family> rs =
-            (sql.prepare
-             << "SELECT id, name, description FROM family");
+            (sql.prepare << "SELECT id, name, description FROM family");
 
         results.assign(rs.begin(), rs.end());
 
@@ -505,9 +541,9 @@ namespace engine::focades::analysis
     void Analysis::tag_table_insert(const record::Tag &p_tag)
     {
         if (!tag_table_exists()) {
-            m_log->error(
-                "Table for tags not found, cannot insert record for name '{}'",
-                p_tag.name);
+            m_log->error("Table for tags not found, cannot insert record "
+                         "for name '{}'",
+                         p_tag.name);
             return;
         }
 
@@ -533,8 +569,7 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         database::Soci &sql = engine::database::Database::exec();
         soci::rowset<record::Tag> rs =
-            (sql.prepare
-             << "SELECT id, name, description FROM tags");
+            (sql.prepare << "SELECT id, name, description FROM tags");
 
         results.assign(rs.begin(), rs.end());
 
@@ -549,9 +584,9 @@ namespace engine::focades::analysis
     const record::Tag Analysis::tag_table_get_by_id(const int p_id)
     {
         if (!tag_table_exists()) {
-            m_log->error(
-                "Table for tags not found, cannot retrieve record with ID '{}'",
-                p_id);
+            m_log->error("Table for tags not found, cannot retrieve record "
+                         "with ID '{}'",
+                         p_id);
             return {};
         }
 
@@ -657,11 +692,10 @@ namespace engine::focades::analysis
         TRY_BEGIN()
         database::Soci &sql = engine::database::Database::exec();
         soci::rowset<record::Tag> rs =
-            (sql.prepare
-                 << "SELECT t.id, t.name, t.description "
-                    "FROM tags t "
-                    "JOIN analysis_tags at ON t.id = at.tag_id "
-                    "WHERE at.analysis_id = :analysis_id",
+            (sql.prepare << "SELECT t.id, t.name, t.description "
+                            "FROM tags t "
+                            "JOIN analysis_tags at ON t.id = at.tag_id "
+                            "WHERE at.analysis_id = :analysis_id",
              soci::use(p_analysis_id));
 
         results.assign(rs.begin(), rs.end());

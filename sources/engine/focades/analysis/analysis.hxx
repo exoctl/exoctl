@@ -73,6 +73,7 @@ namespace engine::focades::analysis
         std::shared_ptr<focades::analysis::binary::elf::ELF> elf;
 
         double packed_entropy;
+        int family_tlsh;
 
       private:
         logging::Logging *m_log;
