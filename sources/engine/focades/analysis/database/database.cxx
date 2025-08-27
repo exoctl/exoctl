@@ -5,7 +5,6 @@
 
 namespace engine::focades::analysis::database
 {
-
     void Database::setup(configuration::Configuration &p_config,
                          logging::Logging &p_log)
     {
@@ -18,8 +17,7 @@ namespace engine::focades::analysis::database
         return engine::database::Database::is_table_exists("analysis");
     }
 
-    const std::vector<record::Analysis> Database::analysis_table_get_all(
-        )
+    const std::vector<record::Analysis> Database::analysis_table_get_all()
     {
         std::vector<record::Analysis> results;
 
@@ -106,6 +104,30 @@ namespace engine::focades::analysis::database
         CATCH(engine::database::SociError, {
             log_->error("Failed to update analysis for sha256 '{}': {}",
                         p_analysis.sha256,
+                        e.what());
+        })
+    }
+
+    void Database::analysis_table_delete(const std::string &p_sha256)
+    {
+        if (!analysis_table_exists()) {
+            log_->error("Table for analysis not found, cannot delete "
+                        "record with SHA256 '{}'",
+                        p_sha256);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        sql << "DELETE FROM analysis WHERE sha256 = :sha256",
+            soci::use(p_sha256);
+
+        log_->info("Successfully deleted analysis record for SHA256 '{}'",
+                   p_sha256);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to delete analysis for SHA256 '{}': {}",
+                        p_sha256,
                         e.what());
         })
     }
@@ -212,6 +234,39 @@ namespace engine::focades::analysis::database
         return {};
     }
 
+    void Database::family_table_delete(const int p_id)
+    {
+        if (!family_table_exists()) {
+            log_->error("Table for family not found, cannot delete "
+                        "record with ID '{}'",
+                        p_id);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        // Check if any analysis records reference this family
+        int count;
+        sql << "SELECT COUNT(*) FROM analysis WHERE family_id = :id",
+            soci::use(p_id), soci::into(count);
+        if (sql.got_data() && count > 0) {
+            log_->error("Cannot delete family ID '{}' as it is referenced by "
+                        "{} analysis records",
+                        p_id,
+                        count);
+            return;
+        }
+
+        sql << "DELETE FROM family WHERE id = :id", soci::use(p_id);
+
+        log_->info("Successfully deleted family record for ID '{}'", p_id);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error(
+                "Failed to delete family for ID '{}': {}", p_id, e.what());
+        })
+    }
+
     const bool Database::family_table_exists()
     {
         return engine::database::Database::is_table_exists("family");
@@ -242,8 +297,7 @@ namespace engine::focades::analysis::database
         })
     }
 
-    const std::vector<record::Family> Database::family_table_get_all(
-        )
+    const std::vector<record::Family> Database::family_table_get_all()
     {
         std::vector<record::Family> results;
 
@@ -323,6 +377,38 @@ namespace engine::focades::analysis::database
         return {};
     }
 
+    void Database::tag_table_delete(const int p_id)
+    {
+        if (!tag_table_exists()) {
+            log_->error("Table for tags not found, cannot delete "
+                        "record with ID '{}'",
+                        p_id);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        // Check if any analysis_tags reference this tag
+        int count;
+        sql << "SELECT COUNT(*) FROM analysis_tags WHERE tag_id = :id",
+            soci::use(p_id), soci::into(count);
+        if (sql.got_data() && count > 0) {
+            log_->error("Cannot delete tag ID '{}' as it is referenced by {} "
+                        "analysis_tags",
+                        p_id,
+                        count);
+            return;
+        }
+
+        sql << "DELETE FROM tags WHERE id = :id", soci::use(p_id);
+
+        log_->info("Successfully deleted tag record for ID '{}'", p_id);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to delete tag for ID '{}': {}", p_id, e.what());
+        })
+    }
+
     const bool Database::tag_table_exists()
     {
         return engine::database::Database::is_table_exists("tags");
@@ -352,8 +438,30 @@ namespace engine::focades::analysis::database
         })
     }
 
-    const std::vector<record::Tag> Database::tag_table_get_all(
-        )
+    void Database::tag_table_update(const record::Tag &p_tag)
+    {
+        if (!tag_table_exists()) {
+            log_->error(
+                "Table for tags not found, cannot insert record for name '{}'",
+                p_tag.name);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        sql << "UPDATE tags SET name = :name, description = :description WHERE "
+               "id = :id",
+            soci::use(p_tag);
+
+        log_->info("Successfully update tag record for name '{}'", p_tag.name);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error(
+                "Failed to update tag for name '{}': {}", p_tag.name, e.what());
+        })
+    }
+
+    const std::vector<record::Tag> Database::tag_table_get_all()
     {
         std::vector<record::Tag> results;
 
@@ -430,6 +538,38 @@ namespace engine::focades::analysis::database
         return {};
     }
 
+    void Database::analysis_tag_table_delete(const int p_analysis_id,
+                                             const int p_tag_id)
+    {
+        if (!analysis_tag_table_exists()) {
+            log_->error(
+                "Table for analysis_tags not found, cannot delete record for "
+                "analysis_id '{}', tag_id '{}'",
+                p_analysis_id,
+                p_tag_id);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        sql << "DELETE FROM analysis_tags WHERE analysis_id = :analysis_id AND "
+               "tag_id = :tag_id",
+            soci::use(p_analysis_id), soci::use(p_tag_id);
+
+        log_->info("Successfully deleted analysis_tag record for analysis_id "
+                   "'{}', tag_id '{}'",
+                   p_analysis_id,
+                   p_tag_id);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to delete analysis_tag for analysis_id '{}', "
+                        "tag_id '{}': {}",
+                        p_analysis_id,
+                        p_tag_id,
+                        e.what());
+        })
+    }
+
     const bool Database::analysis_tag_table_exists()
     {
         return engine::database::Database::is_table_exists("analysis_tags");
@@ -502,4 +642,4 @@ namespace engine::focades::analysis::database
 
         return results;
     }
-} // namespace engine::focades::analysis
+} // namespace engine::focades::analysis::database

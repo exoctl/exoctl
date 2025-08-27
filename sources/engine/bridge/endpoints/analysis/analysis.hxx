@@ -44,7 +44,8 @@ namespace engine::bridge::endpoints::analysis
         std::unique_ptr<engine::server::gateway::web::Web> web_scan_;
         std::unique_ptr<engine::server::gateway::web::Web> web_scan_threats_;
         std::unique_ptr<engine::server::gateway::web::Web> web_records_;
-        std::unique_ptr<engine::server::gateway::web::Web> web_update_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_records_delete_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_records_update_;
         std::unique_ptr<engine::server::gateway::web::Web> web_families_;
         std::unique_ptr<engine::server::gateway::web::Web> web_tags_;
         std::unique_ptr<engine::server::gateway::web::Web> web_create_family_;

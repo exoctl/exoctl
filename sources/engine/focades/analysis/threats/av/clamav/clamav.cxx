@@ -20,7 +20,9 @@ namespace engine::focades::analysis::threats::av::clamav
                                         "clamav.database.file")
                                   .value<std::string>()
                                   .value(),
-                              CL_DB_STDOPT);
+                              CL_DB_STDOPT | CL_DB_PHISHING |
+                                  CL_DB_PHISHING_URLS | CL_DB_PUA |
+                                  CL_DB_OFFICIAL_ONLY | CL_DB_BYTECODE);
         clamav.load_rules();
 
         if (!IS_NULL(p_callback)) {
@@ -36,6 +38,9 @@ namespace engine::focades::analysis::threats::av::clamav
             auto dto = std::make_unique<clamav::record::DTO>();
 
             security::av::clamav::record::scan::Options scanopts;
+            memset(&scanopts,
+                   0,
+                   sizeof(security::av::clamav::record::scan::Options));
             scanopts.general = CL_SCAN_GENERAL_ALLMATCHES |
                                CL_SCAN_GENERAL_HEURISTICS |
                                CL_SCAN_GENERAL_COLLECT_METADATA;
@@ -56,7 +61,8 @@ namespace engine::focades::analysis::threats::av::clamav
         }
     }
 
-    const engine::parser::json::Json Clamav::dto_json(clamav::record::DTO *p_dto)
+    const engine::parser::json::Json Clamav::dto_json(
+        clamav::record::DTO *p_dto)
     {
         parser::json::Json json;
 

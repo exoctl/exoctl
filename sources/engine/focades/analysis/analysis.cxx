@@ -91,9 +91,11 @@ namespace engine::focades::analysis
         })
     }
 
-    const database::record::Analysis Analysis::analyze(const record::File &p_file)
+    const database::record::Analysis Analysis::analyze(
+        const record::File &p_file)
     {
         database::record::Analysis analysis;
+        
         analysis.owner = p_file.owner;
 
         metadata->parse(p_file.content, [&](metadata::record::DTO *p_dto) {
@@ -186,6 +188,15 @@ namespace engine::focades::analysis
         if (filesystem::Filesystem::is_exists(file)) {
             filesystem::Filesystem::read(file);
             p_file.content.assign(file.content);
+        }
+    }
+
+    void Analysis::file_remove(const record::File &p_file)
+    {
+        filesystem::record::File file;
+        file.filename.assign(p_file.filename);
+        if (filesystem::Filesystem::is_exists(file)) {
+            filesystem::Filesystem::remove(file);
         }
     }
 } // namespace engine::focades::analysis

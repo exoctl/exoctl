@@ -26,8 +26,12 @@ namespace engine::filesystem
         void load();
 
         static void enqueue_write(record::EnqueueTask &);
+        static void enqueue_remove(record::EnqueueTask &);
+
+        static void remove(const record::File &, const bool = true);
         static void write(const record::File &, const bool = true);
-        [[nodiscard]] static const bool is_exists(const record::File &, const bool = true);
+        [[nodiscard]] static const bool is_exists(const record::File &,
+                                                  const bool = true);
         static void read(record::File &, const bool = true);
         static void create_directories(const std::string &, const bool = true);
         static std::string path;

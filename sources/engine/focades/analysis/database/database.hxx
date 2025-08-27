@@ -21,6 +21,8 @@ namespace engine::focades::analysis::database
         analysis_table_get_all();
         void analysis_table_insert(const record::Analysis &);
         void analysis_table_update(const record::Analysis &);
+        void analysis_table_delete(const std::string &);
+
         [[nodiscard]] const bool analysis_table_exists_by_sha256(
             const record::Analysis &);
         [[nodiscard]] const record::Analysis analysis_table_get_by_id(
@@ -30,19 +32,24 @@ namespace engine::focades::analysis::database
 
         [[nodiscard]] const bool family_table_exists();
         void family_table_insert(const record::Family &);
-        [[nodiscard]] const std::vector<record::Family> family_table_get_all(
-            );
+        void family_table_delete(const int);
+
+        [[nodiscard]] const std::vector<record::Family> family_table_get_all();
         [[nodiscard]] const record::Family family_table_get_by_id(const int);
         [[nodiscard]] const record::Family family_table_get_by_name(
             const std::string &);
 
         [[nodiscard]] const bool tag_table_exists();
         void tag_table_insert(const record::Tag &);
-        [[nodiscard]] const std::vector<record::Tag> tag_table_get_all(
-        );
+        void tag_table_delete(const int);
+        void tag_table_update(const record::Tag &);
+
+        [[nodiscard]] const std::vector<record::Tag> tag_table_get_all();
         [[nodiscard]] const record::Tag tag_table_get_by_id(const int);
         [[nodiscard]] const record::Tag tag_table_get_by_name(
             const std::string &);
+
+        void analysis_tag_table_delete(const int, const int);
 
         [[nodiscard]] const bool analysis_tag_table_exists();
         void analysis_tag_table_insert(const record::AnalysisTag &);
@@ -50,7 +57,7 @@ namespace engine::focades::analysis::database
         analysis_tag_get_tags_by_analysis_id(const int);
 
       private:
-            configuration::Configuration *config_;
-            logging::Logging *log_;
+        configuration::Configuration *config_;
+        logging::Logging *log_;
     };
 } // namespace engine::focades::analysis::database

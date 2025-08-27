@@ -4,6 +4,14 @@
 
 namespace engine::filesystem
 {
+    namespace type
+    {
+        enum class EnqueueTaskAction {
+            WRITE,
+            REMOVE
+        };
+    } // namespace type
+
     namespace record
     {
         using File = struct File {
@@ -14,6 +22,7 @@ namespace engine::filesystem
         using EnqueueTask = struct EnqueueTask {
             int id; // auto generated
             File file;
+            type::EnqueueTaskAction action;
             bool relative = true; // path relative to filesystem.path
         };
 

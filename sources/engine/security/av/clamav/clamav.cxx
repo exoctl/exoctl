@@ -49,7 +49,7 @@ namespace engine::security::av::clamav
         int fd = -1;
 
         TRY_BEGIN()
-        fd = memory::Memory::fd("tmp_", MFD_ALLOW_SEALING);
+        fd = memory::Memory::fd("clamav_temp", 0);
         memory::Memory::ftruncate(fd, p_buffer.size());
         memory::Memory::write(fd, p_buffer.data(), p_buffer.size());
         TRY_END()
@@ -69,11 +69,12 @@ namespace engine::security::av::clamav
         cl_error_t ret;
         {
             std::scoped_lock lock(mutex_);
+            unsigned long int scanned = 0;
             ret = cl_scandesc(
-                fd, "tmp_", &data->virname, nullptr, engine_, &p_options);
+                fd, nullptr, &data->virname, &scanned, engine_, &p_options);
         }
 
-        data->virname = (IS_NULL(data->virname)) ? "" : data->virname;
+        data->virname = (IS_NULL(data->virname)) ? "\0" : data->virname;
         data->math_status = [ret]() {
             switch (ret) {
                 case CL_VIRUS:

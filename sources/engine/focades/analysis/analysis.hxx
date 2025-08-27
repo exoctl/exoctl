@@ -29,6 +29,7 @@ namespace engine::focades::analysis
 
         [[nodiscard]] const database::record::Analysis analyze(const record::File &);
         void file_write(const record::File &);
+        void file_remove(const record::File &);
         void file_read(record::File &);
 
         void _plugins() override;

@@ -66,6 +66,23 @@ namespace engine::filesystem
             return;
 
         p_task.id = ++id_counter_;
+        p_task.action = type::EnqueueTaskAction::WRITE;
+
+        {
+            std::lock_guard<std::mutex> lock(fs_queue_mutex_);
+            fs_queue_.push(p_task);
+        }
+
+        fs_queue_cv_.notify_one();
+    }
+
+    void Filesystem::enqueue_remove(record::EnqueueTask &p_task)
+    {
+        if (!is_running)
+            return;
+
+        p_task.id = ++id_counter_;
+        p_task.action = type::EnqueueTaskAction::REMOVE;
 
         {
             std::lock_guard<std::mutex> lock(fs_queue_mutex_);
@@ -80,15 +97,23 @@ namespace engine::filesystem
         log_.info("Filesystem Worker thread started running.");
         while (is_running) {
             std::unique_lock<std::mutex> lock(fs_queue_mutex_);
-            fs_queue_cv_.wait(
-                lock, [] { return !fs_queue_.empty() || !is_running; });
+            fs_queue_cv_.wait(lock,
+                              [] { return !fs_queue_.empty() || !is_running; });
 
             while (!fs_queue_.empty()) {
                 record::EnqueueTask task = fs_queue_.front();
                 fs_queue_.pop();
                 lock.unlock();
 
-                Filesystem::write(task.file, task.relative);
+                switch (task.action) {
+                    case type::EnqueueTaskAction::REMOVE:
+                        Filesystem::remove(task.file, task.relative);
+                        break;
+                    case type::EnqueueTaskAction::WRITE:
+                        Filesystem::write(task.file, task.relative);
+                        break;
+                }
+
                 lock.lock();
             }
         }
@@ -130,5 +155,19 @@ namespace engine::filesystem
 
         ifs.read(p_file.content.data(),
                  static_cast<std::streamsize>(p_file.content.size()));
+    }
+
+    void Filesystem::remove(const record::File &p_file, const bool p_relative)
+    {
+        if (readonly) {
+            return;
+        }
+
+        const auto full_path =
+            p_relative ? std::filesystem::path(path) / p_file.filename
+                       : std::filesystem::path(p_file.filename);
+
+        std::error_code ec;
+        std::filesystem::remove(full_path, ec);
     }
 } // namespace engine::filesystem

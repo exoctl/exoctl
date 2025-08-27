@@ -36,13 +36,18 @@ namespace engine::bridge::endpoints::analysis
 
                         focades::analysis::database::record::Analysis anal;
                         TRY_BEGIN()
+                        
                         anal = analysis.analysis.analyze(file);
-                        analysis.analysis.file_write({anal.sha256, file.content});
-                        if (analysis.analysis.database->analysis_table_exists_by_sha256(anal)) {
-                            analysis.analysis.database->analysis_table_update(anal);
-                        } else {
-                            analysis.analysis.database->analysis_table_insert(anal);
-                        }
+                        analysis.analysis.file_write(
+                            {anal.sha256, file.content});
+
+                        (analysis.analysis.database
+                             ->analysis_table_exists_by_sha256(anal))
+                            ? analysis.analysis.database->analysis_table_update(
+                                  anal)
+                            : analysis.analysis.database->analysis_table_insert(
+                                  anal);
+
                         TRY_END()
                         CATCH(focades::analysis::exception::Scan,
                               return crow::response{server::gateway::responses::
@@ -104,7 +109,8 @@ namespace engine::bridge::endpoints::analysis
                     focades::analysis::database::record::Analysis anal;
 
                     TRY_BEGIN()
-                    anal = analysis.analysis.database->analysis_table_get_by_sha256(sha256.value());
+                    anal = analysis.analysis.database
+                               ->analysis_table_get_by_sha256(sha256.value());
                     if (anal.sha256.empty() ||
                         !filesystem::Filesystem::is_exists({sha256.value()})) {
                         const auto not_found =
@@ -130,9 +136,12 @@ namespace engine::bridge::endpoints::analysis
                     new_anal.description = anal.description;
                     new_anal.owner = anal.owner;
 
-                    (analysis.analysis.database->analysis_table_exists_by_sha256(new_anal))
-                        ? analysis.analysis.database->analysis_table_update(new_anal)
-                        : analysis.analysis.database->analysis_table_insert(new_anal);
+                    (analysis.analysis.database
+                         ->analysis_table_exists_by_sha256(new_anal))
+                        ? analysis.analysis.database->analysis_table_update(
+                              new_anal)
+                        : analysis.analysis.database->analysis_table_insert(
+                              new_anal);
 
                     TRY_END()
                     CATCH(focades::analysis::exception::Scan,
@@ -151,7 +160,8 @@ namespace engine::bridge::endpoints::analysis
         });
 
         analysis.map_.add_route("/scan/threats", [&]() {
-            analysis.web_scan_threats_ = std::make_unique<server::gateway::web::Web>();
+            analysis.web_scan_threats_ =
+                std::make_unique<server::gateway::web::Web>();
             analysis.web_scan_threats_->setup(
                 &*analysis.server_,
                 BASE_ANALYSIS "/scan/threats",
@@ -192,7 +202,8 @@ namespace engine::bridge::endpoints::analysis
                                 *p_dto) {
                             json.add(
                                 "clamav",
-                                std::move(analysis.analysis.clamav->dto_json(p_dto)));
+                                std::move(
+                                    analysis.analysis.clamav->dto_json(p_dto)));
                         });
 
                     analysis.analysis.yara->scan(
@@ -200,7 +211,8 @@ namespace engine::bridge::endpoints::analysis
                         [&](focades::analysis::threats::yara::record::DTO
                                 *p_dto) {
                             json.add("yara",
-                                     std::move(analysis.analysis.yara->dto_json(p_dto)));
+                                     std::move(analysis.analysis.yara->dto_json(
+                                         p_dto)));
                         });
                     TRY_END()
                     CATCH(security::av::clamav::exception::Scan,
