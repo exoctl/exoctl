@@ -18,7 +18,7 @@ namespace engine::security::yara::extend
     void Yara::bind_flags()
     {
         plugins::Plugins::lua.state.new_enum<yara::type::Flags>(
-            "Flags",
+            "YaraFlags",
             {// Callback message types
              {"RuleMatching", yara::type::Flags::RuleMatching},
              {"RuleNotMatching", yara::type::Flags::RuleNotMatching},

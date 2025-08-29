@@ -107,8 +107,7 @@ namespace engine::bridge::endpoints::analysis
 
                     TRY_BEGIN()
                     analysis.analysis.read_analyze(file, anal);
-                    if (anal.sha256.empty() ||
-                        !filesystem::Filesystem::is_exists({sha256.value()})) {
+                    if (anal.sha256.empty()) {
                         const auto not_found =
                             server::gateway::responses::NotFound().add_field(
                                 "message",
@@ -120,6 +119,10 @@ namespace engine::bridge::endpoints::analysis
                     }
 
                     new_anal = analysis.analysis.analyze(file);
+                    // preserve some fields
+                    new_anal.file_name = anal.file_name;
+                    new_anal.description = anal.description;
+
                     analysis.analysis.update_analyze(anal, new_anal);
 
                     TRY_END()

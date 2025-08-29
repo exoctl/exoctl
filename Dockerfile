@@ -15,6 +15,7 @@ RUN apt-get update && \
         libmysqlclient-dev \
         libpq-dev \
         clamav \
+        libpqxx \
         libasio-dev
 
 RUN curl -LO https://github.com/Kitware/CMake/releases/download/v3.29.4/cmake-3.29.4-linux-x86_64.sh && \

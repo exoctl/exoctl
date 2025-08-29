@@ -144,7 +144,7 @@ namespace engine::focades::analysis
             (analysis.file_entropy >= packed_entropy_threshold);
         analysis.file_size = p_file.content.size();
         analysis.file_path = filesystem::Filesystem::path;
-        analysis.description = analysis.is_malicious
+        analysis.description = (analysis.is_malicious)
                                    ? "File detected as malicious"
                                    : "File not detected as malicious";
 
@@ -181,7 +181,7 @@ namespace engine::focades::analysis
             ? filesystem::Filesystem::enqueue_write(task)
             : (void) 0;
 
-        (database->analysis_table_exists_by_sha256(p_analysis))
+        (database->analysis_table_exists_by_sha256(p_analysis.sha256))
             ? database->analysis_table_update(p_analysis)
             : database->analysis_table_insert(p_analysis);
     }
@@ -214,18 +214,18 @@ namespace engine::focades::analysis
                                          : p_analysis.description;
         p_new_analysis.owner = p_analysis.owner;
 
-        (database->analysis_table_exists_by_sha256(p_new_analysis))
+        (database->analysis_table_exists_by_sha256(p_analysis.sha256))
             ? database->analysis_table_update(p_new_analysis)
             : database->analysis_table_insert(p_new_analysis);
     }
 
     void Analysis::remove_analyze(const database::record::Analysis &p_analysis)
     {
-        database->analysis_table_delete(p_analysis.sha256);
         filesystem::record::File file;
         file.filename.assign(p_analysis.sha256);
         if (filesystem::Filesystem::is_exists(file)) {
             filesystem::Filesystem::remove(file);
         }
+        database->analysis_table_delete(p_analysis);
     }
 } // namespace engine::focades::analysis

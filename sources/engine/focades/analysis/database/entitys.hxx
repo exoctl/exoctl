@@ -72,7 +72,7 @@ namespace soci
             engine::database::SociValues &v,
             engine::database::SociIndicator &ind)
         {
-            v.set("name", family.id);
+            v.set("id", family.id);
             v.set("name", family.name);
             v.set("description", family.description);
             ind = engine::database::SociIndicator::i_ok;

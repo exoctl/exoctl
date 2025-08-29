@@ -48,7 +48,6 @@ function(set_compile_flags target)
             -fmodules-ts
             -ftree-vectorize
             -DCROW_ENABLE_SSL
-            -mavx
         )
     else()
         message(STATUS "[exoctl] -- Building ${target} with debug flags")

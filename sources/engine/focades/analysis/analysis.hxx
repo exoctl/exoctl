@@ -37,6 +37,10 @@ namespace engine::focades::analysis
         void update_analyze(database::record::Analysis &,
                             database::record::Analysis &);
 
+        /*
+          NOTE: I need create functions for manipulate tags and familys of analysis
+        */
+
         void _plugins() override;
 
         std::shared_ptr<focades::analysis::database::Database> database;

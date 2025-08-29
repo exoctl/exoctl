@@ -108,37 +108,37 @@ namespace engine::focades::analysis::database
         })
     }
 
-    void Database::analysis_table_delete(const std::string &p_sha256)
+    void Database::analysis_table_delete(const record::Analysis &p_analysis)
     {
         if (!analysis_table_exists()) {
             log_->error("Table for analysis not found, cannot delete "
                         "record with SHA256 '{}'",
-                        p_sha256);
+                        p_analysis.sha256);
             return;
         }
 
         TRY_BEGIN()
         engine::database::Soci &sql = engine::database::Database::exec();
         sql << "DELETE FROM analysis WHERE sha256 = :sha256",
-            soci::use(p_sha256);
+            soci::use(p_analysis.sha256);
 
         log_->info("Successfully deleted analysis record for SHA256 '{}'",
-                   p_sha256);
+                   p_analysis.sha256);
         TRY_END()
         CATCH(engine::database::SociError, {
             log_->error("Failed to delete analysis for SHA256 '{}': {}",
-                        p_sha256,
+                        p_analysis.sha256,
                         e.what());
         })
     }
 
     const bool Database::analysis_table_exists_by_sha256(
-        const record::Analysis &p_analysis)
+        const std::string &p_sha256)
     {
         if (!analysis_table_exists()) {
             log_->error("Table for analysis not found, cannot check "
                         "existence for SHA256 '{}'",
-                        p_analysis.sha256);
+                        p_sha256);
             return false;
         }
 
@@ -146,20 +146,20 @@ namespace engine::focades::analysis::database
         engine::database::Soci &sql = engine::database::Database::exec();
         int exists;
         sql << "SELECT EXISTS (SELECT 1 FROM analysis WHERE sha256 = :sha256)",
-            soci::use(p_analysis.sha256), soci::into(exists);
+            soci::use(p_sha256), soci::into(exists);
 
         if (sql.got_data()) {
             return exists != 0;
         } else {
             log_->warn(
                 "No result returned when checking existence for SHA256 '{}'",
-                p_analysis.sha256);
+                p_sha256);
             return false;
         }
         TRY_END()
         CATCH(engine::database::SociError, {
             log_->error("Failed to check existence for SHA256 '{}': {}",
-                        p_analysis.sha256,
+                        p_sha256,
                         e.what());
         })
 
@@ -234,36 +234,35 @@ namespace engine::focades::analysis::database
         return {};
     }
 
-    void Database::family_table_delete(const int p_id)
+    void Database::family_table_delete(const record::Family &p_family)
     {
         if (!family_table_exists()) {
             log_->error("Table for family not found, cannot delete "
                         "record with ID '{}'",
-                        p_id);
+                        p_family.id);
             return;
         }
 
         TRY_BEGIN()
         engine::database::Soci &sql = engine::database::Database::exec();
-        // Check if any analysis records reference this family
         int count;
         sql << "SELECT COUNT(*) FROM analysis WHERE family_id = :id",
-            soci::use(p_id), soci::into(count);
+            soci::use(p_family.id), soci::into(count);
         if (sql.got_data() && count > 0) {
             log_->error("Cannot delete family ID '{}' as it is referenced by "
                         "{} analysis records",
-                        p_id,
+                        p_family.id,
                         count);
             return;
         }
 
-        sql << "DELETE FROM family WHERE id = :id", soci::use(p_id);
+        sql << "DELETE FROM family WHERE id = :id", soci::use(p_family.id);
 
-        log_->info("Successfully deleted family record for ID '{}'", p_id);
+        log_->info("Successfully deleted family record for ID '{}'", p_family.id);
         TRY_END()
         CATCH(engine::database::SociError, {
             log_->error(
-                "Failed to delete family for ID '{}': {}", p_id, e.what());
+                "Failed to delete family for ID '{}': {}", p_family.id, e.what());
         })
     }
 
@@ -377,35 +376,34 @@ namespace engine::focades::analysis::database
         return {};
     }
 
-    void Database::tag_table_delete(const int p_id)
+    void Database::tag_table_delete(const record::Tag &p_tag)
     {
         if (!tag_table_exists()) {
             log_->error("Table for tags not found, cannot delete "
                         "record with ID '{}'",
-                        p_id);
+                        p_tag.id);
             return;
         }
 
         TRY_BEGIN()
         engine::database::Soci &sql = engine::database::Database::exec();
-        // Check if any analysis_tags reference this tag
         int count;
         sql << "SELECT COUNT(*) FROM analysis_tags WHERE tag_id = :id",
-            soci::use(p_id), soci::into(count);
+            soci::use(p_tag.id), soci::into(count);
         if (sql.got_data() && count > 0) {
             log_->error("Cannot delete tag ID '{}' as it is referenced by {} "
                         "analysis_tags",
-                        p_id,
+                        p_tag.id,
                         count);
             return;
         }
 
-        sql << "DELETE FROM tags WHERE id = :id", soci::use(p_id);
+        sql << "DELETE FROM tags WHERE id = :id", soci::use(p_tag.id);
 
-        log_->info("Successfully deleted tag record for ID '{}'", p_id);
+        log_->info("Successfully deleted tag record for ID '{}'", p_tag.id);
         TRY_END()
         CATCH(engine::database::SociError, {
-            log_->error("Failed to delete tag for ID '{}': {}", p_id, e.what());
+            log_->error("Failed to delete tag for ID '{}': {}", p_tag.id, e.what());
         })
     }
 

@@ -21,18 +21,18 @@ namespace engine::focades::analysis::database
         analysis_table_get_all();
         void analysis_table_insert(const record::Analysis &);
         void analysis_table_update(const record::Analysis &);
-        void analysis_table_delete(const std::string &);
+        void analysis_table_delete(const record::Analysis &);
 
-        [[nodiscard]] const bool analysis_table_exists_by_sha256(
-            const record::Analysis &);
         [[nodiscard]] const record::Analysis analysis_table_get_by_id(
             const int);
         [[nodiscard]] const record::Analysis analysis_table_get_by_sha256(
             const std::string &);
+        [[nodiscard]] const bool analysis_table_exists_by_sha256(
+            const std::string &);
 
         [[nodiscard]] const bool family_table_exists();
         void family_table_insert(const record::Family &);
-        void family_table_delete(const int);
+        void family_table_delete(const record::Family &);
 
         [[nodiscard]] const std::vector<record::Family> family_table_get_all();
         [[nodiscard]] const record::Family family_table_get_by_id(const int);
@@ -41,7 +41,7 @@ namespace engine::focades::analysis::database
 
         [[nodiscard]] const bool tag_table_exists();
         void tag_table_insert(const record::Tag &);
-        void tag_table_delete(const int);
+        void tag_table_delete(const record::Tag &);
         void tag_table_update(const record::Tag &);
 
         [[nodiscard]] const std::vector<record::Tag> tag_table_get_all();

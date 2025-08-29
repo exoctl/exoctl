@@ -43,7 +43,6 @@ namespace engine::bridge::endpoints::analysis
             server_->log->warn("Gateway 'Analysis' not enabled");
             return;
         }
-
         analysis.setup(*server_->config, *server_->log);
 
         min_binary_size =
@@ -60,12 +59,10 @@ namespace engine::bridge::endpoints::analysis
 
     void Analysis::load() const
     {
-        if (!enable_) {
-            return;
+        if (enable_) {
+            analysis.load();
+            map_.get_routes(
+                [&](const std::string p_route) { map_.call_route(p_route); });
         }
-
-        analysis.load();
-        map_.get_routes(
-            [&](const std::string p_route) { map_.call_route(p_route); });
     }
 } // namespace engine::bridge::endpoints::analysis

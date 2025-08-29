@@ -179,10 +179,9 @@ namespace engine::bridge::endpoints::analysis
                                               bad_requests.tojson().tostring()};
                     }
 
-                    focades::analysis::database::record::Analysis anal =
-                        analysis.analysis.database
-                            ->analysis_table_get_by_sha256(sha256.value());
-                    if (anal.sha256.empty()) {
+                    if (!analysis.analysis.database
+                             ->analysis_table_exists_by_sha256(
+                                 sha256.value())) {
                         const auto not_found =
                             server::gateway::responses::NotFound().add_field(
                                 "message",
@@ -194,6 +193,8 @@ namespace engine::bridge::endpoints::analysis
                                               not_found.tojson().tostring()};
                     }
 
+                    focades::analysis::database::record::Analysis anal{
+                        .sha256 = sha256.value()};
                     analysis.analysis.remove_analyze(anal);
 
                     const auto accept =
@@ -377,7 +378,7 @@ namespace engine::bridge::endpoints::analysis
                         }
                     }
 
-                    analysis.analysis.database->analysis_table_update(anal);
+                    analysis.analysis.update_analyze(anal, anal);
 
                     const auto accept =
                         server::gateway::responses::Accepted().add_field(
