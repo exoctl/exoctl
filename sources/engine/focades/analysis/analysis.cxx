@@ -95,7 +95,7 @@ namespace engine::focades::analysis
         const record::File &p_file)
     {
         database::record::Analysis analysis;
-        
+
         analysis.owner = p_file.owner;
 
         metadata->parse(p_file.content, [&](metadata::record::DTO *p_dto) {
@@ -170,18 +170,24 @@ namespace engine::focades::analysis
         return analysis;
     }
 
-    void Analysis::file_write(const record::File &p_file)
+    void Analysis::save_analyze(const record::File &p_file,
+                                const database::record::Analysis &p_analysis)
     {
         filesystem::record::EnqueueTask task;
         task.file.content.assign(p_file.content);
         task.file.filename.assign(p_file.filename);
 
-        if (!filesystem::Filesystem::is_exists(task.file)) {
-            filesystem::Filesystem::enqueue_write(task);
-        }
+        (!filesystem::Filesystem::is_exists(task.file))
+            ? filesystem::Filesystem::enqueue_write(task)
+            : (void) 0;
+
+        (database->analysis_table_exists_by_sha256(p_analysis))
+            ? database->analysis_table_update(p_analysis)
+            : database->analysis_table_insert(p_analysis);
     }
 
-    void Analysis::file_read(record::File &p_file)
+    void Analysis::read_analyze(record::File &p_file,
+                                database::record::Analysis &p_analysis)
     {
         filesystem::record::File file;
         file.filename.assign(p_file.filename);
@@ -189,12 +195,35 @@ namespace engine::focades::analysis
             filesystem::Filesystem::read(file);
             p_file.content.assign(file.content);
         }
+
+        p_analysis = database->analysis_table_get_by_sha256(file.filename);
     }
 
-    void Analysis::file_remove(const record::File &p_file)
+    void Analysis::update_analyze(database::record::Analysis &p_analysis,
+                                  database::record::Analysis &p_new_analysis)
     {
+        p_new_analysis.id = p_analysis.id;
+        p_new_analysis.file_name = p_new_analysis.file_name.size() > 0
+                                       ? p_new_analysis.file_name
+                                       : p_analysis.file_name;
+        p_new_analysis.family_id = (p_new_analysis.family_id) != 0
+                                       ? p_new_analysis.family_id
+                                       : p_analysis.family_id;
+        p_new_analysis.description = (p_new_analysis.description.size() > 0)
+                                         ? p_new_analysis.description
+                                         : p_analysis.description;
+        p_new_analysis.owner = p_analysis.owner;
+
+        (database->analysis_table_exists_by_sha256(p_new_analysis))
+            ? database->analysis_table_update(p_new_analysis)
+            : database->analysis_table_insert(p_new_analysis);
+    }
+
+    void Analysis::remove_analyze(const database::record::Analysis &p_analysis)
+    {
+        database->analysis_table_delete(p_analysis.sha256);
         filesystem::record::File file;
-        file.filename.assign(p_file.filename);
+        file.filename.assign(p_analysis.sha256);
         if (filesystem::Filesystem::is_exists(file)) {
             filesystem::Filesystem::remove(file);
         }

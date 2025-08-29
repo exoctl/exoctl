@@ -3,7 +3,6 @@
 #include <engine/database/entitys.hxx>
 #include <string>
 
-
 namespace engine::focades::analysis::database
 {
     namespace record
@@ -54,12 +53,14 @@ namespace engine::focades::analysis::database
 namespace soci
 {
     template <>
-    struct type_conversion<engine::focades::analysis::database::record::Family> {
+    struct type_conversion<
+        engine::focades::analysis::database::record::Family> {
         using base_type = values;
 
-        static void from_base(const engine::database::SociValues &v,
-                              engine::database::SociIndicator /* ind */,
-                              engine::focades::analysis::database::record::Family &family)
+        static void from_base(
+            const engine::database::SociValues &v,
+            engine::database::SociIndicator /* ind */,
+            engine::focades::analysis::database::record::Family &family)
         {
             family.id = v.get<int>("id");
             family.name = v.get<std::string>("name");
@@ -71,28 +72,33 @@ namespace soci
             engine::database::SociValues &v,
             engine::database::SociIndicator &ind)
         {
+            v.set("name", family.id);
             v.set("name", family.name);
             v.set("description", family.description);
             ind = engine::database::SociIndicator::i_ok;
         }
     };
 
-    template <> struct type_conversion<engine::focades::analysis::database::record::Tag> {
+    template <>
+    struct type_conversion<engine::focades::analysis::database::record::Tag> {
         using base_type = values;
 
-        static void from_base(const engine::database::SociValues &v,
-                              engine::database::SociIndicator /* ind */,
-                              engine::focades::analysis::database::record::Tag &tag)
+        static void from_base(
+            const engine::database::SociValues &v,
+            engine::database::SociIndicator /* ind */,
+            engine::focades::analysis::database::record::Tag &tag)
         {
             tag.id = v.get<int>("id");
             tag.name = v.get<std::string>("name");
             tag.description = v.get<std::string>("description");
         }
 
-        static void to_base(const engine::focades::analysis::database::record::Tag &tag,
-                            engine::database::SociValues &v,
-                            engine::database::SociIndicator &ind)
+        static void to_base(
+            const engine::focades::analysis::database::record::Tag &tag,
+            engine::database::SociValues &v,
+            engine::database::SociIndicator &ind)
         {
+            v.set("id", tag.id);
             v.set("name", tag.name);
             v.set("description", tag.description);
             ind = engine::database::SociIndicator::i_ok;
@@ -100,20 +106,23 @@ namespace soci
     };
 
     template <>
-    struct type_conversion<engine::focades::analysis::database::record::AnalysisTag> {
+    struct type_conversion<
+        engine::focades::analysis::database::record::AnalysisTag> {
         using base_type = values;
 
         static void from_base(
             const engine::database::SociValues &v,
             engine::database::SociIndicator /* ind */,
-            engine::focades::analysis::database::record::AnalysisTag &analysis_tag)
+            engine::focades::analysis::database::record::AnalysisTag
+                &analysis_tag)
         {
             analysis_tag.analysis_id = v.get<int>("analysis_id");
             analysis_tag.tag_id = v.get<int>("tag_id");
         }
 
         static void to_base(
-            const engine::focades::analysis::database::record::AnalysisTag &analysis_tag,
+            const engine::focades::analysis::database::record::AnalysisTag
+                &analysis_tag,
             engine::database::SociValues &v,
             engine::database::SociIndicator &ind)
         {
@@ -124,7 +133,8 @@ namespace soci
     };
 
     template <>
-    struct type_conversion<engine::focades::analysis::database::record::Analysis> {
+    struct type_conversion<
+        engine::focades::analysis::database::record::Analysis> {
         using base_type = values;
 
         static void from_base(
@@ -157,10 +167,12 @@ namespace soci
         }
 
         static void to_base(
-            const engine::focades::analysis::database::record::Analysis &analysis,
+            const engine::focades::analysis::database::record::Analysis
+                &analysis,
             engine::database::SociValues &v,
             engine::database::SociIndicator &ind)
         {
+            v.set("id", analysis.id);
             v.set("file_name", analysis.file_name);
             v.set("file_type", analysis.file_type);
             v.set("sha256", analysis.sha256);

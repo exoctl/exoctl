@@ -17,7 +17,7 @@ namespace engine::focades::analysis::threats::av::clamav
     {
         clamav.set_db_rule_fd(config_
                                   ->get("focades.analysis.av."
-                                        "clamav.database.file")
+                                        "clamav.database.path")
                                   .value<std::string>()
                                   .value(),
                               CL_DB_STDOPT | CL_DB_PHISHING |

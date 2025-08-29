@@ -27,10 +27,15 @@ namespace engine::focades::analysis
         void setup(configuration::Configuration &, logging::Logging &);
         void load() const;
 
-        [[nodiscard]] const database::record::Analysis analyze(const record::File &);
-        void file_write(const record::File &);
-        void file_remove(const record::File &);
-        void file_read(record::File &);
+        [[nodiscard]] const database::record::Analysis analyze(
+            const record::File &);
+
+        void save_analyze(const record::File &,
+                          const database::record::Analysis &);
+        void read_analyze(record::File &, database::record::Analysis &);
+        void remove_analyze(const database::record::Analysis &);
+        void update_analyze(database::record::Analysis &,
+                            database::record::Analysis &);
 
         void _plugins() override;
 

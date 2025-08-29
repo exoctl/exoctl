@@ -194,11 +194,7 @@ namespace engine::bridge::endpoints::analysis
                                               not_found.tojson().tostring()};
                     }
 
-                    analysis.analysis.database->analysis_table_delete(
-                        sha256.value());
-                    analysis.analysis.file_remove(
-                        focades::analysis::record::File{.filename =
-                                                            sha256.value()});
+                    analysis.analysis.remove_analyze(anal);
 
                     const auto accept =
                         server::gateway::responses::Accepted().add_field(

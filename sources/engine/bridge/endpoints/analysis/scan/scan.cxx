@@ -36,17 +36,12 @@ namespace engine::bridge::endpoints::analysis
 
                         focades::analysis::database::record::Analysis anal;
                         TRY_BEGIN()
-                        
-                        anal = analysis.analysis.analyze(file);
-                        analysis.analysis.file_write(
-                            {anal.sha256, file.content});
 
-                        (analysis.analysis.database
-                             ->analysis_table_exists_by_sha256(anal))
-                            ? analysis.analysis.database->analysis_table_update(
-                                  anal)
-                            : analysis.analysis.database->analysis_table_insert(
-                                  anal);
+                        anal = analysis.analysis.analyze(file);
+
+                        file.filename.assign(anal.sha256);
+
+                        analysis.analysis.save_analyze(file, anal);
 
                         TRY_END()
                         CATCH(focades::analysis::exception::Scan,
@@ -107,10 +102,11 @@ namespace engine::bridge::endpoints::analysis
 
                     focades::analysis::database::record::Analysis new_anal;
                     focades::analysis::database::record::Analysis anal;
+                    focades::analysis::record::File file;
+                    file.filename = sha256.value();
 
                     TRY_BEGIN()
-                    anal = analysis.analysis.database
-                               ->analysis_table_get_by_sha256(sha256.value());
+                    analysis.analysis.read_analyze(file, anal);
                     if (anal.sha256.empty() ||
                         !filesystem::Filesystem::is_exists({sha256.value()})) {
                         const auto not_found =
@@ -123,25 +119,8 @@ namespace engine::bridge::endpoints::analysis
                                               not_found.tojson().tostring()};
                     }
 
-                    focades::analysis::record::File file;
-                    file.filename = anal.sha256;
-                    analysis.analysis.file_read(file);
-
                     new_anal = analysis.analysis.analyze(file);
-                    new_anal.id = anal.id;
-                    new_anal.file_name = anal.file_name;
-                    new_anal.family_id = (new_anal.family_id) != 0
-                                             ? new_anal.family_id
-                                             : anal.family_id;
-                    new_anal.description = anal.description;
-                    new_anal.owner = anal.owner;
-
-                    (analysis.analysis.database
-                         ->analysis_table_exists_by_sha256(new_anal))
-                        ? analysis.analysis.database->analysis_table_update(
-                              new_anal)
-                        : analysis.analysis.database->analysis_table_insert(
-                              new_anal);
+                    analysis.analysis.update_analyze(anal, new_anal);
 
                     TRY_END()
                     CATCH(focades::analysis::exception::Scan,
@@ -193,8 +172,10 @@ namespace engine::bridge::endpoints::analysis
 
                     TRY_BEGIN()
                     focades::analysis::record::File file;
+                    focades::analysis::database::record::Analysis anal;
+
                     file.filename = sha256.value();
-                    analysis.analysis.file_read(file);
+                    analysis.analysis.read_analyze(file, anal);
 
                     analysis.analysis.clamav->scan(
                         file.content,
