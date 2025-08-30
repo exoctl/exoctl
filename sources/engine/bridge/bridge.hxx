@@ -4,12 +4,10 @@
 #include <LIEF/LIEF.hpp>
 // clang-format on
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
-#include <engine/bridge/entitys.hxx>
-
 #include <engine/bridge/endpoints/plugins/plugins.hxx>
-
+#include <engine/bridge/entitys.hxx>
 #include <engine/bridge/extend/bridge.hxx>
-
+#include <engine/database/database.hxx>
 #include <engine/server/server.hxx>
 #include <memory>
 #include <vector>
@@ -30,11 +28,11 @@ namespace engine
             void setup(server::Server &);
 
             static std::shared_ptr<bridge::endpoints::Plugins> plugins;
-            static std::shared_ptr<bridge::endpoints::Analysis> analysis;
+            static std::shared_ptr<bridge::endpoints::analysis::Analysis> analysis;
 
           private:
-            server::Server *m_server;
-            std::vector<bridge::record::Bridge> m_endpoints;
+            server::Server *server_;
+            std::vector<bridge::record::Bridge> endpoints_;
         };
     } // namespace bridge
 } // namespace engine

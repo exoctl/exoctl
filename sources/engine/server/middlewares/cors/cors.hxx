@@ -29,6 +29,6 @@ namespace engine::server::middlewares::cors
         }
 
       private:
-        configuration::Configuration *m_config;
+        configuration::Configuration *config_;
     };
 } // namespace engine::server::middlewares::cors

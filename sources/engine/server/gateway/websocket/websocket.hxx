@@ -48,16 +48,16 @@ namespace engine::server::gateway::websocket
         const std::size_t size_connections() const;
 
       private:
-        Server *m_server;
-        std::string m_url;
-        websocket::Context m_context;
-        std::mutex m_mtx;
+        Server *server_;
+        std::string url_;
+        websocket::Context context_;
+        std::mutex mtx_;
 
-        on_message_callback m_on_message;
-        on_error_callback m_on_error;
-        on_accept_callback m_on_accept;
-        on_open_callback m_on_open;
-        on_close_callback m_on_close;
+        on_message_callback on_message_;
+        on_error_callback on_error_;
+        on_accept_callback on_accept_;
+        on_open_callback on_open_;
+        on_close_callback on_close_;
 
         void def_close_connection(crow::websocket::connection *,
                                   const std::string &);
@@ -68,4 +68,4 @@ namespace engine::server::gateway::websocket
         void def_error_connection(crow::websocket::connection *,
                                   const std::string &);
     };
-} // namespace engine::server::gateway
+} // namespace engine::server::gateway::websocket

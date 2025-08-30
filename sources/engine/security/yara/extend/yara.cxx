@@ -15,6 +15,34 @@ namespace engine::security::yara::extend
             sol::readonly(&YR_MODULE_IMPORT::module_name));
     }
 
+    void Yara::bind_flags()
+    {
+        plugins::Plugins::lua.state.new_enum<yara::type::Flags>(
+            "YaraFlags",
+            {// Callback message types
+             {"RuleMatching", yara::type::Flags::RuleMatching},
+             {"RuleNotMatching", yara::type::Flags::RuleNotMatching},
+             {"ScanFinished", yara::type::Flags::ScanFinished},
+             {"ImportModule", yara::type::Flags::ImportModule},
+             {"ModuleImported", yara::type::Flags::ModuleImported},
+             {"TooManyMatches", yara::type::Flags::TooManyMatches},
+             {"ConsoleLog", yara::type::Flags::ConsoleLog},
+             {"TooSlowScanning", yara::type::Flags::TooSlowScanning},
+
+             // Callback return codes
+             {"ContinueScan", yara::type::Flags::ContinueScan},
+             {"AbortScan", yara::type::Flags::AbortScan},
+             {"ErrorScan", yara::type::Flags::ErrorScan},
+
+             // Scan flags
+             {"FastMode", yara::type::Flags::FastMode},
+             {"ProcessMemory", yara::type::Flags::ProcessMemory},
+             {"NoTryCatch", yara::type::Flags::NoTryCatch},
+             {"ReportRulesMatching", yara::type::Flags::ReportRulesMatching},
+             {"ReportRulesNotMatching",
+              yara::type::Flags::ReportRulesNotMatching}});
+    }
+
     void Yara::bind_string()
     {
         plugins::Plugins::lua.state.new_usertype<YR_STRING>(
@@ -32,10 +60,10 @@ namespace engine::security::yara::extend
             "length",
             sol::readonly(&YR_STRING::length),
             "string",
-            [](const YR_STRING &s) {
+            sol::property([](const YR_STRING &s) {
                 return std::string(reinterpret_cast<const char *>(s.string),
                                    s.length);
-            },
+            }),
             "identifier",
             sol::readonly(&YR_STRING::identifier));
     }
@@ -215,7 +243,7 @@ namespace engine::security::yara::extend
             [](engine::security::Yara &self,
                const std::string &buffer,
                sol::function func,
-               int flags) {
+               yara::type::Flags flags) {
                 if (!func.valid()) {
                     return;
                 }
@@ -301,5 +329,6 @@ namespace engine::security::yara::extend
         Yara::bind_rule();
         Yara::bind_stream();
         Yara::bind_yara();
+        Yara::bind_flags();
     }
 } // namespace engine::security::yara::extend

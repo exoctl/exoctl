@@ -28,12 +28,13 @@ namespace engine
             //                          float = 0.8f,
             //                          float = 0.0f);
             static const struct llama_model_params load_model_default_params();
-            static const struct llama_context_params load_context_default_params();
+            static const struct llama_context_params
+            load_context_default_params();
 
           private:
-            llama_context *m_context;
-            llama_model *m_model;
-            llama_sampler *m_sampler;
+            llama_context *context_;
+            llama_model *model_;
+            llama_sampler *sampler_;
         };
     } // namespace llama
 } // namespace engine

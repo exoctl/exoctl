@@ -12,7 +12,7 @@ namespace engine
             class Initialize : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Initialize(const std::string &);
@@ -22,7 +22,7 @@ namespace engine
             class Finalize : public interface::IException
             {
               private:
-                const std::string m_error_message;
+                const std::string error_message_;
 
               public:
                 explicit Finalize(const std::string &);

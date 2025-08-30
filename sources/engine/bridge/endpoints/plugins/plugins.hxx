@@ -19,10 +19,10 @@ namespace engine::bridge::endpoints
         void load() const override;
 
       private:
-        server::Server &m_server;
-        mutable map::Map m_map;
+        server::Server &server_;
+        mutable map::Map map_;
 
-        std::unique_ptr<engine::server::gateway::web::Web> m_web_plugins;
+        std::unique_ptr<engine::server::gateway::web::Web> web_plugins_;
 
         void prepare();
         void plugins();

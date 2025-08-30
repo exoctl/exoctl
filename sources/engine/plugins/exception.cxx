@@ -7,33 +7,33 @@ namespace engine
         namespace exception
         {
             LoadPlugin::LoadPlugin(const std::string &p_message)
-                : m_error_message(p_message)
+                : error_message_(p_message)
             {
             }
 
             const char *LoadPlugin::what() const noexcept
             {
-                return m_error_message.c_str();
+                return error_message_.c_str();
             }
 
             LoadLibraries::LoadLibraries(const std::string &p_message)
-                : m_error_message(p_message)
+                : error_message_(p_message)
             {
             }
 
             const char *LoadLibraries::what() const noexcept
             {
-                return m_error_message.c_str();
+                return error_message_.c_str();
             }
 
             Runtime::Runtime(const std::string &p_message)
-                : m_error_message(p_message)
+                : error_message_(p_message)
             {
             }
 
             const char *Runtime::what() const noexcept
             {
-                return m_error_message.c_str();
+                return error_message_.c_str();
             }
 
         } // namespace exception

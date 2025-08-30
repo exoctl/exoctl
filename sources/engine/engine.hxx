@@ -14,19 +14,18 @@
 #include <engine/server/server.hxx>
 #include <engine/signals/signals.hxx>
 #include <engine/version/version.hxx>
-#include <functional>
-#include <unordered_map>
+#include <engine/filesystem/filesystem.hxx>
 
 namespace engine
 {
     class Engine : public interface::IPlugins<Engine>
     {
       private:
-        // signals::Signals m_signals;
-        server::_::Log m_server_log;
-        llama::_::Log m_llama_log;
-        security::av::clamav::_::Log m_clamav_log;
-        parser::binary::lief::_::Log m_lief_log;
+        // signals::Signals signals_;
+        server::_::Log server_log_;
+        llama::_::Log llama_log_;
+        security::av::clamav::_::Log clamav_log_;
+        parser::binary::lief::_::Log lief_log_;
 
       public:
         bool is_running;
@@ -38,6 +37,7 @@ namespace engine
         plugins::Plugins plugins;
         version::Version version;
         bridge::Bridge bridge;
+        filesystem::Filesystem filesystem;
 
         ~Engine();
         Engine();

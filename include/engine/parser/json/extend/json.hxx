@@ -2,7 +2,7 @@
 
 #include <engine/interfaces/iplugins.hxx>
 
-namespace engine::parser::extend
+namespace engine::parser::json::extend
 {
     class Json : public interface::IPlugins<Json>
     {

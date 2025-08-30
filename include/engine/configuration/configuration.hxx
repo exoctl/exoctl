@@ -23,14 +23,14 @@ namespace engine
 
             void setup(const std::string &);
             void load();
-            const parser::Json tojson();
+            const parser::json::Json tojson();
 
             [[nodiscard]] toml::node_view<const toml::node> get(
                 const std::string &path) const;
 
           private:
-            std::string m_path;
-            toml::table m_toml;
+            std::string path_;
+            toml::table toml_;
         };
     } // namespace configuration
 } // namespace engine

@@ -1,25 +1,25 @@
-#include <engine/bridge/exception.hxx>
 #include <engine/bridge/bridge.hxx>
+#include <engine/bridge/exception.hxx>
 
 namespace engine
 {
     namespace bridge
     {
         std::shared_ptr<bridge::endpoints::Plugins> Bridge::plugins;
-        std::shared_ptr<bridge::endpoints::Analysis> Bridge::analysis(
-            std::make_shared<bridge::endpoints::Analysis>());
+        std::shared_ptr<bridge::endpoints::analysis::Analysis> Bridge::analysis(
+            std::make_shared<bridge::endpoints::analysis::Analysis>());
 
         void Bridge::setup(server::Server &p_server)
         {
-            m_server = &p_server;
+            server_ = &p_server;
 
-            analysis->setup(*m_server);
-            plugins = std::make_shared<bridge::endpoints::Plugins>(*m_server);
+            analysis->setup(*server_);
+            plugins = std::make_shared<bridge::endpoints::Plugins>(*server_);
         }
 
         void Bridge::load()
         {
-            m_server->log->info("Loading Defaults Bridges...");
+            server_->log->info("Loading Defaults Bridges ...");
 
             TRY_BEGIN()
 
@@ -28,15 +28,15 @@ namespace engine
 
             TRY_END()
             CATCH(std::bad_alloc, {
-                m_server->log->error("{}", e.what());
+                server_->log->error("{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::runtime_error, {
-                m_server->log->error("{}", e.what());
+                server_->log->error("{}", e.what());
                 throw exception::Abort(e.what());
             })
             CATCH(std::exception, {
-                m_server->log->warn("{}", e.what());
+                server_->log->warn("{}", e.what());
                 throw exception::ParcialAbort(e.what());
             })
         }

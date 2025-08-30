@@ -12,9 +12,11 @@ documentation/doxygen/*
 tests/*.sqlite3
 tests/inspector
 *~
+files
 .cache
 *.autosave
 *.a
+*yarc
 *.core
 *.moc
 *.o
@@ -42,7 +44,6 @@ app/*.deb
 *.*#
 core
 !core/
-tags
 .DS_Store
 .directory
 *.debug
@@ -89,7 +90,8 @@ CMakeLists.txt.user*
 
 # Python byte code
 *.pyc
-
+bin
+lib
 # Binaries
 # --------
 *.dll

@@ -4,6 +4,7 @@ include_directories(
     ../libraries
     ../sources
     ../
+    ../libraries/tlsh/include
     ../libraries/sol2/include
     ../libraries/lua
     ../libraries/tomlplusplus/include
@@ -12,5 +13,7 @@ include_directories(
     ../libraries/capstone-engine/include
     ../libraries/signatures/include
     ../libraries/llama/include
+    ../libraries/soci/include
     ../libraries/llama/ggml/include
+    /usr/include/mysql
 )

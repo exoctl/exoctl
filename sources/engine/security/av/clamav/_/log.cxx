@@ -2,19 +2,19 @@
 
 namespace engine::security::av::clamav::_
 {
-    configuration::Configuration Log::m_config;
-    logging::Logging Log::m_log;
+    configuration::Configuration Log::config_;
+    logging::Logging Log::log_;
 
     void Log::setup(configuration::Configuration &p_config,
                     logging::Logging &p_log)
 
     {
-        m_config = p_config;
-        m_log = p_log;
+        config_ = p_config;
+        log_ = p_log;
 
-        m_log.create_logger(
-            m_config.get("logging.type").value<std::string>().value(),
-            m_config.get("clamav._.log.name").value<std::string>().value());
+        log_.create_logger(
+            config_.get("logging.type").value<std::string>().value(),
+            config_.get("clamav._.log.name").value<std::string>().value());
 
         cl_set_clcb_msg(&Log::log);
     }
@@ -26,29 +26,29 @@ namespace engine::security::av::clamav::_
     {
         switch (severity) {
             case CL_MSG_ERROR:
-                m_log
-                    .get_logger(m_config.get("clamav._.log.name")
+                log_
+                    .get_logger(config_.get("clamav._.log.name")
                                     .value<std::string>()
                                     .value())
                     ->error("{}", p_msg);
                 break;
             case CL_MSG_WARN:
-                m_log
-                    .get_logger(m_config.get("clamav._.log.name")
+                log_
+                    .get_logger(config_.get("clamav._.log.name")
                                     .value<std::string>()
                                     .value())
                     ->warn("{}", p_msg);
                 break;
             case CL_MSG_INFO_VERBOSE:
-                m_log
-                    .get_logger(m_config.get("clamav._.log.name")
+                log_
+                    .get_logger(config_.get("clamav._.log.name")
                                     .value<std::string>()
                                     .value())
                     ->debug("{}", p_msg);
                 break;
             default:
-                m_log
-                    .get_logger(m_config.get("clamav._.log.name")
+                log_
+                    .get_logger(config_.get("clamav._.log.name")
                                     .value<std::string>()
                                     .value())
                     ->debug("{}", p_msg);
