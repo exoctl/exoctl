@@ -2,21 +2,21 @@
 
 namespace engine::bridge::exception
 {
-    Abort::Abort(const std::string &p_message) : m_error_message(p_message)
+    Abort::Abort(const std::string &p_message) : error_message_(p_message)
     {
     }
     const char *Abort::what() const noexcept
     {
-        return m_error_message.c_str();
+        return error_message_.c_str();
     }
 
     ParcialAbort::ParcialAbort(const std::string &p_message)
-        : m_error_message(p_message)
+        : error_message_(p_message)
     {
     }
     const char *ParcialAbort::what() const noexcept
     {
-        return m_error_message.c_str();
+        return error_message_.c_str();
     }
 
 } // namespace engine::bridge::exception

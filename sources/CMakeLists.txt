@@ -26,7 +26,13 @@ set(EXOCTL_DEPENDENCIES
     LIEF::LIEF
     clamav
     capstone
+    mysqlclient
     ssl
+    soci_core
+    soci_mysql
+    soci_postgresql
+    soci_sqlite3
+    tlsh_static
     magic
     sol2
     pthread
@@ -42,7 +48,6 @@ function(set_compile_flags target)
             -fmodules-ts
             -ftree-vectorize
             -DCROW_ENABLE_SSL
-            -mavx
         )
     else()
         message(STATUS "[exoctl] -- Building ${target} with debug flags")

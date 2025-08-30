@@ -20,8 +20,8 @@ namespace engine
                 void setup(configuration::Configuration &, logging::Logging &);
 
               private:
-                configuration::Configuration m_config;
-                logging::Logging m_log;
+                configuration::Configuration config_;
+                logging::Logging log_;
             };
         } // namespace _
     } // namespace llama

@@ -5,8 +5,7 @@
 
 namespace engine::server::extend
 {
-    class Server :
-                   public interface::IPlugins<Server>
+    class Server : public interface::IPlugins<Server>
 
     {
       public:

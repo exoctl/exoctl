@@ -30,8 +30,8 @@ namespace engine
             static lua::Lua lua;
 
           private:
-            static configuration::Configuration m_config;
-            static logging::Logging m_log;
+            static configuration::Configuration config_;
+            static logging::Logging log_;
 
             void run_plugins_thread();
             void load_libraries();

@@ -9,7 +9,7 @@ namespace engine::security::av::clamav
         class Initialize : public interface::IException
         {
           private:
-            const std::string m_error_message;
+            const std::string error_message_;
 
           public:
             explicit Initialize(const std::string &);
@@ -19,7 +19,7 @@ namespace engine::security::av::clamav
         class Scan : public interface::IException
         {
           private:
-            const std::string m_error_message;
+            const std::string error_message_;
 
           public:
             explicit Scan(const std::string &);
@@ -29,7 +29,7 @@ namespace engine::security::av::clamav
         class LoadRules : public interface::IException
         {
           private:
-            const std::string m_error_message;
+            const std::string error_message_;
 
           public:
             explicit LoadRules(const std::string &);
@@ -39,7 +39,7 @@ namespace engine::security::av::clamav
         class SetDbRules : public interface::IException
         {
           private:
-            const std::string m_error_message;
+            const std::string error_message_;
 
           public:
             explicit SetDbRules(const std::string &);

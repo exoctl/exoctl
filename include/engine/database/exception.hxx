@@ -7,7 +7,7 @@ namespace engine::database::exception
     class Initialize : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Initialize(const std::string &);
@@ -17,7 +17,7 @@ namespace engine::database::exception
     class Migrations : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Migrations(const std::string &);
@@ -27,7 +27,7 @@ namespace engine::database::exception
     class Schema : public interface::IException
     {
       private:
-        const std::string m_error_message;
+        const std::string error_message_;
 
       public:
         explicit Schema(const std::string &);

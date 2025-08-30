@@ -34,8 +34,8 @@ namespace engine::memory
     }
 
     void Memory::protect(void *p_address,
-                               const size_t p_len,
-                               const unsigned int p_prot)
+                         const size_t p_len,
+                         const unsigned int p_prot)
     {
         if (mprotect(p_address, p_len, p_prot) < 0) {
             throw exception::Protect("mprotect() failed: " +

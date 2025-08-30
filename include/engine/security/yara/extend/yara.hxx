@@ -13,6 +13,7 @@ namespace engine::security::yara::extend
         void _plugins() override;
 
       private:
+        inline void bind_flags();
         inline void bind_import();
         inline void bind_string();
         inline void bind_namespace();

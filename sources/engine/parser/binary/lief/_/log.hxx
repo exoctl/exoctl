@@ -17,8 +17,8 @@ namespace engine::parser::binary::lief::_
         void log(std::string, ::LIEF::logging::LEVEL) override;
 
       private:
-        configuration::Configuration m_config;
-        logging::Logging m_log;
+        configuration::Configuration config_;
+        logging::Logging log_;
 
       protected:
         void active_level(::LIEF::logging::LEVEL);

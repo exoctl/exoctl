@@ -30,6 +30,6 @@ namespace engine::server::gateway::websocket
         const std::string get_subprotocol(crow::websocket::connection *) const;
 
       private:
-        std::unordered_set<crow::websocket::connection *> m_context;
+        std::unordered_set<crow::websocket::connection *> context_;
     };
-} // namespace engine::server::gateway::websocket::Websocket
+} // namespace engine::server::gateway::websocket

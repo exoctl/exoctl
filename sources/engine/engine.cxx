@@ -30,14 +30,15 @@ namespace engine
         logging = p_log;
         configuration = p_config;
 
+        filesystem.setup(configuration, logging);
         database.setup(configuration, logging);
         server.setup(configuration, logging);
         plugins.setup(configuration, logging);
-        m_clamav_log.setup(configuration, logging);
-        m_llama_log.setup(configuration, logging);
-        m_lief_log.setup(configuration, logging);
-        m_server_log.setup(configuration, logging);
         bridge.setup(server);
+        clamav_log_.setup(configuration, logging);
+        llama_log_.setup(configuration, logging);
+        lief_log_.setup(configuration, logging);
+        server_log_.setup(configuration, logging);
 
         _plugins();
     }
@@ -68,18 +69,22 @@ namespace engine
             "version",
             &Engine::version,
             "database",
-            &Engine::database);
+            &Engine::database,
+            "filesystem",
+            &Engine::filesystem);
 
         plugins::Plugins::lua.state["_engine"] = this;
 
+        filesystem::extend::Filesystem::plugins();
         server::extend::Server::plugins();
         logging::extend::Logging::plugins();
         configuration::extend::Configuration::plugins();
         llama::extend::Llama::plugins();
         crypto::extend::Sha::plugins();
         security::yara::extend::Yara::plugins();
+        security::av::clamav::extend::Clamav::plugins();
         magic::extend::Magic::plugins();
-        parser::extend::Json::plugins();
+        parser::json::extend::Json::plugins();
         bridge::extend::Bridge::plugins();
         version::extend::Version::plugins();
         database::extend::Database::plugins();
@@ -87,6 +92,7 @@ namespace engine
 
     void Engine::load()
     {
+        filesystem.load();
         database.load();
         server.load();
         bridge.load();

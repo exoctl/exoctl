@@ -2,43 +2,43 @@
 
 namespace engine::server::gateway::websocket
 {
-    Context::Context() : m_context(0)
+    Context::Context() : context_(0)
     {
     }
 
     const void Context::erase(crow::websocket::connection *p_conn)
     {
-        m_context.erase(p_conn);
+        context_.erase(p_conn);
     }
 
     void Context::broadcast_text(crow::websocket::connection *p_conn,
                                  const std::string p_msg) const
     {
-        if (m_context.find(p_conn) != m_context.end())
+        if (context_.find(p_conn) != context_.end())
             p_conn->send_text(p_msg);
     }
 
     void Context::broadcast_binary(crow::websocket::connection *p_conn,
                                    const std::string p_msg) const
     {
-        if (m_context.find(p_conn) != m_context.end())
+        if (context_.find(p_conn) != context_.end())
             p_conn->send_binary(p_msg);
     }
 
     const void Context::add(crow::websocket::connection *p_conn)
     {
-        m_context.insert(p_conn);
+        context_.insert(p_conn);
     }
 
     const std::size_t Context::size() const
     {
-        return m_context.size();
+        return context_.size();
     }
 
     const std::string Context::get_remote_ip(
         crow::websocket::connection *p_conn) const
     {
-        return (m_context.find(p_conn) != m_context.end())
+        return (context_.find(p_conn) != context_.end())
                    ? p_conn->get_remote_ip()
                    : "";
     }
@@ -46,7 +46,7 @@ namespace engine::server::gateway::websocket
     const std::string Context::get_subprotocol(
         crow::websocket::connection *p_conn) const
     {
-        return (m_context.find(p_conn) != m_context.end())
+        return (context_.find(p_conn) != context_.end())
                    ? p_conn->get_subprotocol()
                    : "";
     }
@@ -55,9 +55,9 @@ namespace engine::server::gateway::websocket
                               uint16_t p_code,
                               const std::string &p_message)
     {
-        if (m_context.find(p_conn) != m_context.end()) {
+        if (context_.find(p_conn) != context_.end()) {
             p_conn->close(p_message, p_code);
             Context::erase(p_conn);
         }
     }
-} // namespace engine::server::gateway::websocket::Websocket
+} // namespace engine::server::gateway::websocket

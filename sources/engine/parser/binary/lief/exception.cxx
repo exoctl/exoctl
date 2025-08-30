@@ -2,12 +2,12 @@
 
 namespace engine::parser::binary::lief::exception
 {
-    Parser::Parser(const std::string &p_message) : m_error_message(p_message)
+    Parser::Parser(const std::string &p_message) : error_message_(p_message)
     {
     }
 
     const char *Parser::what() const noexcept
     {
-        return m_error_message.c_str();
+        return error_message_.c_str();
     }
 } // namespace engine::parser::binary::lief::exception

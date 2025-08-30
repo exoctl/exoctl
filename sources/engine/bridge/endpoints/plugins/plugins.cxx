@@ -1,11 +1,11 @@
 #include <engine/bridge/endpoints/plugins/plugins.hxx>
 #include <engine/plugins/plugins.hxx>
-#include <engine/server/gateway/websocket/responses/responses.hxx>
+#include <engine/server/gateway/responses/responses.hxx>
 
 namespace engine::bridge::endpoints
 {
     Plugins::Plugins(server::Server &p_server)
-        : m_server(p_server), m_map(BASE_PLUGINS)
+        : server_(p_server), map_(BASE_PLUGINS)
     {
         Plugins::prepare();
 
@@ -15,55 +15,72 @@ namespace engine::bridge::endpoints
 
     void Plugins::load() const
     {
-        m_map.get_routes(
-            [&](const std::string p_route) { m_map.call_route(p_route); });
+        map_.get_routes(
+            [&](const std::string p_route) { map_.call_route(p_route); });
     }
 
     void Plugins::prepare()
     {
-        m_server.log->info("Preparing gateway plugins routes ...");
+        server_.log->info("Preparing gateway plugins routes ...");
     }
 
     void Plugins::plugins()
     {
-        m_map.add_route(BASE_PLUGINS, [&]() {
-            m_web_plugins =
+        map_.add_route(BASE_PLUGINS, [&]() {
+            web_plugins_ =
                 std::make_unique<engine::server::gateway::web::Web>();
-            m_web_plugins->setup(
-                &m_server,
+            web_plugins_->setup(
+                &server_,
                 BASE_PLUGINS,
                 [&](const crow::request &req) -> const crow::response {
                     if (req.method != crow::HTTPMethod::GET) {
-                        return crow::response{405};
+                        auto method_not_allowed =
+                            server::gateway::responses::MethodNotAllowed();
+                        return crow::response{
+                            method_not_allowed.code(),
+                            "application/json",
+                            method_not_allowed.tojson().tostring()};
                     }
 
-                    if (m_server.config->get("plugins.enable")
-                            .value<bool>()
-                            .value()) {
-                        crow::json::wvalue x;
+                    if (!server_.config->get("plugins.enable")
+                             .value<bool>()
+                             .value()) {
+                        auto service_unavailable =
+                            server::gateway::responses::ServiceUnavailable();
+                        return crow::response{
+                            service_unavailable.code(),
+                            "application/json",
+                            service_unavailable.tojson().tostring()};
+                    }
 
-                        x["lua"]["state_memory"] = std::format(
-                            "0x{:x}",
+                    parser::json::Json json;
+                    parser::json::Json lua;
+                    lua.add("state_memory",
                             plugins::Plugins::lua.state.memory_used());
 
-                        std::vector<crow::json::wvalue> scripts_json;
-                        for (const auto &script :
-                             plugins::Plugins::lua.scripts) {
-                            scripts_json.push_back(
-                                {{"path", script.path},
-                                 {"name", script.name},
-                                 {"type",
-                                  script.type == engine::lua::record::script::
-                                                     SCRIPT_FILE
-                                      ? "file"
-                                      : "buffer"}});
-                        }
-
-                        x["lua"]["scripts"] = std::move(scripts_json);
-                        return x;
+                    parser::json::Json scripts_json;
+                    for (const auto &script : plugins::Plugins::lua.scripts) {
+                        parser::json::Json script_record;
+                        script_record.add("path", script.path);
+                        script_record.add("name", script.name);
+                        script_record.add(
+                            "type",
+                            script.type ==
+                                    engine::lua::record::script::SCRIPT_FILE
+                                ? "file"
+                                : "buffer");
+                        scripts_json.add(script_record);
                     }
 
-                    return crow::response(crow::status::SERVICE_UNAVAILABLE);
+                    lua.add("scripts", scripts_json);
+                    json.add("lua", lua);
+
+                    auto connected =
+                        server::gateway::responses::Connected().add_field(
+                            "plugins", json);
+                    return crow::response{connected.code(),
+                                          "application/json",
+                                          connected.tojson().tostring()};
                 });
         });
     }

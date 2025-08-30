@@ -2,6 +2,7 @@
 
 #include <engine/magic/extend/magic.hxx>
 #include <magic.h>
+#include <mutex>
 #include <string>
 
 namespace engine::magic
@@ -19,6 +20,7 @@ namespace engine::magic
         const char *mime(const std::string &buffer);
 
       private:
-        magic_t m_cookie;
+        magic_t cookie_;
+        std::mutex mutex_;
     };
 } // namespace engine::magic

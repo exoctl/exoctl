@@ -1,36 +1,42 @@
 #include <engine/parser/json/json.hxx>
 #include <engine/plugins/plugins.hxx>
 
-namespace engine
+namespace engine::parser::json
 {
-    namespace parser
+    Json::Json()
     {
-        Json::Json()
-        {
-            m_document.SetObject();
-        }
+        document.SetObject();
+    }
 
-        Json::Json(const parser::Json &other)
-        {
-            m_document.CopyFrom(other.m_document, m_allocator);
-        }
+    Json::Json(const parser::json::Json &other)
+    {
+        document.CopyFrom(other.document, allocator_);
+    }
 
-        void Json::clear()
-        {
-            m_document.Clear();
-        }
+    void Json::clear()
+    {
+        document.Clear();
+    }
 
-        void Json::from_string(const std::string &json_str)
-        {
-            m_document.Parse(json_str.c_str());
-        }
+    void Json::from_string(const std::string &json_str)
+    {
+        document.Parse(json_str.c_str());
+    }
 
-        std::string Json::tostring() const
-        {
-            rapidjson::StringBuffer buffer;
-            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            m_document.Accept(writer);
-            return buffer.GetString();
+    Json &Json::operator=(const Json &other)
+    {
+        if (this != &other) {
+            document.SetObject();
+            document.CopyFrom(other.document, document.GetAllocator());
         }
-    } // namespace parser
-} // namespace engine
+        return *this;
+    }
+
+    std::string Json::tostring() const
+    {
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        document.Accept(writer);
+        return buffer.GetString();
+    }
+} // namespace engine::parser::json

@@ -1,0 +1,11 @@
+build
+logs
+.clang-format
+appimage
+README.md
+assets
+scripts
+packages
+exoctl.db
+.readthedocs.yaml
+docs

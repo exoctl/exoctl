@@ -6,25 +6,27 @@ namespace engine
 {
     namespace magic
     {
-        Magic::Magic() : m_cookie(magic_open(MAGIC_MIME))
+        Magic::Magic() : cookie_(magic_open(MAGIC_MIME))
         {
-            if (IS_NULL(m_cookie))
+            if (IS_NULL(cookie_))
                 throw magic::exception::Initialize(
                     "magic_open() failed to return a cookie");
 
-            if (magic_load(m_cookie, nullptr) != 0)
+            if (magic_load(cookie_, nullptr) != 0)
                 throw magic::exception::Initialize(
                     "magic_load() failed to load magic database");
         }
 
         Magic::~Magic()
         {
-            magic_close(m_cookie);
+            std::lock_guard<std::mutex> lock(mutex_);
+            magic_close(cookie_);
         }
 
         const char *Magic::mime(const std::string &p_buffer)
         {
-            return magic_buffer(m_cookie, p_buffer.c_str(), p_buffer.size());
+            std::lock_guard<std::mutex> lock(mutex_);
+            return magic_buffer(cookie_, p_buffer.c_str(), p_buffer.size());
         }
     } // namespace magic
 } // namespace engine

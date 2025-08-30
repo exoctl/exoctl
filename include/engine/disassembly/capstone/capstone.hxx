@@ -30,9 +30,9 @@ namespace engine
             [[nodiscard]] const std::string mode_to_string(const cs_mode);
 
           private:
-            csh m_handle;
-            cs_arch m_arch;
-            cs_mode m_mode;
+            csh handle_;
+            cs_arch arch_;
+            cs_mode mode_;
         };
     } // namespace disassembly
 } // namespace engine

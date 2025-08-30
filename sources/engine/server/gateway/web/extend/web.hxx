@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/interfaces/iplugins.hxx>
+#include <mutex>
 
 namespace engine::server::gateway::web::extend
 {
@@ -12,4 +13,4 @@ namespace engine::server::gateway::web::extend
       private:
         void bind_web();
     };
-} // namespace engine::server::gateway::web::Web::extend
+} // namespace engine::server::gateway::web::extend

@@ -5,8 +5,7 @@
 
 namespace engine::configuration::extend
 {
-    class Configuration : 
-                          public interface::IPlugins<Configuration>
+    class Configuration : public interface::IPlugins<Configuration>
     {
       public:
         void _plugins() override;

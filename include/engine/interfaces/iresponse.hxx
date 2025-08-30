@@ -1,40 +1,57 @@
 #pragma once
 
 #include <engine/parser/json/json.hxx>
+#include <string>
 
 namespace engine::interface
 {
-    // CRTP (Curiously Recurring Template Pattern)
     template <typename Derived> class IResponse
     {
       public:
-        inline static const parser::Json to_json()
+        explicit IResponse(const std::string &p_status = "", int p_code = -1)
+            : code_(p_code), status_(p_status)
         {
-            return Derived()._tojson();
-        }
-
-        inline static const int code()
-        {
-            return Derived()._code();
-        }
-
-        inline static const std::string status()
-        {
-            return Derived()._status();
-        }
-
-        inline static const std::string message()
-        {
-            return Derived()._message();
         }
 
         virtual ~IResponse() = default;
-        explicit IResponse() = default;
+
+        template <typename T>
+        inline Derived &add_field(const std::string &key, const T &value)
+        {
+            json_.add(key, value);
+            return *static_cast<Derived *>(this);
+        }
+
+        inline const parser::json::Json tojson() const
+        {
+            parser::json::Json json_data = json_;
+
+            json_data.add("code", code());
+            json_data.add("status", status());
+
+            return json_data;
+        }
+
+        inline const int code() const
+        {
+            return (code_ == -1) ? static_cast<const Derived *>(this)->_code()
+                                  : code_;
+        }
+
+        inline const std::string status() const
+        {
+            return status_.empty()
+                       ? static_cast<const Derived *>(this)->_status()
+                       : status_;
+        }
+
+      protected:
+        int code_;
+        std::string status_;
+        parser::json::Json json_;
 
       private:
-        virtual const parser::Json _tojson() const = 0;
         virtual const int _code() const = 0;
         virtual const std::string _status() const = 0;
-        virtual const std::string _message() const = 0;
     };
 } // namespace engine::interface
