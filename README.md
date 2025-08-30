@@ -2,10 +2,6 @@
   <img src="assets/banner.png" width="250" alt="exoctl Engine Banner">
 </p>
 
-<h1 align="center">
-  <span style="color: #EF4444;">Threat</span><span style="color: #F8F8F2;">DB</span>
-</h1>
-
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
 
 <p align="center">
