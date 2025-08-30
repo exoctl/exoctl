@@ -36,12 +36,16 @@ cmake ..
 make
 ```
 
+Run engine `EXOCTLDIR=./sources/app/  ./build/sources/appexoctl`
+
 #### Using Dockerfile
 
 ```
 sudo docker build -t engine .
-sudo docker run --name engine engine
+sudo docker run --name engine -p 8081:8081 engine
 ```
+
+
 ## Plugin Examples
 
 ### Configuration
@@ -90,7 +94,7 @@ end, YaraFlags.FAST_MODE)
 ```lua
 Web.new(server, "/scan", function (req)
     return Response.new(200, "OK")
-end, HTTPMethod.Post)
+end)
 ```
 
 ---
@@ -265,11 +269,11 @@ Example Response:
 ```
 
 
-
 ## Associated Projects
 
 You can interact with your engine through the **exoctl-cli** 
 
 - **[exoctl-cli](https://github.com/exoctl/exoctl-cli)**: A command-line interface to seamlessly communicate with your engine and manage interactions with your system.
+- **[threat-db](https://github.com/exoctl/threatdb)**: Graphical interface running on a web server with the intention of using the engine to be a malware manager
 
 Feel free to check out these repositories for more information and contributions.

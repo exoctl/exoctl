@@ -294,8 +294,12 @@ namespace engine::bridge::endpoints::analysis
                                         "Family '{}' not found, skipping",
                                         *family_name));
                                 }
+                            } else {
+                                anal.family_id = 0;
                             }
                         }
+                    } else {
+                        anal.family_id = 0;
                     }
 
                     if (auto tags_array =

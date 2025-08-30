@@ -34,3 +34,5 @@ RUN freshclam
 RUN mkdir -p build && cd build && \
     cmake .. && \
     make
+
+CMD EXOCTLDIR=./sources/app/ ./build/sources/appexoctl
