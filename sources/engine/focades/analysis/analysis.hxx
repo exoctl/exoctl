@@ -37,9 +37,13 @@ namespace engine::focades::analysis
         void update_analyze(database::record::Analysis &,
                             database::record::Analysis &);
 
-        /*
-          NOTE: I need create functions for manipulate tags and familys of analysis
-        */
+        void save_tags(const database::record::Tag &);
+        void update_tags(database::record::Tag &);
+        void remove_tags(const database::record::Tag &);
+
+        void save_families(const database::record::Family &);
+        void update_families(database::record::Family &);
+        void remove_families(const database::record::Family &);
 
         void _plugins() override;
 

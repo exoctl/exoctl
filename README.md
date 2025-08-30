@@ -116,7 +116,8 @@ Description:
 Fetch all analysis records from the engine.
 
 Example Request:
-curl -X GET http://127.0.0.1:8081/engine/v1/analysis/records | jq
+
+`curl -X GET http://127.0.0.1:8081/engine/v1/analysis/records | jq`
 
 Example Response:
 ```json
@@ -249,6 +250,7 @@ Request Body:
   "description": "Banking Trojan"
 }
 ```
+
 Example Response:
 ```json
 {
@@ -261,6 +263,8 @@ Example Response:
   "status": "created"
 }
 ```
+
+
 
 ## Associated Projects
 

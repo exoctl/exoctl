@@ -258,17 +258,41 @@ namespace engine::focades::analysis::database
 
         sql << "DELETE FROM family WHERE id = :id", soci::use(p_family.id);
 
-        log_->info("Successfully deleted family record for ID '{}'", p_family.id);
+        log_->info("Successfully deleted family record for ID '{}'",
+                   p_family.id);
         TRY_END()
         CATCH(engine::database::SociError, {
-            log_->error(
-                "Failed to delete family for ID '{}': {}", p_family.id, e.what());
+            log_->error("Failed to delete family for ID '{}': {}",
+                        p_family.id,
+                        e.what());
         })
     }
 
     const bool Database::family_table_exists()
     {
         return engine::database::Database::is_table_exists("family");
+    }
+
+    void Database::family_table_update(const record::Family &p_family)
+    {
+        if (!family_table_exists()) {
+            log_->error("Table for family not found, cannot update "
+                        "record for name '{}'",
+                        p_family.name);
+            return;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        sql << "UPDATE family SET name = :name, description = :description "
+               "WHERE id = :id",
+            soci::use(p_family);
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to update family for name '{}': {}",
+                        p_family.name,
+                        e.what());
+        })
     }
 
     void Database::family_table_insert(const record::Family &p_family)
@@ -376,6 +400,72 @@ namespace engine::focades::analysis::database
         return {};
     }
 
+    const bool Database::family_table_exists_by_name(const std::string &p_name)
+    {
+        if (!family_table_exists()) {
+            log_->error("Table for family not found, cannot check existence "
+                        "for name '{}'",
+                        p_name);
+            return false;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        int exists;
+        sql << "SELECT EXISTS (SELECT 1 FROM family WHERE name = :name)",
+            soci::use(p_name), soci::into(exists);
+
+        if (sql.got_data()) {
+            return exists != 0;
+        } else {
+            log_->warn("No result returned when checking existence for family "
+                       "name '{}'",
+                       p_name);
+            return false;
+        }
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to check existence for family name '{}': {}",
+                        p_name,
+                        e.what());
+        })
+
+        return false;
+    }
+
+    const bool Database::family_table_exists_by_id(const int p_id)
+    {
+        if (!family_table_exists()) {
+            log_->error("Table for family not found, cannot check existence "
+                        "for ID '{}'",
+                        p_id);
+            return false;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        int exists;
+        sql << "SELECT EXISTS (SELECT 1 FROM family WHERE id = :id)",
+            soci::use(p_id), soci::into(exists);
+
+        if (sql.got_data()) {
+            return exists != 0;
+        } else {
+            log_->warn(
+                "No result returned when checking existence for family ID '{}'",
+                p_id);
+            return false;
+        }
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to check existence for family ID '{}': {}",
+                        p_id,
+                        e.what());
+        })
+
+        return false;
+    }
+
     void Database::tag_table_delete(const record::Tag &p_tag)
     {
         if (!tag_table_exists()) {
@@ -403,7 +493,8 @@ namespace engine::focades::analysis::database
         log_->info("Successfully deleted tag record for ID '{}'", p_tag.id);
         TRY_END()
         CATCH(engine::database::SociError, {
-            log_->error("Failed to delete tag for ID '{}': {}", p_tag.id, e.what());
+            log_->error(
+                "Failed to delete tag for ID '{}': {}", p_tag.id, e.what());
         })
     }
 
@@ -476,6 +567,72 @@ namespace engine::focades::analysis::database
               { log_->error("Failed to retrieve tag records: {}", e.what()); })
 
         return results;
+    }
+
+    const bool Database::tag_table_exists_by_name(const std::string &p_name)
+    {
+        if (!tag_table_exists()) {
+            log_->error("Table for tags not found, cannot check existence for "
+                        "name '{}'",
+                        p_name);
+            return false;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        int exists;
+        sql << "SELECT EXISTS (SELECT 1 FROM tags WHERE name = :name)",
+            soci::use(p_name), soci::into(exists);
+
+        if (sql.got_data()) {
+            return exists != 0;
+        } else {
+            log_->warn(
+                "No result returned when checking existence for tag name '{}'",
+                p_name);
+            return false;
+        }
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to check existence for tag name '{}': {}",
+                        p_name,
+                        e.what());
+        })
+
+        return false;
+    }
+
+    const bool Database::tag_table_exists_by_id(const int p_id)
+    {
+        if (!tag_table_exists()) {
+            log_->error(
+                "Table for tags not found, cannot check existence for ID '{}'",
+                p_id);
+            return false;
+        }
+
+        TRY_BEGIN()
+        engine::database::Soci &sql = engine::database::Database::exec();
+        int exists;
+        sql << "SELECT EXISTS (SELECT 1 FROM tags WHERE id = :id)",
+            soci::use(p_id), soci::into(exists);
+
+        if (sql.got_data()) {
+            return exists != 0;
+        } else {
+            log_->warn(
+                "No result returned when checking existence for tag ID '{}'",
+                p_id);
+            return false;
+        }
+        TRY_END()
+        CATCH(engine::database::SociError, {
+            log_->error("Failed to check existence for tag ID '{}': {}",
+                        p_id,
+                        e.what());
+        })
+
+        return false;
     }
 
     const record::Tag Database::tag_table_get_by_id(const int p_id)

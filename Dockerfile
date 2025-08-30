@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu
 
 RUN apt-get update && \
     apt-get install -y \
@@ -15,13 +15,15 @@ RUN apt-get update && \
         libmysqlclient-dev \
         libpq-dev \
         clamav \
-        libpqxx \
+        libpqxx-dev \
         libasio-dev
 
 RUN curl -LO https://github.com/Kitware/CMake/releases/download/v3.29.4/cmake-3.29.4-linux-x86_64.sh && \
     chmod +x cmake-3.29.4-linux-x86_64.sh && \
     ./cmake-3.29.4-linux-x86_64.sh --skip-license --prefix=/usr/local && \
     rm cmake-3.29.4-linux-x86_64.sh
+
+RUN rm   /usr/bin/g++  && ln -s /usr/bin/g++-14 /usr/bin/g++ 
 
 COPY . /app
 WORKDIR /app

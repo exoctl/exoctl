@@ -1,3 +1,4 @@
+#include "exception.hxx"
 #include <engine/bridge/endpoints/analysis/analysis.hxx>
 #include <engine/bridge/exception.hxx>
 #include <engine/crypto/tlsh.hxx>
@@ -191,7 +192,11 @@ namespace engine::focades::analysis
     {
         filesystem::record::File file;
         file.filename.assign(p_file.filename);
-        if (filesystem::Filesystem::is_exists(file)) {
+
+        if (!filesystem::Filesystem::is_exists(file)) {
+            log_->warn("File with sha256 '{}' does not exist, cannot read",
+                       p_file.filename);
+        } else {
             filesystem::Filesystem::read(file);
             p_file.content.assign(file.content);
         }
@@ -223,9 +228,88 @@ namespace engine::focades::analysis
     {
         filesystem::record::File file;
         file.filename.assign(p_analysis.sha256);
-        if (filesystem::Filesystem::is_exists(file)) {
+
+        if (!filesystem::Filesystem::is_exists(file)) {
+            log_->warn("File with sha256 '{}' does not exist, cannot delete",
+                       p_analysis.sha256);
+        } else {
             filesystem::Filesystem::remove(file);
         }
-        database->analysis_table_delete(p_analysis);
+
+        if (!database->analysis_table_exists_by_sha256(p_analysis.sha256)) {
+            log_->warn(
+                "Analysis with sha256 '{}' does not exist, cannot delete",
+                p_analysis.sha256);
+        } else {
+            database->analysis_table_delete(p_analysis);
+        }
     }
+
+    void Analysis::save_tags(const database::record::Tag &p_tag)
+    {
+        if (database->tag_table_exists_by_name(p_tag.name)) {
+            log_->warn("Tag with name '{}' already exists, skipping creation",
+                       p_tag.name);
+            throw exception::TagExists("Tag already exists");
+        }
+
+        database->tag_table_insert(p_tag);
+    }
+
+    void Analysis::update_tags(database::record::Tag &p_tag)
+    {
+        if (!database->tag_table_exists_by_id(p_tag.id)) {
+            log_->warn("Tag with ID '{}' does not exist, cannot update",
+                       p_tag.id);
+            throw exception::TagNotFound("Tag does not exist");
+        }
+
+        database->tag_table_update(p_tag);
+    }
+
+    void Analysis::remove_tags(const database::record::Tag &p_tag)
+    {
+        if (!database->tag_table_exists_by_id(p_tag.id)) {
+            log_->warn("Tag with ID '{}' does not exist, cannot delete",
+                       p_tag.id);
+            throw exception::TagNotFound("Tag does not exist");
+        }
+
+        database->tag_table_delete(p_tag);
+    }
+
+    void Analysis::save_families(const database::record::Family &p_family)
+    {
+        if (database->family_table_exists_by_name(p_family.name)) {
+            log_->warn(
+                "Family with name '{}' already exists, skipping creation",
+                p_family.name);
+            throw exception::FamilyExists("Family already exists");
+        }
+
+        database->family_table_insert(p_family);
+    }
+
+    void Analysis::update_families(database::record::Family &p_family)
+    {
+        if (!database->family_table_exists_by_id(p_family.id)) {
+            log_->warn("Family with ID '{}' does not exist, cannot update",
+                       p_family.id);
+            throw exception::FamilyNotFound("Family does not exist");
+        }
+
+        database->family_table_update(p_family);
+    }
+
+    void Analysis::remove_families(const database::record::Family &p_family)
+    {
+        if (!database->family_table_exists_by_id(p_family.id)) {
+            log_->warn("Family with ID '{}' does not exist, cannot delete",
+                       p_family.id);
+            throw exception::FamilyNotFound("Family does not exist");
+        }
+
+        database->family_table_delete(p_family);
+    }
+
 } // namespace engine::focades::analysis

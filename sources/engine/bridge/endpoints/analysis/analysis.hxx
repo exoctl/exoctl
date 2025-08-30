@@ -49,6 +49,8 @@ namespace engine::bridge::endpoints::analysis
         std::unique_ptr<engine::server::gateway::web::Web> web_families_;
         std::unique_ptr<engine::server::gateway::web::Web> web_tags_;
         std::unique_ptr<engine::server::gateway::web::Web> web_create_family_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_update_family_;
         std::unique_ptr<engine::server::gateway::web::Web> web_create_tag_;
+        std::unique_ptr<engine::server::gateway::web::Web> web_update_tag_;
     };
 } // namespace engine::bridge::endpoints::analysis
