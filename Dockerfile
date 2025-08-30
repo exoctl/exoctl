@@ -10,6 +10,7 @@ RUN apt-get update && \
         binutils \
         git \
         libsqlite3-dev \
+        libreadline-dev \
         curl \
         unzip \
         libmysqlclient-dev \
