@@ -1,11 +1,17 @@
-<p align="center"><img src="assets/banner.png" width=250 alt="exoctl Engine Banner"></p>
+<p align="center">
+  <img src="assets/banner.png" width="250" alt="exoctl Engine Banner">
+</p>
 
 <h4 align="center">Advanced malware analysis engine with plugin support. Extend functionality to automate your analysis workflows and solve repetitive tasks efficiently.</h4>
 
 <p align="center">
-
+  <a href="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml?query=branch%3Amain">
+    <img src="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml/badge.svg?branch=main" alt="Docker Image CI - Main">
+  </a>
+  <a href="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml?query=branch%3Adev">
+    <img src="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml/badge.svg?branch=dev" alt="Docker Image CI - Dev">
+  </a>
 </p>
-
 
 ## Description
 
@@ -14,12 +20,15 @@ A malware analysis engine with support for plugins in Lua. Designed to automate 
 > [!NOTE]  
 > I'm working on documentation about the engine and everything it can do.
 
-
 ## Setting Up / Building
 
-`git clone --recurse-submodules -j8 git@github.com:exoctl/exoctl.git`
+### Clone the Repository
 
-#### Build using cmake 
+```sh
+git clone --recurse-submodules -j8 git@github.com:exoctl/exoctl.git
+```
+
+## Build using cmake 
 
 Install libraries 
 
