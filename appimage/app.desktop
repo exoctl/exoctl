@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=exoctl
-Exec=appexoctl
-Terminal=true
-Type=Application
-Icon=App
-Categories=Utility;
