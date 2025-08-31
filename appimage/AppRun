@@ -1,18 +1,3 @@
 #!/bin/bash
 
-if [ -n "$APPIMAGE_EXTRACT_RUNNING" ]; then
-    exit 0
-fi
-
-export APPDIR_LUA_PATH="$APPDIR/?.lua;"
-export APPDIR_LUA_CPATH="$APPDIR/?.so;"
-export INFNITYDIR_LUA_PATH="$PWD/$EXOCTLDIR/?.lua;"
-export INFNITYDIR_LUA_CPATH="$PWD/$EXOCTLDIR/?.so;"
-
-export LUA_PATH="$APPDIR_LUA_PATH;$INFNITYDIR_LUA_PATH;$LUA_PATH"
-export LUA_CPATH="$APPDIR_LUA_CPATH;$INFNITYDIR_LUA_CPATH;$LUA_CPATH"
-
-export EXOCTLDIR=$PWD/$EXOCTLDIR
-cd $EXOCTLDIR
-
-exec "lua5.4"  "$APPDIR/App.lua" "$@"
+exec "$APPDIR/appexoctl"

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(exoctl VERSION 1.2.0 LANGUAGES CXX)
+project(exoctl VERSION 1.3.0 LANGUAGES CXX)
 
 # Global settings
 set(CMAKE_CXX_STANDARD 20)
