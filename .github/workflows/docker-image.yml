@@ -22,9 +22,9 @@ jobs:
     - name: Save Docker image as tarball
       run: |
         if [ "${{ github.ref_name }}" = "main" ]; then
-          docker save -o exoctl-image.tar ghcr.io/${{ github.repository_owner }}/exoctl:latest
+          docker save -o exoctl-image.tar ghcr.io/${{ github.repository_owner }}/exoctl:latest ghcr.io/${{ github.repository_owner }}/exoctl:${{ github.sha }}
         else
-          docker save -o exoctl-image.tar ghcr.io/${{ github.repository_owner }}/exoctl:dev
+          docker save -o exoctl-image.tar ghcr.io/${{ github.repository_owner }}/exoctl:dev ghcr.io/${{ github.repository_owner }}/exoctl:dev-${{ github.sha }}
         fi
     - name: Upload Docker image artifact
       uses: actions/upload-artifact@v4
