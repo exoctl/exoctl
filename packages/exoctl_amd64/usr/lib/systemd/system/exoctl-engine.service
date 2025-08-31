@@ -1,0 +1,11 @@
+[Unit]
+Description=exoctl engine malware analysis
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/exoctl-engine/appexoctl
+Environment="EXOCTLDIR=/opt/exoctl-engine/"
+
+[Install]
+WantedBy=multi-user.target

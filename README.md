@@ -8,16 +8,13 @@
   <a href="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml?query=branch%3Amain">
     <img src="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml/badge.svg?branch=main" alt="Docker Image CI - Main">
   </a>
-  <a href="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml?query=branch%3Adev">
-    <img src="https://github.com/exoctl/exoctl/actions/workflows/docker-image.yml/badge.svg?branch=dev" alt="Docker Image CI - Dev">
-  </a>
 </p>
 
 ## Description
 
 A malware analysis engine with support for plugins in Lua. Designed to automate analysis workflows, handle repetitive tasks, and provide flexible inspection of file formats.
 
-> [!NOTE]  
+> [!NOTE]
 > I'm working on documentation about the engine and everything it can do.
 
 ## Setting Up / Building
@@ -54,6 +51,16 @@ sudo docker build -t engine .
 sudo docker run --name engine -p 8081:8081 engine
 ```
 
+---
+
+> [!NOTE]
+> You can get the versions already compiled in the https://github.com/exoctl/exoctl/tags
+
+## What is exoctl
+
+Exoctl is an engine for analyzing malware and file derivatives, with the aim of being extensible and easy to implement plugins using lua script in addition to having opensource libs such as libclamav, crowcpp, libyara among others, the engine has all possible parameters being implemented in the configuration file.
+
+![](assets/exoctl.png)
 
 ## Plugin Examples
 
@@ -277,6 +284,15 @@ Example Response:
 }
 ```
 
+`/engine/v1/analysis/records/delete`
+
+`/engine/v1/analysis/records/update`
+
+`/engine/v1/analysis/rescan`
+
+`/engine/v1/analysis/scan`
+
+and more ...
 
 ## Associated Projects
 
