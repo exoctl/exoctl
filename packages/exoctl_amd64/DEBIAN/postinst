@@ -1,5 +1,5 @@
 #!/bin/bash
 
 systemctl daemon-reload
-systemctl enable infinity-engine
-systemctl start infinity-engine
+systemctl enable exoctl-engine
+systemctl start exoctl-engine

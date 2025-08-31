@@ -1,6 +1,5 @@
-Package: infinity-engine
-Version: 1.1.0
+Package: exoctl-engine
+Version: 1.3.0
 Architecture: amd64
-Maintainer: maldeclabs <contact@maldec.io>
-Description: A cutting-edge reverse engineering framework for analyzing file formats
-Depends: lua5.4
+Maintainer: exoctl <remoob@remoob.com>
+Description: A cutting-edge malware analysis engine for analyzing file formats
