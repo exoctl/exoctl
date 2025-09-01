@@ -52,15 +52,15 @@ namespace engine::filesystem
         std::thread worker_thread_;
         void worker();
 
-        inline const bool canonical_base(const std::string &,
+        static inline const bool canonical_base(const std::string &,
                                    std::filesystem::path &);
-        inline const  bool is_within_base(const std::filesystem::path &,
+        static inline const  bool is_within_base(const std::filesystem::path &,
                                    const std::filesystem::path &);
-        inline const  bool resolve_secure_path(const std::filesystem::path &,
+        static inline const  bool resolve_secure_path(const std::filesystem::path &,
                                         const std::string &,
                                         bool,
                                         std::filesystem::path &);
-        inline const  bool safe_create_parents(const std::filesystem::path &,
+        static inline const  bool safe_create_parents(const std::filesystem::path &,
                                         const std::filesystem::path &);
     };
 } // namespace engine::filesystem
