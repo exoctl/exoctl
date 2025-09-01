@@ -1,4 +1,4 @@
-local get_compiled_rules = { Server = nil, yara_manager = nil }
+local get_compiled_rules = { server = nil, yara_manager = nil }
 
 function get_compiled_rules:new()
     local obj = { methods = {} }
@@ -11,12 +11,12 @@ function get_compiled_rules:setup(server, yara_manager)
     assert(type(server) == "table", "Invalid server instance")
     assert(type(yara_manager) == "table", "Invalid yara_manager instance")
 
-    self.Server = server
+    self.server = server
     self.yara_manager = yara_manager
 end
 
 function get_compiled_rules:load()
-    self.Server:create_route("/compiled/rules", function(req)
+    self.server:create_route("/compiled/rules", function(req)
         local yr_stream = Stream:new()
         local compiled_rules = ""
         yr_stream:write(function(data)

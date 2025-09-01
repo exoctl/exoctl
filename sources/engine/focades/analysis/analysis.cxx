@@ -149,27 +149,24 @@ namespace engine::focades::analysis
                                    ? "File detected as malicious"
                                    : "File not detected as malicious";
 
-        analysis.family_id = [&]() -> int {
-            int best_family = 0;
+        const auto &all_analysis = database->analysis_table_get_all();
+        int best_family = 0;
+        int best_dist = std::numeric_limits<int>::max();
 
-            for (const auto &anal : database->analysis_table_get_all()) {
-                if (anal.file_type != analysis.file_type ||
-                    anal.sha256 == analysis.sha256) {
-                    continue;
-                }
+        for (const auto &anal : all_analysis) {
+            if (anal.file_type != analysis.file_type ||
+                anal.sha256 == analysis.sha256)
+                continue;
 
-                int dist = crypto::Tlsh::compare(anal.tlsh, analysis.tlsh);
-                if (dist <= family_tlsh_threshold) {
-                    family_tlsh_threshold = dist;
-                    best_family = anal.family_id;
-                    if (dist == 0) {
-                        break;
-                    }
-                }
+            int dist = crypto::Tlsh::compare(anal.tlsh, analysis.tlsh);
+            if (dist < best_dist && dist <= family_tlsh_threshold) {
+                best_dist = dist;
+                best_family = anal.family_id;
+                if (dist == 0)
+                    break;
             }
-
-            return best_family;
-        }();
+        }
+        analysis.family_id = best_family;
 
         return analysis;
     }

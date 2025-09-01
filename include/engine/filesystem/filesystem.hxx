@@ -6,6 +6,7 @@
 #include <engine/filesystem/entitys.hxx>
 #include <engine/filesystem/extend/filesystem.hxx>
 #include <engine/logging/logging.hxx>
+#include <filesystem>
 #include <mutex>
 #include <queue>
 #include <string>
@@ -30,10 +31,11 @@ namespace engine::filesystem
 
         static void remove(const record::File &, const bool = true);
         static void write(const record::File &, const bool = true);
-        [[nodiscard]] static const bool is_exists(const record::File &,
-                                                  const bool = true);
+        [[nodiscard]] static const  bool is_exists(const record::File &,
+                                            const bool = true);
         static void read(record::File &, const bool = true);
         static void create_directories(const std::string &, const bool = true);
+
         static std::string path;
         static bool readonly;
         static std::atomic<bool> is_running;
@@ -49,5 +51,16 @@ namespace engine::filesystem
 
         std::thread worker_thread_;
         void worker();
+
+        inline const bool canonical_base(const std::string &,
+                                   std::filesystem::path &);
+        inline const  bool is_within_base(const std::filesystem::path &,
+                                   const std::filesystem::path &);
+        inline const  bool resolve_secure_path(const std::filesystem::path &,
+                                        const std::string &,
+                                        bool,
+                                        std::filesystem::path &);
+        inline const  bool safe_create_parents(const std::filesystem::path &,
+                                        const std::filesystem::path &);
     };
 } // namespace engine::filesystem
