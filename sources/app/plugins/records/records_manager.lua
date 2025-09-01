@@ -11,7 +11,6 @@ function records_manager:setup(config, logging)
     self.config = config
     self.logging = logging
 
-    print(self.logging)
     self.string_min_length = self.config:get("records.strings.min_length")
 end
 
